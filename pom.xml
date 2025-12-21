@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="
+           http://maven.apache.org/POM/4.0.0
+           http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.brickforceaurora</groupId>
+    <artifactId>standalone-gameserver</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+
+    <name>Brick-Force Aurora Server</name>
+    <description>Brick-Force Aurora Dedicated Server</description>
+
+    <properties>
+        <java.version>25</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+
+        <!-- Netty (TCP networking) -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.104.Final</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- Java compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>${java.version}</release>
+                </configuration>
+            </plugin>
+
+            <!-- Run Main class easily -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.4.1</version>
+                <configuration>
+                    <mainClass>de.brickforceaurora.server.Main</mainClass>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
