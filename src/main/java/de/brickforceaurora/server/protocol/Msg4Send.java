@@ -1,5 +1,8 @@
 package de.brickforceaurora.server.protocol;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+
 public final class Msg4Send {
 
     private final byte[] buffer;
@@ -30,5 +33,11 @@ public final class Msg4Send {
         buffer = new byte[MsgHdr.SIZE + payloadSize];
         System.arraycopy(hdrBytes, 0, buffer, 0, MsgHdr.SIZE);
         System.arraycopy(body.buffer(), 0, buffer, MsgHdr.SIZE, payloadSize);
+    }
+
+    public ByteBuf toByteBuf(ByteBufAllocator allocator) {
+        ByteBuf buf = allocator.buffer(buffer.length);
+        buf.writeBytes(buffer);
+        return buf;
     }
 }

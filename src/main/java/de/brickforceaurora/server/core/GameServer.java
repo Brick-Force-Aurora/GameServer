@@ -1,111 +1,464 @@
 package de.brickforceaurora.server.core;
 
-import de.brickforceaurora.server.net.ClientReference;
-import de.brickforceaurora.server.net.ReceiveHandler;
+import de.brickforceaurora.server.match.MatchData;
+import de.brickforceaurora.server.net.*;
 import de.brickforceaurora.server.protocol.*;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class GameServer {
 
-    /* ===== Singleton ===== */
-
     private static final GameServer INSTANCE = new GameServer();
-
-    public static GameServer getInstance() {
-        return INSTANCE;
-    }
-
-    private GameServer() {}
-
-    /* ===== Network ===== */
-
-    private EventLoopGroup bossGroup;
-    private EventLoopGroup workerGroup;
-
-    /* ===== State ===== */
+    public static GameServer getInstance() { return INSTANCE; }
 
     private final Object dataLock = new Object();
 
-    public final List<ClientReference> clients = new ArrayList<>();
+    public final List<ClientReference> clientList = new ArrayList<>();
+    private final Queue<MsgReference> readQueue  = new ArrayDeque<>();
+    private final Queue<MsgReference> writeQueue = new ArrayDeque<>();
 
-    private final Queue<Msg2Handle> readQueue = new ConcurrentLinkedQueue<>();
-    private final Queue<Msg4Send> writeQueue = new ConcurrentLinkedQueue<>();
+    private final Map<Integer, MessagePassingQueue.Consumer<MsgReference>> handlers = new HashMap<>();
 
-    public boolean running = false;
+    public boolean debugHandle = true;
+    public boolean debugSend = true;
+    public boolean debugPing = false;
+
+    public boolean serverCreated = false;
+    public boolean isSteam = false;
 
     public byte recvKey = (byte) 0xFF;
     public byte sendKey = (byte) 0xFF;
 
+    private boolean waitForShutDown = false;
+    private float killLogTimer = 0f;
+
     /* ===== Startup ===== */
 
+    private GameServer() {
+        registerHandlers();
+        serverCreated = false;
+    }
+
+    public void tick() {
+        if (!serverCreated)
+            return;
+
+        synchronized (dataLock) {
+            if (waitForShutDown && (clientList.isEmpty() || isSteam)) {
+                shutdownFinally();
+                return;
+            }
+
+            killLogTimer += de.brickforceaurora.server.util.Time.deltaTime;
+
+            handleDeadClients();
+            handleMessages();
+            sendMessages();
+        }
+    }
+
     public void start() throws InterruptedException {
-        bossGroup = new NioEventLoopGroup(1);
-        workerGroup = new NioEventLoopGroup();
+
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
 
         ServerBootstrap bootstrap = new ServerBootstrap();
-        bootstrap.group(bossGroup, workerGroup)
+        bootstrap
+                .group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) {
                         ClientReference client = new ClientReference(ch);
+
                         synchronized (dataLock) {
-                            clients.add(client);
+                            clientList.add(client);
                         }
+
                         ch.pipeline().addLast(new ReceiveHandler(client));
+
+                        handleClientAccepted(client);
                     }
                 });
 
         bootstrap.bind(5000).sync();
-        running = true;
 
+        serverCreated = true;
         System.out.println("[Server] Listening on 0.0.0.0:5000");
     }
 
-    /* ===== Tick ===== */
+    /* =========================
+       Queues
+       ========================= */
 
-    public void tick() {
-        if (!running)
+    public void enqueueIncoming(MsgReference msg) {
+        synchronized (dataLock) {
+            readQueue.add(msg);
+        }
+    }
+
+    public void say(MsgReference msg) {
+        synchronized (dataLock) {
+            writeQueue.add(msg);
+        }
+    }
+
+    public void sayInstant(MsgReference msg) {
+        synchronized (dataLock) {
+            writeQueue.add(msg);
+            sendMessages();
+        }
+    }
+
+    public void clearBuffers() {
+        synchronized (dataLock) {
+            writeQueue.clear();
+            readQueue.clear();
+        }
+    }
+
+    /* =========================
+       Client accept
+       ========================= */
+
+    public boolean handleClientAccepted(ClientReference client) {
+        synchronized (dataLock) {
+            clientList.add(client);
+            sendConnected(client);
+            return true;
+        }
+    }
+
+    /* =========================
+       Message handling (like C#)
+       ========================= */
+
+    private void registerHandlers() {
+        // Example
+        handlers.put(MessageId.CS_LOGIN_REQ.getId(), this::handleLoginRequest);
+        handlers.put(MessageId.CS_HEARTBEAT_REQ.getId(), this::handleHeartbeat);
+
+        // Add all others same way
+    }
+
+    private void handleMessages() {
+        if (readQueue.isEmpty())
             return;
 
+        MsgReference msgRef = readQueue.peek();
+
+        try {
+            if (debugHandle && msgRef.client != null) {
+                System.out.println("[Verbose] Processing message ID: " + msgRef.msg.id() + " from client: " + msgRef.client.GetIdentifier());
+            }
+
+            MessagePassingQueue.Consumer<MsgReference> handler = handlers.get(msgRef.msg.id());
+            if (handler != null) {
+                handler.accept(msgRef);
+            } else {
+                System.out.println("[WARNING]: No handler for message ID: " + msgRef.msg.id());
+            }
+
+        } catch (Exception ex) {
+            System.out.println("[ERROR]: HandleMessages: " + ex.getMessage());
+            ex.printStackTrace(System.out);
+        } finally {
+            readQueue.poll();
+        }
+    }
+
+    private void sendMessages() {
+        if (writeQueue.isEmpty())
+            return;
+
+        MsgReference msgRef = writeQueue.peek();
+
+        try {
+            switch (msgRef.sendType) {
+                case UNICAST -> unicastMessage(msgRef);
+                case BROADCAST -> broadcastMessage(msgRef);
+                case BROADCAST_CHANNEL -> broadcastChannelMessage(msgRef);
+                case BROADCAST_ROOM -> broadcastRoomMessage(msgRef);
+                case BROADCAST_ROOM_EXCLUSIVE -> broadcastRoomMessageExclusive(msgRef);
+                case BROADCAST_RED_TEAM -> broadcastRedTeamMessage(msgRef);
+                case BROADCAST_BLUE_TEAM -> broadcastBlueTeamMessage(msgRef);
+            }
+        } catch (Exception ex) {
+            System.out.println("[ERROR]: SendMessages: " + ex.getMessage());
+            if (debugHandle) ex.printStackTrace(System.out);
+        } finally {
+            writeQueue.poll();
+        }
+    }
+
+    /* =========================
+       Netty send primitives (mirror C#)
+       ========================= */
+
+    private void unicastMessage(MsgReference msgRef) {
+        if (msgRef.client == null) return;
+        sendToClient(msgRef.client, msgRef.msg.id(), msgRef.msg.msg());
+    }
+
+    private void broadcastMessage(MsgReference msgRef) {
+        for (ClientReference c : clientList) {
+            sendToClient(c, msgRef.msg.id(), msgRef.msg.msg());
+        }
+    }
+
+    private void broadcastChannelMessage(MsgReference msgRef) {
+        if (msgRef.channelRef == null) return;
+        for (ClientReference c : msgRef.channelRef.clientList) {
+            sendToClient(c, msgRef.msg.id(), msgRef.msg.msg());
+        }
+    }
+
+    private void broadcastRoomMessage(MsgReference msgRef) {
+        if (msgRef.matchData == null) return;
+        for (ClientReference c : msgRef.matchData.clientList) {
+            if (c.clientStatus.ordinal() < ClientStatus.ROOM.getId())
+                continue;
+            sendToClient(c, msgRef.msg.id(), msgRef.msg.msg());
+        }
+    }
+
+    private void broadcastRedTeamMessage(MsgReference msgRef) {
+        for (ClientReference c : clientList) {
+            if (c.clientStatus.ordinal() < ClientStatus.ROOM.getId()) continue;
+            if (c.slot == null || !c.slot.isRed) continue;
+            sendToClient(c, msgRef.msg.id(), msgRef.msg.msg());
+        }
+    }
+
+    private void broadcastBlueTeamMessage(MsgReference msgRef) {
+        for (ClientReference c : clientList) {
+            if (c.clientStatus.ordinal() < ClientStatus.ROOM.getId()) continue;
+            if (c.slot == null || c.slot.isRed) continue;
+            sendToClient(c, msgRef.msg.id(), msgRef.msg.msg());
+        }
+    }
+
+    private void broadcastRoomMessageExclusive(MsgReference msgRef) {
+        if (msgRef.matchData == null || msgRef.client == null) return;
+        for (ClientReference c : msgRef.matchData.clientList) {
+            if (c == msgRef.client) continue;
+            if (c.clientStatus.ordinal() < ClientStatus.ROOM.getId()) continue;
+            sendToClient(c, msgRef.msg.id(), msgRef.msg.msg());
+        }
+    }
+
+    private void sendToClient(ClientReference client, int id, MsgBody body) {
+        if (client == null || client.socket == null) return;
+        if (!client.socket.isActive()) return;
+
+        Msg4Send send = new Msg4Send(id, Integer.MAX_VALUE, Integer.MAX_VALUE, body, sendKey);
+        client.socket.writeAndFlush(send.toByteBuf(client.socket.alloc()));
+
+        if (debugSend) {
+            System.out.println("Sent msgId=" + id + " to: " + client.GetIdentifier());
+        }
+    }
+
+    /* =========================
+       Shutdown / dead clients (as in C#)
+       ========================= */
+
+    public void shutdownInit() {
+        // channelManager.shutdown(); etc when you port it
+        // channelManager = new ChannelManager();
+        // curSeq = 0;
+        sendDisconnect(null, SendType.BROADCAST);
+        waitForShutDown = true;
+    }
+
+    private void shutdownFinally() {
         synchronized (dataLock) {
-            handleIncoming();
-            flushOutgoing();
+            waitForShutDown = false;
+            clearBuffers();
+            clientList.clear();
+            serverCreated = false;
         }
     }
 
-    /* ===== Networking queues ===== */
-
-    private void handleIncoming() {
-        Msg2Handle msg;
-        while ((msg = readQueue.poll()) != null) {
-            // TEMP: just verify protocol
-            System.out.println("Received msgId=" + msg.id());
+    private void handleDeadClients() {
+        for (ClientReference client : clientList) {
+            if (client.seq == -1) {
+                client.toleranceTime += de.brickforceaurora.server.util.Time.deltaTime;
+                if (client.toleranceTime >= 3f) {
+                    client.Disconnect(false);
+                    break;
+                }
+            }
         }
     }
 
-    private void flushOutgoing() {
-        Msg4Send msg;
-        while ((msg = writeQueue.poll()) != null) {
-            // sending will be wired next
+    /* =========================
+       Ported SendConnected
+       ========================= */
+
+    public void sendConnected(ClientReference client) {
+        MsgBody body = new MsgBody();
+        say(new MsgReference(ExtensionOpcodes.OP_CONNECTED_ACK.getOpCode(), body, client));
+
+        if (debugSend) {
+            System.out.println("SendConnected to: " + client.GetIdentifier());
         }
     }
 
-    /* ===== API ===== */
+    /* =========================
+       Port examples for handlers you pasted
+       ========================= */
 
-    public void enqueueIncoming(Msg2Handle msg) {
-        readQueue.add(msg);
+    private void handleHeartbeat(MsgReference msgRef) {
+        // msgRef.msg._msg.readInt() etc when your MsgBody read APIs exist
+        // if (Time.time - msgRef.client.lastHeartBeatTime > 3f) msgRef.client.disconnect(true);
+        // else msgRef.client.lastHeartBeatTime = Time.time;
     }
 
-    public void enqueueOutgoing(Msg4Send msg) {
-        writeQueue.add(msg);
+    private void handleLoginRequest(MsgReference msgRef) {
+        // same as C# when you port auth/data
+    }
+
+    /* =========================
+       Disconnect (stub call target, no TODO)
+       ========================= */
+
+    public void sendDisconnect(ClientReference client, SendType type) {
+        MsgBody body = new MsgBody();
+        say(new MsgReference(ExtensionOpcodes.OP_DISCONNECT_REQ.getOpCode(), body, client, type, null, null));
+    }
+
+    public void sendLeave(ClientReference client) {
+        MatchData matchData = client.matchData;
+
+        if (matchData != null && matchData.clientList.contains(client)) {
+            matchData.RemoveClient(client);
+        }
+
+        if (matchData != null && matchData.room.curPlayer <= 0) {
+            SendDeleteRoom(matchData, matchData.channel);
+            client.channel.removeMatch(matchData);
+            return;
+        }
+
+        MsgBody body = new MsgBody();
+        body.write(client.seq);
+
+        if (matchData == null || matchData.channel == null) {
+            if (debugSend) {
+                System.out.println("[SendLeave] Client left but was not in a room: "
+                        + client.GetIdentifier());
+            }
+            return;
+        }
+
+        say(new MsgReference(
+                11, // CS_LEAVE_ACK
+                body,
+                client,
+                SendType.BROADCAST_ROOM,
+                matchData.channel,
+                matchData
+        ));
+
+        if (debugSend) {
+            System.out.println(
+                    "Broadcasted SendLeave for client "
+                            + client.GetIdentifier()
+                            + " for room no: "
+                            + matchData.room.no
+            );
+        }
+    }
+
+    public void sendSlotData(MatchData matchData) {
+        MsgBody body = new MsgBody();
+
+        if (matchData == null || matchData.channel == null) {
+            if (debugSend) {
+                System.out.println("[SendSlotData] Client does not exist anymore");
+            }
+            return;
+        }
+
+        body.write(matchData.clientList.size());
+
+        for (ClientReference client : matchData.clientList) {
+            body.write(client.slot.slotIndex);
+            body.write(client.seq);
+            body.write(client.name);
+            body.write(client.ip);
+            body.write(client.port); // port
+            body.write(client.ip);
+            body.write(client.port); // remotePort
+
+            //body.write(client.inventory.equipmentString.length);
+            body.write(0);
+            /*for (int v : client.inventory.equipmentString) {
+                body.write(v);
+            }*/
+
+            body.write(client.status.ordinal());
+            body.write(client.data.xp);
+            body.write(client.data.clanSeq);
+            body.write(client.data.clanName);
+            body.write(client.data.clanMark);
+            body.write(client.data.rank);
+            body.write((byte) 1); // playerflag
+
+            //body.write(client.inventory.weaponChgString.length);
+            body.write(0);
+            /*for (int v : client.inventory.weaponChgString) {
+                body.write(v);
+            }*/
+
+            body.write(0); // drop item count
+        }
+
+        // yes, twice — exactly like original
+        say(new MsgReference(
+                ExtensionOpcodes.OP_SLOT_DATA_ACK.getOpCode(),
+                body,
+                null,
+                SendType.BROADCAST_ROOM,
+                matchData.channel,
+                matchData
+        ));
+
+        say(new MsgReference(
+                ExtensionOpcodes.OP_SLOT_DATA_ACK.getOpCode(),
+                body,
+                null,
+                SendType.BROADCAST_ROOM,
+                matchData.channel,
+                matchData
+        ));
+
+        if (debugSend) {
+            System.out.println(
+                    "Broadcasted SendSlotData for room no: "
+                            + matchData.room.no
+            );
+        }
+    }
+
+    public void SendDeleteRoom(MatchData matchData, ChannelReference channel)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(matchData.room.no);
+
+        say(new MsgReference(6, body, null, SendType.BROADCAST_CHANNEL, channel, matchData));
+
+        if (debugSend)
+            System.out.println("Broadcasted SendDelRoom for room no: " + matchData.room.no);
     }
 }

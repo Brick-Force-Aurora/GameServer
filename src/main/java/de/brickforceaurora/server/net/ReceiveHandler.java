@@ -12,33 +12,51 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 public final class ReceiveHandler extends ChannelInboundHandlerAdapter {
 
     private final ClientReference client;
+    private final Msg4Recv accumulator = new Msg4Recv();
 
     public ReceiveHandler(ClientReference client) {
         this.client = client;
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        ByteBuf in = (ByteBuf) msg;
+    public void channelRead(ChannelHandlerContext ctx, Object msgObj) {
+        ByteBuf in = (ByteBuf) msgObj;
+        try {
+            while (in.isReadable()) {
+                // read as much as available into accumulator buffer
+                int readable = in.readableBytes();
+                byte[] tmp = new byte[readable];
+                in.readBytes(tmp);
 
-        int readable = in.readableBytes();
-        if (readable <= 0) {
-            return;
-        }
+                accumulator.append(tmp);
 
-        // copy into client buffer (matches your C# logic)
-        in.readBytes(client.buffer, 0, readable);
+                // flush ALL complete packets from accumulator
+                Msg4Recv.Status status;
+                while ((status = accumulator.getStatus(GameServer.getInstance().recvKey)) == Msg4Recv.Status.COMPLETE) {
+                    int id = accumulator.getId();
+                    MsgBody body = accumulator.flush();
+                    body.decrypt(GameServer.getInstance().recvKey);
 
-        Msg4Recv recv = new Msg4Recv(client.buffer);
-        if (recv.getStatus(GameServer.getInstance().recvKey)
-                == Msg4Recv.Status.COMPLETE) {
+                    GameServer.getInstance().enqueueIncoming(
+                            new MsgReference(
+                                    id,
+                                    body,
+                                    client,
+                                    SendType.UNICAST,
+                                    client.channel,
+                                    client.matchData
+                            )
+                    );
+                }
 
-            MsgBody body = recv.flush();
-            body.decrypt(GameServer.getInstance().recvKey);
-
-            GameServer.getInstance().enqueueIncoming(
-                    new Msg2Handle(recv.getId(), body)
-            );
+                if (status == Msg4Recv.Status.INVALID || status == Msg4Recv.Status.OVERFLOW) {
+                    client.Disconnect(true);
+                    ctx.close();
+                    return;
+                }
+            }
+        } finally {
+            in.release();
         }
     }
 
@@ -50,7 +68,7 @@ public final class ReceiveHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         System.out.println("Client disconnected: " + ctx.channel().remoteAddress());
-        client.disconnect();
+        client.Disconnect();
     }
 
     @Override

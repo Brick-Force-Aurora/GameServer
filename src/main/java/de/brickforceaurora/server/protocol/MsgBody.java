@@ -39,7 +39,7 @@ public final class MsgBody {
 
     /* ===== WRITE ===== */
 
-    public void writeInt(int v) {
+    public void write(int v) {
         ensure(4);
         ByteBuffer.wrap(buffer, offset, 4)
                 .order(ByteOrder.LITTLE_ENDIAN)
@@ -47,7 +47,7 @@ public final class MsgBody {
         offset += 4;
     }
 
-    public void writeShort(short v) {
+    public void write(short v) {
         ensure(2);
         ByteBuffer.wrap(buffer, offset, 2)
                 .order(ByteOrder.LITTLE_ENDIAN)
@@ -55,14 +55,14 @@ public final class MsgBody {
         offset += 2;
     }
 
-    public void writeByte(byte v) {
+    public void write(byte v) {
         ensure(1);
         buffer[offset++] = v;
     }
 
-    public void writeString(String s) {
+    public void write(String s) {
         byte[] data = s.getBytes(StandardCharsets.UTF_16LE);
-        writeInt(data.length);
+        write(data.length);
         ensure(data.length);
         System.arraycopy(data, 0, buffer, offset, data.length);
         offset += data.length;

@@ -1,19 +1,93 @@
 package de.brickforceaurora.server.net;
 
+import de.brickforceaurora.server.core.GameServer;
+import de.brickforceaurora.server.data.DummyData;
+import de.brickforceaurora.server.match.MatchData;
+import de.brickforceaurora.server.match.SlotData;
 import io.netty.channel.Channel;
 
 public final class ClientReference {
 
-    public Channel channel;
+    public Channel socket;
     public byte[] buffer = new byte[8192];
-    public int seq = -1;
-    public float toleranceTime = 0f;
+    public String ip;
+    public int port;
+    public float lastHeartBeatTime;
+    public String name;
+    public int seq;
+    public boolean isLoaded;
+    public boolean isHost;
+    public int kills = 0;
+    public int deaths = 0;
+    public int assists = 0;
+    public int score = 0;
+    public boolean isZombie = false;
+    public boolean isBreakingInto;
+    public float toleranceTime;
+    public ClientStatus clientStatus;
+    public BrickManStatus status;
+    public SlotData slot;
+    //public Inventory inventory;
+    public DummyData data;
+    public MatchData matchData;
+    public ChannelReference channel;
+    //public ChunkedBuffer chunkedBuffer;
+    public int lastOpenedChestSeq = -1;
 
-    public ClientReference(Channel channel) {
-        this.channel = channel;
+    public ClientReference(Channel socket, String name, int seq) {
+        this.socket = socket;
+        this.name = name;
+        this.seq = seq;
+        this.ip = socket.remoteAddress().toString();
     }
 
-    public void disconnect() {
-        channel.close();
+    public ClientReference(Channel socket) {
+        this(socket, "", -1);
+    }
+
+    public boolean Disconnect(boolean send) {
+        if (send){
+            GameServer.getInstance().sendLeave(this);
+            GameServer.getInstance().sendSlotData(matchData);
+        }
+        if(matchData != null){
+            matchData.RemoveClient(this);
+        }
+        if(channel != null){
+            channel.removeClient(this);
+        }
+        return GameServer.getInstance().clientList.remove(this);
+    }
+
+    public boolean Disconnect() {
+        return this.Disconnect(true);
+    }
+
+    public String GetIdentifier()
+    {
+        return name + "-" + seq + "-" + ip;
+    }
+
+    public void DetachSlot()
+    {
+        if (slot == null)
+            return;
+
+        slot.client = null;
+        slot.isUsed = false;
+        slot = null;
+    }
+
+    public boolean AssignSlot(SlotData _slot)
+    {
+        if (_slot.isUsed || _slot.isLocked)
+            return false;
+
+        DetachSlot();
+
+        slot = _slot;
+        slot.client = this;
+        slot.isUsed = true;
+        return true;
     }
 }
