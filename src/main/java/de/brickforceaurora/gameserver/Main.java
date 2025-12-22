@@ -3,7 +3,7 @@ package de.brickforceaurora.gameserver;
 import me.lauriichan.snowframe.SnowFrame;
 
 public final class Main {
-    
+
     private Main() {
         throw new UnsupportedOperationException();
     }

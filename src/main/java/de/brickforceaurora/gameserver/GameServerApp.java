@@ -1,5 +1,7 @@
 package de.brickforceaurora.gameserver;
 
+import java.util.Arrays;
+
 import me.lauriichan.laylib.logger.ISimpleLogger;
 import me.lauriichan.snowframe.ISnowFrameApp;
 import me.lauriichan.snowframe.SnowFrame;
@@ -15,7 +17,12 @@ public class GameServerApp implements ISnowFrameApp<GameServerApp> {
         if (snowFrame != null) {
             return snowFrame;
         }
-        return snowFrame = SnowFrame.builder(new GameServerApp()).logger(SysOutSimpleLogger.INSTANCE).build();
+        
+        // TODO: Do actual command line parsing
+        ISimpleLogger logger = SysOutSimpleLogger.INSTANCE;
+        logger.setDebug(Arrays.stream(args).anyMatch(str -> str.equalsIgnoreCase("--debug")));
+        
+        return snowFrame = SnowFrame.builder(new GameServerApp()).logger(logger).build();
     }
 
     public static GameServerApp get() {
