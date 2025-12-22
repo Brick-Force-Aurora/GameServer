@@ -1,60 +1,255 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="
-           http://maven.apache.org/POM/4.0.0
-           http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <modelVersion>4.0.0</modelVersion>
+	<groupId>de.brickforceaurora</groupId>
+	<artifactId>standalone-gameserver</artifactId>
+	<version>0.1.0</version>
 
-    <groupId>de.brickforceaurora</groupId>
-    <artifactId>standalone-gameserver</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+	<name>Brick-Force Aurora Gameserver</name>
+	<description>Brick-Force Aurora Standalone Gameserver</description>
 
-    <name>Brick-Force Aurora Server</name>
-    <description>Brick-Force Aurora Dedicated Server</description>
+	<properties>
+		<java.version>25</java.version>
+		<maven.compiler.release>${java.version}</maven.compiler.release>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.finalName>${project.name}-${project.version}.jar</project.build.finalName>
+		<project.sourceDir>${project.build.directory}/project-sources</project.sourceDir>
+		
+		<!-- Dependency versions -->
+		<dep.netty.version>4.1.104.Final</dep.netty.version>
+		<dep.snowframe.version>1.0.0</dep.snowframe.version>
+		<dep.laylib.version>0.4.2-SNAPSHOT</dep.laylib.version>
+		<dep.fastutil.version>8.5.18</dep.fastutil.version>
+	</properties>
+	
+	<repositories>
+		<repository>
+			<id>lauriichan-snapshot</id>
+			<url>https://maven.lauriichan.me/snapshot/</url>
+		</repository>
+		<repository>
+			<id>lauriichan-release</id>
+			<url>https://maven.lauriichan.me/release/</url>
+		</repository>
+	</repositories>
 
-    <properties>
-        <java.version>25</java.version>
-        <maven.compiler.release>${java.version}</maven.compiler.release>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
-    <dependencies>
-
-        <!-- Netty (TCP networking) -->
+	<dependencies>
+		<!-- Netty (TCP networking) -->
         <dependency>
             <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>4.1.104.Final</version>
+            <artifactId>netty-transport</artifactId>
+            <version>${dep.netty.version}</version>
+        </dependency>
+        
+        <!-- Utilities -->
+        <dependency>
+            <groupId>it.unimi.dsi</groupId>
+            <artifactId>fastutil</artifactId>
+            <version>${dep.fastutil.version}</version>
         </dependency>
 
-    </dependencies>
+		<!-- LayLib -->
+		<dependency>
+            <groupId>me.lauriichan.laylib</groupId>
+            <artifactId>command</artifactId>
+            <version>${dep.laylib.version}</version>
+		</dependency>
+		<dependency>
+            <groupId>me.lauriichan.laylib</groupId>
+            <artifactId>json</artifactId>
+            <version>${dep.laylib.version}</version>
+		</dependency>
 
-    <build>
-        <plugins>
+		<!-- SnowFrame -->
+		<dependency>
+            <groupId>me.lauriichan.snowframe</groupId>
+            <artifactId>snowframe-core</artifactId>
+            <version>${dep.snowframe.version}</version>
+		</dependency>
+		<dependency>
+            <groupId>me.lauriichan.snowframe</groupId>
+            <artifactId>snowframe-signal</artifactId>
+            <version>${dep.snowframe.version}</version>
+		</dependency>
+		<dependency>
+            <groupId>me.lauriichan.snowframe</groupId>
+            <artifactId>snowframe-config</artifactId>
+            <version>${dep.snowframe.version}</version>
+		</dependency>
+	</dependencies>
 
-            <!-- Java compiler -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
-                <configuration>
-                    <release>${java.version}</release>
-                </configuration>
-            </plugin>
+	<build>
+		<plugins>
+			<!-- Java compiler -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.14.0</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<compilerArgs>
+						<arg>-parameters</arg>
+					</compilerArgs>
+					<annotationProcessors>
+						<annotationProcessor>
+							me.lauriichan.snowframe.extension.processor.ExtensionProcessor</annotationProcessor>
+					</annotationProcessors>
+				</configuration>
+				<executions>
+					<!-- Compile source / annotation processors -->
+					<execution>
+						<id>compile-processors</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<proc>none</proc>
+							<includes>
+								<include>
+									de/brickforceaurora/gameserver/**/processor/*Processor.java</include>
+								<include>
+									de/brickforceaurora/maven/**/*.java</include>
+							</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
-            <!-- Run Main class easily -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.4.1</version>
-                <configuration>
-                    <mainClass>de.brickforceaurora.server.Main</mainClass>
-                </configuration>
-            </plugin>
+			<!-- Code generation -->
+			<plugin>
+				<groupId>me.lauriichan.maven</groupId>
+				<artifactId>maven-source-modification-plugin</artifactId>
+				<version>2.0.0</version>
+				<executions>
+					<execution>
+						<id>default-modifySources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>modifySource</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer>
+									<className>
+										me.lauriichan.snowframe.maven.ConfigSourceTransformer</className>
+								</transformer>
+								<transformer>
+									<className>
+										me.lauriichan.snowframe.maven.SignalHandlerTransformer</className>
+								</transformer>
+							</transformers>
+							<includes>
+								<include>**/*Template.java</include>
+							</includes>
+							<replacements>
+								<replacement>
+									<regex>true</regex>
+									<pattern>(?:.*)(Template)(?:\.java)</pattern>
+									<replace></replace>
+								</replacement>
+							</replacements>
+							<copyUnmodifiedFiles>false</copyUnmodifiedFiles>
+							<outputDirectory>${project.sourceDir}</outputDirectory>
+						</configuration>
+					</execution>
+					<execution>
+						<id>default-deleteSources</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>deleteSources</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include>
+									de/brickforceaurora/**/*Template.class</include>
+							</includes>
+							<purgeEmptyPackages>true</purgeEmptyPackages>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
-        </plugins>
-    </build>
+			<!-- Create executable jar -->
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.4.2</version>
+				<configuration>
+					<outputDirectory>${project.build.directory}/jar</outputDirectory>
+					<archive>
+						<manifest>
+							<mainClass>de.brickforceaurora.gameserver.Main</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<!-- Put libraries inside jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.6.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<filters>
+						<filter>
+							<artifact>*:*</artifact>
+							<excludes>
+								<exclude>META-INF/*.SF</exclude>
+								<exclude>META-INF/*.DSA</exclude>
+								<exclude>META-INF/*.RSA</exclude>
+							</excludes>
+						</filter>
+					</filters>
+					<minimizeJar>false</minimizeJar>
+					<createDependencyReducedPom>false</createDependencyReducedPom>
+					<transformers>
+						<transformer
+							implementation="me.lauriichan.maven.shade.transformers.AppendingTransformer">
+							<pattern>META-INF/extension/*.*</pattern>
+						</transformer>
+					</transformers>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>me.lauriichan.maven</groupId>
+						<artifactId>shade-transformers</artifactId>
+						<version>1.1.0</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+			<!-- Add generated sources to compilation source -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.4.0</version>
+				<executions>
+					<execution>
+						<id>add-modified-source</id>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.sourceDir}</source>
+								<source>src/installer/resources</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
