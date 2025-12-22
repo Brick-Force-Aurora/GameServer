@@ -6,6 +6,9 @@ target/
 .m2/
 .m2/*
 
+test/
+test/*
+
 site/
 site/*
 

@@ -213,6 +213,7 @@
 					</filters>
 					<minimizeJar>false</minimizeJar>
 					<createDependencyReducedPom>false</createDependencyReducedPom>
+					<outputFile>test/gameserver.jar</outputFile>
 					<transformers>
 						<transformer
 							implementation="me.lauriichan.maven.shade.transformers.AppendingTransformer">
