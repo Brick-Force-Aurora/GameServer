@@ -13,6 +13,7 @@
 
 	<properties>
 		<java.version>25</java.version>
+		<main.class>de.brickforceaurora.gameserver.Main</main.class>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.finalName>${project.name}-${project.version}.jar</project.build.finalName>
 		<project.sourceDir>${project.build.directory}/project-sources</project.sourceDir>
@@ -86,6 +87,28 @@
             <version>${dep.snowframe.version}</version>
 		</dependency>
 	</dependencies>
+	
+	<profiles>
+		<profile>
+			<id>exec</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>3.5.0</version>
+						<configuration>e
+							<mainClass>${main.class}</mainClass>
+							<arguments>
+								<argument>-jar</argument>
+								<argument>test/gameserver.jar</argument>
+							</arguments>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<build>
 		<plugins>
@@ -187,7 +210,7 @@
 					<outputDirectory>${project.build.directory}/jar</outputDirectory>
 					<archive>
 						<manifest>
-							<mainClass>de.brickforceaurora.gameserver.Main</mainClass>
+							<mainClass>${main.class}</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
