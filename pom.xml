@@ -13,7 +13,6 @@
 
 	<properties>
 		<java.version>25</java.version>
-		<maven.compiler.release>${java.version}</maven.compiler.release>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.finalName>${project.name}-${project.version}.jar</project.build.finalName>
 		<project.sourceDir>${project.build.directory}/project-sources</project.sourceDir>
