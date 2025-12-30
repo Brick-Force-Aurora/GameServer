@@ -48,6 +48,15 @@ public final class ChannelReference {
 
     /* ===== Clients ===== */
 
+    public void addClient(ClientReference client)
+    {
+        if (client.channel != null)
+            client.channel.removeClient(client);
+        client.channel = this;
+        clientList.add(client);
+        channel.userCount = clientList.size();
+    }
+
     public void removeClient(ClientReference client) {
         client.socket = null;
         clientList.remove(client);

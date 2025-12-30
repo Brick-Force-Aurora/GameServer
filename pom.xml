@@ -97,11 +97,12 @@
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>exec-maven-plugin</artifactId>
 						<version>3.5.0</version>
-						<configuration>e
+						<configuration>
 							<mainClass>${main.class}</mainClass>
 							<arguments>
 								<argument>-jar</argument>
 								<argument>test/gameserver.jar</argument>
+								<argument>--debug</argument>
 							</arguments>
 						</configuration>
 					</plugin>
@@ -117,6 +118,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.14.0</version>
 				<configuration>
+					<release>${java.version}</release>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 					<compilerArgs>

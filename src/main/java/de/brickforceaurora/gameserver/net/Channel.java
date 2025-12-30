@@ -20,21 +20,7 @@ public final class Channel {
     public int fpBonus;
     public int limitStarRate;
 
-    public Channel(
-            int id,
-            ChannelMode mode,
-            String name,
-            String ip,
-            int port,
-            int userCount,
-            int maxUserCount,
-            int country,
-            byte minLvRank,
-            byte maxLvRank,
-            short xpBonus,
-            short fpBonus,
-            int limitStarRate
-    ) {
+    public Channel(int id, ChannelMode mode, String name, String ip, int port, int userCount, int maxUserCount, int country, int minLvRank, int maxLvRank, int xpBonus, int fpBonus, int limitStarRate) {
         this.id = id;
         this.mode = mode;
         this.name = name;

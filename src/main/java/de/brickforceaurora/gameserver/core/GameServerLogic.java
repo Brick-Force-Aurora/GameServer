@@ -10,6 +10,7 @@ import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue;
 import me.lauriichan.laylib.logger.ISimpleLogger;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 import de.brickforceaurora.gameserver.match.MatchData;
 import de.brickforceaurora.gameserver.net.*;
@@ -30,6 +31,8 @@ public final class GameServerLogic {
     public boolean debugSend = true;
     public boolean debugPing = false;
 
+    private int curSeq = 0;
+
     public boolean serverCreated = false;
     public boolean isSteam = false;
 
@@ -38,6 +41,8 @@ public final class GameServerLogic {
 
     private boolean waitForShutDown = false;
     private float killLogTimer = 0f;
+
+    public ChannelManager channelManager = new ChannelManager();
     
     private final ISimpleLogger logger;
 
@@ -267,7 +272,7 @@ public final class GameServerLogic {
         if (client == null || client.socket == null) return;
         if (!client.socket.isActive()) return;
 
-        Msg4Send send = new Msg4Send(id, Integer.MAX_VALUE, Integer.MAX_VALUE, body, sendKey);
+        Msg4Send send = new Msg4Send(id, 0, 0, body, sendKey);
         client.socket.writeAndFlush(send.toByteBuf(client.socket.alloc()));
 
         if (debugSend) {
@@ -280,9 +285,9 @@ public final class GameServerLogic {
        ========================= */
 
     public void shutdownInit() {
-        // channelManager.shutdown(); etc when you port it
-        // channelManager = new ChannelManager();
-        // curSeq = 0;
+        channelManager.shutdown();
+        channelManager = new ChannelManager();
+        curSeq = 0;
         sendDisconnect(null, SendType.BROADCAST);
         waitForShutDown = true;
     }
@@ -326,14 +331,151 @@ public final class GameServerLogic {
        ========================= */
 
     private void handleHeartbeat(MsgReference msgRef) {
-        // msgRef.msg._msg.readInt() etc when your MsgBody read APIs exist
+        int gmFunction = msgRef.msg.msg().readInt();
         // if (Time.time - msgRef.client.lastHeartBeatTime > 3f) msgRef.client.disconnect(true);
         // else msgRef.client.lastHeartBeatTime = Time.time;
     }
 
     private void handleLoginRequest(MsgReference msgRef) {
-        // same as C# when you port auth/data
+
+        MsgBody msg = msgRef.msg.msg();
+
+        String id = msg.readString();
+        String pswd = msg.readString();
+        int major = msg.readInt();
+        int minor = msg.readInt();
+        String privateIpAddress = msg.readString();
+        String macAddress = msg.readString();
+
+        ClientReference client = msgRef.client;
+
+        client.name = id;
+        client.seq = curSeq;
+        client.port = 6000 + client.seq;
+        curSeq++;
+
+        ChannelReference channel = channelManager.getDefaultChannel();
+        channel.addClient(client);
+
+        SendPlayerInitInfo(client);
+        SendChannels(client);
+        SendCurChannel(client, channel.channel.id);
+        //sendInventoryRequest(client);
+        SendLogin(client, channel.channel.id);
+        SendPlayerInfo(client);
+        //sendAllDownloadedMaps(client);
+        //sendEmptyUserMap(client);
+        //sendAllUserMaps(client);
     }
+
+    public void SendPlayerInitInfo(ClientReference client)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(client.data.xp);
+        body.write(client.data.tutorialed);
+        body.write(client.data.countryFilter);
+        body.write(client.data.tos);
+        body.write(client.data.extraSlots);
+        body.write(client.data.rank);
+        body.write(client.data.firstLoginFp);
+        say(new MsgReference(148, body, client));
+
+        logger.debug("SendPlayerInitInfo to: " + client.GetIdentifier());
+    }
+
+    public void SendChannels(ClientReference client)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(channelManager.getChannels().size());
+        for (ChannelReference channelRef : channelManager.getChannels())
+        {
+            body.write(channelRef.channel.id);
+            body.write(channelRef.channel.mode.ordinal());
+            body.write(channelRef.channel.name);
+            body.write(channelRef.channel.ip);
+            body.write(channelRef.channel.port);
+            body.write(channelRef.channel.userCount);
+            body.write(channelRef.channel.maxUserCount);
+            body.write(channelRef.channel.country);
+            body.write((byte)channelRef.channel.minLvRank);
+            body.write((byte)channelRef.channel.maxLvRank);
+            body.write(channelRef.channel.xpBonus);
+            body.write(channelRef.channel.fpBonus);
+            body.write(channelRef.channel.limitStarRate);
+        }
+
+        say(new MsgReference(141, body, client));
+
+        if (debugSend)
+            logger.debug("SendChannels to: " + client.GetIdentifier());
+    }
+
+    public void SendCurChannel(ClientReference client)
+    {
+        SendCurChannel(client, 1);
+    }
+    public void SendCurChannel(ClientReference client, int curChannelId)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(curChannelId);
+        say(new MsgReference(147, body, client));
+
+        if (debugSend)
+            logger.debug("SendCurChannel to: " + client.GetIdentifier());
+    }
+
+    public void SendLogin(ClientReference client)
+    {
+        SendLogin(client, 1);
+    }
+
+    public void SendLogin(ClientReference client, int loginChannelId)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(client.seq);
+        body.write(loginChannelId);
+        say(new MsgReference(2, body, client));
+
+        if (debugSend)
+            logger.debug("SendLogin to: " + client.GetIdentifier());
+    }
+
+    public void SendPlayerInfo(ClientReference client)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(client.name);
+        body.write(client.data.xp);
+        body.write(client.data.forcePoints);
+        body.write(client.data.brickPoints);
+        body.write(client.data.tokens);
+        body.write(0);
+        body.write(client.data.coins);
+        body.write(client.data.starDust);
+        body.write(6);
+        body.write(5);
+        body.write(client.data.gm);
+        body.write(client.data.clanSeq);
+        body.write(client.data.clanName);
+        body.write(client.data.clanLv);
+        body.write(client.data.rank);
+        body.write(client.data.heavy);
+        body.write(client.data.assault);
+        body.write(client.data.sniper);
+        body.write(client.data.subMachine);
+        body.write(client.data.handGun);
+        body.write(client.data.melee);
+        body.write(client.data.special);
+        say(new MsgReference(27, body, client));
+
+        if (debugSend)
+            logger.debug("SendPlayerInfo to: " + client.GetIdentifier());
+    }
+
 
     /* =========================
        Disconnect (stub call target, no TODO)

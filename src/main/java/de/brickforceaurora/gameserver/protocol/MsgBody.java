@@ -86,6 +86,19 @@ public final class MsgBody {
         return v;
     }
 
+    public String readString() {
+        // length in BYTES (not chars)
+        int len = readInt();
+
+        if (len <= 0) {
+            return "";
+        }
+
+        String val = new String(buffer, offset, len, StandardCharsets.UTF_16LE);
+        offset += len;
+        return val;
+    }
+
     public byte readByte() {
         return buffer[offset++];
     }
