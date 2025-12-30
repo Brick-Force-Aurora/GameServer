@@ -39,6 +39,7 @@ public final class ClientReference {
         this.socket = socket;
         this.name = name;
         this.seq = seq;
+        this.data = new DummyData();
         this.ip = socket.remoteAddress().toString();
     }
 

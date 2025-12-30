@@ -55,6 +55,13 @@ public final class MsgBody {
         offset += 2;
     }
 
+    public void writeUShort(int v) {
+        ensure(2);
+        buffer[offset++] = (byte) (v & 0xFF);
+        buffer[offset++] = (byte) ((v >>> 8) & 0xFF);
+    }
+
+
     public void write(byte v) {
         ensure(1);
         buffer[offset++] = v;

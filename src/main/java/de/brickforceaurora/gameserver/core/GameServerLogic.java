@@ -90,10 +90,6 @@ public final class GameServerLogic {
                     protected void initChannel(SocketChannel ch) {
                         ClientReference client = new ClientReference(ch);
 
-                        synchronized (dataLock) {
-                            clientList.add(client);
-                        }
-
                         ch.pipeline().addLast(new ReceiveHandler(client));
 
                         handleClientAccepted(client);
@@ -272,7 +268,8 @@ public final class GameServerLogic {
         if (client == null || client.socket == null) return;
         if (!client.socket.isActive()) return;
 
-        Msg4Send send = new Msg4Send(id, 0, 0, body, sendKey);
+        Msg4Send send = new Msg4Send(id, 0xFFFFFFFFL, 0xFFFFFFFFL, body, sendKey);
+        //logger.info("JAVA TX HEX (msgId={1}): {0}", io.netty.buffer.ByteBufUtil.hexDump(send.buffer()), id );
         client.socket.writeAndFlush(send.toByteBuf(client.socket.alloc()));
 
         if (debugSend) {
@@ -401,8 +398,8 @@ public final class GameServerLogic {
             body.write(channelRef.channel.country);
             body.write((byte)channelRef.channel.minLvRank);
             body.write((byte)channelRef.channel.maxLvRank);
-            body.write(channelRef.channel.xpBonus);
-            body.write(channelRef.channel.fpBonus);
+            body.writeUShort(channelRef.channel.xpBonus);
+            body.writeUShort(channelRef.channel.fpBonus);
             body.write(channelRef.channel.limitStarRate);
         }
 

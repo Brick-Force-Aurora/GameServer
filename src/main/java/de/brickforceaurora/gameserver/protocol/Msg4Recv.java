@@ -5,31 +5,40 @@ import java.util.Arrays;
 public final class Msg4Recv {
 
     public enum Status { COMPLETE, INCOMPLETE, INVALID, OVERFLOW }
-    private static final int MAX_PACKET_SIZE = 8192;
 
     private byte[] buffer;
     private int io;
-    public MsgHdr hdr = new MsgHdr();
+    public MsgHdr hdr;
 
     public Msg4Recv() {
-        this.io = 0;
-        this.hdr = new MsgHdr();
-        this.buffer = new byte[4092];
+        io = 0;
+        hdr = new MsgHdr();
+        buffer = new byte[4092];
     }
 
     public Msg4Recv(byte[] src) {
+        io = 0;
+        hdr = new MsgHdr();
         buffer = Arrays.copyOf(src, src.length);
-        io = src.length;
+    }
+
+    private void expandBuffer() {
+        buffer = Arrays.copyOf(buffer, buffer.length * 2);
     }
 
     public void append(byte[] data) {
-        if (buffer.length + data.length > MAX_PACKET_SIZE) {
-            throw new IllegalStateException("Packet overflow");
+        if (io + data.length > buffer.length) {
+            expandBuffer();
         }
-        buffer = data;
+        System.arraycopy(data, 0, buffer, io, data.length);
+        io += data.length;
     }
 
     public Status getStatus(byte recvKey) {
+        if (io >= buffer.length) {
+            expandBuffer();
+        }
+
         if (io < MsgHdr.SIZE)
             return Status.INCOMPLETE;
 
@@ -56,7 +65,19 @@ public final class Msg4Recv {
 
     public MsgBody flush() {
         MsgBody body = new MsgBody(buffer, MsgHdr.SIZE, (int) hdr.size);
+
         io -= MsgHdr.SIZE + hdr.size;
+
+        if (io > 0) {
+            System.arraycopy(
+                    buffer,
+                    MsgHdr.SIZE + (int) hdr.size,
+                    buffer,
+                    0,
+                    io
+            );
+        }
+
         return body;
     }
 }
