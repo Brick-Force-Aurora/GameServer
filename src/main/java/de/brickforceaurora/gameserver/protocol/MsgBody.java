@@ -55,6 +55,12 @@ public final class MsgBody {
         offset += 2;
     }
 
+    public void write(boolean v) {
+        ensure(1);
+        buffer[offset++] = (byte) (v ? 1 : 0);
+    }
+
+
     public void writeUShort(int v) {
         ensure(2);
         buffer[offset++] = (byte) (v & 0xFF);
@@ -85,6 +91,10 @@ public final class MsgBody {
         return v;
     }
 
+    public boolean readBool() {
+        return buffer[offset++] != 0;
+    }
+
     public short readShort() {
         short v = ByteBuffer.wrap(buffer, offset, 2)
                 .order(ByteOrder.LITTLE_ENDIAN)
@@ -92,6 +102,15 @@ public final class MsgBody {
         offset += 2;
         return v;
     }
+
+    public int readUShort() {
+        int v = ByteBuffer.wrap(buffer, offset, 2)
+                .order(ByteOrder.LITTLE_ENDIAN)
+                .getShort() & 0xFFFF;
+        offset += 2;
+        return v;
+    }
+
 
     public String readString() {
         // length in BYTES (not chars)

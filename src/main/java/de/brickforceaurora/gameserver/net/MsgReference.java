@@ -36,4 +36,8 @@ public final class MsgReference {
     public MsgReference(int id, MsgBody body, ClientReference client) {
         this(id, body, client, SendType.UNICAST, null, null);
     }
+
+    public MsgReference(int id, MsgBody body, ClientReference client, SendType sendType) {
+        this(id, body, client, sendType, null, null);
+    }
 }

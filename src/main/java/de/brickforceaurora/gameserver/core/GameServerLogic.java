@@ -1,5 +1,7 @@
 package de.brickforceaurora.gameserver.core;
 
+import de.brickforceaurora.gameserver.maps.RegMap;
+import de.brickforceaurora.gameserver.room.Room;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
@@ -10,7 +12,6 @@ import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue;
 import me.lauriichan.laylib.logger.ISimpleLogger;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 import de.brickforceaurora.gameserver.match.MatchData;
 import de.brickforceaurora.gameserver.net.*;
@@ -43,7 +44,9 @@ public final class GameServerLogic {
     private float killLogTimer = 0f;
 
     public ChannelManager channelManager = new ChannelManager();
-    
+
+    public Map<Integer, RegMap> regMaps = new HashMap<>();
+
     private final ISimpleLogger logger;
 
     /* ===== Startup ===== */
@@ -97,6 +100,9 @@ public final class GameServerLogic {
                 });
 
         bootstrap.bind(5000).sync();
+
+        //Pulls all loaded RegMaps into the server should be refactored for the MapServer
+        //regMaps = RegMapManager.Instance.dicRegMap.ToList();
 
         serverCreated = true;
         logger.info("Listening on 0.0.0.0:5000");
@@ -152,7 +158,12 @@ public final class GameServerLogic {
         // Example
         handlers.put(MessageId.CS_LOGIN_REQ.getId(), this::handleLoginRequest);
         handlers.put(MessageId.CS_HEARTBEAT_REQ.getId(), this::handleHeartbeat);
-
+        handlers.put(MessageId.CS_ROAMIN_REQ.getId(), this::handleRoamIn);
+        handlers.put(MessageId.CS_MY_REGISTER_MAP_REQ.getId(), this::HandleRequestRegisteredMaps);
+        handlers.put(MessageId.CS_USER_MAP_REQ.getId(), this::HandleRequestUserMaps);
+        handlers.put(MessageId.CS_MY_DOWNLOAD_MAP_REQ.getId(), this::HandleRequestDownloadedMaps);
+        handlers.put(MessageId.CS_CHANNEL_PLAYER_LIST_REQ.getId(), this::HandleRequestUserList);
+        handlers.put(MessageId.CS_ROOM_LIST_REQ.getId(), this::HandleRoomListRequest);
         // Add all others same way
     }
 
@@ -357,12 +368,24 @@ public final class GameServerLogic {
         SendPlayerInitInfo(client);
         SendChannels(client);
         SendCurChannel(client, channel.channel.id);
-        //sendInventoryRequest(client);
+        SendInventoryRequest(client);
         SendLogin(client, channel.channel.id);
         SendPlayerInfo(client);
-        //sendAllDownloadedMaps(client);
-        //sendEmptyUserMap(client);
-        //sendAllUserMaps(client);
+        sendAllDownloadedMaps(client);
+        sendEmptyUserMap(client);
+        sendAllUserMaps(client);
+    }
+
+    public void SendInventoryRequest(ClientReference client)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(client.seq);
+
+        say(new MsgReference(ExtensionOpcodes.OP_DISCONNECT_REQ.getOpCode(), body, client));
+
+        if (debugSend)
+            logger.debug("SendInventoryRequest to: " + client.GetIdentifier());
     }
 
     public void SendPlayerInitInfo(ClientReference client)
@@ -471,6 +494,372 @@ public final class GameServerLogic {
 
         if (debugSend)
             logger.debug("SendPlayerInfo to: " + client.GetIdentifier());
+    }
+
+    private void handleRoamIn(MsgReference msgRef)
+    {
+        int seq = msgRef.msg.msg().readInt();
+        int userType = msgRef.msg.msg().readInt();
+        boolean isWebPlayer = msgRef.msg.msg().readBool();
+        int language = msgRef.msg.msg().readInt();
+        String hashCode = msgRef.msg.msg().readString();
+
+        if (debugHandle)
+            logger.debug("HandleRoamin from: " + msgRef.client.GetIdentifier());
+
+        SendUserList(msgRef.client);
+        SendRoamin(msgRef.client, msgRef.client.channel.channel.id);
+
+        msgRef.client.clientStatus = ClientStatus.LOBBY;
+    }
+
+    private void HandleRequestUserList(MsgReference msgRef)
+    {
+        if (debugPing)
+            logger.debug("HandleRequestUserList from: " + msgRef.client.GetIdentifier());
+
+        SendUserList(msgRef.client);
+    }
+
+    public void SendUserList(ClientReference client)
+    {
+        SendUserList(client, SendType.UNICAST);
+    }
+
+    public void SendUserList(ClientReference client, SendType sendType)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(client.channel.clientList.size());
+        for (int i = 0; i < client.channel.clientList.size(); i++)
+        {
+            body.write(client.channel.clientList.get(i).seq);
+            body.write(client.channel.clientList.get(i).name);
+            body.write(client.channel.clientList.get(i).data.xp);
+            body.write(client.channel.clientList.get(i).data.rank);
+
+        }
+        say(new MsgReference(MessageId.CS_SVC_ENTER_LIST_ACK.getId(), body, client, sendType));
+
+        if (debugPing)
+            logger.debug("SendUserList to: " + client.GetIdentifier());
+    }
+
+    public void SendRoamin(ClientReference client, int dest)
+    {
+        SendRoamin(client, dest, SendType.UNICAST);
+    }
+
+    public void SendRoamin(ClientReference client, int dest, SendType sendType)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(dest);
+        say(new MsgReference(MessageId.CS_ROAMIN_ACK.getId(), body, client, sendType));
+
+        if (debugSend)
+            logger.debug("SendRoamin to: " + client.GetIdentifier());
+    }
+
+    private void HandleRequestDownloadedMaps(MsgReference msgRef)
+    {
+        int prevPage = msgRef.msg.msg().readInt();
+        int nextPage = msgRef.msg.msg().readInt();
+        int indexer = msgRef.msg.msg().readInt();
+        int modeMask = msgRef.msg.msg().readUShort();
+
+        if (debugHandle)
+            logger.debug("HandleRequestDownloadedMaps from: " + msgRef.client.GetIdentifier());
+
+        SendDownloadedMaps(msgRef.client, nextPage);
+    }
+
+    private void HandleRequestRegisteredMaps(MsgReference msgRef)
+    {
+        int prevPage = msgRef.msg.msg().readInt();
+        int nextPage = msgRef.msg.msg().readInt();
+        int indexer = msgRef.msg.msg().readInt();
+        int modeMask = msgRef.msg.msg().readUShort();
+
+        if (debugHandle)
+            logger.debug("HandleRequestRegisteredMaps from: " + msgRef.client.GetIdentifier());
+
+        SendRegisteredMaps(msgRef.client, nextPage);
+    }
+
+    public void SendDownloadedMaps(ClientReference client, int page)
+    {
+        MsgBody body = new MsgBody();
+
+        int mapsPerPage = 12;
+        int offset = page * mapsPerPage;
+        int remaining = regMaps.size() - offset;
+        int count = Math.min(remaining, mapsPerPage);
+
+        body.write(page); //page
+        body.write(count); //count
+        for (int i = offset; i < offset + count; i++)
+        {
+            RegMap entry = regMaps.get(i);
+            body.write(entry.getMap());
+            body.write(entry.getDeveloper());
+            body.write(entry.getAlias());
+            body.write(entry.getModeMask());
+            body.write((byte)(Room.clanMatch | Room.official));
+            body.write(entry.tagMask);
+            body.write(entry.getRegisteredDate().getYear());
+            body.write((byte)entry.getRegisteredDate().getMonth().getValue());
+            body.write((byte)entry.getRegisteredDate().getDayOfWeek().getValue());
+            body.write((byte)entry.getRegisteredDate().getHour());
+            body.write((byte)entry.getRegisteredDate().getMinute());
+            body.write((byte)entry.getRegisteredDate().getSecond());
+            body.write(entry.getDownloadFee());
+            body.write(entry.getRelease());
+            body.write(entry.getLatestRelease());
+            body.write(entry.getLikes());
+            body.write(entry.getDisLikes());
+            body.write(entry.getDownloadCount());
+        }
+        say(new MsgReference(426, body, client));
+
+        if (debugSend)
+            logger.debug("SendDownloadedMaps to: " + client.GetIdentifier());
+    }
+
+    public void SendRegisteredMaps(ClientReference client, int page)
+    {
+        MsgBody body = new MsgBody();
+
+        int mapsPerPage = 12;
+        int offset = page * mapsPerPage;
+        int remaining = regMaps.size() - offset;
+        int count = Math.min(remaining, mapsPerPage);
+
+        body.write(page); //page
+        body.write(count); //count
+        for (int i = offset; i < offset + count; i++)
+        {
+            RegMap entry = regMaps.get(i);
+            body.write(entry.getMap());
+            body.write(entry.getDeveloper());
+            body.write(entry.getAlias());
+            body.write(entry.getModeMask());
+            body.write((byte)(Room.clanMatch | Room.official));
+            body.write(entry.tagMask);
+            body.write(entry.getRegisteredDate().getYear());
+            body.write((byte)entry.getRegisteredDate().getMonth().getValue());
+            body.write((byte)entry.getRegisteredDate().getDayOfWeek().getValue());
+            body.write((byte)entry.getRegisteredDate().getHour());
+            body.write((byte)entry.getRegisteredDate().getMinute());
+            body.write((byte)entry.getRegisteredDate().getSecond());
+            body.write(entry.getDownloadFee());
+            body.write(entry.getRelease());
+            body.write(entry.getLatestRelease());
+            body.write(entry.getLikes());
+            body.write(entry.getDisLikes());
+            body.write(entry.getDownloadCount());
+        }
+        say(new MsgReference(428, body, client));
+
+        if (debugSend)
+            logger.debug("SendRegisteredMaps to: " + client.GetIdentifier());
+    }
+
+    private void HandleRequestUserMaps(MsgReference msgRef)
+    {
+        int page = msgRef.msg.msg().readInt();
+
+        if (debugHandle)
+            logger.debug("HandleRequestUserMaps from: " + msgRef.client.GetIdentifier());
+
+        SendUserMaps(msgRef.client, page);
+    }
+
+    public void SendUserMaps(ClientReference client, int page)
+    {
+        MsgBody body = new MsgBody();
+
+        int mapsPerPage = 12;
+        int offset = page * mapsPerPage;
+        int remaining = regMaps.size() - offset;
+        int count = Math.min(remaining, mapsPerPage);
+
+        body.write(page); //page
+        body.write(count); //count
+        for (int i = offset; i < offset + count; i++)
+        {
+            RegMap entry = regMaps.get(i);
+            body.write(i); //slot
+            body.write(entry.getAlias());
+            body.write(10000); //brick count
+            body.write(entry.getRegisteredDate().getYear());
+            body.write((byte)entry.getRegisteredDate().getMonth().getValue());
+            body.write((byte)entry.getRegisteredDate().getDayOfWeek().getValue());
+            body.write((byte)entry.getRegisteredDate().getHour());
+            body.write((byte)entry.getRegisteredDate().getMinute());
+            body.write((byte)entry.getRegisteredDate().getSecond());
+            body.write((byte)0);
+        }
+        say(new MsgReference(430, body, client));
+
+        if (debugSend)
+            logger.debug("SendUserMaps to: " + client.GetIdentifier());
+    }
+
+    public void sendAllUserMaps(ClientReference client)
+    {
+        MsgBody body = new MsgBody();
+
+        int chunkSize = 200;
+        int chunkCount = (int) Math.ceil((double) regMaps.size() / (double) chunkSize);
+        int processedCount = 0;
+
+        for (int chunk = 0; chunk < chunkCount; chunk++)
+        {
+            int remaining = regMaps.size() - processedCount;
+            if (remaining < chunkSize)
+                chunkSize = remaining;
+
+            body.write(-1); //page
+            body.write(chunkSize); //count
+            for (int i = 0; i < chunkSize; i++, processedCount++)
+            {
+                RegMap entry = regMaps.get(i);
+                body.write(i); //slot
+                body.write(entry.getAlias());
+                body.write(-1); //brick count
+                body.write(entry.getRegisteredDate().getYear());
+                body.write((byte)entry.getRegisteredDate().getMonth().getValue());
+                body.write((byte)entry.getRegisteredDate().getDayOfWeek().getValue());
+                body.write((byte)entry.getRegisteredDate().getHour());
+                body.write((byte)entry.getRegisteredDate().getMinute());
+                body.write((byte)entry.getRegisteredDate().getSecond());
+                body.write((byte)0); //premium
+            }
+            say(new MsgReference(430, body, client));
+        }
+
+        if (debugSend)
+            logger.debug("SendAllUserMaps to: " + client.GetIdentifier());
+    }
+
+    public void sendAllDownloadedMaps(ClientReference client)
+    {
+        int chunkSize = 100;
+        int chunkCount = (int) Math.ceil((double) regMaps.size() / (double) chunkSize);
+        int processedCount = 0;
+
+        for (int chunk = 0; chunk < chunkCount; chunk++)
+        {
+            int remaining = regMaps.size() - processedCount;
+            if (remaining < chunkSize)
+                chunkSize = remaining;
+
+            MsgBody body = new MsgBody();
+
+            body.write(-1); //page
+            body.write(chunkSize); //count
+            for (int i = 0; i < chunkSize; i++, processedCount++)
+            {
+                RegMap entry = regMaps.get(i);
+                body.write(entry.getMap());
+                body.write(entry.getDeveloper());
+                body.write(entry.getAlias());
+                body.write(entry.getModeMask());
+                body.write((byte)(Room.clanMatch | Room.official));
+                body.write(entry.tagMask);
+                body.write(entry.getRegisteredDate().getYear());
+                body.write((byte)entry.getRegisteredDate().getMonth().getValue());
+                body.write((byte)entry.getRegisteredDate().getDayOfWeek().getValue());
+                body.write((byte)entry.getRegisteredDate().getHour());
+                body.write((byte)entry.getRegisteredDate().getMinute());
+                body.write((byte)entry.getRegisteredDate().getSecond());
+                body.write(entry.getDownloadFee());
+                body.write(entry.getRelease());
+                body.write(entry.getLatestRelease());
+                body.write(entry.getLikes());
+                body.write(entry.getDisLikes());
+                body.write(entry.getDownloadCount());
+            }
+
+            say(new MsgReference(426, body, client));
+        }
+
+        if (debugSend)
+            logger.debug("SendAllDownloadedMaps to: " + client.GetIdentifier());
+    }
+
+    public void sendEmptyUserMap(ClientReference client)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(-1); //page
+        body.write(1); //count
+        body.write(0); //slot
+        body.write("");
+        body.write(-1); //brick count
+        body.write(2000);
+        body.write((byte)0);
+        body.write((byte)0);
+        body.write((byte)0);
+        body.write((byte)0);
+        body.write((byte)0);
+        body.write((byte)0);
+
+        say(new MsgReference(430, body, client));
+
+        if (debugSend)
+            logger.debug("SendEmptyUserMap to: " + client.GetIdentifier());
+    }
+
+    private void HandleRoomListRequest(MsgReference msgRef)
+    {
+        if (debugHandle)
+            logger.debug("HandleRoomListRequest from: " + msgRef.client.GetIdentifier());
+
+        SendRoomList(msgRef.client);
+    }
+
+    public void SendRoomList(ClientReference client)
+    {
+        MsgBody body = new MsgBody();
+
+        if (client.channel == null)
+            body.write(0); //count
+        else
+        {
+            body.write(client.channel.matches.size()); //count
+            for (int i = 0; i < client.channel.matches.size(); i++)
+            {
+                MatchData matchData = client.channel.matches.get(i);
+                body.write(matchData.room.no);
+                body.write(matchData.room.type.getId());
+                body.write(matchData.room.title);
+                body.write(matchData.room.locked);
+                body.write(matchData.room.status.getId());
+                body.write(matchData.room.curPlayer);
+                body.write(matchData.room.maxPlayer);
+                body.write(matchData.room.map);
+                body.write(matchData.room.curMapAlias);
+                body.write(matchData.room.goal);
+                body.write(matchData.room.timelimit);
+                body.write(matchData.room.weaponOption);
+                body.write(matchData.room.ping);
+                body.write(matchData.room.score1);
+                body.write(matchData.room.score2);
+                body.write(matchData.room.CountryFilter);
+                body.write(matchData.room.isBreakInto);
+                body.write(matchData.room.isDropItem);
+                body.write(matchData.room.isWanted);
+                body.write(matchData.room.squad);
+                body.write(matchData.room.squadCounter);
+            }
+        }
+
+        say(new MsgReference(468, body, client));
+
+        if (debugSend)
+            logger.debug("SendRoomList to: " + client.GetIdentifier());
     }
 
 
