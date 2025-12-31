@@ -1,8 +1,7 @@
 package de.brickforceaurora.gameserver.core;
 
-import de.brickforceaurora.gameserver.item.Item;
-import de.brickforceaurora.gameserver.item.ItemType;
-import de.brickforceaurora.gameserver.item.Pimp;
+import de.brickforceaurora.gameserver.data.Inventory;
+import de.brickforceaurora.gameserver.item.*;
 import de.brickforceaurora.gameserver.maps.RegMap;
 import de.brickforceaurora.gameserver.room.Room;
 import io.netty.bootstrap.ServerBootstrap;
@@ -167,6 +166,7 @@ public final class GameServerLogic {
         handlers.put(MessageId.CS_MY_DOWNLOAD_MAP_REQ.getId(), this::HandleRequestDownloadedMaps);
         handlers.put(MessageId.CS_CHANNEL_PLAYER_LIST_REQ.getId(), this::HandleRequestUserList);
         handlers.put(MessageId.CS_ROOM_LIST_REQ.getId(), this::HandleRoomListRequest);
+        handlers.put(ExtensionOpcodes.OP_INVENTORY_ACK.getOpCode(), this::HandleInventoryData);
         // Add all others same way
     }
 
@@ -371,8 +371,7 @@ public final class GameServerLogic {
         SendPlayerInitInfo(client);
         SendChannels(client);
         SendCurChannel(client, channel.channel.id);
-        //SendInventoryRequest(client); instead send Inventory
-        SendInventory(client);
+        SendInventoryRequest(client);
         SendLogin(client, channel.channel.id);
         SendPlayerInfo(client);
         sendAllDownloadedMaps(client);
@@ -386,7 +385,7 @@ public final class GameServerLogic {
 
         body.write(client.seq);
 
-        say(new MsgReference(ExtensionOpcodes.OP_DISCONNECT_REQ.getOpCode(), body, client));
+        say(new MsgReference(ExtensionOpcodes.OP_INVENTORY_REQ.getOpCode(), body, client));
 
         if (debugSend)
             logger.debug("SendInventoryRequest to: " + client.GetIdentifier());
@@ -864,6 +863,52 @@ public final class GameServerLogic {
 
         if (debugSend)
             logger.debug("SendRoomList to: " + client.GetIdentifier());
+    }
+
+    private void HandleInventoryData(MsgReference msgRef)
+    {
+        // List to hold new equipment
+        List<Item> newEquipment = new ArrayList<Item>();
+
+        // Read the total count of items
+        int itemCount = msgRef.msg.msg().readInt();
+        msgRef.client.inventory = new Inventory(msgRef.client.seq);
+        msgRef.client.inventory.equipment.clear();
+
+        // Read each item's slot and code
+        for (int i = 0; i < itemCount; i++)
+        {
+            String code = msgRef.msg.msg().readString();
+            int usage = msgRef.msg.msg().readInt();
+            byte toolSlot = msgRef.msg.msg().readByte(); //sbyte
+
+            // Fetch the item template
+            TItem template = TItemManager.getInstance().get(code);
+            if (template != null)
+            {
+                try
+                {
+                    Item item = msgRef.client.inventory.addItem(template, false, -1, ItemUsage.fromId(usage));
+                    //var item = msgRef.client.inventory.AddItem(template, false, -1, (Item.USAGE)Enum.Parse(typeof(Item.USAGE), usage, true));
+                    item.toolSlot = toolSlot;
+                }
+
+                catch (Exception ex)
+                {
+                    logger.warning("HandleInventoryData: Couldn't add item " + template.name + " (" + template.code + ") | " + ex.getMessage());
+                }
+            }
+            else
+            {
+                logger.warning("[WARNING]: Template not found for code: {0}", code);
+            }
+        }
+
+        if (debugHandle)
+            logger.debug("HandleInventoryData from: {0}", msgRef.client.GetIdentifier());
+
+        // Notify the client about the updated inventory
+        SendInventory(msgRef.client);
     }
 
     public void SendInventory(ClientReference client)
