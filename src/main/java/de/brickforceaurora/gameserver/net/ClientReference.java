@@ -3,6 +3,7 @@ package de.brickforceaurora.gameserver.net;
 import de.brickforceaurora.gameserver.GameServerApp;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.data.DummyData;
+import de.brickforceaurora.gameserver.data.Inventory;
 import de.brickforceaurora.gameserver.match.MatchData;
 import de.brickforceaurora.gameserver.match.SlotData;
 import io.netty.channel.Channel;
@@ -28,7 +29,7 @@ public final class ClientReference {
     public ClientStatus clientStatus;
     public BrickManStatus status;
     public SlotData slot;
-    //public Inventory inventory;
+    public Inventory inventory;
     public DummyData data;
     public MatchData matchData;
     public ChannelReference channel;

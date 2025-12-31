@@ -47,6 +47,14 @@ public final class MsgBody {
         offset += 4;
     }
 
+    public void write(long v) {
+        ensure(8);
+        ByteBuffer.wrap(buffer, offset, 8)
+                .order(ByteOrder.LITTLE_ENDIAN)
+                .putLong(v);
+        offset += 8;
+    }
+
     public void write(short v) {
         ensure(2);
         ByteBuffer.wrap(buffer, offset, 2)
