@@ -2,6 +2,8 @@ package de.brickforceaurora.gameserver.core;
 
 import de.brickforceaurora.gameserver.data.Inventory;
 import de.brickforceaurora.gameserver.item.*;
+import de.brickforceaurora.gameserver.item.template.TItem;
+import de.brickforceaurora.gameserver.item.template.TItemManager;
 import de.brickforceaurora.gameserver.maps.RegMap;
 import de.brickforceaurora.gameserver.room.Room;
 import io.netty.bootstrap.ServerBootstrap;

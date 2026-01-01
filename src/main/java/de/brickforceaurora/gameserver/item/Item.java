@@ -1,6 +1,8 @@
 package de.brickforceaurora.gameserver.item;
 
 import de.brickforceaurora.gameserver.data.MyInfoManager;
+import de.brickforceaurora.gameserver.item.template.TItem;
+import de.brickforceaurora.gameserver.item.template.TSpecial;
 import de.brickforceaurora.gameserver.util.StringMgr;
 
 public class Item {

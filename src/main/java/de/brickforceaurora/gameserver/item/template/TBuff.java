@@ -1,4 +1,4 @@
-package de.brickforceaurora.gameserver.item;
+package de.brickforceaurora.gameserver.item.template;
 
 public class TBuff {
 

@@ -1,5 +1,8 @@
-package de.brickforceaurora.gameserver.item;
+package de.brickforceaurora.gameserver.item.template;
 
+import de.brickforceaurora.gameserver.item.ItemSlot;
+import de.brickforceaurora.gameserver.item.ItemType;
+import de.brickforceaurora.gameserver.item.UpgradeCategory;
 import de.brickforceaurora.gameserver.util.Texture2D;
 
 public class TSpecial extends TItem {

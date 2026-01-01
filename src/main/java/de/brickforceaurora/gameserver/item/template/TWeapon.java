@@ -1,5 +1,9 @@
-package de.brickforceaurora.gameserver.item;
+package de.brickforceaurora.gameserver.item.template;
 
+import de.brickforceaurora.gameserver.item.ItemSlot;
+import de.brickforceaurora.gameserver.item.ItemType;
+import de.brickforceaurora.gameserver.item.UpgradeCategory;
+import de.brickforceaurora.gameserver.item.WeaponType;
 import de.brickforceaurora.gameserver.util.Texture2D;
 
 public class TWeapon extends TItem
@@ -57,7 +61,7 @@ public class TWeapon extends TItem
                 itemDiscomposable,
                 itemBpBackCode,
                 0,
-                UpgradeCategory.values()[upCat],
+                UpgradeCategory.fromValue(upCat),
                 basic,
                 starRate
         );

@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import de.brickforceaurora.gameserver.item.*;
+import de.brickforceaurora.gameserver.item.template.TItem;
 
 public class Inventory {
 
