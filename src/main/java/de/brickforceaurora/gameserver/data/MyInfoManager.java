@@ -3,6 +3,8 @@ package de.brickforceaurora.gameserver.data;
 import java.util.*;
 
 import de.brickforceaurora.gameserver.data.flag.CommonOpt;
+import de.brickforceaurora.gameserver.data.flag.FlagSet;
+import de.brickforceaurora.gameserver.data.flag.IFlag;
 import de.brickforceaurora.gameserver.item.Item;
 import de.brickforceaurora.gameserver.item.ItemUsage;
 
@@ -59,7 +61,7 @@ public final class MyInfoManager {
     private int gm;
     private boolean switchGOD;
 
-    private int qjCommonMask;
+    public final FlagSet<CommonOpt> commonOptions = new FlagSet<>(IFlag.combine(CommonOpt.ALL));
 
     private final long[] shooterTools;
     private final long[] weaponSlots;
@@ -106,18 +108,6 @@ public final class MyInfoManager {
     }
 
     /* ================= GM ================= */
-
-    public boolean getCommonMask(CommonOpt mask) {
-        return (qjCommonMask & mask.mask()) != 0;
-    }
-
-    public void setCommonMask(CommonOpt mask) {
-        qjCommonMask |= mask.mask();
-    }
-
-    public void removeCommonMask(CommonOpt mask) {
-        qjCommonMask &= ~mask.mask();
-    }
 
     public int clearGmFunction() {
         switchGOD = false;
