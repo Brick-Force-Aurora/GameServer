@@ -66,7 +66,7 @@ public final class MapGenerator {
         int hashId = CRC32.compute(ByteBuffer.allocate(8).putLong(bin).array());
 
         int finalHashId = hashId;
-        while (GameServerLogic.getInstance().regMaps
+        while (RegMapManager.getInstance().getMaps()
                 .values()
                 .stream()
                 .anyMatch(x -> x.getMap() == finalHashId)) {

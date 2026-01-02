@@ -6,6 +6,7 @@ import de.brickforceaurora.gameserver.item.template.TItem;
 import de.brickforceaurora.gameserver.item.template.TItemManager;
 import de.brickforceaurora.gameserver.maps.BrickInst;
 import de.brickforceaurora.gameserver.maps.RegMap;
+import de.brickforceaurora.gameserver.maps.RegMapManager;
 import de.brickforceaurora.gameserver.room.Room;
 import de.brickforceaurora.gameserver.room.RoomType;
 import io.netty.bootstrap.ServerBootstrap;
@@ -50,8 +51,6 @@ public final class GameServerLogic {
     private float killLogTimer = 0f;
 
     public ChannelManager channelManager = new ChannelManager();
-
-    public Map<Integer, RegMap> regMaps = new HashMap<>();
 
     private final ISimpleLogger logger;
 
@@ -122,7 +121,8 @@ public final class GameServerLogic {
         bootstrap.bind(5000).sync();
 
         //Pulls all loaded RegMaps into the server should be refactored for the MapServer
-        //regMaps = RegMapManager.Instance.dicRegMap.ToList();
+        RegMapManager.getInstance().loadMaps();
+        logger.debug("RegMaps: " + RegMapManager.getInstance().getMaps().size());
 
         serverCreated = true;
         logger.info("Listening on 0.0.0.0:5000");
@@ -616,15 +616,16 @@ public final class GameServerLogic {
         MsgBody body = new MsgBody();
 
         int mapsPerPage = 12;
+        List<RegMap> maps = RegMapManager.getInstance().getMapsAsList();
         int offset = page * mapsPerPage;
-        int remaining = regMaps.size() - offset;
+        int remaining = maps.size() - offset;
         int count = Math.min(remaining, mapsPerPage);
 
         body.write(page); //page
         body.write(count); //count
         for (int i = offset; i < offset + count; i++)
         {
-            RegMap entry = regMaps.get(i);
+            RegMap entry = maps.get(i);
             body.write(entry.getMap());
             body.write(entry.getDeveloper());
             body.write(entry.getAlias());
@@ -656,14 +657,15 @@ public final class GameServerLogic {
 
         int mapsPerPage = 12;
         int offset = page * mapsPerPage;
-        int remaining = regMaps.size() - offset;
+        List<RegMap> maps = RegMapManager.getInstance().getMapsAsList();
+        int remaining = maps.size() - offset;
         int count = Math.min(remaining, mapsPerPage);
 
         body.write(page); //page
         body.write(count); //count
         for (int i = offset; i < offset + count; i++)
         {
-            RegMap entry = regMaps.get(i);
+            RegMap entry = maps.get(i);
             body.write(entry.getMap());
             body.write(entry.getDeveloper());
             body.write(entry.getAlias());
@@ -705,14 +707,15 @@ public final class GameServerLogic {
 
         int mapsPerPage = 12;
         int offset = page * mapsPerPage;
-        int remaining = regMaps.size() - offset;
+        List<RegMap> maps = RegMapManager.getInstance().getMapsAsList();
+        int remaining = maps.size() - offset;
         int count = Math.min(remaining, mapsPerPage);
 
         body.write(page); //page
         body.write(count); //count
         for (int i = offset; i < offset + count; i++)
         {
-            RegMap entry = regMaps.get(i);
+            RegMap entry = maps.get(i);
             body.write(i); //slot
             body.write(entry.getAlias());
             body.write(10000); //brick count
@@ -735,12 +738,13 @@ public final class GameServerLogic {
         MsgBody body = new MsgBody();
 
         int chunkSize = 200;
-        int chunkCount = (int) Math.ceil((double) regMaps.size() / (double) chunkSize);
+        List<RegMap> maps = RegMapManager.getInstance().getMapsAsList();
+        int chunkCount = (int) Math.ceil((double) maps.size() / (double) chunkSize);
         int processedCount = 0;
 
         for (int chunk = 0; chunk < chunkCount; chunk++)
         {
-            int remaining = regMaps.size() - processedCount;
+            int remaining = maps.size() - processedCount;
             if (remaining < chunkSize)
                 chunkSize = remaining;
 
@@ -748,7 +752,7 @@ public final class GameServerLogic {
             body.write(chunkSize); //count
             for (int i = 0; i < chunkSize; i++, processedCount++)
             {
-                RegMap entry = regMaps.get(i);
+                RegMap entry = maps.get(i);
                 body.write(i); //slot
                 body.write(entry.getAlias());
                 body.write(-1); //brick count
@@ -770,12 +774,13 @@ public final class GameServerLogic {
     public void sendAllDownloadedMaps(ClientReference client)
     {
         int chunkSize = 100;
-        int chunkCount = (int) Math.ceil((double) regMaps.size() / (double) chunkSize);
+        List<RegMap> maps = RegMapManager.getInstance().getMapsAsList();
+        int chunkCount = (int) Math.ceil((double) maps.size() / (double) chunkSize);
         int processedCount = 0;
 
         for (int chunk = 0; chunk < chunkCount; chunk++)
         {
-            int remaining = regMaps.size() - processedCount;
+            int remaining = maps.size() - processedCount;
             if (remaining < chunkSize)
                 chunkSize = remaining;
 
@@ -785,7 +790,7 @@ public final class GameServerLogic {
             body.write(chunkSize); //count
             for (int i = 0; i < chunkSize; i++, processedCount++)
             {
-                RegMap entry = regMaps.get(i);
+                RegMap entry = maps.get(i);
                 body.write(entry.getMap());
                 body.write(entry.getDeveloper());
                 body.write(entry.getAlias());

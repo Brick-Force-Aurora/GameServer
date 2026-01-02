@@ -234,12 +234,39 @@ public class RegMap {
         writeIntLE(out, data.length);
         out.write(data);
     }
+    private static int read7BitEncodedInt(DataInputStream in) throws IOException {
+        int result = 0;
+        int shift = 0;
+
+        while (shift < 35) {
+            byte b = in.readByte();
+            result |= (b & 0x7F) << shift;
+            if ((b & 0x80) == 0) {
+                return result;
+            }
+            shift += 7;
+        }
+
+        throw new IOException("Invalid 7-bit encoded int");
+    }
 
     private static String readString(DataInputStream in) throws IOException {
-        int len = readIntLE(in);
+        int len = read7BitEncodedInt(in);
+        if (len < 0) {
+            throw new IOException("Negative string length");
+        }
         byte[] data = new byte[len];
         in.readFully(data);
         return new String(data, StandardCharsets.UTF_8);
+    }
+
+
+    public void setDownloadFee(int fee) {
+        this.downloadFee = fee;
+    }
+
+    public void increaseDownloadCount() {
+        this.downloadCount++;
     }
 }
 
