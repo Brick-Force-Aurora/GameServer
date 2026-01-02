@@ -1,5 +1,6 @@
 package de.brickforceaurora.gameserver.maps;
 
+import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.math.Vector3;
 import me.lauriichan.laylib.json.IJson;
 import me.lauriichan.laylib.json.JsonArray;
@@ -133,7 +134,7 @@ public final class BrickManager {
         for (Brick brick : bricks) {
             byte idx = brick.getIndex();
             if (dicTBrick.containsKey(idx)) {
-                System.err.println("Duplicate brick index found: " + idx);
+                GameServerLogic.getInstance().logger().error("Duplicate brick index found: " + idx);
             }
             dicTBrick.put(idx, brick);
         }
@@ -170,7 +171,7 @@ public final class BrickManager {
             return parseBricks(root.asJsonArray());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            GameServerLogic.getInstance().logger().error("Error when loading bricks.json " + e.getMessage());
         }
         return new Brick[0];
     }
@@ -247,7 +248,7 @@ public final class BrickManager {
     public Brick getBrick(int index) {
         Brick brick = dicTBrick.get((byte) index);
         if (brick == null) {
-            System.err.println("Invalid brick index requested: " + index);
+            GameServerLogic.getInstance().logger().error("Invalid brick index requested: " + index);
         }
         return brick;
     }
@@ -267,7 +268,7 @@ public final class BrickManager {
     public void cacheBrick(int seq, byte template, byte x, byte y, byte z, short meshCode, byte rot) {
         userMap.calcCRC(seq, template);
         if (userMap.addBrickInst(seq, template, x, y, z, meshCode, rot) == null) {
-            System.err.println("CacheBrick failed");
+            GameServerLogic.getInstance().logger().error("CacheBrick failed");
         }
     }
 
@@ -288,7 +289,7 @@ public final class BrickManager {
         if (brick != null && brick.function == BrickFunction.SCRIPT) {
             inst.updateScript(alias, enableOnAwake, visibleOnAwake, commands);
         } else {
-            System.err.println("Brick is not scriptable");
+            GameServerLogic.getInstance().logger().error("Brick is not scriptable");
         }
     }
 }

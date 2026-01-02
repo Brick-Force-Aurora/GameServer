@@ -1,5 +1,6 @@
 package de.brickforceaurora.gameserver.item.template;
 
+import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.item.BuffManager;
 import de.brickforceaurora.gameserver.util.Texture2D;
 import me.lauriichan.laylib.json.IJson;
@@ -85,7 +86,7 @@ public final class TItemManager {
 
     private void add(String code, TItem item) {
         if (dic.containsKey(code)) {
-            System.out.println("ERROR, duplicated item code " + code);
+            GameServerLogic.getInstance().logger().error("ERROR, duplicated item code " + code);
             return;
         }
         dic.put(code, item);
