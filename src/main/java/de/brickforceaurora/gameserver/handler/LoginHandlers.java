@@ -53,10 +53,20 @@ public class LoginHandlers {
     }
 
     private static void heartbeat(GameServerLogic server, MsgReference msgRef) {
+
         int gmFunction = msgRef.msg.msg().readInt();
-        // if (Time.time - msgRef.client.lastHeartBeatTime > 3f) msgRef.client.disconnect(true);
-        // else msgRef.client.lastHeartBeatTime = Time.time;
+
+        ClientReference client = msgRef.client;
+
+        long now = System.nanoTime(); // monotonic, safe for deltas
+
+        if ((now - client.lastHeartBeatTime) > 3_000_000_000L) {
+            client.Disconnect(true);
+        } else {
+            client.lastHeartBeatTime = now;
+        }
     }
+
 
     public static void SendInventoryRequest(GameServerLogic server, ClientReference client)
     {
