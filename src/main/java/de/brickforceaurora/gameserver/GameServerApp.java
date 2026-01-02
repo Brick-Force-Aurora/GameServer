@@ -1,5 +1,6 @@
 package de.brickforceaurora.gameserver;
 
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 import me.lauriichan.laylib.logger.ISimpleLogger;
@@ -37,6 +38,9 @@ public class GameServerApp implements ISnowFrameApp<GameServerApp> {
 
     @Override
     public void registerLifecycle(Lifecycle<GameServerApp> lifecycle) {
+        lifecycle.startupChain().register("load", Stage.PRE, frame -> {
+            frame.resourceManager().register("data", Paths.get("data")); 
+        });
         lifecycle.startupChain().register("load", Stage.MAIN, frame -> {
             server = new GameServer(frame);
         });
