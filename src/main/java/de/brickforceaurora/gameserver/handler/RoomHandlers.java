@@ -8,8 +8,6 @@ import de.brickforceaurora.gameserver.protocol.MessageId;
 import de.brickforceaurora.gameserver.protocol.MsgBody;
 import de.brickforceaurora.gameserver.room.RoomStatus;
 import de.brickforceaurora.gameserver.room.RoomType;
-import de.brickforceaurora.gameserver.handler.ChannelHandlers;
-
 public class RoomHandlers {
 
     public static void register(MessageDispatcher d) {
@@ -23,6 +21,7 @@ public class RoomHandlers {
         d.register(MessageId.CS_TEAM_CHANGE_REQ.getId(), RoomHandlers::teamChange);
         d.register(MessageId.CS_KICK_REQ.getId(), RoomHandlers::kick);
         d.register(MessageId.CS_SLOT_LOCK_REQ.getId(), RoomHandlers::slotLock);
+        d.register(MessageId.CS_START_REQ.getId(), RoomHandlers::start);
     }
 
     private static void roomList(GameServerLogic server, MsgReference msgRef)
@@ -747,4 +746,64 @@ public class RoomHandlers {
 
         server.logger().debug("Broadcasted SendTeamChange for client " + client.GetIdentifier() + " for room no: " + matchData.room.no);
     }
+
+    private static void start(GameServerLogic server, MsgReference msgRef)
+    {
+        MatchData matchData = msgRef.matchData;
+
+        int remainingCountdown = msgRef.msg.msg().readInt();
+
+        matchData.lobbyCountdownTime = 0;
+
+        server.logger().debug("HandleStartRequest from: " + msgRef.client.GetIdentifier());
+
+        boolean notReady = matchData.clientList.stream()
+                .anyMatch(c ->
+                        c.status == BrickManStatus.PLAYER_WAITING &&
+                                c.seq != matchData.masterSeq
+                );
+
+        if (notReady) {
+            server.logger().debug("[WARNING]: HandleStartRequest: Not All Ready");
+            return;
+        }
+
+
+        matchData.room.status = RoomStatus.PENDING;
+        sendRoom(server, null, matchData, SendType.BROADCAST_ROOM);
+
+        for (int i = 0; i < matchData.clientList.size(); i++)
+        {
+            matchData.clientList.get(i).status = BrickManStatus.PLAYER_LOADING;
+            matchData.clientList.get(i).clientStatus = ClientStatus.MATCH;
+            SendSetStatus(server, matchData.clientList.get(i));
+            SendRespawnTicket(server, matchData.clientList.get(i));
+        }
+
+        SendStart(server, matchData);
+    }
+
+    public static void SendRespawnTicket(GameServerLogic server, ClientReference client)
+    {
+        MsgBody body = new MsgBody();
+
+        int value = 1 + (int) (Math.random() * 63);
+        body.write(value);
+
+        server.say(new MsgReference(64, body, client));
+
+        server.logger().debug("SendRespawnTicket to: " + client.GetIdentifier());
+    }
+
+    public static void SendStart(GameServerLogic server, MatchData matchData)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(matchData.lobbyCountdownTime);
+
+        server.say(new MsgReference(50, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+
+        server.logger().debug("Broadcasted SendStart for room no: " + matchData.room.no);
+    }
+
 }
