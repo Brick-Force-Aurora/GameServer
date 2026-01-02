@@ -4,7 +4,12 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import de.brickforceaurora.gameserver.GameServerApp;
+import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.gamemode.ZombieStep;
+import de.brickforceaurora.gameserver.handler.gamemodes.DefusionHandlers;
+import de.brickforceaurora.gameserver.handler.gamemodes.IndividualHandlers;
+import de.brickforceaurora.gameserver.handler.gamemodes.TeamHandlers;
+import de.brickforceaurora.gameserver.handler.gamemodes.ZombieHandlers;
 import de.brickforceaurora.gameserver.maps.MapGenerator;
 import de.brickforceaurora.gameserver.maps.UserMap;
 import de.brickforceaurora.gameserver.maps.UserMapInfo;
@@ -201,6 +206,42 @@ public final class MatchData {
         deadBluePlayers.clear();
     }
 
+    public void ResetForNewRound()
+    {
+        // Reset round-specific data
+        remainTime = countdownTime; // assuming countdownTime is set to the desired round duration
+        playTime = 0;
+        destroyedBricks.clear();
+        usedCannons.clear();
+        usedTrains.clear();
+        killLog.clear();
+        roundInit = true;
+        humanPlayers = new ArrayList<>();
+        zombiePlayers = new ArrayList<>();
+        killedPlayers = new ArrayList<>();
+        infectedPlayers = new ArrayList<>();
+        zombieCountdown = 0;
+        zombieDeltaTimer = 0;
+        //zombieStatus = ZombieMatch.STEP.WAITING;
+        for(ClientReference client : clientList)
+        {
+            client.isZombie = false;
+        }
+        deadRedPlayers.clear();
+        deadBluePlayers.clear();
+        /*if (room.type == RoomType.ZOMBIE)
+        {
+            for (ClientReference client : clientList)
+            {
+                //Does not work
+                ServerEmulator.instance.SendRespawnTicket(client);
+            }
+
+            if (ServerEmulator.instance.debugHandle)
+                Console.WriteLine($"[ZombieSpawn] Reassigned {clientList.Count} random tickets for next round.");
+        }*/
+    }
+
     /* ============================================================ */
 
     public void Shutdown() {
@@ -219,20 +260,6 @@ public final class MatchData {
     }
 
     /* ============================================================ */
-
-    /*public void EndMatch() {
-        switch (room.type) {
-            case TEAM_MATCH -> GameServer.getInstance().handleTeamMatchEnd(this);
-            case INDIVIDUAL -> GameServer.getInstance().handleIndividualMatchEnd(this);
-            case CAPTURE_THE_FLAG -> CTF.handleCTFMatchEnd(this);
-            case BND -> BND.handleBNDMatchEnd(this);
-            case ZOMBIE -> Zombie.handleZombieMatchEnd(this);
-            case EXPLOSION -> Defusion.handleMatchEnd(this);
-            case ESCAPE, MISSION -> DefenseGamemode.handleMatchEnd(this);
-            case BUNGEE -> Freefall.handleMatchEnd(this);
-            default -> GameServer.getInstance().handleIndividualMatchEnd(this);
-        }
-    }*/
 
     public void cacheMapGenerate(int landscapeIndex, int skyboxIndex, String alias)
     {
@@ -429,7 +456,10 @@ public final class MatchData {
         }
     }
 
-
+    public byte GetWinningTeam()
+    {
+        return (byte) Integer.compare(blueScore, redScore);
+    }
 
     public SlotData FindSlotByClient(ClientReference client) {
         for (SlotData s : slots)
@@ -438,5 +468,22 @@ public final class MatchData {
 
         GameServerApp.logger().debug("FindSlotByClient: Could not find SlotData for client {0}", client.GetIdentifier());
         return null;
+    }
+
+    public void EndMatch(GameServerLogic logic)
+    {
+        switch (room.type)
+        {
+            case RoomType.TEAM_MATCH -> TeamHandlers.handleEnd(logic,this);
+            case RoomType.INDIVIDUAL -> IndividualHandlers.handleEnd(logic, this);
+            //case RoomType.CAPTURE_THE_FLAG -> CtfHandlers.HandleCTFMatchEnd(this);
+            //case RoomType.BND -> BndHandlers.HandleBNDMatchEnd(this);
+            case RoomType.ZOMBIE -> ZombieHandlers.handleEnd(logic,this);
+            case RoomType.EXPLOSION -> DefusionHandlers.handleEnd(logic, this);
+            //case RoomType.ESCAPE -> Defense.HandleMatchEnd(this);
+            //case RoomType.BUNGEE -> BungeeHandlers.HandleMatchEnd(this);
+            //case RoomType.MISSION -> DefenseHandlers.HandleMatchEnd(this);
+            default -> IndividualHandlers.handleEnd(logic, this);
+        }
     }
 }

@@ -1,22 +1,13 @@
 package de.brickforceaurora.gameserver.core;
 
-import de.brickforceaurora.gameserver.data.Inventory;
 import de.brickforceaurora.gameserver.handler.*;
-import de.brickforceaurora.gameserver.item.*;
-import de.brickforceaurora.gameserver.item.template.TItem;
-import de.brickforceaurora.gameserver.item.template.TItemManager;
-import de.brickforceaurora.gameserver.maps.BrickInst;
-import de.brickforceaurora.gameserver.maps.RegMap;
 import de.brickforceaurora.gameserver.maps.RegMapManager;
-import de.brickforceaurora.gameserver.room.Room;
-import de.brickforceaurora.gameserver.room.RoomType;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue;
 import me.lauriichan.laylib.logger.ISimpleLogger;
 import me.lauriichan.snowframe.SnowFrame;
 
@@ -168,6 +159,7 @@ public final class GameServerLogic {
         MapHandlers.register(dispatcher);
         InventoryHandlers.register(dispatcher);
         ChannelHandlers.register(dispatcher);
+        MatchHandlers.register(dispatcher);
     }
 
     private void handleMessages() {

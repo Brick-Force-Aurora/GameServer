@@ -133,6 +133,22 @@ public final class MsgBody {
         return val;
     }
 
+    public float readFloat() {
+        float v = ByteBuffer.wrap(buffer, offset, 4)
+                .order(ByteOrder.LITTLE_ENDIAN)
+                .getFloat();
+        offset += 4;
+        return v;
+    }
+
+    public long readLong() {
+        long v = ByteBuffer.wrap(buffer, offset, 8)
+                .order(ByteOrder.LITTLE_ENDIAN)
+                .getLong();
+        offset += 8;
+        return v;
+    }
+
     public byte readByte() {
         return buffer[offset++];
     }
