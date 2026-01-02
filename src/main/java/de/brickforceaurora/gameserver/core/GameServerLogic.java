@@ -436,7 +436,7 @@ public final class GameServerLogic {
         for (ChannelReference channelRef : channelManager.getChannels())
         {
             body.write(channelRef.channel.id);
-            body.write(channelRef.channel.mode.ordinal());
+            body.write(channelRef.channel.mode.getId());
             body.write(channelRef.channel.name);
             body.write(channelRef.channel.ip);
             body.write(channelRef.channel.port);

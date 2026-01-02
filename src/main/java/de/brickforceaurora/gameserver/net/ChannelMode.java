@@ -18,4 +18,8 @@ public enum ChannelMode {
         }
         return null;
     }
+
+    public int getId() {
+        return id;
+    }
 }
