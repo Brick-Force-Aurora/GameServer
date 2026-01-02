@@ -2,13 +2,11 @@ package de.brickforceaurora.gameserver.handler;
 
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.match.MatchData;
-import de.brickforceaurora.gameserver.net.ClientReference;
-import de.brickforceaurora.gameserver.net.ClientStatus;
-import de.brickforceaurora.gameserver.net.MsgReference;
-import de.brickforceaurora.gameserver.net.SendType;
+import de.brickforceaurora.gameserver.net.*;
 import de.brickforceaurora.gameserver.protocol.ExtensionOpcodes;
 import de.brickforceaurora.gameserver.protocol.MessageId;
 import de.brickforceaurora.gameserver.protocol.MsgBody;
+import de.brickforceaurora.gameserver.room.RoomStatus;
 import de.brickforceaurora.gameserver.room.RoomType;
 import de.brickforceaurora.gameserver.handler.ChannelHandlers;
 
@@ -19,6 +17,12 @@ public class RoomHandlers {
         d.register(MessageId.CS_CREATE_ROOM_REQ.getId(), RoomHandlers::createRoom);
         d.register(MessageId.CS_ROOM_CONFIG_REQ.getId(), RoomHandlers::roomConfig);
         d.register(MessageId.CS_ROAMIN_REQ.getId(), RoomHandlers::roamIn);
+        d.register(MessageId.CS_LEAVE_REQ.getId(), RoomHandlers::leave);
+        d.register(MessageId.CS_JOIN_REQ.getId(), RoomHandlers::join);
+        d.register(MessageId.CS_RESUME_ROOM_REQ.getId(), RoomHandlers::resume);
+        d.register(MessageId.CS_TEAM_CHANGE_REQ.getId(), RoomHandlers::teamChange);
+        d.register(MessageId.CS_KICK_REQ.getId(), RoomHandlers::kick);
+        d.register(MessageId.CS_SLOT_LOCK_REQ.getId(), RoomHandlers::slotLock);
     }
 
     private static void roomList(GameServerLogic server, MsgReference msgRef)
@@ -496,5 +500,251 @@ public class RoomHandlers {
         ));
 
         server.logger().debug("Broadcasted SendSlotData for room no: {0}", matchData.room.no);
+    }
+
+    private static void leave(GameServerLogic server, MsgReference msgRef)
+    {
+        MatchData matchData = msgRef.matchData;
+
+        server.logger().debug("HandleLeave from: " + msgRef.client.GetIdentifier());
+
+        SendSetStatus(server, msgRef.client);
+        SendLeave(server, msgRef.client);
+
+        /*matchData.RemoveClient(msgRef.client);
+
+        if (matchData.room.CurPlayer <= 0)
+        {
+            SendDeleteRoom(matchData, matchData.channel);
+            msgRef.client.channel.RemoveMatch(matchData);
+            return;
+        }*/
+
+        if (msgRef.client.seq == matchData.masterSeq)
+        {
+            matchData.masterSeq = matchData.clientList.get(0).seq;
+            SendMaster(server, null, matchData);
+        }
+    }
+
+    public static void SendSetStatus(GameServerLogic server, ClientReference client)
+    {
+        MatchData matchData = client.matchData;
+
+        MsgBody body = new MsgBody();
+
+        body.write(client.seq);
+        body.write(client.status.ordinal());
+
+        server.say(new MsgReference(48, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+
+        server.logger().debug("Broadcasted SendSetStatus for client " + client.GetIdentifier() + " for room no: " + matchData.room.no);
+    }
+
+    public static void SendLeave(GameServerLogic server, ClientReference client)
+    {
+        MatchData matchData = client.matchData;
+
+        if (matchData.clientList.contains(client))
+            matchData.RemoveClient(client);
+
+        if (matchData.room.curPlayer <= 0)
+        {
+            SendDeleteRoom(server, matchData, matchData.channel);
+            client.channel.removeMatch(matchData);
+            return;
+        }
+
+        MsgBody body = new MsgBody();
+
+        body.write(client.seq);
+
+        if (matchData == null || matchData.channel == null)
+        {
+            server.logger().debug("[SendLeave] Client left but was not in a room: " + client.GetIdentifier());
+            return;
+        }
+
+        server.say(new MsgReference(11, body, client, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+
+        server.logger().debug("Broadcasted SendLeave for client " + client.GetIdentifier() + " for room no: " + matchData.room.no);
+    }
+
+    public static void SendDeleteRoom(GameServerLogic server, MatchData matchData, ChannelReference channel)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(matchData.room.no);
+
+        server.say(new MsgReference(6, body, null, SendType.BROADCAST_CHANNEL, channel, matchData));
+
+        server.logger().debug("Broadcasted SendDelRoom for room no: " + matchData.room.no);
+    }
+
+    private static void join(GameServerLogic server, MsgReference msgRef)
+    {
+        int roomNumber = msgRef.msg.msg().readInt();
+        String pswd = msgRef.msg.msg().readString();
+        boolean invite = msgRef.msg.msg().readBool();
+
+        server.logger().debug("HandleJoin from: " + msgRef.client.GetIdentifier());
+
+        MatchData matchData = msgRef.client.channel.getMatchByRoomNumber(roomNumber);
+        if (roomNumber == matchData.room.no)
+        {
+            matchData.AddClient(msgRef.client);
+
+            SendJoin(server, msgRef.client);
+            SendRendezvousInfo(server, msgRef.client);
+            SendMaster(server, msgRef.client, matchData);
+            SendSlotLocks(server, msgRef.client);
+            SendRoomConfig(server, msgRef.client, matchData);
+            SendAddRoom(server, msgRef.client, matchData);
+
+            SendEnter(server, msgRef.client);
+
+            sendSlotData(server, matchData);
+
+            if (matchData.room.type == RoomType.MAP_EDITOR)
+                SendCopyright(server, msgRef.client);
+        }
+    }
+
+    public static void SendJoin(GameServerLogic server, ClientReference client)
+    {
+        MatchData matchData = client.matchData;
+        MsgBody body = new MsgBody();
+
+        body.write(matchData.room.no);
+        server.say(new MsgReference(29, body, client));
+
+        server.logger().debug("SendJoin to: " + client.GetIdentifier());
+    }
+
+    private static void resume(GameServerLogic server, MsgReference msgRef)
+    {
+        MatchData matchData = msgRef.matchData;
+
+        int nextStatus = msgRef.msg.msg().readInt();
+
+        if (msgRef.client.seq == matchData.masterSeq)
+        {
+            matchData.room.status = RoomStatus.fromValue(nextStatus);
+        }
+
+        server.logger().debug("HandleResumeRoomRequest from: " + msgRef.client.GetIdentifier());
+
+        sendRoom(server, null, matchData, SendType.BROADCAST_ROOM);
+    }
+
+    public static void sendRoom(GameServerLogic server, ClientReference client, MatchData matchData)
+    {
+        sendRoom(server, client, matchData, SendType.UNICAST);
+    }
+
+    public static void sendRoom(GameServerLogic server, ClientReference client, MatchData matchData, SendType sendType)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(matchData.room.no);
+        body.write(matchData.room.type.getId());
+        body.write(matchData.room.title);
+        body.write(matchData.room.locked);
+        body.write(matchData.room.status.getId());
+        body.write(matchData.room.curPlayer);
+        body.write(matchData.room.maxPlayer);
+        body.write(matchData.room.map);
+        body.write(matchData.room.curMapAlias);
+        body.write(matchData.room.goal);
+        body.write(matchData.room.timelimit);
+        body.write(matchData.room.weaponOption);
+        body.write(matchData.room.ping);
+        body.write(matchData.room.score1);
+        body.write(matchData.room.score2);
+        body.write(matchData.room.CountryFilter);
+        body.write(matchData.room.isBreakInto);
+        body.write(matchData.room.isDropItem);
+        body.write(matchData.room.isWanted);
+        body.write(matchData.room.squad);
+        body.write(matchData.room.squadCounter);
+
+        server.say(new MsgReference(470, body, client, sendType, matchData.channel, matchData));
+        if (sendType == SendType.UNICAST)
+            server.logger().debug("SendRoom to: " + client.GetIdentifier());
+        else
+            server.logger().debug("Broadcasted SendRoom for room no: " + matchData.room.no);
+    }
+
+    private static void kick(GameServerLogic server, MsgReference msgRef)
+    {
+        //not tested/ server side remove?
+        int seq = msgRef.msg.msg().readInt();
+        ClientReference client = server.clientList
+                .stream()
+                .filter(c -> c.seq == seq)
+                .findFirst()
+                .orElse(null);
+
+        if (client != null) {
+            msgRef.matchData.RemoveClient(client);
+        }
+        MsgBody body = new MsgBody();
+        body.write(seq);
+        server.say(new MsgReference(89, body, msgRef.client, SendType.UNICAST));
+    }
+
+    private static void slotLock(GameServerLogic server, MsgReference msgRef)
+    {
+        MatchData matchData = msgRef.matchData;
+
+        byte slotNum = msgRef.msg.msg().readByte();
+        byte lock = msgRef.msg.msg().readByte();
+
+        server.logger().debug("HandleSlotLockRequest from: " + msgRef.client.GetIdentifier());
+
+        matchData.slots.get(slotNum).toggleLock(lock != 0);
+        long count = matchData.slots.stream()
+                .filter(s -> !s.isLocked)
+                .count();
+        matchData.room.maxPlayer = (int) count;
+        SendSlotLock(server, msgRef.client, matchData, slotNum, SendType.BROADCAST_ROOM);
+    }
+
+    private static void teamChange(GameServerLogic server, MsgReference msgRef)
+    {
+        MatchData matchData = msgRef.matchData;
+
+        boolean clickSlot = msgRef.msg.msg().readBool();
+        int slotNum = msgRef.msg.msg().readInt();
+
+        server.logger().debug("HandleTeamChangeRequest from: " + msgRef.client.GetIdentifier());
+
+        if (slotNum < -1 || slotNum > 15)
+            server.logger().debug("[WARNING]: HandleTeamChangeRequest: Bad slot num " + slotNum + " from client: " + msgRef.client.GetIdentifier());
+
+        else if (slotNum == -1)
+        {
+            msgRef.client.AssignSlot(matchData.getNextFreeSlotOnOtherTeam(msgRef.client.slot));
+        }
+
+        else
+            msgRef.client.AssignSlot(matchData.slots.get(slotNum));
+
+        SendTeamChange(server, msgRef.client);
+    }
+
+    public static void SendTeamChange(GameServerLogic server, ClientReference client)
+    {
+        MatchData matchData = client.matchData;
+
+        MsgBody body = new MsgBody();
+
+        body.write(client.seq);
+        body.write(0); //unused
+        body.write(client.slot.slotIndex);
+
+        server.say(new MsgReference(81, body, client, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+
+        server.logger().debug("Broadcasted SendTeamChange for client " + client.GetIdentifier() + " for room no: " + matchData.room.no);
     }
 }

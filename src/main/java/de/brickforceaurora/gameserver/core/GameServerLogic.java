@@ -341,43 +341,6 @@ public final class GameServerLogic {
         say(new MsgReference(ExtensionOpcodes.OP_DISCONNECT_REQ.getOpCode(), body, client, type, null, null));
     }
 
-    public void sendLeave(ClientReference client) {
-        MatchData matchData = client.matchData;
-
-        if (matchData != null && matchData.clientList.contains(client)) {
-            matchData.RemoveClient(client);
-        }
-
-        if (matchData != null && matchData.room.curPlayer <= 0) {
-            SendDeleteRoom(matchData, matchData.channel);
-            client.channel.removeMatch(matchData);
-            return;
-        }
-
-        MsgBody body = new MsgBody();
-        body.write(client.seq);
-
-        if (matchData == null || matchData.channel == null) {
-            if (debugSend) {
-                logger.debug("[SendLeave] Client left but was not in a room: {0}", client.GetIdentifier());
-            }
-            return;
-        }
-
-        say(new MsgReference(
-                11, // CS_LEAVE_ACK
-                body,
-                client,
-                SendType.BROADCAST_ROOM,
-                matchData.channel,
-                matchData
-        ));
-
-        if (debugSend) {
-            logger.debug("Broadcasted SendLeave for client {0} for room no {1}", client.GetIdentifier(), matchData.room.no);
-        }
-    }
-
     public void SendDeleteRoom(MatchData matchData, ChannelReference channel)
     {
         MsgBody body = new MsgBody();

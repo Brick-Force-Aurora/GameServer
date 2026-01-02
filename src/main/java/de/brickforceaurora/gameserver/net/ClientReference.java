@@ -4,6 +4,7 @@ import de.brickforceaurora.gameserver.GameServerApp;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.data.DummyData;
 import de.brickforceaurora.gameserver.data.Inventory;
+import de.brickforceaurora.gameserver.handler.RoomHandlers;
 import de.brickforceaurora.gameserver.match.MatchData;
 import de.brickforceaurora.gameserver.match.SlotData;
 import io.netty.channel.Channel;
@@ -42,6 +43,11 @@ public final class ClientReference {
         this.seq = seq;
         this.data = new DummyData();
         this.ip = socket.remoteAddress().toString();
+        this.clientStatus = ClientStatus.INVALID;
+        this.status = BrickManStatus.PLAYER_WAITING;
+        this.isLoaded = false;
+        this.isHost = false;
+        this.toleranceTime = 0f;
     }
 
     public ClientReference(Channel socket) {
@@ -51,8 +57,8 @@ public final class ClientReference {
     public boolean Disconnect(boolean send) {
         GameServerLogic logic = GameServerApp.get().server().logic();
         if (send) {
-            logic.sendLeave(this);
-            logic.sendSlotData(matchData);
+            RoomHandlers.SendLeave(logic, this);
+            RoomHandlers.sendSlotData(logic, matchData);
         }
         if(matchData != null){
             matchData.RemoveClient(this);
