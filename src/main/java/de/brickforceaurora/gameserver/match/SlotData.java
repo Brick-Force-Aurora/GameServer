@@ -15,7 +15,7 @@ public final class SlotData
         slotIndex = _slotIndex;
     }
 
-    public void ToggleLock(boolean value)
+    public void toggleLock(boolean value)
     {
         if (!isUsed)
             isLocked = value;

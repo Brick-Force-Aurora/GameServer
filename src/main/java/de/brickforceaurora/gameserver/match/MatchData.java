@@ -1,9 +1,13 @@
 package de.brickforceaurora.gameserver.match;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import de.brickforceaurora.gameserver.GameServerApp;
 import de.brickforceaurora.gameserver.gamemode.ZombieStep;
+import de.brickforceaurora.gameserver.maps.MapGenerator;
+import de.brickforceaurora.gameserver.maps.UserMap;
+import de.brickforceaurora.gameserver.maps.UserMapInfo;
 import de.brickforceaurora.gameserver.net.BrickManStatus;
 import de.brickforceaurora.gameserver.net.ChannelReference;
 import de.brickforceaurora.gameserver.net.ClientReference;
@@ -51,8 +55,8 @@ public final class MatchData {
 
     /* ===== Build ===== */
 
-    //public UserMap cachedMap;
-    //public UserMapInfo cachedUMI;
+    public UserMap cachedMap;
+    public UserMapInfo cachedUMI;
     public boolean mapCached;
 
     /* ===== BND ===== */
@@ -230,11 +234,22 @@ public final class MatchData {
         }
     }*/
 
+    public void cacheMapGenerate(int landscapeIndex, int skyboxIndex, String alias)
+    {
+        mapCached = true;
+        cachedMap.clear();
+        cachedMap = MapGenerator.instance.generate(landscapeIndex, skyboxIndex);
+        LocalDateTime time = LocalDateTime.now();
+        int hashId = MapGenerator.instance.getHashIdForTime(time);
+        cachedMap.map = hashId;
+        cachedUMI = new UserMapInfo(hashId, alias, cachedMap.dic.keySet().size(), time, (byte) 0);
+    }
+
     /* ============================================================ */
 
     public void AddClient(ClientReference client) {
         client.matchData = this;
-        client.AssignSlot(GetNextFreeSlot());
+        client.AssignSlot(getNextFreeSlot());
         client.clientStatus = ClientStatus.ROOM;
         clientList.add(client);
         room.curPlayer = clientList.size();
@@ -255,35 +270,166 @@ public final class MatchData {
 
     /* ============================================================ */
 
-    public SlotData GetNextFreeSlot() {
-        if (room.type == RoomType.INDIVIDUAL || room.type == RoomType.ZOMBIE) {
-            for (SlotData s : slots)
-                if (!s.isUsed && !s.isLocked)
+    public void lockSlotsByMaxPlayers(int maxPlayers, RoomType roomType) {
+        int totalSlots;
+        boolean isTeamMode;
+        boolean is8SlotLayout;
+
+        // Determine mode rules
+        is8SlotLayout = (roomType == RoomType.BUNGEE ||
+                roomType == RoomType.MISSION);
+
+        totalSlots = is8SlotLayout ? 8 : 16;
+
+        // DM / Zombie = NO teams
+        isTeamMode = !(roomType == RoomType.INDIVIDUAL ||
+                roomType == RoomType.ZOMBIE);
+
+        // SPECIAL CASE: Deathmatch / Zombie → lock bottom-up
+        if (!isTeamMode) {
+            for (int i = totalSlots - 1; i >= maxPlayers; i--) {
+                slots.get(i).toggleLock(true);
+            }
+            return;
+        }
+
+        // TEAM MODE (8-slot or 16-slot)
+        int redIndex = is8SlotLayout ? 3 : 7;
+        int blueIndex = is8SlotLayout ? 7 : 15;
+
+        // Alternating lock
+        for (int i = totalSlots - 1; i >= maxPlayers; i--) {
+            boolean odd = (i % 2 != 0);
+
+            if (odd) { // RED
+                if (redIndex >= 0) {
+                    slots.get(redIndex).toggleLock(true);
+                }
+                redIndex--;
+            } else {   // BLUE
+                if (blueIndex >= 0) {
+                    slots.get(blueIndex).toggleLock(true);
+                }
+                blueIndex--;
+            }
+        }
+    }
+
+    public SlotData getNextFreeSlot() {
+
+        // 1) Deathmatch / Zombie (no teams, 16 slots)
+        if (room.type == RoomType.INDIVIDUAL ||
+                room.type == RoomType.ZOMBIE) {
+
+            for (SlotData s : slots) {
+                if (!s.isUsed && !s.isLocked) {
                     return s;
+                }
+            }
             return null;
         }
 
-        if (room.type == RoomType.BUNGEE || room.type == RoomType.MISSION) {
-            int used = 0;
-            for (SlotData s : slots)
-                if (s.isUsed) used++;
-            if (used >= 8) return null;
+        // 2) Bungee / Mission — limit to 8 total players
+        if (room.type == RoomType.BUNGEE ||
+                room.type == RoomType.MISSION) {
+
+            int totalUsed = 0;
+            for (SlotData s : slots) {
+                if (s.isUsed) totalUsed++;
+            }
+
+            if (totalUsed >= 8)
+                return null;
+
+            int redCount = 0;
+            int blueCount = 0;
+
+            for (SlotData s : redSlots) if (s.isUsed) redCount++;
+            for (SlotData s : blueSlots) if (s.isUsed) blueCount++;
+
+            if (blueCount >= redCount) {
+                for (SlotData s : redSlots)
+                    if (!s.isUsed && !s.isLocked) return s;
+
+                for (SlotData s : blueSlots)
+                    if (!s.isUsed && !s.isLocked) return s;
+            } else {
+                for (SlotData s : blueSlots)
+                    if (!s.isUsed && !s.isLocked) return s;
+
+                for (SlotData s : redSlots)
+                    if (!s.isUsed && !s.isLocked) return s;
+            }
+
+            return null;
         }
 
-        int red = 0, blue = 0;
-        for (SlotData s : redSlots) if (s.isUsed) red++;
-        for (SlotData s : blueSlots) if (s.isUsed) blue++;
+        // 3) Normal team modes (16 slots)
+        int redCount = 0;
+        int blueCount = 0;
 
-        List<SlotData> first = blue >= red ? redSlots : blueSlots;
-        List<SlotData> second = blue >= red ? blueSlots : redSlots;
+        for (SlotData s : redSlots) if (s.isUsed) redCount++;
+        for (SlotData s : blueSlots) if (s.isUsed) blueCount++;
 
-        for (SlotData s : first)
-            if (!s.isUsed && !s.isLocked) return s;
-        for (SlotData s : second)
-            if (!s.isUsed && !s.isLocked) return s;
+        if (blueCount >= redCount) {
+            for (SlotData s : redSlots)
+                if (!s.isUsed && !s.isLocked) return s;
+
+            for (SlotData s : blueSlots)
+                if (!s.isUsed && !s.isLocked) return s;
+        } else {
+            for (SlotData s : blueSlots)
+                if (!s.isUsed && !s.isLocked) return s;
+
+            for (SlotData s : redSlots)
+                if (!s.isUsed && !s.isLocked) return s;
+        }
 
         return null;
     }
+
+    public SlotData getNextFreeSlotOnOtherTeam(SlotData slot) {
+
+        boolean isLimited8 =
+                room.type == RoomType.BUNGEE ||
+                        room.type == RoomType.MISSION;
+
+        int totalUsed = 0;
+        for (SlotData s : slots) {
+            if (s.isUsed) totalUsed++;
+        }
+
+        if (isLimited8 && totalUsed >= 8)
+            return null;
+
+        // Player was on RED (0–7)
+        if (slot.slotIndex < 8) {
+
+            for (SlotData s : blueSlots)
+                if (!s.isUsed && !s.isLocked) return s;
+
+            if (!isLimited8) {
+                for (SlotData s : redSlots)
+                    if (!s.isUsed && !s.isLocked) return s;
+            }
+
+            return null;
+        }
+        // Player was on BLUE (8–15)
+        else {
+            for (SlotData s : redSlots)
+                if (!s.isUsed && !s.isLocked) return s;
+
+            if (!isLimited8) {
+                for (SlotData s : blueSlots)
+                    if (!s.isUsed && !s.isLocked) return s;
+            }
+
+            return null;
+        }
+    }
+
+
 
     public SlotData FindSlotByClient(ClientReference client) {
         for (SlotData s : slots)

@@ -1,5 +1,10 @@
 package de.brickforceaurora.gameserver.room;
 
+import de.brickforceaurora.gameserver.item.UpgradeCategory;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public enum RoomType {
     NONE(-1),
     MAP_EDITOR(0),
@@ -15,6 +20,13 @@ public enum RoomType {
     NUM_TYPE(10);
 
     private final int id;
+    private static final Map<Integer, RoomType> BY_VALUE = new HashMap<>();
+
+    static {
+        for (RoomType c : values()) {
+            BY_VALUE.put(c.id, c);
+        }
+    }
 
     RoomType(int id) {
         this.id = id;
@@ -22,6 +34,10 @@ public enum RoomType {
 
     public int getId() {
         return id;
+    }
+
+    public static RoomType fromValue(int v) {
+        return BY_VALUE.getOrDefault(v, NONE);
     }
 
 }
