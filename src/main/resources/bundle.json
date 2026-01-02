@@ -1,0 +1,1732 @@
+[
+  {
+    "code": "b01",
+    "name": "STARTER4SHOOTER",
+    "iconName": "icon_shooterBundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_STARTER4SHOOTER",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b02",
+    "name": "STARTER4BUILDER",
+    "iconName": "icon_builderBundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_STARTER4BUILDER",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b03",
+    "name": "EAGLE_ELITE",
+    "iconName": "icon_EAGLE_ELITE",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_EAGLE_ELITE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b04",
+    "name": "FALCON_ELITE",
+    "iconName": "icon_FALCON_ELITE",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_FALCON_ELITE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b05",
+    "name": "HORNET_ELITE",
+    "iconName": "icon_HORNET_ELITE",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_HORNET_ELITE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b06",
+    "name": "CIRRUS_ELITE",
+    "iconName": "icon_CIRRUS_ELITE",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_CIRRUS_ELITE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b07",
+    "name": "MAMBA_ELITE",
+    "iconName": "icon_MAMBA_ELITE",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_MAMBA_ELITE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b08",
+    "name": "VIPER_ELITE",
+    "iconName": "icon_VIPER_ELITE",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_VIPER_ELITE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b09",
+    "name": "TYPHOON_ELITE",
+    "iconName": "icon_TYPHOON_ELITE",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_TYPHOON_ELITE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b10",
+    "name": "LOCUST_ELITE",
+    "iconName": "icon_LOCUST_ELITE",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_LOCUST_ELITE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b11",
+    "name": "SPIDER_ELITE",
+    "iconName": "icon_SPIDER_ELITE",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SPIDER_ELITE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b12",
+    "name": "SAURUS_ELITE",
+    "iconName": "icon_SAURUS_ELITE",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SAURUS_ELITE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b13",
+    "name": "BIGBANG_ELITE",
+    "iconName": "icon_BIGBANG_ELITE",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_BIGBANG_ELITE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b14",
+    "name": "SPECIAL_TACTICS_PACK",
+    "iconName": "icon_SPECIAL_TACTICS_PACK",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SPECIAL_TACTICS_PACK",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b15",
+    "name": "SPECIAL_TACTICS_PACK",
+    "iconName": "icon_SPECIAL_TACTICS_PACK02",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SPECIAL_TACTICS_PACK",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b16",
+    "name": "SUCCUBUS_PACK",
+    "iconName": "icon_SUCCUBUS_PACK",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUCCUBUS_PACK",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b17",
+    "name": "SUCCUBUS_ELITE_PACK",
+    "iconName": "icon_SUCCUBUS_ELITE_PACK",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUCCUBUS_ELITE_PACK",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b18",
+    "name": "SUCCUBUS_ULTIMATE_PACK",
+    "iconName": "icon_SUCCUBUS_ULTIMATE_PACK",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUCCUBUS_ULTIMATE_PACK",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b19",
+    "name": "PUMPKIN_PACK",
+    "iconName": "icon_PUMPKIN_PACK",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_PUMPKIN_PACK",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b20",
+    "name": "PUMPKIN_ELITE_PACK",
+    "iconName": "icon_PUMPKIN_ELITE_PACK",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_PUMPKIN_ELITE_PACK",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b21",
+    "name": "PUMPKIN_ULTIMATE_PACK",
+    "iconName": "icon_PUMPKIN_ULTIMATE_PACK",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_PUMPKIN_ULTIMATE_PACK",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b22",
+    "name": "GRAVEKEEPER_PACK",
+    "iconName": "icon_GRAVEKEEPER_PACK",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GRAVEKEEPER_PACK",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b23",
+    "name": "GRAVEKEEPER_ELITE_PACK",
+    "iconName": "icon_GRAVEKEEPER_ELITE_PACK",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GRAVEKEEPER_ELITE_PACK",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b24",
+    "name": "GRAVEKEEPER_ULTIMATE_PACK",
+    "iconName": "icon_GRAVEKEEPER_ULTIMATE_PACK",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GRAVEKEEPER_ULTIMATE_PACK",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b25",
+    "name": "ALIEN_PACK",
+    "iconName": "icon_alienSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_ALIEN_PACK",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b26",
+    "name": "BOT_PACK",
+    "iconName": "icon_botSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_BOT_PACK",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b27",
+    "name": "BUZZ_PACK",
+    "iconName": "icon_buzzSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_BUZZ_PACK",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b28",
+    "name": "BRICKDEVILMAN_PACK",
+    "iconName": "icon_devilSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_BRICKDEVILMAN_PACK",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b29",
+    "name": "ENISON_PACK",
+    "iconName": "icon_enisonSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_ENISON_PACK",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b30",
+    "name": "ET_PACK",
+    "iconName": "icon_etSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_ET_PACK",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b31",
+    "name": "HERO_PACK",
+    "iconName": "icon_heroSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_HERO_PACK",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b32",
+    "name": "IRON_PACK",
+    "iconName": "icon_ironSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_IRON_PACK",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b33",
+    "name": "MOSSBONE_PACK",
+    "iconName": "icon_mossSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_MOSSBONE_PACK",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b34",
+    "name": "SPACE_PACK",
+    "iconName": "icon_spaceSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SPACE_PACK",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b35",
+    "name": "TRON_PACK",
+    "iconName": "icon_tronSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_TRON_PACK",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b36",
+    "name": "SANTA_PACK",
+    "iconName": "Icon_santaset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SANTA_PACK",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b37",
+    "name": "RUDOLF_PACK",
+    "iconName": "Icon_rudolfset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_RUDOLF_PACK",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b38",
+    "name": "CHIMNEY_PACK",
+    "iconName": "Icon_chimneyset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_CHIMNEY_PACK",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b39",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b40",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b41",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b42",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b43",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b44",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b45",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b46",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 1,
+    "starRate": 100
+  },
+  {
+    "code": "b47",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b48",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b49",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b50",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b51",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b52",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b53",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b54",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 2,
+    "starRate": 100
+  },
+  {
+    "code": "b55",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "b56",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "b57",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "b58",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "b59",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "b60",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "b61",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "b62",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "b63",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "b64",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "b65",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "b66",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "b67",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "b68",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "b69",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "b70",
+    "name": "ARCHER_PACK",
+    "iconName": "icon_archerSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_ARCHER_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "b71",
+    "name": "MAGE_PACK",
+    "iconName": "icon_mageSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_MAGE_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "b72",
+    "name": "EVENT24_HAN01_PACK",
+    "iconName": "icon_han01Set",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_EVENT24_HAN01_PACK",
+    "season": 90002,
+    "starRate": 100
+  },
+  {
+    "code": "b73",
+    "name": "EVENT24_HAN02_PACK",
+    "iconName": "icon_han02Set",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_EVENT24_HAN02_PACK",
+    "season": 90001,
+    "starRate": 100
+  },
+  {
+    "code": "b74",
+    "name": "PANDA_PACK",
+    "iconName": "icon_pandaSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_PANDA_PACK",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "b75",
+    "name": "POINT_PACK01",
+    "iconName": "icon_TC_1",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_POINT_PACK01",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "b76",
+    "name": "POINT_PACK02",
+    "iconName": "icon_TC_2",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_POINT_PACK02",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "b77",
+    "name": "POINT_PACK03",
+    "iconName": "icon_TC_3",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_POINT_PACK03",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "b78",
+    "name": "POINT_PACK04",
+    "iconName": "icon_TC_4",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_POINT_PACK04",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "b79",
+    "name": "POINT_PACK05",
+    "iconName": "icon_TC_5",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_POINT_PACK05",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "b80",
+    "name": "POINT_PACK06",
+    "iconName": "icon_TC_6",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_POINT_PACK06",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "b81",
+    "name": "HERO_PACK",
+    "iconName": "icon_heroSet_N",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_HERO_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "b82",
+    "name": "IRON_PACK",
+    "iconName": "icon_ironSet_N",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_IRON_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "b83",
+    "name": "ARCHER_BUILD_GUN_PACK",
+    "iconName": "icon_archerSet_1",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_ARCHER_BUILD_GUN_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "b84",
+    "name": "SUCCUBUS_PACK02",
+    "iconName": "icon_SUCCUBUS_PACK",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUCCUBUS_PACK02",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "b85",
+    "name": "ARCHER_PACK02",
+    "iconName": "icon_archerSet_2",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_ARCHER_PACK02",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "b86",
+    "name": "YD_PACK",
+    "iconName": "icon_YDset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_YD_PACK",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "b87",
+    "name": "EVENT24_HAN01_PACK",
+    "iconName": "icon_han01Set_0",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_EVENT24_HAN01_PACK",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "b88",
+    "name": "EVENT24_HAN02_PACK",
+    "iconName": "icon_han02Set_0",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_EVENT24_HAN02_PACK",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "b89",
+    "name": "EVENT24_HAN01_PACK",
+    "iconName": "icon_han01Set_0",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_EVENT24_HAN01_PACK",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "b90",
+    "name": "EVENT24_HAN02_PACK",
+    "iconName": "icon_han02Set_0",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_EVENT24_HAN02_PACK",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "b91",
+    "name": "YD_PACK01",
+    "iconName": "icon_YDset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_YD_PACK",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "b92",
+    "name": "FRENCH_COSTUME_PACK01",
+    "iconName": "icon_franceSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_FRENCH_COSTUME_PACK",
+    "season": 88888,
+    "starRate": 100
+  },
+  {
+    "code": "b93",
+    "name": "FRENCH_COSTUME_PACK02",
+    "iconName": "icon_franceSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_FRENCH_COSTUME_PACK",
+    "season": 88888,
+    "starRate": 100
+  },
+  {
+    "code": "b94",
+    "name": "CHIMNEY_PACK02",
+    "iconName": "Icon_chimneyset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_CHIMNEY_PACK02",
+    "season": 88888,
+    "starRate": 100
+  },
+  {
+    "code": "b95",
+    "name": "CHIMNEY_PACK03",
+    "iconName": "Icon_chimneyset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_CHIMNEY_PACK02",
+    "season": 88888,
+    "starRate": 100
+  },
+  {
+    "code": "b96",
+    "name": "CHEF_PACK01",
+    "iconName": "icon_chefSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_CHEF_PACK",
+    "season": 88888,
+    "starRate": 100
+  },
+  {
+    "code": "b97",
+    "name": "CHEF_PACK02",
+    "iconName": "icon_chefSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_CHEF_PACK",
+    "season": 88888,
+    "starRate": 100
+  },
+  {
+    "code": "b98",
+    "name": "NURSE_PACK01",
+    "iconName": "icon_medicSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_NURSE_PACK",
+    "season": 88888,
+    "starRate": 100
+  },
+  {
+    "code": "b99",
+    "name": "NURSE_PACK02",
+    "iconName": "icon_medicSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_NURSE_PACK",
+    "season": 88888,
+    "starRate": 100
+  },
+  {
+    "code": "ba0",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "ba1",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "ba2",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "ba3",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "ba4",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "ba5",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "ba6",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "ba7",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "ba8",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "ba9",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "bb0",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "bb1",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "bb2",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "bb3",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "bb4",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "bb5",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "bb6",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "bb7",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "bb8",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "bb9",
+    "name": "GENERIC_BUNDLE",
+    "iconName": "shop_bundle",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GENERIC_BUNDLE",
+    "season": 3,
+    "starRate": 100
+  },
+  {
+    "code": "bc0",
+    "name": "YD_PACK02",
+    "iconName": "icon_YDset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_YD_PACK",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "bc1",
+    "name": "WARLOCK_PACK01",
+    "iconName": "icon_warlockset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_WARLOCK_PACK",
+    "season": 90002,
+    "starRate": 100
+  },
+  {
+    "code": "bc2",
+    "name": "WARLOCK_PACK02",
+    "iconName": "icon_warlockset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_WARLOCK_PACK",
+    "season": 90002,
+    "starRate": 100
+  },
+  {
+    "code": "bc3",
+    "name": "DARKKNIGHT_PACK01",
+    "iconName": "icon_darkKnightset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_DARKKNIGHT_PACK",
+    "season": 90002,
+    "starRate": 100
+  },
+  {
+    "code": "bc4",
+    "name": "DARKKNIGHT_PACK02",
+    "iconName": "icon_darkKnightset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_DARKKNIGHT_PACK",
+    "season": 90002,
+    "starRate": 100
+  },
+  {
+    "code": "bc5",
+    "name": "DRAGONKNIGHT_PACK01",
+    "iconName": "icon_dragonset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_DRAGONKNIGHT_PACK",
+    "season": 90002,
+    "starRate": 100
+  },
+  {
+    "code": "bc6",
+    "name": "DRAGONKNIGHT_PACK02",
+    "iconName": "icon_dragonset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_DRAGONKNIGHT_PACK",
+    "season": 90002,
+    "starRate": 100
+  },
+  {
+    "code": "bc7",
+    "name": "EASTER01_PACK01",
+    "iconName": "icon_easter01Set",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_EASTER01_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bc8",
+    "name": "EASTER01_PACK02",
+    "iconName": "icon_easter01Set",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_EASTER01_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bc9",
+    "name": "EASTER01_PACK03",
+    "iconName": "icon_easter01Set",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_EASTER01_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bd0",
+    "name": "PANDA_PACK01",
+    "iconName": "icon_pandaSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_PANDA_PACK01",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "bd1",
+    "name": "PANDA_PACK02",
+    "iconName": "icon_pandaSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_PANDA_PACK01",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "bd2",
+    "name": "PANDA_PACK03",
+    "iconName": "icon_pandaSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_PANDA_PACK01",
+    "season": 90003,
+    "starRate": 100
+  },
+  {
+    "code": "bd3",
+    "name": "FRENCH_COSTUME_PACK03",
+    "iconName": "icon_franceSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_FRENCH_COSTUME_PACK",
+    "season": 88888,
+    "starRate": 100
+  },
+  {
+    "code": "bd4",
+    "name": "CHIMNEY_PACK04",
+    "iconName": "Icon_chimneyset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_CHIMNEY_PACK02",
+    "season": 88888,
+    "starRate": 100
+  },
+  {
+    "code": "bd5",
+    "name": "CHEF_PACK03",
+    "iconName": "icon_chefSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_CHEF_PACK",
+    "season": 88888,
+    "starRate": 100
+  },
+  {
+    "code": "bd6",
+    "name": "NURSE_PACK03",
+    "iconName": "icon_medicSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_NURSE_PACK",
+    "season": 88888,
+    "starRate": 100
+  },
+  {
+    "code": "bd7",
+    "name": "GM_GRAY_PACK01",
+    "iconName": "icon_e25",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GM_GRAY_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bd8",
+    "name": "GM_GRAY_PACK02",
+    "iconName": "icon_e25",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_GM_GRAY_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bd9",
+    "name": "INDIAN_PACK01",
+    "iconName": "icon_s4indian",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_INDIAN_PACK",
+    "season": 90004,
+    "starRate": 100
+  },
+  {
+    "code": "be0",
+    "name": "INDIAN_PACK02",
+    "iconName": "icon_s4indian",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_INDIAN_PACK",
+    "season": 90004,
+    "starRate": 100
+  },
+  {
+    "code": "be1",
+    "name": "MACHO_PACK01",
+    "iconName": "icon_s4macho",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_MACHO_PACK",
+    "season": 90004,
+    "starRate": 100
+  },
+  {
+    "code": "be2",
+    "name": "MACHO_PACK02",
+    "iconName": "icon_s4macho",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_MACHO_PACK",
+    "season": 90004,
+    "starRate": 100
+  },
+  {
+    "code": "be3",
+    "name": "SHERIFF_PACK01",
+    "iconName": "icon_s4sheriff",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SHERIFF_PACK",
+    "season": 90004,
+    "starRate": 100
+  },
+  {
+    "code": "be4",
+    "name": "SHERIFF_PACK02",
+    "iconName": "icon_s4sheriff",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SHERIFF_PACK",
+    "season": 90004,
+    "starRate": 100
+  },
+  {
+    "code": "be5",
+    "name": "BANKROBBER_PACK01",
+    "iconName": "icon_s4thief",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_BANKROBBER_PACK",
+    "season": 90004,
+    "starRate": 100
+  },
+  {
+    "code": "be6",
+    "name": "BANKROBBER_PACK02",
+    "iconName": "icon_s4thief",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_BANKROBBER_PACK",
+    "season": 90004,
+    "starRate": 100
+  },
+  {
+    "code": "be7",
+    "name": "WINTER02_PACK01",
+    "iconName": "icon_winter02Set",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_WINTER02_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "be8",
+    "name": "EVENT22_SOCCER05_PACK",
+    "iconName": "icon_schalke",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_EVENT22_SOCCER05_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "be9",
+    "name": "EVENT22_SOCCER02_PACK",
+    "iconName": "icon_hamburg",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_EVENT22_SOCCER02_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bf0",
+    "name": "EVENT22_SOCCER01_PACK",
+    "iconName": "icon_dortmund",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_EVENT22_SOCCER01_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bf1",
+    "name": "INFANTRYMAN02_PACK",
+    "iconName": "icon_zebraSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_INFANTRYMAN02_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bf2",
+    "name": "INFANTRYMAN01_PACK",
+    "iconName": "icon_tigerSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_INFANTRYMAN01_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bf3",
+    "name": "KING_PACK",
+    "iconName": "icon_kingset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_KING_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bf4",
+    "name": "PRINCESS_PACK",
+    "iconName": "icon_princessset",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_PRINCESS_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bf5",
+    "name": "SUMMER_WEAR08_PACK01",
+    "iconName": "icon_sum08",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUMMER_WEAR08_PACK",
+    "season": 90005,
+    "starRate": 100
+  },
+  {
+    "code": "bf6",
+    "name": "SUMMER_WEAR06_PACK01",
+    "iconName": "icon_sum06",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUMMER_WEAR06_PACK",
+    "season": 90005,
+    "starRate": 100
+  },
+  {
+    "code": "bf7",
+    "name": "SUMMER_WEAR09_PACK01",
+    "iconName": "icon_sum09",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUMMER_WEAR09_PACK",
+    "season": 90005,
+    "starRate": 100
+  },
+  {
+    "code": "bf8",
+    "name": "SUMMER_WEAR07_PACK01",
+    "iconName": "icon_sum07",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUMMER_WEAR07_PACK",
+    "season": 90005,
+    "starRate": 100
+  },
+  {
+    "code": "bf9",
+    "name": "SUMMER_WEAR04_PACK01",
+    "iconName": "icon_sum04",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUMMER_WEAR04_PACK",
+    "season": 88889,
+    "starRate": 100
+  },
+  {
+    "code": "bg0",
+    "name": "SUMMER_WEAR05_PACK01",
+    "iconName": "icon_sum05",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUMMER_WEAR05_PACK",
+    "season": 88889,
+    "starRate": 100
+  },
+  {
+    "code": "bg1",
+    "name": "SUMMER_WEAR08_PACK02",
+    "iconName": "icon_sum08",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUMMER_WEAR08_PACK",
+    "season": 90005,
+    "starRate": 100
+  },
+  {
+    "code": "bg2",
+    "name": "SUMMER_WEAR06_PACK02",
+    "iconName": "icon_sum06",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUMMER_WEAR06_PACK",
+    "season": 90005,
+    "starRate": 100
+  },
+  {
+    "code": "bg3",
+    "name": "SUMMER_WEAR09_PACK02",
+    "iconName": "icon_sum09",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUMMER_WEAR09_PACK",
+    "season": 90005,
+    "starRate": 100
+  },
+  {
+    "code": "bg4",
+    "name": "SUMMER_WEAR07_PACK02",
+    "iconName": "icon_sum07",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUMMER_WEAR07_PACK",
+    "season": 90005,
+    "starRate": 100
+  },
+  {
+    "code": "bg5",
+    "name": "SUMMER_WEAR04_PACK02",
+    "iconName": "icon_sum04",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUMMER_WEAR04_PACK",
+    "season": 88889,
+    "starRate": 100
+  },
+  {
+    "code": "bg6",
+    "name": "SUMMER_WEAR05_PACK02",
+    "iconName": "icon_sum05",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUMMER_WEAR05_PACK",
+    "season": 88889,
+    "starRate": 100
+  },
+  {
+    "code": "bg7",
+    "name": "SUMMER_WATER_STICK_PACK",
+    "iconName": "icon_water_stick02Set",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUMMER_WATER_STICK_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bg8",
+    "name": "SUMMER_WATER_BANANA_GUN_PACK",
+    "iconName": "icon_water_bananaSet",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUMMER_WATER_BANANA_GUN_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bg9",
+    "name": "SUMMER_WATER_BOMB02_PACK",
+    "iconName": "icon_water_bomb02Set",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_SUMMER_WATER_BOMB02_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bh0",
+    "name": "PSYCHOPATH_PACK",
+    "iconName": "icon_Psychopath_set",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_PSYCHOPATH_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bh1",
+    "name": "REAPER_PACK",
+    "iconName": "icon_Reaper_set",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_REAPER_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bh2",
+    "name": "PSYCHOPATH_PACK_MAX",
+    "iconName": "icon_Psychopath_ultimate_set",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_PSYCHOPATH_PACK",
+    "season": 90000,
+    "starRate": 100
+  },
+  {
+    "code": "bh3",
+    "name": "REAPER_PACK_MAX",
+    "iconName": "icon_Reaper_ultimate_set",
+    "type": "bundle",
+    "isAmount": "TRUE",
+    "comment": "CMT_REAPER_PACK",
+    "season": 90000,
+    "starRate": 100
+  }
+]

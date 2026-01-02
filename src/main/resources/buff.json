@@ -1,0 +1,186 @@
+[
+  {
+    "index": 1,
+    "name": "p_clothes_up",
+    "isPoint": "TRUE",
+    "isXp": "TRUE",
+    "isLuck": "FALSE",
+    "factor": 0.02
+  },
+  {
+    "index": 2,
+    "name": "c_clothes_up",
+    "isPoint": "TRUE",
+    "isXp": "TRUE",
+    "isLuck": "FALSE",
+    "factor": 0.04
+  },
+  {
+    "index": 3,
+    "name": "r_clothes_up",
+    "isPoint": "TRUE",
+    "isXp": "TRUE",
+    "isLuck": "FALSE",
+    "factor": 0.05
+  },
+  {
+    "index": 4,
+    "name": "p_luck_up",
+    "isPoint": "FALSE",
+    "isXp": "FALSE",
+    "isLuck": "TRUE",
+    "factor": 0.02
+  },
+  {
+    "index": 5,
+    "name": "c_luck_up",
+    "isPoint": "FALSE",
+    "isXp": "FALSE",
+    "isLuck": "TRUE",
+    "factor": 0.04
+  },
+  {
+    "index": 6,
+    "name": "r_luck_up",
+    "isPoint": "FALSE",
+    "isXp": "FALSE",
+    "isLuck": "TRUE",
+    "factor": 0.2
+  },
+  {
+    "index": 7,
+    "name": "c_character_up",
+    "isPoint": "TRUE",
+    "isXp": "TRUE",
+    "isLuck": "TRUE",
+    "factor": 0.02
+  },
+  {
+    "index": 8,
+    "name": "p_all_up",
+    "isPoint": "TRUE",
+    "isXp": "TRUE",
+    "isLuck": "TRUE",
+    "factor": 0.05
+  },
+  {
+    "index": 9,
+    "name": "e_luck_up",
+    "isPoint": "FALSE",
+    "isXp": "FALSE",
+    "isLuck": "TRUE",
+    "factor": 0.05
+  },
+  {
+    "index": 10,
+    "name": "double_xp",
+    "isPoint": "FALSE",
+    "isXp": "TRUE",
+    "isLuck": "FALSE",
+    "factor": 1
+  },
+  {
+    "index": 11,
+    "name": "consumable_xp_up",
+    "isPoint": "FALSE",
+    "isXp": "TRUE",
+    "isLuck": "FALSE",
+    "factor": 0.1
+  },
+  {
+    "index": 12,
+    "name": "consumable_fp_up",
+    "isPoint": "TRUE",
+    "isXp": "FALSE",
+    "isLuck": "FALSE",
+    "factor": 0.1
+  },
+  {
+    "index": 13,
+    "name": "consumable_xp_up2",
+    "isPoint": "FALSE",
+    "isXp": "TRUE",
+    "isLuck": "FALSE",
+    "factor": 0.5
+  },
+  {
+    "index": 14,
+    "name": "consumable_fp_up2",
+    "isPoint": "TRUE",
+    "isXp": "FALSE",
+    "isLuck": "FALSE",
+    "factor": 0.5
+  },
+  {
+    "index": 15,
+    "name": "consumable_xp_up3",
+    "isPoint": "FALSE",
+    "isXp": "TRUE",
+    "isLuck": "FALSE",
+    "factor": 1
+  },
+  {
+    "index": 16,
+    "name": "consumable_fp_up3",
+    "isPoint": "TRUE",
+    "isXp": "FALSE",
+    "isLuck": "FALSE",
+    "factor": 1
+  },
+  {
+    "index": 17,
+    "name": "pc_bang_fp_up",
+    "isPoint": "TRUE",
+    "isXp": "FALSE",
+    "isLuck": "FALSE",
+    "factor": 0.3
+  },
+  {
+    "index": 18,
+    "name": "pc_bang_xp_up",
+    "isPoint": "FALSE",
+    "isXp": "TRUE",
+    "isLuck": "FALSE",
+    "factor": 0.3
+  },
+  {
+    "index": 19,
+    "name": "s_luck_up",
+    "isPoint": "FALSE",
+    "isXp": "FALSE",
+    "isLuck": "TRUE",
+    "factor": 0.1
+  },
+  {
+    "index": 20,
+    "name": "luck_up_30",
+    "isPoint": "FALSE",
+    "isXp": "FALSE",
+    "isLuck": "TRUE",
+    "factor": 0.3
+  },
+  {
+    "index": 21,
+    "name": "xp_up_20",
+    "isPoint": "FALSE",
+    "isXp": "TRUE",
+    "isLuck": "FALSE",
+    "factor": 0.2
+  },
+  {
+    "index": 22,
+    "name": "fp_up_20",
+    "isPoint": "TRUE",
+    "isXp": "FALSE",
+    "isLuck": "FALSE",
+    "factor": 0.2
+  },
+  {
+    "index": 23,
+    "name": "luck_up_25",
+    "isPoint": "FALSE",
+    "isXp": "FALSE",
+    "isLuck": "TRUE",
+    "factor": 0.25
+  }
+]
