@@ -1,6 +1,7 @@
 package de.brickforceaurora.gameserver.handler;
 
 import de.brickforceaurora.gameserver.core.GameServerLogic;
+import de.brickforceaurora.gameserver.net.ChannelReference;
 import de.brickforceaurora.gameserver.net.ClientReference;
 import de.brickforceaurora.gameserver.net.MsgReference;
 import de.brickforceaurora.gameserver.net.SendType;
@@ -41,5 +42,46 @@ public class ChannelHandlers {
         server.say(new MsgReference(MessageId.CS_SVC_ENTER_LIST_ACK.getId(), body, client, sendType));
 
         server.logger().debug("SendUserList to: " + client.GetIdentifier());
+    }
+
+    public static void SendChannels(GameServerLogic server, ClientReference client)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(server.channelManager.getChannels().size());
+        for (ChannelReference channelRef : server.channelManager.getChannels())
+        {
+            body.write(channelRef.channel.id);
+            body.write(channelRef.channel.mode.getId());
+            body.write(channelRef.channel.name);
+            body.write(channelRef.channel.ip);
+            body.write(channelRef.channel.port);
+            body.write(channelRef.channel.userCount);
+            body.write(channelRef.channel.maxUserCount);
+            body.write(channelRef.channel.country);
+            body.write((byte)channelRef.channel.minLvRank);
+            body.write((byte)channelRef.channel.maxLvRank);
+            body.writeUShort(channelRef.channel.xpBonus);
+            body.writeUShort(channelRef.channel.fpBonus);
+            body.write(channelRef.channel.limitStarRate);
+        }
+
+        server.say(new MsgReference(141, body, client));
+
+        server.logger().debug("SendChannels to: " + client.GetIdentifier());
+    }
+
+    public static void SendCurChannel(GameServerLogic server, ClientReference client)
+    {
+        SendCurChannel(server, client, 1);
+    }
+    public static void SendCurChannel(GameServerLogic server, ClientReference client, int curChannelId)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(curChannelId);
+        server.say(new MsgReference(147, body, client));
+
+        server.logger().debug("SendCurChannel to: " + client.GetIdentifier());
     }
 }
