@@ -223,4 +223,110 @@ public class MapHandlers {
 
         server.say(new MsgReference(msgId.getId(), body, client));
     }
+
+
+    public static void sendAllUserMaps(GameServerLogic server, ClientReference client)
+    {
+        MsgBody body = new MsgBody();
+
+        int chunkSize = 200;
+        List<RegMap> maps = RegMapManager.getInstance().getMapsAsList();
+        int chunkCount = (int) Math.ceil((double) maps.size() / (double) chunkSize);
+        int processedCount = 0;
+
+        for (int chunk = 0; chunk < chunkCount; chunk++)
+        {
+            int remaining = maps.size() - processedCount;
+            if (remaining < chunkSize)
+                chunkSize = remaining;
+
+            body.write(-1); //page
+            body.write(chunkSize); //count
+            for (int i = 0; i < chunkSize; i++, processedCount++)
+            {
+                RegMap entry = maps.get(i);
+                body.write(i); //slot
+                body.write(entry.getAlias());
+                body.write(-1); //brick count
+                body.write(entry.getRegisteredDate().getYear());
+                body.write((byte)entry.getRegisteredDate().getMonth().getValue());
+                body.write((byte)entry.getRegisteredDate().getDayOfMonth());
+                body.write((byte)entry.getRegisteredDate().getHour());
+                body.write((byte)entry.getRegisteredDate().getMinute());
+                body.write((byte)entry.getRegisteredDate().getSecond());
+                body.write((byte)0); //premium
+            }
+            server.say(new MsgReference(430, body, client));
+        }
+
+        server.logger().debug("SendAllUserMaps to: " + client.GetIdentifier());
+    }
+
+    public static void sendAllDownloadedMaps(GameServerLogic server, ClientReference client)
+    {
+        int chunkSize = 100;
+        List<RegMap> maps = RegMapManager.getInstance().getMapsAsList();
+        int chunkCount = (int) Math.ceil((double) maps.size() / (double) chunkSize);
+        int processedCount = 0;
+
+        for (int chunk = 0; chunk < chunkCount; chunk++)
+        {
+            int remaining = maps.size() - processedCount;
+            if (remaining < chunkSize)
+                chunkSize = remaining;
+
+            MsgBody body = new MsgBody();
+
+            body.write(-1); //page
+            body.write(chunkSize); //count
+            for (int i = 0; i < chunkSize; i++, processedCount++)
+            {
+                RegMap entry = maps.get(i);
+                body.write(entry.getMap());
+                body.write(entry.getDeveloper());
+                body.write(entry.getAlias());
+                body.writeUShort(entry.getModeMask());
+                body.write((byte)(Room.clanMatch | Room.official));
+                body.write(entry.tagMask);
+                body.write(entry.getRegisteredDate().getYear());
+                body.write((byte)entry.getRegisteredDate().getMonth().getValue());
+                body.write((byte)entry.getRegisteredDate().getDayOfMonth());
+                body.write((byte)entry.getRegisteredDate().getHour());
+                body.write((byte)entry.getRegisteredDate().getMinute());
+                body.write((byte)entry.getRegisteredDate().getSecond());
+                body.write(entry.getDownloadFee());
+                body.write(entry.getRelease());
+                body.write(entry.getLatestRelease());
+                body.write(entry.getLikes());
+                body.write(entry.getDisLikes());
+                body.write(entry.getDownloadCount());
+            }
+
+            server.say(new MsgReference(426, body, client));
+        }
+
+        server.logger().debug("SendAllDownloadedMaps to: " + client.GetIdentifier());
+    }
+
+    public static void sendEmptyUserMap(GameServerLogic server, ClientReference client)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(-1); //page
+        body.write(1); //count
+        body.write(0); //slot
+        body.write("");
+        body.write(-1); //brick count
+        body.write(2000);
+        body.write((byte)0);
+        body.write((byte)0);
+        body.write((byte)0);
+        body.write((byte)0);
+        body.write((byte)0);
+        body.write((byte)0);
+
+        server.say(new MsgReference(430, body, client));
+
+        server.logger().debug("SendEmptyUserMap to: " + client.GetIdentifier());
+    }
 }
