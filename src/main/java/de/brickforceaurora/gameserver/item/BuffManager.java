@@ -1,5 +1,6 @@
 package de.brickforceaurora.gameserver.item;
 
+import de.brickforceaurora.gameserver.GameServerApp;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.item.template.TBuff;
 import de.brickforceaurora.gameserver.util.Texture2D;
@@ -149,7 +150,7 @@ public final class BuffManager {
                     o.getAsFloat("factor")
             );
 
-            if (!add(index, name, buff)) GameServerLogic.getInstance().logger().error("Fail to add buff: " + index);
+            if (!add(index, name, buff)) GameServerApp.logger().error("Fail to add buff: " + index);
         }
     }
 }

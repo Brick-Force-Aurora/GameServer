@@ -18,7 +18,7 @@ import me.lauriichan.snowframe.data.handler.JsonDataHandler;
 
 public abstract class AssetDirectoryData<A extends Asset> extends DirectoryDataExtension<IJson<?>> {
 
-    public static final String PATH = "jar://assets/%s";
+    public static final String PATH = "data://assets/%s";
 
     private final Object2ObjectMap<String, A> assetByName = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
     private final Int2ObjectMap<A> assetById = Int2ObjectMaps.synchronize(new Int2ObjectOpenHashMap<>());

@@ -62,15 +62,6 @@ public final class GameServerLogic {
         registerHandlers();
         serverCreated = true;
     }
-
-    private static volatile GameServerLogic instance;
-
-    public static GameServerLogic getInstance() {
-        if (instance == null) {
-            throw new IllegalStateException("GameServerLogic not initialized yet");
-        }
-        return instance;
-    }
     
     public ISimpleLogger logger() {
         return logger;

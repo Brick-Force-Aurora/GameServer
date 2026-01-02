@@ -1,5 +1,6 @@
 package de.brickforceaurora.gameserver.maps;
 
+import de.brickforceaurora.gameserver.GameServerApp;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.math.Vector2;
 import de.brickforceaurora.gameserver.math.Vector3;
@@ -159,12 +160,12 @@ public class UserMap {
     public BrickInst addBrickInst(int seq, byte template, byte x, byte y, byte z, int meshCode, byte rot) {
 
         if (dic.containsKey(seq)) {
-            GameServerLogic.getInstance().logger().error("Duplicate brick seq " + seq);
+            GameServerApp.logger().error("Duplicate brick seq " + seq);
             return null;
         }
 
         if (!isValidCoord(x, y, z)) {
-            GameServerLogic.getInstance().logger().error("Invalid coord");
+            GameServerApp.logger().error("Invalid coord");
             return null;
         }
 

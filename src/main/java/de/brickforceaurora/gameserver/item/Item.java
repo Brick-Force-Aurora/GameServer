@@ -1,5 +1,6 @@
 package de.brickforceaurora.gameserver.item;
 
+import de.brickforceaurora.gameserver.GameServerApp;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.data.MyInfoManager;
 import de.brickforceaurora.gameserver.item.template.TItem;
@@ -110,7 +111,7 @@ public class Item {
 
     private void validatePremium() {
         if (premium != 0 && premium != 1 && premium != 2) {
-            GameServerLogic.getInstance().logger().error("Invalid Premium value");
+            GameServerApp.logger().error("Invalid Premium value");
         }
     }
 

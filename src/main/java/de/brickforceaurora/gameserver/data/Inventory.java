@@ -5,6 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+import de.brickforceaurora.gameserver.GameServerApp;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.item.*;
 import de.brickforceaurora.gameserver.item.template.TItem;
@@ -215,7 +216,7 @@ public class Inventory {
             updateActiveEquipment();
             // intentionally disabled like C#
         } catch (Exception e) {
-            GameServerLogic.getInstance().logger().error("Save failed: " + e.getMessage());
+            GameServerApp.logger().error("Save failed: " + e.getMessage());
         }
     }
 
