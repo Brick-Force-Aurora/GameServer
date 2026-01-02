@@ -173,8 +173,8 @@ public final class GameServerLogic {
         handlers.put(MessageId.CS_MY_REGISTER_MAP_REQ.getId(), this::HandleRequestRegisteredMaps);
         handlers.put(MessageId.CS_USER_MAP_REQ.getId(), this::HandleRequestUserMaps);
         handlers.put(MessageId.CS_MY_DOWNLOAD_MAP_REQ.getId(), this::HandleRequestDownloadedMaps);
+        handlers.put(MessageId.CS_ALL_MAP_REQ.getId(),  this::HandleRequestAllMaps);
         handlers.put(MessageId.CS_CHANNEL_PLAYER_LIST_REQ.getId(), this::HandleRequestUserList);
-        handlers.put(MessageId.CS_ROOM_LIST_REQ.getId(), this::HandleRoomListRequest);
         handlers.put(ExtensionOpcodes.OP_INVENTORY_ACK.getOpCode(), this::HandleInventoryData);
         // Add all others same way
     }
@@ -617,12 +617,12 @@ public final class GameServerLogic {
             body.write(entry.getMap());
             body.write(entry.getDeveloper());
             body.write(entry.getAlias());
-            body.write(entry.getModeMask());
+            body.writeUShort(entry.getModeMask());
             body.write((byte)(Room.clanMatch | Room.official));
             body.write(entry.tagMask);
             body.write(entry.getRegisteredDate().getYear());
             body.write((byte)entry.getRegisteredDate().getMonth().getValue());
-            body.write((byte)entry.getRegisteredDate().getDayOfWeek().getValue());
+            body.write((byte)entry.getRegisteredDate().getDayOfMonth());
             body.write((byte)entry.getRegisteredDate().getHour());
             body.write((byte)entry.getRegisteredDate().getMinute());
             body.write((byte)entry.getRegisteredDate().getSecond());
@@ -657,12 +657,12 @@ public final class GameServerLogic {
             body.write(entry.getMap());
             body.write(entry.getDeveloper());
             body.write(entry.getAlias());
-            body.write(entry.getModeMask());
+            body.writeUShort(entry.getModeMask());
             body.write((byte)(Room.clanMatch | Room.official));
             body.write(entry.tagMask);
             body.write(entry.getRegisteredDate().getYear());
             body.write((byte)entry.getRegisteredDate().getMonth().getValue());
-            body.write((byte)entry.getRegisteredDate().getDayOfWeek().getValue());
+            body.write((byte)entry.getRegisteredDate().getDayOfMonth());
             body.write((byte)entry.getRegisteredDate().getHour());
             body.write((byte)entry.getRegisteredDate().getMinute());
             body.write((byte)entry.getRegisteredDate().getSecond());
@@ -709,7 +709,7 @@ public final class GameServerLogic {
             body.write(10000); //brick count
             body.write(entry.getRegisteredDate().getYear());
             body.write((byte)entry.getRegisteredDate().getMonth().getValue());
-            body.write((byte)entry.getRegisteredDate().getDayOfWeek().getValue());
+            body.write((byte)entry.getRegisteredDate().getDayOfMonth());
             body.write((byte)entry.getRegisteredDate().getHour());
             body.write((byte)entry.getRegisteredDate().getMinute());
             body.write((byte)entry.getRegisteredDate().getSecond());
@@ -746,7 +746,7 @@ public final class GameServerLogic {
                 body.write(-1); //brick count
                 body.write(entry.getRegisteredDate().getYear());
                 body.write((byte)entry.getRegisteredDate().getMonth().getValue());
-                body.write((byte)entry.getRegisteredDate().getDayOfWeek().getValue());
+                body.write((byte)entry.getRegisteredDate().getDayOfMonth());
                 body.write((byte)entry.getRegisteredDate().getHour());
                 body.write((byte)entry.getRegisteredDate().getMinute());
                 body.write((byte)entry.getRegisteredDate().getSecond());
@@ -782,12 +782,12 @@ public final class GameServerLogic {
                 body.write(entry.getMap());
                 body.write(entry.getDeveloper());
                 body.write(entry.getAlias());
-                body.write(entry.getModeMask());
+                body.writeUShort(entry.getModeMask());
                 body.write((byte)(Room.clanMatch | Room.official));
                 body.write(entry.tagMask);
                 body.write(entry.getRegisteredDate().getYear());
                 body.write((byte)entry.getRegisteredDate().getMonth().getValue());
-                body.write((byte)entry.getRegisteredDate().getDayOfWeek().getValue());
+                body.write((byte)entry.getRegisteredDate().getDayOfMonth());
                 body.write((byte)entry.getRegisteredDate().getHour());
                 body.write((byte)entry.getRegisteredDate().getMinute());
                 body.write((byte)entry.getRegisteredDate().getSecond());
@@ -1077,7 +1077,6 @@ public final class GameServerLogic {
         int param7 = msgRef.msg.msg().readInt();    //Play: isWanted		Build: N/A
         int param8 = msgRef.msg.msg().readInt();    //Play: isDrop			Build: N/A
         String alias = msgRef.msg.msg().readString();
-        int master = msgRef.msg.msg().readInt();
 
         MatchData matchData = msgRef.client.channel.addNewMatch();
 
@@ -1424,6 +1423,60 @@ public final class GameServerLogic {
 
         if (debugHandle)
             logger.debug("HandleRegMapInfoRequest from: " + msgRef.client.GetIdentifier());
+    }
+
+    private void HandleRequestAllMaps(MsgReference msgRef)
+    {
+        int prevPage = msgRef.msg.msg().readInt();
+        int nextPage = msgRef.msg.msg().readInt();
+        int indexer = msgRef.msg.msg().readInt();
+        int modeMask = msgRef.msg.msg().readUShort();
+        int flag = msgRef.msg.msg().readInt();
+        String filter = msgRef.msg.msg().readString();
+
+        var maps = RegMapManager.getInstance().getAllMapsPage(
+                prevPage,
+                nextPage,
+                indexer,
+                modeMask,
+                flag,
+                filter
+        );
+
+        SendMapList(msgRef.client, nextPage, maps, MessageId.CS_ALL_MAP_ACK);
+    }
+
+    private void SendMapList(ClientReference client, int page, List<RegMap> maps, MessageId msgId)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(page);
+        body.write(maps.size());
+
+        for (RegMap entry : maps)
+        {
+            body.write(entry.getMap());
+            body.write(entry.getDeveloper());
+            body.write(entry.getAlias());
+            body.writeUShort(entry.getModeMask());
+            body.write((byte)(Room.clanMatch | Room.official));
+            body.write(entry.tagMask);
+            body.write(entry.getRegisteredDate().getYear());
+            body.write((byte)entry.getRegisteredDate().getMonthValue());
+            body.write((byte)entry.getRegisteredDate().getDayOfMonth());
+            body.write((byte)entry.getRegisteredDate().getHour());
+            body.write((byte)entry.getRegisteredDate().getMinute());
+            body.write((byte)entry.getRegisteredDate().getSecond());
+
+            body.write(entry.getDownloadFee());
+            body.write(entry.getRelease());
+            body.write(entry.getLatestRelease());
+            body.write(entry.getLikes());
+            body.write(entry.getDisLikes());
+            body.write(entry.getDownloadCount());
+        }
+
+        say(new MsgReference(msgId.getId(), body, client));
     }
 
     /* =========================

@@ -91,7 +91,9 @@ public class RegMapManager {
     }
 
     public List<RegMap> getMapsAsList() {
-        return new ArrayList<>(regMaps.values());
+        return regMaps.values().stream()
+                .sorted(Comparator.comparingInt(RegMap::getMap))
+                .toList();
     }
 
     /* ===================== COMMENTS ===================== */
