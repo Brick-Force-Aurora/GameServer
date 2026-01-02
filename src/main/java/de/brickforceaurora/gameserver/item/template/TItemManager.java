@@ -109,7 +109,7 @@ public final class TItemManager {
     }
     
     private IJson<?> readJson(String path) throws IllegalStateException, IOException, JsonSyntaxException {
-        IDataSource source = frame.resource("jar://bundle.json");
+        IDataSource source = frame.resource(path);
         if (!source.exists()) {
             throw new IllegalStateException("File doesn't exist: " + source.getPath());
         }

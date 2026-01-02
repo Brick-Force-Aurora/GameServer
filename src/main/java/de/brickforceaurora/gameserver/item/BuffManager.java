@@ -8,8 +8,13 @@ import me.lauriichan.laylib.json.IJson;
 import me.lauriichan.laylib.json.JsonArray;
 import me.lauriichan.laylib.json.JsonObject;
 import me.lauriichan.laylib.json.io.JsonParser;
+import me.lauriichan.laylib.json.io.JsonSyntaxException;
+import me.lauriichan.snowframe.SnowFrame;
+import me.lauriichan.snowframe.resource.source.IDataSource;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 public final class BuffManager {
@@ -29,6 +34,8 @@ public final class BuffManager {
     public int netCafeCode;
     public boolean isPcBangShowDialog;
 
+    private final SnowFrame<?> frame;
+
     /* =======================
        Singleton
        ======================= */
@@ -41,7 +48,7 @@ public final class BuffManager {
     }
 
     private BuffManager() {
-        // do not load here
+        this.frame = GameServerApp.get().snowFrame();
     }
 
     private synchronized void ensureLoaded() {
@@ -115,11 +122,19 @@ public final class BuffManager {
        Loading
        ======================= */
 
+    private IJson<?> readJson(String path) throws IllegalStateException, IOException, JsonSyntaxException {
+        IDataSource source = frame.resource(path);
+        if (!source.exists()) {
+            throw new IllegalStateException("File doesn't exist: " + source.getPath());
+        }
+        try (InputStream stream = source.openReadableStream()) {
+            return JsonParser.fromStream(stream);
+        }
+    }
+
     private boolean loadFromLocalFileSystem() {
         try {
-            IJson<?> root = JsonParser.fromFile(
-                    new File("Template/buff.json")
-            );
+            IJson<?> root = readJson("jar://buff.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");
