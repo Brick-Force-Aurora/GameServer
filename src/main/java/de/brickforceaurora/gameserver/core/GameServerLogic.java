@@ -178,6 +178,7 @@ public final class GameServerLogic {
         handlers.put(MessageId.CS_CREATE_ROOM_REQ.getId(), this::HandleCreateRoomRequest);
         handlers.put(MessageId.CS_ROOM_CONFIG_REQ.getId(), this::HandleRoomConfig);
         handlers.put(MessageId.CS_ROAMIN_REQ.getId(), this::handleRoamIn);
+        handlers.put(MessageId.CS_REG_MAP_INFO_REQ.getId(), this::HandleRegMapInfoRequest);
         handlers.put(MessageId.CS_MY_REGISTER_MAP_REQ.getId(), this::HandleRequestRegisteredMaps);
         handlers.put(MessageId.CS_USER_MAP_REQ.getId(), this::HandleRequestUserMaps);
         handlers.put(MessageId.CS_MY_DOWNLOAD_MAP_REQ.getId(), this::HandleRequestDownloadedMaps);
@@ -1424,6 +1425,14 @@ public final class GameServerLogic {
             if (debugSend)
                 logger.debug("SendRoomConfig to: " + client.GetIdentifier());
         }
+    }
+
+    private void HandleRegMapInfoRequest(MsgReference msgRef)
+    {
+        int mapId = msgRef.msg.msg().readInt();
+
+        if (debugHandle)
+            logger.debug("HandleRegMapInfoRequest from: " + msgRef.client.GetIdentifier());
     }
 
     /* =========================
