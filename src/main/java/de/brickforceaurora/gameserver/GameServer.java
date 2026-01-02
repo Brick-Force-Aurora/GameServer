@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import me.lauriichan.laylib.logger.ISimpleLogger;
+import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.util.tick.AbstractTickTimer;
 
 public class GameServer extends AbstractTickTimer {
@@ -15,9 +16,9 @@ public class GameServer extends AbstractTickTimer {
     private final ISimpleLogger logger;
     private final GameServerLogic logic;
 
-    public GameServer(ISimpleLogger logger) {
-        this.logger = logger;
-        this.logic = new GameServerLogic(logger);
+    public GameServer(SnowFrame<?> frame) {
+        this.logger = frame.logger();
+        this.logic = new GameServerLogic(frame);
 
         // Setup timer
         setDaemon(false);

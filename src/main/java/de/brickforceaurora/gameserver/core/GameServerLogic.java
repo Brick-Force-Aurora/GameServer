@@ -17,6 +17,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue;
 import me.lauriichan.laylib.logger.ISimpleLogger;
+import me.lauriichan.snowframe.SnowFrame;
 
 import java.util.*;
 
@@ -56,13 +57,8 @@ public final class GameServerLogic {
 
     /* ===== Startup ===== */
 
-    public GameServerLogic(final ISimpleLogger logger) {
-        if (instance != null) {
-            throw new IllegalStateException("GameServerLogic already created");
-        }
-        instance = this;
-
-        this.logger = logger;
+    public GameServerLogic(final SnowFrame<?> frame) {
+        this.logger = frame.logger();
         registerHandlers();
         serverCreated = true;
     }

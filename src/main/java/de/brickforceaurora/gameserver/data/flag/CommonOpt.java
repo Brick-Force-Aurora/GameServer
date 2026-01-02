@@ -1,6 +1,6 @@
-package de.brickforceaurora.gameserver.data;
+package de.brickforceaurora.gameserver.data.flag;
 
-public enum CommonOpt {
+public enum CommonOpt implements IFlag {
     DONOT_NEWBIE_CHANNEL_MSG(1),
     DONOT_BUNGEE_GUIDE(2),
     DONOT_MAPEDIT_GUIDE(4),
@@ -16,14 +16,17 @@ public enum CommonOpt {
     DONOT_FLAG_GUIDE(0x1000),
     DONOT_DEFENSE_GUIDE(0x2000),
     DONOT_ESCAPE_GUIDE(0x4000);
+    
+    public static final CommonOpt[] ALL = values();
 
-    private final int id;
+    private final int mask;
 
-    CommonOpt(int id) {
-        this.id = id;
+    CommonOpt(int mask) {
+        this.mask = mask;
     }
 
-    public int getId() {
-        return id;
+    @Override
+    public int mask() {
+        return mask;
     }
 }

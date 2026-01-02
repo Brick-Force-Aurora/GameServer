@@ -1,6 +1,8 @@
 package de.brickforceaurora.gameserver.data;
 
 import java.util.*;
+
+import de.brickforceaurora.gameserver.data.flag.CommonOpt;
 import de.brickforceaurora.gameserver.item.Item;
 import de.brickforceaurora.gameserver.item.ItemUsage;
 
@@ -106,15 +108,15 @@ public final class MyInfoManager {
     /* ================= GM ================= */
 
     public boolean getCommonMask(CommonOpt mask) {
-        return (qjCommonMask & mask.getId()) != 0;
+        return (qjCommonMask & mask.mask()) != 0;
     }
 
     public void setCommonMask(CommonOpt mask) {
-        qjCommonMask |= mask.getId();
+        qjCommonMask |= mask.mask();
     }
 
     public void removeCommonMask(CommonOpt mask) {
-        qjCommonMask &= ~mask.getId();
+        qjCommonMask &= ~mask.mask();
     }
 
     public int clearGmFunction() {

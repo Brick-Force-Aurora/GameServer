@@ -38,7 +38,7 @@ public class GameServerApp implements ISnowFrameApp<GameServerApp> {
     @Override
     public void registerLifecycle(Lifecycle<GameServerApp> lifecycle) {
         lifecycle.startupChain().register("load", Stage.MAIN, frame -> {
-            server = new GameServer(frame.logger());
+            server = new GameServer(frame);
         });
         lifecycle.startupChain().register("ready", Stage.MAIN, _ -> {
             server.start();

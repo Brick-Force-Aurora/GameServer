@@ -1,14 +1,19 @@
 package de.brickforceaurora.gameserver.item.template;
 
-import de.brickforceaurora.gameserver.core.GameServerLogic;
+import de.brickforceaurora.gameserver.GameServerApp;
 import de.brickforceaurora.gameserver.item.BuffManager;
 import de.brickforceaurora.gameserver.util.Texture2D;
 import me.lauriichan.laylib.json.IJson;
 import me.lauriichan.laylib.json.JsonArray;
 import me.lauriichan.laylib.json.JsonObject;
 import me.lauriichan.laylib.json.io.JsonParser;
+import me.lauriichan.laylib.json.io.JsonSyntaxException;
+import me.lauriichan.snowframe.SnowFrame;
+import me.lauriichan.snowframe.resource.source.IDataSource;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 public final class TItemManager {
@@ -52,7 +57,10 @@ public final class TItemManager {
         return instance;
     }
 
+    private final SnowFrame<?> frame;
+    
     private TItemManager() {
+        this.frame = GameServerApp.get().snowFrame();
         this.dic = new HashMap<>();
         this.wpnBy2Slot = new HashMap<>();
         this.wpnBy2Category = new HashMap<>();
@@ -86,7 +94,7 @@ public final class TItemManager {
 
     private void add(String code, TItem item) {
         if (dic.containsKey(code)) {
-            GameServerLogic.getInstance().logger().error("ERROR, duplicated item code " + code);
+            GameServerApp.logger().error("ERROR, duplicated item code " + code);
             return;
         }
         dic.put(code, item);
@@ -99,12 +107,20 @@ public final class TItemManager {
                         loadCharacterFromLocalFileSystem() && loadSpecialFromLocalFileSystem() && loadUpgradeFromLocalFileSystem() &&
                         loadBundleFromLocalFileSystem();
     }
+    
+    private IJson<?> readJson(String path) throws IllegalStateException, IOException, JsonSyntaxException {
+        IDataSource source = frame.resource("jar://bundle.json");
+        if (!source.exists()) {
+            throw new IllegalStateException("File doesn't exist: " + source.getPath());
+        }
+        try (InputStream stream = source.openReadableStream()) {
+            return JsonParser.fromStream(stream);
+        }
+    }
 
     private boolean loadBundleFromLocalFileSystem() {
         try {
-            IJson<?> root = JsonParser.fromFile(
-                    new File("Template/bundle.json")
-            );
+            IJson<?> root = readJson("jar://bundle.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");
@@ -139,9 +155,7 @@ public final class TItemManager {
 
     private boolean loadWeaponFromLocalFileSystem() {
         try {
-            IJson<?> root = JsonParser.fromFile(
-                    new File("Template/weapon.json")
-            );
+            IJson<?> root = readJson("jar://weapon.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");
@@ -196,9 +210,7 @@ public final class TItemManager {
     private boolean loadCostumeFromLocalFileSystem()
     {
         try {
-            IJson<?> root = JsonParser.fromFile(
-                    new File("Template/costume.json")
-            );
+            IJson<?> root = readJson("jar://costume.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");
@@ -257,9 +269,7 @@ public final class TItemManager {
     private boolean loadAccessoryFromLocalFileSystem()
     {
         try {
-            IJson<?> root = JsonParser.fromFile(
-                    new File("Template/accessory.json")
-            );
+            IJson<?> root = readJson("jar://accessory.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");
@@ -312,9 +322,7 @@ public final class TItemManager {
     private boolean loadCharacterFromLocalFileSystem()
     {
         try {
-            IJson<?> root = JsonParser.fromFile(
-                    new File("Template/character.json")
-            );
+            IJson<?> root = readJson("jar://character.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");
@@ -361,9 +369,7 @@ public final class TItemManager {
     private boolean loadSpecialFromLocalFileSystem()
     {
         try {
-            IJson<?> root = JsonParser.fromFile(
-                    new File("Template/special.json")
-            );
+            IJson<?> root = readJson("jar://special.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");
@@ -406,9 +412,7 @@ public final class TItemManager {
     private boolean loadUpgradeFromLocalFileSystem()
     {
         try {
-            IJson<?> root = JsonParser.fromFile(
-                    new File("Template/upgrade.json")
-            );
+            IJson<?> root = readJson("jar://upgrade.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");

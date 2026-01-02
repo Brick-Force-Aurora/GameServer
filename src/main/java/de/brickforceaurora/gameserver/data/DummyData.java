@@ -1,5 +1,8 @@
 package de.brickforceaurora.gameserver.data;
 
+import de.brickforceaurora.gameserver.data.flag.CommonOpt;
+import de.brickforceaurora.gameserver.data.flag.IFlag;
+
 public class DummyData {
 
     public int xp = 7_000_000;
@@ -32,18 +35,7 @@ public class DummyData {
     public int extraSlots = 0;
     public int firstLoginFp = 0;
 
-    public int qjCommonMask =
-            CommonOpt.DONOT_NEWBIE_CHANNEL_MSG.getId()
-                    | CommonOpt.DONOT_BUNGEE_GUIDE.getId()
-                    | CommonOpt.DONOT_MAPEDIT_GUIDE.getId()
-                    | CommonOpt.DONOT_BND_GUIDE.getId()
-                    | CommonOpt.DONOT_EXPLOSION_ATTACK_GUIDE.getId()
-                    | CommonOpt.DONOT_EXPLOSION_DEFENCE_GUIDE.getId()
-                    | CommonOpt.DONOT_BATTLE_GUIDE.getId()
-                    | CommonOpt.DONOT_ZOMBIE_GUIDE.getId()
-                    | CommonOpt.DONOT_FLAG_GUIDE.getId()
-                    | CommonOpt.DONOT_DEFENSE_GUIDE.getId()
-                    | CommonOpt.DONOT_ESCAPE_GUIDE.getId();
+    public int qjCommonMask = IFlag.combine(CommonOpt.ALL);
 
     public int qjModeMask = 0;
     public int qjOfficialMask = 0;
