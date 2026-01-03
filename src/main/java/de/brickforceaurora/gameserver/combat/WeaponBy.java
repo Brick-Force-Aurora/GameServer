@@ -1,5 +1,10 @@
 package de.brickforceaurora.gameserver.combat;
 
+import de.brickforceaurora.gameserver.item.UpgradeCategory;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public enum WeaponBy {
     ZOMBIE(-11),
     SELF(-10),
@@ -411,6 +416,18 @@ public enum WeaponBy {
 
     public int getId() {
         return id;
+    }
+
+    private static final Map<Integer, WeaponBy> BY_VALUE = new HashMap<>();
+
+    static {
+        for (WeaponBy c : values()) {
+            BY_VALUE.put(c.id, c);
+        }
+    }
+
+    public static WeaponBy fromValue(int v) {
+        return BY_VALUE.getOrDefault(v, FALLOUT);
     }
 
 }

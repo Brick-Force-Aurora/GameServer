@@ -42,4 +42,15 @@ public class IndividualHandlers {
 
         logic.logger().debug("Broadcasted SendIndivudalMatchEnd for room no: " + matchData.room.no);
     }
+
+    public static void SendIndividualScore(GameServerLogic logic, MatchData matchData)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(matchData.redScore);
+
+        logic.say(new MsgReference(179, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+
+        logic.logger().debug("Broadcasted SendIndividualScore for room no: " + matchData.room.no);
+    }
 }

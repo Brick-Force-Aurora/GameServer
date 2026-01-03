@@ -50,4 +50,15 @@ public class TeamHandlers {
 
         logic.logger().debug("Broadcasted SendTeamMatchEnd for room no: " + matchData.room.no);
     }
+
+    public static void SendTeamScore(GameServerLogic logic, MatchData matchData)
+    {
+        MsgBody body = new MsgBody();
+        body.write(matchData.redScore);
+        body.write(matchData.blueScore);
+
+        logic.say(new MsgReference(67, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+
+        logic.logger().debug("Broadcasted SendTeamScore for room no: " + matchData.room.no);
+    }
 }

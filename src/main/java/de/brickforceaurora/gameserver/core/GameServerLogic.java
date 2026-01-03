@@ -41,7 +41,7 @@ public final class GameServerLogic {
     public byte sendKey = (byte) 0xFF;
 
     private boolean waitForShutDown = false;
-    private float killLogTimer = 0f;
+    public float killLogTimer = 0f;
 
     public ChannelManager channelManager = new ChannelManager();
 
