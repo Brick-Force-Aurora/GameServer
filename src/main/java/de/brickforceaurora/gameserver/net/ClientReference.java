@@ -9,6 +9,8 @@ import de.brickforceaurora.gameserver.match.MatchData;
 import de.brickforceaurora.gameserver.match.SlotData;
 import io.netty.channel.Channel;
 
+import java.net.InetSocketAddress;
+
 public final class ClientReference {
 
     public Channel socket;
@@ -42,7 +44,8 @@ public final class ClientReference {
         this.name = name;
         this.seq = seq;
         this.data = new DummyData();
-        this.ip = socket.remoteAddress().toString();
+        InetSocketAddress addr = (InetSocketAddress) socket.remoteAddress();
+        this.ip = addr.getAddress().getHostAddress();
         this.clientStatus = ClientStatus.INVALID;
         this.status = BrickManStatus.PLAYER_WAITING;
         this.isLoaded = false;

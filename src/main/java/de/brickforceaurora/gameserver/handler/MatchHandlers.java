@@ -9,10 +9,7 @@ import de.brickforceaurora.gameserver.handler.gamemodes.TeamHandlers;
 import de.brickforceaurora.gameserver.handler.gamemodes.ZombieHandlers;
 import de.brickforceaurora.gameserver.match.KillLogEntry;
 import de.brickforceaurora.gameserver.match.MatchData;
-import de.brickforceaurora.gameserver.net.BrickManStatus;
-import de.brickforceaurora.gameserver.net.ClientReference;
-import de.brickforceaurora.gameserver.net.MsgReference;
-import de.brickforceaurora.gameserver.net.SendType;
+import de.brickforceaurora.gameserver.net.*;
 import de.brickforceaurora.gameserver.protocol.ExtensionOpcodes;
 import de.brickforceaurora.gameserver.protocol.MessageId;
 import de.brickforceaurora.gameserver.protocol.MsgBody;
@@ -32,6 +29,8 @@ public class MatchHandlers {
         d.register(MessageId.CS_INFLICTED_DAMAGE_REQ.getId(), MatchHandlers::inflictedDamage);
         d.register(MessageId.CS_RESPAWN_TICKET_REQ.getId(), MatchHandlers::respawnTicket);
         d.register(MessageId.CS_KILL_LOG_REQ.getId(), MatchHandlers::killLog);
+        d.register(MessageId.CS_RESULT_DONE_REQ.getId(), MatchHandlers::resultDone);
+        d.register(MessageId.CS_BREAK_INTO_REQ.getId(), MatchHandlers::breakInto);
     }
 
     private static void weaponHeldRatio(GameServerLogic logic, MsgReference msgRef)
@@ -644,4 +643,57 @@ public class MatchHandlers {
 
         logic.logger().debug("Broadcasted SendAssistCount for client " + client.GetIdentifier() + " for room no: " + matchData.room.no);
     }
+
+    private static void resultDone(GameServerLogic logic, MsgReference msgRef)
+    {
+        msgRef.client.status = BrickManStatus.PLAYER_WAITING;
+        msgRef.client.clientStatus = ClientStatus.ROOM;
+
+        logic.logger().debug("HandleResultDoneRequest from: " + msgRef.client.GetIdentifier());
+
+        RoomHandlers.SendSetStatus(logic, msgRef.client);
+    }
+
+    private static void breakInto(GameServerLogic logic, MsgReference msgRef)
+    {
+        logic.logger().debug("HandleBreakInto from: " + msgRef.client.GetIdentifier());
+
+        MatchData matchData = msgRef.matchData;
+
+        int reply = 0;
+
+        if (!matchData.room.isBreakInto)
+            reply = -1;
+
+        else if (matchData.room.status != RoomStatus.PLAYING)
+            reply = -2;
+
+        else
+        {
+            msgRef.client.status = BrickManStatus.PLAYER_LOADING;
+            msgRef.client.clientStatus = ClientStatus.MATCH;
+            RoomHandlers.SendSetStatus(logic, msgRef.client);
+            TeamHandlers.SendTeamScore(logic, matchData);
+            for (int i = 0; i < matchData.clientList.size(); i++)
+            {
+                SendKillCount(logic, matchData.clientList.get(i));
+                SendDeathCount(logic, matchData.clientList.get(i));
+            }
+            msgRef.client.isBreakingInto = true;
+        }
+
+        SendBreakInto(logic, msgRef.client, reply);
+    }
+
+    public static void SendBreakInto(GameServerLogic logic, ClientReference client, int reply)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(reply);
+
+        logic.say(new MsgReference(74, body, client));
+
+        logic.logger().debug("SendBreakInto to: " + client.GetIdentifier());
+    }
+
 }

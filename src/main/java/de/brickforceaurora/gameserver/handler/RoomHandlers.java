@@ -22,6 +22,7 @@ public class RoomHandlers {
         d.register(MessageId.CS_KICK_REQ.getId(), RoomHandlers::kick);
         d.register(MessageId.CS_SLOT_LOCK_REQ.getId(), RoomHandlers::slotLock);
         d.register(MessageId.CS_START_REQ.getId(), RoomHandlers::start);
+        d.register(MessageId.CS_SET_STATUS_REQ.getId(), RoomHandlers::setStatus);
     }
 
     private static void roomList(GameServerLogic server, MsgReference msgRef)
@@ -507,6 +508,12 @@ public class RoomHandlers {
 
         server.logger().debug("HandleLeave from: " + msgRef.client.GetIdentifier());
 
+        if (msgRef.client.seq == matchData.masterSeq)
+        {
+            matchData.masterSeq = matchData.clientList.get(0).seq;
+            SendMaster(server, null, matchData);
+        }
+
         SendSetStatus(server, msgRef.client);
         SendLeave(server, msgRef.client);
 
@@ -518,12 +525,17 @@ public class RoomHandlers {
             msgRef.client.channel.RemoveMatch(matchData);
             return;
         }*/
+    }
 
-        if (msgRef.client.seq == matchData.masterSeq)
-        {
-            matchData.masterSeq = matchData.clientList.get(0).seq;
-            SendMaster(server, null, matchData);
-        }
+    private static void setStatus(GameServerLogic logic, MsgReference msgRef)
+    {
+        int status = msgRef.msg.msg().readInt();
+
+        msgRef.client.status = BrickManStatus.values()[status];
+
+        logic.logger().debug("HandleSetStatusRequest from: " + msgRef.client.GetIdentifier());
+
+        SendSetStatus(logic, msgRef.client);
     }
 
     public static void SendSetStatus(GameServerLogic server, ClientReference client)
