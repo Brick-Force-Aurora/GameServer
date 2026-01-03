@@ -24,6 +24,14 @@ public class GameServer extends AbstractTickTimer {
         setDaemon(false);
         setName("GameServer");
         sync().length((long) Math.floor(SECOND_IN_NANOS / TARGET_TPS), TimeUnit.NANOSECONDS);
+        
+        logger.info("Test");
+        logger.warning("Test");
+        logger.error("Test");
+        logger.debug("Test");
+        logger.setTracking(true);
+        logger.track("Test");
+        logger.setTracking(false);
     }
 
     public GameServerLogic logic() {
