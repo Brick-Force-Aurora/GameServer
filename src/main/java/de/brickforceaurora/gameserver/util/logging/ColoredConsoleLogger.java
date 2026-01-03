@@ -11,7 +11,7 @@ public final class ColoredConsoleLogger extends AbstractSimpleLogger {
 
     @Override
     protected void info(String message) {
-        System.out.println(Ansi.GRAY + "[INFO] " + message + Ansi.RESET);
+        System.out.println(Ansi.CYAN + "[INFO] " + message + Ansi.RESET);
     }
 
     @Override
@@ -21,7 +21,7 @@ public final class ColoredConsoleLogger extends AbstractSimpleLogger {
 
     @Override
     protected void debug(String message) {
-        System.out.println(Ansi.CYAN + "[DEBUG] " + message + Ansi.RESET);
+        System.out.println(Ansi.GRAY + "[DEBUG] " + message + Ansi.RESET);
     }
 
     @Override
