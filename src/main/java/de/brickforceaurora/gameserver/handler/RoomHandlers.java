@@ -23,6 +23,7 @@ public class RoomHandlers {
         d.register(MessageId.CS_SLOT_LOCK_REQ.getId(), RoomHandlers::slotLock);
         d.register(MessageId.CS_START_REQ.getId(), RoomHandlers::start);
         d.register(MessageId.CS_SET_STATUS_REQ.getId(), RoomHandlers::setStatus);
+        d.register(MessageId.CS_DELEGATE_MASTER_REQ.getId(), RoomHandlers::delegateMaster);
     }
 
     private static void roomList(GameServerLogic server, MsgReference msgRef)
@@ -181,6 +182,22 @@ public class RoomHandlers {
 
         server.logger().debug("SendRendezvousInfo to: " + client.GetIdentifier());
     }
+
+    private static void delegateMaster(GameServerLogic logic, MsgReference msgRef)
+    {
+        MatchData matchData = msgRef.matchData;
+
+        if (msgRef.client.seq == matchData.masterSeq)
+        {
+            int newMaster = msgRef.msg.msg().readInt();
+
+            logic.logger().debug("HandleDelegateMasterRequest from: " + msgRef.client.GetIdentifier());
+
+            matchData.masterSeq = newMaster;
+            SendMaster(logic, null, matchData);
+        }
+    }
+
 
     public static void SendMaster(GameServerLogic server, ClientReference client, MatchData matchData)
     {
@@ -508,12 +525,6 @@ public class RoomHandlers {
 
         server.logger().debug("HandleLeave from: " + msgRef.client.GetIdentifier());
 
-        if (msgRef.client.seq == matchData.masterSeq)
-        {
-            matchData.masterSeq = matchData.clientList.get(0).seq;
-            SendMaster(server, null, matchData);
-        }
-
         SendSetStatus(server, msgRef.client);
         SendLeave(server, msgRef.client);
 
@@ -525,6 +536,13 @@ public class RoomHandlers {
             msgRef.client.channel.RemoveMatch(matchData);
             return;
         }*/
+
+
+        if (msgRef.client.seq == matchData.masterSeq && !matchData.clientList.isEmpty())
+        {
+            matchData.masterSeq = matchData.clientList.getFirst().seq;
+            SendMaster(server, null, matchData);
+        }
     }
 
     private static void setStatus(GameServerLogic logic, MsgReference msgRef)
