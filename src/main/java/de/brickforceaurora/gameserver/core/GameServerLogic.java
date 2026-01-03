@@ -17,7 +17,6 @@ import de.brickforceaurora.gameserver.match.MatchData;
 import de.brickforceaurora.gameserver.net.*;
 import de.brickforceaurora.gameserver.protocol.*;
 
-@Deprecated
 public final class GameServerLogic {
 
     private final Object dataLock = new Object();
