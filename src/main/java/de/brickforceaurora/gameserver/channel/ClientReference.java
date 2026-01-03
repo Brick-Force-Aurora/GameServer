@@ -1,4 +1,4 @@
-package de.brickforceaurora.gameserver.net;
+package de.brickforceaurora.gameserver.channel;
 
 import de.brickforceaurora.gameserver.GameServerApp;
 import de.brickforceaurora.gameserver.core.GameServerLogic;

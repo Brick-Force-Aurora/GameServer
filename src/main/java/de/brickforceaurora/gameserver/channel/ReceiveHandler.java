@@ -1,10 +1,13 @@
-package de.brickforceaurora.gameserver.net;
+package de.brickforceaurora.gameserver.channel;
 
 import de.brickforceaurora.gameserver.GameServerApp;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
+import de.brickforceaurora.gameserver.protocol.MessageId;
 import de.brickforceaurora.gameserver.protocol.Msg2Handle;
 import de.brickforceaurora.gameserver.protocol.Msg4Recv;
 import de.brickforceaurora.gameserver.protocol.MsgBody;
+import de.brickforceaurora.gameserver.protocol.MsgReference;
+import de.brickforceaurora.gameserver.protocol.SendType;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -38,10 +41,18 @@ public final class ReceiveHandler extends ChannelInboundHandlerAdapter {
                     int id = accumulator.getId();
                     MsgBody body = accumulator.flush();
                     body.decrypt(logic.recvKey);
+                    
+                    MessageId mId = MessageId.fromId(id);
+                    if (mId == null) {
+                        
+                        client.Disconnect(true);
+                        ctx.close();
+                        return;
+                    }
 
                     logic.enqueueIncoming(
                             new MsgReference(
-                                    id,
+                                    mId,
                                     body,
                                     client,
                                     SendType.UNICAST,

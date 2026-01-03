@@ -1,14 +1,14 @@
 package de.brickforceaurora.gameserver.handler;
 
+import de.brickforceaurora.gameserver.channel.ClientReference;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.maps.RegMap;
 import de.brickforceaurora.gameserver.maps.RegMapManager;
 import de.brickforceaurora.gameserver.match.MatchData;
-import de.brickforceaurora.gameserver.net.ClientReference;
-import de.brickforceaurora.gameserver.net.MsgReference;
-import de.brickforceaurora.gameserver.net.SendType;
 import de.brickforceaurora.gameserver.protocol.MessageId;
 import de.brickforceaurora.gameserver.protocol.MsgBody;
+import de.brickforceaurora.gameserver.protocol.MsgReference;
+import de.brickforceaurora.gameserver.protocol.SendType;
 import de.brickforceaurora.gameserver.room.Room;
 
 import java.util.List;
@@ -16,12 +16,12 @@ import java.util.List;
 public class MapHandlers {
 
     public static void register(MessageDispatcher d) {
-        d.register(MessageId.CS_DESTROY_BRICK_REQ.getId(), MapHandlers::destroyBrick);
-        d.register(MessageId.CS_REG_MAP_INFO_REQ.getId(), MapHandlers::HandleRegMapInfoRequest);
-        d.register(MessageId.CS_MY_REGISTER_MAP_REQ.getId(), MapHandlers::HandleRequestRegisteredMaps);
-        d.register(MessageId.CS_USER_MAP_REQ.getId(), MapHandlers::HandleRequestUserMaps);
-        d.register(MessageId.CS_MY_DOWNLOAD_MAP_REQ.getId(), MapHandlers::HandleRequestDownloadedMaps);
-        d.register(MessageId.CS_ALL_MAP_REQ.getId(),  MapHandlers::HandleRequestAllMaps);
+        d.register(MessageId.CS_DESTROY_BRICK_REQ.id(), MapHandlers::destroyBrick);
+        d.register(MessageId.CS_REG_MAP_INFO_REQ.id(), MapHandlers::HandleRegMapInfoRequest);
+        d.register(MessageId.CS_MY_REGISTER_MAP_REQ.id(), MapHandlers::HandleRequestRegisteredMaps);
+        d.register(MessageId.CS_USER_MAP_REQ.id(), MapHandlers::HandleRequestUserMaps);
+        d.register(MessageId.CS_MY_DOWNLOAD_MAP_REQ.id(), MapHandlers::HandleRequestDownloadedMaps);
+        d.register(MessageId.CS_ALL_MAP_REQ.id(),  MapHandlers::HandleRequestAllMaps);
     }
 
     private static void HandleRequestDownloadedMaps(GameServerLogic server, MsgReference msgRef)
@@ -82,7 +82,7 @@ public class MapHandlers {
             body.write(entry.getDisLikes());
             body.write(entry.getDownloadCount());
         }
-        server.say(new MsgReference(426, body, client));
+        server.say(new MsgReference(MessageId.CS_MY_DOWNLOAD_MAP_ACK, body, client));
 
         server.logger().debug("SendDownloadedMaps to: " + client.GetIdentifier());
     }
@@ -121,7 +121,7 @@ public class MapHandlers {
             body.write(entry.getDisLikes());
             body.write(entry.getDownloadCount());
         }
-        server.say(new MsgReference(428, body, client));
+        server.say(new MsgReference(MessageId.CS_MY_REGISTER_MAP_ACK, body, client));
 
         server.logger().debug("SendRegisteredMaps to: " + client.GetIdentifier());
     }
@@ -161,7 +161,7 @@ public class MapHandlers {
             body.write((byte)entry.getRegisteredDate().getSecond());
             body.write((byte)0);
         }
-        server.say(new MsgReference(430, body, client));
+        server.say(new MsgReference(MessageId.CS_USER_MAP_ACK, body, client));
 
         server.logger().debug("SendUserMaps to: " + client.GetIdentifier());
     }
@@ -224,7 +224,7 @@ public class MapHandlers {
             body.write(entry.getDownloadCount());
         }
 
-        server.say(new MsgReference(msgId.getId(), body, client));
+        server.say(new MsgReference(msgId, body, client));
     }
 
 
@@ -259,7 +259,7 @@ public class MapHandlers {
                 body.write((byte)entry.getRegisteredDate().getSecond());
                 body.write((byte)0); //premium
             }
-            server.say(new MsgReference(430, body, client));
+            server.say(new MsgReference(MessageId.CS_USER_MAP_ACK, body, client));
         }
 
         server.logger().debug("SendAllUserMaps to: " + client.GetIdentifier());
@@ -305,7 +305,7 @@ public class MapHandlers {
                 body.write(entry.getDownloadCount());
             }
 
-            server.say(new MsgReference(426, body, client));
+            server.say(new MsgReference(MessageId.CS_MY_DOWNLOAD_MAP_ACK, body, client));
         }
 
         server.logger().debug("SendAllDownloadedMaps to: " + client.GetIdentifier());
@@ -328,7 +328,7 @@ public class MapHandlers {
         body.write((byte)0);
         body.write((byte)0);
 
-        server.say(new MsgReference(430, body, client));
+        server.say(new MsgReference(MessageId.CS_USER_MAP_ACK, body, client));
 
         server.logger().debug("SendEmptyUserMap to: " + client.GetIdentifier());
     }
@@ -353,7 +353,7 @@ public class MapHandlers {
 
         body.write(brick);
 
-        logic.say(new MsgReference(77, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+        logic.say(new MsgReference(MessageId.CS_DESTROY_BRICK_ACK, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
 
         logic.logger().debug("Broadcasted SendDestroyBrick for brick " + brick + " for room no: " + matchData.room.no);
     }

@@ -1,5 +1,9 @@
 package de.brickforceaurora.gameserver.protocol;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+
 public enum MessageId {
 
     CS_LOGIN_REQ(1),
@@ -558,7 +562,27 @@ public enum MessageId {
     CS_CLAN_NEED_CREATE_POINT_REQ(562),
     CS_CLAN_NEED_CREATE_POINT_ACK(563),
     CS_CLAN_CHANGE_ROOM_NAME_ACK(564),
-    CS_CLAN_GET_OUT_SQUAD_ACK(565);
+    CS_CLAN_GET_OUT_SQUAD_ACK(565),
+    
+
+    EXT_OP_CONNECTED_ACK(1000),
+    EXT_OP_SLOT_DATA_ACK(1001),
+    EXT_OP_POST_LOAD_INIT_ACK(1002),
+    EXT_OP_INVENTORY_REQ(1003),
+    EXT_OP_INVENTORY_ACK(1004),
+    EXT_OP_CUSTOM_MESSAGE_ACK(1005),
+    EXT_OP_DISCONNECT_REQ(1006),
+    EXT_OP_DISCONNECT_ACK(1007),
+    EXT_OP_BEGIN_CHUNKED_BUFFER_REQ(1008),
+    EXT_OP_CHUNKED_BUFFER_REQ(1009),
+    EXT_OP_END_CHUNKED_BUFFER_REQ(1010),
+    EXT_OP_BEGIN_CHUNKED_BUFFER_ACK(1011),
+    EXT_OP_CHUNKED_BUFFER_ACK(1012),
+    EXT_OP_END_CHUNKED_BUFFER_ACK(1013),
+    EXT_OP_CHUNKED_BUFFER_THUMBNAIL_REQ(1014),
+    EXT_OP_RENDEZVOUS_INFO_STEAM_ACK(1015),
+    EXT_OP_ENTER_STEAM_ACK(1016),
+    EXT_OP_SLOT_DATA_STEAM_ACK(1017);
 
     private final int id;
 
@@ -566,19 +590,20 @@ public enum MessageId {
         this.id = id;
     }
 
-    public int getId() {
+    public int id() {
         return id;
     }
 
     /* ===== Fast lookup ===== */
 
-    private static final java.util.Map<Integer, MessageId> LOOKUP =
-            new java.util.HashMap<>();
+    private static final Int2ObjectMap<MessageId> LOOKUP;
 
     static {
+        Int2ObjectArrayMap<MessageId> map = new Int2ObjectArrayMap<>();
         for (MessageId msg : values()) {
-            LOOKUP.put(msg.id, msg);
+            map.put(msg.id, msg);
         }
+        LOOKUP = Int2ObjectMaps.unmodifiable(map);
     }
 
     public static MessageId fromId(int id) {

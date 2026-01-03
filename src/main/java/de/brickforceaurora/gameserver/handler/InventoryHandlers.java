@@ -1,5 +1,6 @@
 package de.brickforceaurora.gameserver.handler;
 
+import de.brickforceaurora.gameserver.channel.ClientReference;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.data.Inventory;
 import de.brickforceaurora.gameserver.item.Item;
@@ -8,10 +9,9 @@ import de.brickforceaurora.gameserver.item.ItemUsage;
 import de.brickforceaurora.gameserver.item.Pimp;
 import de.brickforceaurora.gameserver.item.template.TItem;
 import de.brickforceaurora.gameserver.item.template.TItemManager;
-import de.brickforceaurora.gameserver.net.ClientReference;
-import de.brickforceaurora.gameserver.net.MsgReference;
-import de.brickforceaurora.gameserver.protocol.ExtensionOpcodes;
+import de.brickforceaurora.gameserver.protocol.MessageId;
 import de.brickforceaurora.gameserver.protocol.MsgBody;
+import de.brickforceaurora.gameserver.protocol.MsgReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
 public class InventoryHandlers {
 
     public static void register(MessageDispatcher d) {
-        d.register(ExtensionOpcodes.OP_INVENTORY_ACK.getOpCode(), InventoryHandlers::inventoryData);
+        d.register(MessageId.EXT_OP_INVENTORY_ACK.id(), InventoryHandlers::inventoryData);
     }
 
     private static void inventoryData(GameServerLogic server, MsgReference msgRef)
@@ -93,7 +93,7 @@ public class InventoryHandlers {
             body.write(client.inventory.equipment.get(i).getDurability());
         }
 
-        server.say(new MsgReference(464, body, client));
+        server.say(new MsgReference(MessageId.CS_ITEM_LIST_ACK, body, client));
 
         server.logger().debug("SendItemList to: " + client.GetIdentifier());
     }
@@ -118,7 +118,7 @@ public class InventoryHandlers {
             }
         }
 
-        server.say(new MsgReference(462, body, client));
+        server.say(new MsgReference(MessageId.CS_SHOOTER_TOOL_LIST_ACK, body, client));
 
         server.logger().debug("SendShooterToolList to: " + client.GetIdentifier());
     }
@@ -143,7 +143,7 @@ public class InventoryHandlers {
             }
         }
 
-        server.say(new MsgReference(463, body, client));
+        server.say(new MsgReference(MessageId.CS_WEAPON_SLOT_LIST_ACK, body, client));
 
         server.logger().debug("SendWeaponSlotList to: " + client.GetIdentifier());
     }
@@ -186,7 +186,7 @@ public class InventoryHandlers {
         body.write(pimp.getId());
         body.write(grade);
 
-        server.say(new MsgReference(355, body, client));
+        server.say(new MsgReference(MessageId.CS_ITEM_PIMP_ACK, body, client));
     }
 
     public static void SendPremiumItems(GameServerLogic server, ClientReference client)
@@ -197,6 +197,6 @@ public class InventoryHandlers {
         body.write("s20");
         body.write("s21");
 
-        server.say(new MsgReference(492, body, client));
+        server.say(new MsgReference(MessageId.CS_PREMIUM_ITEM_ACK, body, client));
     }
 }

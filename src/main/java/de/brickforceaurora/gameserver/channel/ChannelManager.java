@@ -1,4 +1,4 @@
-package de.brickforceaurora.gameserver.net;
+package de.brickforceaurora.gameserver.channel;
 
 import java.util.ArrayList;
 import java.util.List;

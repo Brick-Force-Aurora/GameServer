@@ -1,4 +1,4 @@
-package de.brickforceaurora.gameserver.net;
+package de.brickforceaurora.gameserver.protocol;
 
 public enum SendType {
     UNICAST,

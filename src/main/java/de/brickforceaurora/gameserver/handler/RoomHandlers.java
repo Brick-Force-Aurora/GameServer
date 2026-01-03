@@ -1,29 +1,30 @@
 package de.brickforceaurora.gameserver.handler;
 
+import de.brickforceaurora.gameserver.channel.*;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.match.MatchData;
-import de.brickforceaurora.gameserver.net.*;
-import de.brickforceaurora.gameserver.protocol.ExtensionOpcodes;
 import de.brickforceaurora.gameserver.protocol.MessageId;
 import de.brickforceaurora.gameserver.protocol.MsgBody;
+import de.brickforceaurora.gameserver.protocol.MsgReference;
+import de.brickforceaurora.gameserver.protocol.SendType;
 import de.brickforceaurora.gameserver.room.RoomStatus;
 import de.brickforceaurora.gameserver.room.RoomType;
 public class RoomHandlers {
 
     public static void register(MessageDispatcher d) {
-        d.register(MessageId.CS_ROOM_LIST_REQ.getId(), RoomHandlers::roomList);
-        d.register(MessageId.CS_CREATE_ROOM_REQ.getId(), RoomHandlers::createRoom);
-        d.register(MessageId.CS_ROOM_CONFIG_REQ.getId(), RoomHandlers::roomConfig);
-        d.register(MessageId.CS_ROAMIN_REQ.getId(), RoomHandlers::roamIn);
-        d.register(MessageId.CS_LEAVE_REQ.getId(), RoomHandlers::leave);
-        d.register(MessageId.CS_JOIN_REQ.getId(), RoomHandlers::join);
-        d.register(MessageId.CS_RESUME_ROOM_REQ.getId(), RoomHandlers::resume);
-        d.register(MessageId.CS_TEAM_CHANGE_REQ.getId(), RoomHandlers::teamChange);
-        d.register(MessageId.CS_KICK_REQ.getId(), RoomHandlers::kick);
-        d.register(MessageId.CS_SLOT_LOCK_REQ.getId(), RoomHandlers::slotLock);
-        d.register(MessageId.CS_START_REQ.getId(), RoomHandlers::start);
-        d.register(MessageId.CS_SET_STATUS_REQ.getId(), RoomHandlers::setStatus);
-        d.register(MessageId.CS_DELEGATE_MASTER_REQ.getId(), RoomHandlers::delegateMaster);
+        d.register(MessageId.CS_ROOM_LIST_REQ.id(), RoomHandlers::roomList);
+        d.register(MessageId.CS_CREATE_ROOM_REQ.id(), RoomHandlers::createRoom);
+        d.register(MessageId.CS_ROOM_CONFIG_REQ.id(), RoomHandlers::roomConfig);
+        d.register(MessageId.CS_ROAMIN_REQ.id(), RoomHandlers::roamIn);
+        d.register(MessageId.CS_LEAVE_REQ.id(), RoomHandlers::leave);
+        d.register(MessageId.CS_JOIN_REQ.id(), RoomHandlers::join);
+        d.register(MessageId.CS_RESUME_ROOM_REQ.id(), RoomHandlers::resume);
+        d.register(MessageId.CS_TEAM_CHANGE_REQ.id(), RoomHandlers::teamChange);
+        d.register(MessageId.CS_KICK_REQ.id(), RoomHandlers::kick);
+        d.register(MessageId.CS_SLOT_LOCK_REQ.id(), RoomHandlers::slotLock);
+        d.register(MessageId.CS_START_REQ.id(), RoomHandlers::start);
+        d.register(MessageId.CS_SET_STATUS_REQ.id(), RoomHandlers::setStatus);
+        d.register(MessageId.CS_DELEGATE_MASTER_REQ.id(), RoomHandlers::delegateMaster);
     }
 
     private static void roomList(GameServerLogic server, MsgReference msgRef)
@@ -69,7 +70,7 @@ public class RoomHandlers {
             }
         }
 
-        server.say(new MsgReference(468, body, client));
+        server.say(new MsgReference(MessageId.CS_ROOM_LIST_ACK, body, client));
 
         server.logger().debug("SendRoomList to: " + client.GetIdentifier());
     }
@@ -178,7 +179,7 @@ public class RoomHandlers {
         body.write(client.ip);
         body.write(client.port);
 
-        server.say(new MsgReference(320, body, client));
+        server.say(new MsgReference(MessageId.CS_RENDEZVOUS_INFO_ACK, body, client));
 
         server.logger().debug("SendRendezvousInfo to: " + client.GetIdentifier());
     }
@@ -207,14 +208,14 @@ public class RoomHandlers {
 
         if (client == null)
         {
-            server.say(new MsgReference(31, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+            server.say(new MsgReference(MessageId.CS_MASTER_ACK, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
 
             server.logger().debug("Broadcasted SendMaster for room no: " + matchData.room.no);
         }
 
         else
         {
-            server.say(new MsgReference(31, body, client));
+            server.say(new MsgReference(MessageId.CS_MASTER_ACK, body, client));
 
             server.logger().debug("SendMaster to: " + client.GetIdentifier());
         }
@@ -242,7 +243,7 @@ public class RoomHandlers {
 
         body.write(index);
         body.write(matchData.slots.get(index).isLocked ? (byte) 1 : (byte) 0);
-        server.say(new MsgReference(86, body, client, sendType, matchData.channel, matchData));
+        server.say(new MsgReference(MessageId.CS_SLOT_LOCK_ACK, body, client, sendType, matchData.channel, matchData));
 
         if (sendType == SendType.UNICAST)
             server.logger().debug("SendSlotLock to: " + client.GetIdentifier());
@@ -259,10 +260,10 @@ public class RoomHandlers {
         body.write(client.slot.slotIndex);
         body.write(client.seq);
         body.write(client.name);
-        body.write(client.ip);
-        body.write(client.port); //port
-        body.write(client.ip);
-        body.write(client.port); //remotePort
+        body.write(client.ip);   // local ip
+        body.write(client.port); // local port
+        body.write(client.ip);   // remote ip
+        body.write(client.port); // remote port
         body.write(client.inventory.equipmentString.length);
         for (int i = 0; i < client.inventory.equipmentString.length; i++)
         {
@@ -282,7 +283,7 @@ public class RoomHandlers {
         }
         body.write(0); //drpItem count
 
-        server.say(new MsgReference(10, body, client, SendType.BROADCAST_ROOM_EXCLUSIVE, matchData.channel, matchData));
+        server.say(new MsgReference(MessageId.CS_ENTER_ACK, body, client, SendType.BROADCAST_ROOM_EXCLUSIVE, matchData.channel, matchData));
         server.logger().debug("Broadcasted SendEnter for client " + client.GetIdentifier() + " for room no: " + matchData.room.no);
     }
 
@@ -295,7 +296,7 @@ public class RoomHandlers {
         body.write(matchData.masterSeq);
         body.write(matchData.cachedUMI.slot);
 
-        server.say(new MsgReference(53, body, client));
+        server.say(new MsgReference(MessageId.CS_COPYRIGHT_ACK, body, client));
         server.logger().debug("SendCopyRight to: " + client.GetIdentifier());
     }
 
@@ -327,12 +328,12 @@ public class RoomHandlers {
 
         if (client == null)
         {
-            server.say(new MsgReference(5, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+            server.say(new MsgReference(MessageId.CS_ADD_ROOM_ACK, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
             server.logger().debug("Broadcasted SendAddRoom for room no: " + matchData.room.no);
         }
         else
         {
-            server.say(new MsgReference(5, body, client));
+            server.say(new MsgReference(MessageId.CS_ADD_ROOM_ACK, body, client));
             server.logger().debug("SendAddRoom to: " + client.GetIdentifier());
         }
     }
@@ -352,7 +353,7 @@ public class RoomHandlers {
         body.write(success ? matchData.room.no : -1);
         body.write(matchData.room.title);
 
-        server.say(new MsgReference(8, body, client));
+        server.say(new MsgReference(MessageId.CS_CREATE_ROOM_ACK, body, client));
 
         server.logger().debug("SendCreateRoom to: " + client.GetIdentifier());
     }
@@ -414,12 +415,12 @@ public class RoomHandlers {
 
         if (client == null)
         {
-            server.say(new MsgReference(92, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+            server.say(new MsgReference(MessageId.CS_ROOM_CONFIG_ACK, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
             server.logger().debug("Broadcasted SendRoomConfig for room no: " + matchData.room.no);
         }
         else
         {
-            server.say(new MsgReference(92, body, client));
+            server.say(new MsgReference(MessageId.CS_ROOM_CONFIG_ACK, body, client));
             server.logger().debug("SendRoomConfig to: " + client.GetIdentifier());
         }
     }
@@ -450,7 +451,7 @@ public class RoomHandlers {
         MsgBody body = new MsgBody();
 
         body.write(dest);
-        server.say(new MsgReference(MessageId.CS_ROAMIN_ACK.getId(), body, client, sendType));
+        server.say(new MsgReference(MessageId.CS_ROAMIN_ACK, body, client, sendType));
 
         server.logger().debug("SendRoamin to: " + client.GetIdentifier());
     }
@@ -499,7 +500,7 @@ public class RoomHandlers {
 
         // yes, twice — exactly like original
         server.say(new MsgReference(
-                ExtensionOpcodes.OP_SLOT_DATA_ACK.getOpCode(),
+                MessageId.EXT_OP_SLOT_DATA_ACK,
                 body,
                 null,
                 SendType.BROADCAST_ROOM,
@@ -508,7 +509,7 @@ public class RoomHandlers {
         ));
 
         server.say(new MsgReference(
-                ExtensionOpcodes.OP_SLOT_DATA_ACK.getOpCode(),
+                MessageId.EXT_OP_SLOT_DATA_ACK,
                 body,
                 null,
                 SendType.BROADCAST_ROOM,
@@ -565,7 +566,7 @@ public class RoomHandlers {
         body.write(client.seq);
         body.write(client.status.ordinal());
 
-        server.say(new MsgReference(48, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+        server.say(new MsgReference(MessageId.CS_SET_STATUS_ACK, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
 
         server.logger().debug("Broadcasted SendSetStatus for client " + client.GetIdentifier() + " for room no: " + matchData.room.no);
     }
@@ -594,7 +595,7 @@ public class RoomHandlers {
             return;
         }
 
-        server.say(new MsgReference(11, body, client, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+        server.say(new MsgReference(MessageId.CS_LEAVE_ACK, body, client, SendType.BROADCAST_ROOM, matchData.channel, matchData));
 
         server.logger().debug("Broadcasted SendLeave for client " + client.GetIdentifier() + " for room no: " + matchData.room.no);
     }
@@ -605,7 +606,7 @@ public class RoomHandlers {
 
         body.write(matchData.room.no);
 
-        server.say(new MsgReference(6, body, null, SendType.BROADCAST_CHANNEL, channel, matchData));
+        server.say(new MsgReference(MessageId.CS_DEL_ROOM_ACK, body, null, SendType.BROADCAST_CHANNEL, channel, matchData));
 
         server.logger().debug("Broadcasted SendDelRoom for room no: " + matchData.room.no);
     }
@@ -645,7 +646,7 @@ public class RoomHandlers {
         MsgBody body = new MsgBody();
 
         body.write(matchData.room.no);
-        server.say(new MsgReference(29, body, client));
+        server.say(new MsgReference(MessageId.CS_JOIN_ACK, body, client));
 
         server.logger().debug("SendJoin to: " + client.GetIdentifier());
     }
@@ -697,7 +698,7 @@ public class RoomHandlers {
         body.write(matchData.room.squad);
         body.write(matchData.room.squadCounter);
 
-        server.say(new MsgReference(470, body, client, sendType, matchData.channel, matchData));
+        server.say(new MsgReference(MessageId.CS_ROOM_ACK, body, client, sendType, matchData.channel, matchData));
         if (sendType == SendType.UNICAST)
             server.logger().debug("SendRoom to: " + client.GetIdentifier());
         else
@@ -719,7 +720,7 @@ public class RoomHandlers {
         }
         MsgBody body = new MsgBody();
         body.write(seq);
-        server.say(new MsgReference(89, body, msgRef.client, SendType.UNICAST));
+        server.say(new MsgReference(MessageId.CS_KICK_ACK, body, msgRef.client, SendType.UNICAST));
     }
 
     private static void slotLock(GameServerLogic server, MsgReference msgRef)
@@ -772,7 +773,7 @@ public class RoomHandlers {
         body.write(0); //unused
         body.write(client.slot.slotIndex);
 
-        server.say(new MsgReference(81, body, client, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+        server.say(new MsgReference(MessageId.CS_TEAM_CHANGE_ACK, body, client, SendType.BROADCAST_ROOM, matchData.channel, matchData));
 
         server.logger().debug("Broadcasted SendTeamChange for client " + client.GetIdentifier() + " for room no: " + matchData.room.no);
     }
@@ -820,7 +821,7 @@ public class RoomHandlers {
         int value = 1 + (int) (Math.random() * 63);
         body.write(value);
 
-        server.say(new MsgReference(64, body, client));
+        server.say(new MsgReference(MessageId.CS_RESPAWN_TICKET_ACK, body, client));
 
         server.logger().debug("SendRespawnTicket to: " + client.GetIdentifier());
     }
@@ -831,7 +832,7 @@ public class RoomHandlers {
 
         body.write(matchData.lobbyCountdownTime);
 
-        server.say(new MsgReference(50, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+        server.say(new MsgReference(MessageId.CS_START_ACK, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
 
         server.logger().debug("Broadcasted SendStart for room no: " + matchData.room.no);
     }

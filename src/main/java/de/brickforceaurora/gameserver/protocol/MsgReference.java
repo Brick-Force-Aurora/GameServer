@@ -1,8 +1,8 @@
-package de.brickforceaurora.gameserver.net;
+package de.brickforceaurora.gameserver.protocol;
 
+import de.brickforceaurora.gameserver.channel.ChannelReference;
+import de.brickforceaurora.gameserver.channel.ClientReference;
 import de.brickforceaurora.gameserver.match.MatchData;
-import de.brickforceaurora.gameserver.protocol.Msg2Handle;
-import de.brickforceaurora.gameserver.protocol.MsgBody;
 
 public final class MsgReference {
 
@@ -24,7 +24,7 @@ public final class MsgReference {
         this.matchData = matchData;
     }
 
-    public MsgReference(int id,
+    public MsgReference(MessageId id,
                         MsgBody body,
                         ClientReference client,
                         SendType sendType,
@@ -33,11 +33,11 @@ public final class MsgReference {
         this(new Msg2Handle(id, body), client, sendType, channelRef, matchData);
     }
 
-    public MsgReference(int id, MsgBody body, ClientReference client) {
+    public MsgReference(MessageId id, MsgBody body, ClientReference client) {
         this(id, body, client, SendType.UNICAST, null, null);
     }
 
-    public MsgReference(int id, MsgBody body, ClientReference client, SendType sendType) {
+    public MsgReference(MessageId id, MsgBody body, ClientReference client, SendType sendType) {
         this(id, body, client, sendType, null, null);
     }
 }

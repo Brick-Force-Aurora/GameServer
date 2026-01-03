@@ -1,4 +1,4 @@
-package de.brickforceaurora.gameserver.net;
+package de.brickforceaurora.gameserver.channel;
 
 public enum ClientStatus {
     INVALID(-1),

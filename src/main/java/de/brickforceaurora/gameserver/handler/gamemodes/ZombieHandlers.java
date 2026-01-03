@@ -3,10 +3,10 @@ package de.brickforceaurora.gameserver.handler.gamemodes;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.handler.RoomHandlers;
 import de.brickforceaurora.gameserver.match.MatchData;
-import de.brickforceaurora.gameserver.net.MsgReference;
-import de.brickforceaurora.gameserver.net.SendType;
 import de.brickforceaurora.gameserver.protocol.MessageId;
 import de.brickforceaurora.gameserver.protocol.MsgBody;
+import de.brickforceaurora.gameserver.protocol.MsgReference;
+import de.brickforceaurora.gameserver.protocol.SendType;
 import de.brickforceaurora.gameserver.room.RoomStatus;
 
 public class ZombieHandlers {
@@ -43,7 +43,7 @@ public class ZombieHandlers {
 
         HandleZombieScoreRequest(logic, msgRef);
 
-        logic.say(new MsgReference(MessageId.CS_ROUND_END_ACK.getId(), msg, msgRef.client, SendType.BROADCAST_ROOM, data.channel, data));
+        logic.say(new MsgReference(MessageId.CS_ROUND_END_ACK, msg, msgRef.client, SendType.BROADCAST_ROOM, data.channel, data));
     }
 
     private static void HandleZombieScoreRequest(GameServerLogic logic, MsgReference msgRef)
@@ -55,7 +55,7 @@ public class ZombieHandlers {
         msg.write(msgRef.matchData.room.goal); // Total rounds
         msg.write(msgRef.matchData.zombieCurrentRound); // Current round
 
-        logic.say(new MsgReference(MessageId.CS_ZOMBIE_MODE_SCORE_ACK.getId(), msg, null, SendType.BROADCAST_ROOM, msgRef.matchData.channel, msgRef.matchData));
+        logic.say(new MsgReference(MessageId.CS_ZOMBIE_MODE_SCORE_ACK, msg, null, SendType.BROADCAST_ROOM, msgRef.matchData.channel, msgRef.matchData));
     }
 
     public static void handleEnd(GameServerLogic logic, MatchData matchData)
@@ -90,7 +90,7 @@ public class ZombieHandlers {
             body.write((long)0); //buff
         }
 
-        logic.say(new MsgReference(MessageId.CS_ZOMBIE_END_ACK.getId(), body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+        logic.say(new MsgReference(MessageId.CS_ZOMBIE_END_ACK, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
 
         logic.logger().debug("Broadcasted SendZombieMatchEnd for room no: " + matchData.room.no);
     }

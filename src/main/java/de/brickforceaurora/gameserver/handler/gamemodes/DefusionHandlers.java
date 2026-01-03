@@ -3,10 +3,10 @@ package de.brickforceaurora.gameserver.handler.gamemodes;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.handler.RoomHandlers;
 import de.brickforceaurora.gameserver.match.MatchData;
-import de.brickforceaurora.gameserver.net.MsgReference;
-import de.brickforceaurora.gameserver.net.SendType;
 import de.brickforceaurora.gameserver.protocol.MessageId;
 import de.brickforceaurora.gameserver.protocol.MsgBody;
+import de.brickforceaurora.gameserver.protocol.MsgReference;
+import de.brickforceaurora.gameserver.protocol.SendType;
 import de.brickforceaurora.gameserver.room.RoomStatus;
 
 public class DefusionHandlers {
@@ -26,7 +26,7 @@ public class DefusionHandlers {
             msg.write(1); //endCode4Blue
         }
         msg.write(roundCode); //roundCode
-        logic.say(new MsgReference(MessageId.CS_ROUND_END_ACK.getId(), msg, msgRef.client, SendType.BROADCAST_ROOM, data.channel, data));
+        logic.say(new MsgReference(MessageId.CS_ROUND_END_ACK, msg, msgRef.client, SendType.BROADCAST_ROOM, data.channel, data));
         SendScore(logic, data);
 
         if (data.redScore >= data.room.goal || data.blueScore >= data.room.goal)
@@ -46,7 +46,7 @@ public class DefusionHandlers {
         body.write(matchData.redScore);
         body.write(matchData.blueScore);
 
-        logic.say(new MsgReference(67, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+        logic.say(new MsgReference(MessageId.CS_TEAM_SCORE_ACK, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
 
         logic.logger().debug("Broadcasted SendDefusionScore for room no: " + matchData.room.no);
     }
@@ -92,7 +92,7 @@ public class DefusionHandlers {
                 body.write(matchData.clientList.get(i).data.xp);
                 body.write((long)0); //buff
             }
-            logic.say(new MsgReference(MessageId.CS_BLAST_MODE_END_ACK.getId(), body, null, team == 0 ? SendType.BROADCAST_BLUE_TEAM : SendType.BROADCAST_RED_TEAM));
+            logic.say(new MsgReference(MessageId.CS_BLAST_MODE_END_ACK, body, null, team == 0 ? SendType.BROADCAST_BLUE_TEAM : SendType.BROADCAST_RED_TEAM));
         }
 
         logic.logger().debug("Broadcasted SendDefusionMatchEnd for room no: " + matchData.room.no);

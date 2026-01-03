@@ -1,23 +1,17 @@
 package de.brickforceaurora.gameserver.handler;
 
+import de.brickforceaurora.gameserver.channel.ChannelReference;
+import de.brickforceaurora.gameserver.channel.ClientReference;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
-import de.brickforceaurora.gameserver.maps.RegMap;
-import de.brickforceaurora.gameserver.maps.RegMapManager;
-import de.brickforceaurora.gameserver.net.ChannelReference;
-import de.brickforceaurora.gameserver.net.ClientReference;
-import de.brickforceaurora.gameserver.net.MsgReference;
-import de.brickforceaurora.gameserver.protocol.ExtensionOpcodes;
 import de.brickforceaurora.gameserver.protocol.MessageId;
 import de.brickforceaurora.gameserver.protocol.MsgBody;
-import de.brickforceaurora.gameserver.room.Room;
-
-import java.util.List;
+import de.brickforceaurora.gameserver.protocol.MsgReference;
 
 public class LoginHandlers {
 
     public static void register(MessageDispatcher d) {
-        d.register(MessageId.CS_LOGIN_REQ.getId(), LoginHandlers::login);
-        d.register(MessageId.CS_HEARTBEAT_REQ.getId(), LoginHandlers::heartbeat);
+        d.register(MessageId.CS_LOGIN_REQ.id(), LoginHandlers::login);
+        d.register(MessageId.CS_HEARTBEAT_REQ.id(), LoginHandlers::heartbeat);
     }
 
     private static void login(GameServerLogic server, MsgReference msgRef) {
@@ -74,7 +68,7 @@ public class LoginHandlers {
 
         body.write(client.seq);
 
-        server.say(new MsgReference(ExtensionOpcodes.OP_INVENTORY_REQ.getOpCode(), body, client));
+        server.say(new MsgReference(MessageId.EXT_OP_INVENTORY_REQ, body, client));
 
         server.logger().debug("SendInventoryRequest to: " + client.GetIdentifier());
     }
@@ -90,7 +84,7 @@ public class LoginHandlers {
         body.write(client.data.extraSlots);
         body.write(client.data.rank);
         body.write(client.data.firstLoginFp);
-        server.say(new MsgReference(148, body, client));
+        server.say(new MsgReference(MessageId.CS_PLAYER_INIT_INFO_ACK, body, client));
 
         server.logger().debug("SendPlayerInitInfo to: " + client.GetIdentifier());
     }
@@ -106,7 +100,7 @@ public class LoginHandlers {
 
         body.write(client.seq);
         body.write(loginChannelId);
-        server.say(new MsgReference(2, body, client));
+        server.say(new MsgReference(MessageId.CS_LOGIN_ACK, body, client));
 
         server.logger().debug("SendLogin to: " + client.GetIdentifier());
     }
@@ -137,7 +131,7 @@ public class LoginHandlers {
         body.write(client.data.handGun);
         body.write(client.data.melee);
         body.write(client.data.special);
-        server.say(new MsgReference(27, body, client));
+        server.say(new MsgReference(MessageId.CS_PLAYER_INFO_ACK, body, client));
 
         server.logger().debug("SendPlayerInfo to: " + client.GetIdentifier());
     }

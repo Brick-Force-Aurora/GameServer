@@ -1,0 +1,18 @@
+package de.brickforceaurora.gameserver.data.asset.bodypart;
+
+import de.brickforceaurora.gameserver.data.asset.Asset;
+
+public final class BodyPartAsset extends Asset {
+    
+    private final float damageFactor;
+
+    public BodyPartAsset(String name, int id, float damageFactor) {
+        super(name, id);
+        this.damageFactor = damageFactor;
+    }
+    
+    public float damageFactor() {
+        return damageFactor;
+    }
+
+}

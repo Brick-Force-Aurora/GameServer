@@ -3,9 +3,10 @@ package de.brickforceaurora.gameserver.handler.gamemodes;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.handler.RoomHandlers;
 import de.brickforceaurora.gameserver.match.MatchData;
-import de.brickforceaurora.gameserver.net.MsgReference;
-import de.brickforceaurora.gameserver.net.SendType;
+import de.brickforceaurora.gameserver.protocol.MessageId;
 import de.brickforceaurora.gameserver.protocol.MsgBody;
+import de.brickforceaurora.gameserver.protocol.MsgReference;
+import de.brickforceaurora.gameserver.protocol.SendType;
 import de.brickforceaurora.gameserver.room.RoomStatus;
 
 public class TeamHandlers {
@@ -45,7 +46,7 @@ public class TeamHandlers {
                 body.write(matchData.clientList.get(i).data.xp);
                 body.write((long)0); //buff
             }
-            logic.say(new MsgReference(70, body, null, team == 0 ? SendType.BROADCAST_BLUE_TEAM : SendType.BROADCAST_RED_TEAM));
+            logic.say(new MsgReference(MessageId.CS_TEAM_MATCH_END_ACK, body, null, team == 0 ? SendType.BROADCAST_BLUE_TEAM : SendType.BROADCAST_RED_TEAM));
         }
 
         logic.logger().debug("Broadcasted SendTeamMatchEnd for room no: " + matchData.room.no);
@@ -57,7 +58,7 @@ public class TeamHandlers {
         body.write(matchData.redScore);
         body.write(matchData.blueScore);
 
-        logic.say(new MsgReference(67, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+        logic.say(new MsgReference(MessageId.CS_TEAM_SCORE_ACK, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
 
         logic.logger().debug("Broadcasted SendTeamScore for room no: " + matchData.room.no);
     }

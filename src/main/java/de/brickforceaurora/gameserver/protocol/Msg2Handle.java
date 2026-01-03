@@ -1,3 +1,3 @@
 package de.brickforceaurora.gameserver.protocol;
 
-public record Msg2Handle(int id, MsgBody msg) {}
+public record Msg2Handle(MessageId id, MsgBody msg) {}

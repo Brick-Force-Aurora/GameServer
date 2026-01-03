@@ -1,5 +1,6 @@
 package de.brickforceaurora.gameserver.core;
 
+import de.brickforceaurora.gameserver.channel.*;
 import de.brickforceaurora.gameserver.handler.*;
 import de.brickforceaurora.gameserver.maps.RegMapManager;
 import io.netty.bootstrap.ServerBootstrap;
@@ -14,7 +15,6 @@ import me.lauriichan.snowframe.SnowFrame;
 import java.util.*;
 
 import de.brickforceaurora.gameserver.match.MatchData;
-import de.brickforceaurora.gameserver.net.*;
 import de.brickforceaurora.gameserver.protocol.*;
 
 public final class GameServerLogic {
