@@ -173,7 +173,7 @@ public class InventoryHandlers {
     {
         try
         {
-            if (!item.canUpgradeAble())
+            if (!item.canUpgradeable())
                 return;
         }
         catch (Exception ex) {

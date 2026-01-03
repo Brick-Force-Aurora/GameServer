@@ -344,15 +344,29 @@ public class Item {
         return true;
     }
 
-    public boolean canUpgradeAble() {
-        int used = 0;
-        for (UpgradeProp prop : upgradeProps) {
-            if (prop.use() && prop.grade() >= 10) {
-                used++;
+    public boolean canUpgradeable() {
+
+        int usableUpgradeSlots = 0;
+        int maxUpgradeSlots = 13;
+
+        for (int slotIndex = 0; slotIndex < maxUpgradeSlots; slotIndex++) {
+            if (UpgradePropManager.getInstance()
+                    .useProp(this.getTemplate().upgradeCategory.value, slotIndex)) {
+                usableUpgradeSlots++;
             }
         }
-        return used < upgradeProps.length;
+
+        int maxedUpgradeCount = 0;
+        for (int slotIndex = 0; slotIndex < maxUpgradeSlots; slotIndex++) {
+            if (upgradeProps[slotIndex].use() && upgradeProps[slotIndex].grade() >= 10) {
+                maxedUpgradeCount++;
+            }
+        }
+
+        // If all usable slots are already maxed, no upgrade is possible
+        return usableUpgradeSlots != maxedUpgradeCount;
     }
+
 
     public boolean isUpgradedItem() {
         if (usage == ItemUsage.NOT_USING ||

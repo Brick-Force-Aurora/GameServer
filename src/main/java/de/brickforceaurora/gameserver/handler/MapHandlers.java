@@ -3,8 +3,10 @@ package de.brickforceaurora.gameserver.handler;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.maps.RegMap;
 import de.brickforceaurora.gameserver.maps.RegMapManager;
+import de.brickforceaurora.gameserver.match.MatchData;
 import de.brickforceaurora.gameserver.net.ClientReference;
 import de.brickforceaurora.gameserver.net.MsgReference;
+import de.brickforceaurora.gameserver.net.SendType;
 import de.brickforceaurora.gameserver.protocol.MessageId;
 import de.brickforceaurora.gameserver.protocol.MsgBody;
 import de.brickforceaurora.gameserver.room.Room;
@@ -14,6 +16,7 @@ import java.util.List;
 public class MapHandlers {
 
     public static void register(MessageDispatcher d) {
+        d.register(MessageId.CS_DESTROY_BRICK_REQ.getId(), MapHandlers::destroyBrick);
         d.register(MessageId.CS_REG_MAP_INFO_REQ.getId(), MapHandlers::HandleRegMapInfoRequest);
         d.register(MessageId.CS_MY_REGISTER_MAP_REQ.getId(), MapHandlers::HandleRequestRegisteredMaps);
         d.register(MessageId.CS_USER_MAP_REQ.getId(), MapHandlers::HandleRequestUserMaps);
@@ -328,5 +331,30 @@ public class MapHandlers {
         server.say(new MsgReference(430, body, client));
 
         server.logger().debug("SendEmptyUserMap to: " + client.GetIdentifier());
+    }
+
+    private static void destroyBrick(GameServerLogic logic, MsgReference msgRef)
+    {
+        MatchData matchData = msgRef.matchData;
+
+        int brick = msgRef.msg.msg().readInt();
+
+        logic.logger().debug("HandleDestroyBrickRequest from: " + msgRef.client.GetIdentifier());
+
+        if (!matchData.destroyedBricks.contains(brick)) {
+            matchData.destroyedBricks.add(brick);
+            SendDestroyBrick(logic, brick, matchData);
+        }
+    }
+
+    public static void SendDestroyBrick(GameServerLogic logic, int brick, MatchData matchData)
+    {
+        MsgBody body = new MsgBody();
+
+        body.write(brick);
+
+        logic.say(new MsgReference(77, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+
+        logic.logger().debug("Broadcasted SendDestroyBrick for brick " + brick + " for room no: " + matchData.room.no);
     }
 }
