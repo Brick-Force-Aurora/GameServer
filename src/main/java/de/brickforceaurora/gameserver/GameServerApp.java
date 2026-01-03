@@ -3,7 +3,7 @@ package de.brickforceaurora.gameserver;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import de.brickforceaurora.gameserver.util.logging.ColoredConsoleLogger;
+import de.brickforceaurora.gameserver.util.logging.AnsiSysOutLogger;
 import me.lauriichan.laylib.logger.ISimpleLogger;
 import me.lauriichan.snowframe.ISnowFrameApp;
 import me.lauriichan.snowframe.SnowFrame;
@@ -20,9 +20,7 @@ public class GameServerApp implements ISnowFrameApp<GameServerApp> {
         }
         
         // TODO: Do actual command line parsing
-        //ISimpleLogger logger = SysOutSimpleLogger.INSTANCE;
-        ISimpleLogger logger = ColoredConsoleLogger.INSTANCE;
-
+        ISimpleLogger logger = AnsiSysOutLogger.INSTANCE;
         logger.setDebug(Arrays.stream(args).anyMatch(str -> str.equalsIgnoreCase("--debug")));
         
         return snowFrame = SnowFrame.builder(new GameServerApp()).logger(logger).build();

@@ -23,12 +23,15 @@ public class GameServer extends AbstractTickTimer {
         // Setup timer
         setDaemon(false);
         setName("GameServer");
-        setLength((long) Math.floor(SECOND_IN_NANOS / TARGET_TPS), TimeUnit.NANOSECONDS);
+        sync().length((long) Math.floor(SECOND_IN_NANOS / TARGET_TPS), TimeUnit.NANOSECONDS);
     }
 
-    @Deprecated
     public GameServerLogic logic() {
         return logic;
+    }
+    
+    public ISimpleLogger logger() {
+        return logger;
     }
 
     @Override
