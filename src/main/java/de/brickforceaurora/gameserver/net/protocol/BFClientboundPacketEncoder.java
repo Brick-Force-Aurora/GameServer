@@ -8,16 +8,16 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
 
-public final class BFChannelEncoder extends MessageToMessageEncoder<IClientboundPacket> {
+public final class BFClientboundPacketEncoder extends MessageToMessageEncoder<IClientboundPacket> {
 
     private final BFClient client;
     private final byte sendKey;
 
-    public BFChannelEncoder(final BFClient client) {
+    public BFClientboundPacketEncoder(final BFClient client) {
         this(client, ProtocolConstant.DEFAULT_SEND_KEY);
     }
 
-    public BFChannelEncoder(final BFClient client, final byte sendKey) {
+    public BFClientboundPacketEncoder(final BFClient client, final byte sendKey) {
         this.client = client;
         this.sendKey = sendKey;
     }

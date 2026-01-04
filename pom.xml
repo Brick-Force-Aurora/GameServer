@@ -206,6 +206,10 @@
 									<className>
 										me.lauriichan.snowframe.maven.SignalHandlerTransformer</className>
 								</transformer>
+								<transformer>
+									<className>
+										de.brickforceaurora.maven.PacketListenerTransformer</className>
+								</transformer>
 							</transformers>
 							<includes>
 								<include>**/*Template.java</include>

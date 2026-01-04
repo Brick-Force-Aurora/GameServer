@@ -1,7 +1,10 @@
 package de.brickforceaurora.gameserver.net;
 
-import me.lauriichan.snowframe.extension.IExtension;
+import de.brickforceaurora.gameserver.net.protocol.IPacket;
 
-public interface INetHandler extends IExtension {
+@FunctionalInterface
+public interface INetHandler<P extends IPacket> {
+
+    void onPacket(NetContext<P> context) throws Throwable;
 
 }

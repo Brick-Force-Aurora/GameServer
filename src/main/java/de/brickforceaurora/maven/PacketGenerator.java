@@ -14,6 +14,9 @@ import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import me.lauriichan.laylib.json.IJson;
 import me.lauriichan.laylib.json.JsonArray;
@@ -85,11 +88,6 @@ public class PacketGenerator implements ISourceGenerator {
         packetRegistry.setFinal(true);
         packetRegistry.addMethod().setConstructor(true).setPrivate().setBody("throw new UnsupportedOperationException();");
 
-        packetRegistry.addField().setPrivate().setStatic(true).setFinal(true).setName("CLIENTBOUND_PACKETS")
-            .setType("Int2ObjectMap<Supplier<? extends IClientboundPacket>>");
-        packetRegistry.addField().setPrivate().setStatic(true).setFinal(true).setName("SERVERBOUND_PACKETS")
-            .setType("Int2ObjectMap<Supplier<? extends IServerboundPacket>>");
-
         StringBuilder clientBuilder = new StringBuilder();
         StringBuilder serverBuilder = new StringBuilder();
 
@@ -102,10 +100,14 @@ public class PacketGenerator implements ISourceGenerator {
             SourcePackage pkg;
             if (name.startsWith("Serverbound")) {
                 pkg = serverboundRoot;
-                serverBuilder.append("serverbound.put(").append(object.getAsInt("id")).append(", ").append(name).append("::new);");
+                int id = object.getAsInt("id");
+                serverBuilder.append("serverbound.put(").append(id).append(", ").append(name).append("::new);");
+                serverBuilder.append("packetIdMap.put(").append(name).append(".class, ").append(id).append(");");
             } else {
                 pkg = clientboundRoot;
-                clientBuilder.append("clientbound.put(").append(object.getAsInt("id")).append(", ").append(name).append("::new);");
+                int id = object.getAsInt("id");
+                clientBuilder.append("clientbound.put(").append(id).append(", ").append(name).append("::new);");
+                clientBuilder.append("packetIdMap.put(").append(name).append(".class, ").append(id).append(");");
             }
             if (pkg.hasDirectSource(name)) {
                 packetRegistry.addImport(pkg.getDirectSource(name));
@@ -128,26 +130,20 @@ public class PacketGenerator implements ISourceGenerator {
             }
         }
 
+        packetRegistry.addImport(Object2IntMap.class);
+        packetRegistry.addImport(Object2IntMaps.class);
+        packetRegistry.addImport(Object2IntArrayMap.class);
         packetRegistry.addImport(Int2ObjectMap.class);
         packetRegistry.addImport(Int2ObjectMaps.class);
         packetRegistry.addImport(Int2ObjectArrayMap.class);
         packetRegistry.addImport(Supplier.class);
-        if (clientboundBase != null) {
-            packetRegistry.addImport(clientboundBase);
-        }
-        if (serverboundBase != null) {
-            packetRegistry.addImport(serverboundBase);
-        }
-        packetRegistry.addInitializer("""
-            static {
-                var clientbound = new Int2ObjectArrayMap<Supplier<? extends IClientboundPacket>>();
-                %s
-                CLIENTBOUND_PACKETS = Int2ObjectMaps.unmodifiable(clientbound);
-                var serverbound = new Int2ObjectArrayMap<Supplier<? extends IServerboundPacket>>();
-                %s
-                SERVERBOUND_PACKETS = Int2ObjectMaps.unmodifiable(serverbound);
-            }
-            """.formatted(clientBuilder.toString(), serverBuilder.toString()));
+
+        packetRegistry.addField().setPrivate().setStatic(true).setFinal(true).setName("PACKET_ID_MAP")
+            .setType("Object2IntMap<Class<? extends IPacket>>");
+        packetRegistry.addField().setPrivate().setStatic(true).setFinal(true).setName("CLIENTBOUND_PACKETS")
+            .setType("Int2ObjectMap<Supplier<? extends IClientboundPacket>>");
+        packetRegistry.addField().setPrivate().setStatic(true).setFinal(true).setName("SERVERBOUND_PACKETS")
+            .setType("Int2ObjectMap<Supplier<? extends IServerboundPacket>>");
 
         packetRegistry.addMethod("""
             public static IClientboundPacket newClientPacket(int id) {
@@ -167,6 +163,30 @@ public class PacketGenerator implements ISourceGenerator {
                 return supplier.get();
             }
             """);
+
+        packetRegistry.addMethod("""
+            public static int packetIdByType(Class<? extends IPacket> type) {
+                int id = PACKET_ID_MAP.getInt(type);
+                if (id == Integer.MIN_VALUE) {
+                    throw new IllegalArgumentException("Unknown packet type '%s'".formatted(type.getName()));
+                }
+                return id;
+            }
+            """);
+        
+        packetRegistry.addInitializer("""
+            static {
+                var packetIdMap = new Object2IntArrayMap<Class<? extends IPacket>>();
+                packetIdMap.defaultReturnValue(Integer.MIN_VALUE);
+                var clientbound = new Int2ObjectArrayMap<Supplier<? extends IClientboundPacket>>();
+                %s
+                CLIENTBOUND_PACKETS = Int2ObjectMaps.unmodifiable(clientbound);
+                var serverbound = new Int2ObjectArrayMap<Supplier<? extends IServerboundPacket>>();
+                %s
+                SERVERBOUND_PACKETS = Int2ObjectMaps.unmodifiable(serverbound);
+                PACKET_ID_MAP = Object2IntMaps.unmodifiable(packetIdMap);
+            }
+            """.formatted(clientBuilder.toString(), serverBuilder.toString()));
     }
 
     private void handleClientbound(JavaClassSource source, JsonObject data) {

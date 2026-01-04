@@ -2,25 +2,22 @@ package de.brickforceaurora.gameserver.net.protocol;
 
 import java.util.List;
 
-import de.brickforceaurora.gameserver.net.BFClient;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 
-public final class BFChannelDecoder extends MessageToMessageDecoder<ByteBuf> {
+public final class BFServerboundPacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 
     private final ByteBuf accumulator = Unpooled.buffer(4092);
 
-    private final BFClient client;
     private final byte receiveKey;
 
-    public BFChannelDecoder(final BFClient client) {
-        this(client, ProtocolConstant.DEFAULT_RECEIVE_KEY);
+    public BFServerboundPacketDecoder() {
+        this(ProtocolConstant.DEFAULT_RECEIVE_KEY);
     }
 
-    public BFChannelDecoder(final BFClient client, final byte receiveKey) {
-        this.client = client;
+    public BFServerboundPacketDecoder(final byte receiveKey) {
         this.receiveKey = receiveKey;
     }
 
@@ -46,7 +43,6 @@ public final class BFChannelDecoder extends MessageToMessageDecoder<ByteBuf> {
         }
         IServerboundPacket packet = PacketRegistry.newServerPacket(id);
         if (packet == null) {
-            client.disconnect(true);
             ctx.close();
             return;
         }
@@ -66,7 +62,6 @@ public final class BFChannelDecoder extends MessageToMessageDecoder<ByteBuf> {
             }
         }
         if (crc != calculatedCrc) {
-            client.disconnect(true);
             ctx.close();
             return;
         }

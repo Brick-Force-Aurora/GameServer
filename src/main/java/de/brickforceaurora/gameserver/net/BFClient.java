@@ -3,6 +3,7 @@ package de.brickforceaurora.gameserver.net;
 import java.net.InetSocketAddress;
 
 import de.brickforceaurora.gameserver.data.ClientData;
+import de.brickforceaurora.gameserver.net.protocol.IClientboundPacket;
 import io.netty.channel.Channel;
 
 public final class BFClient {
@@ -15,6 +16,8 @@ public final class BFClient {
     private String ip;
     private int port;
     private int id;
+    
+    private boolean initialized = false;
 
     final byte[] buffer = new byte[8192];
 
@@ -27,13 +30,18 @@ public final class BFClient {
     }
 
     public void init(String name, int id) {
-        if (this.name != null) {
-            throw new IllegalStateException("Already logged in");
+        if (this.initialized) {
+            throw new IllegalStateException("Already initialized");
         }
         this.name = name;
         this.identifier = name + '-' + id + '-' + ip;
         this.id = id;
         this.port = 6000 + id;
+        this.initialized = true;
+    }
+
+    public boolean isLoggedIn() {
+        return initialized;
     }
 
     public String identifier() {
@@ -61,11 +69,15 @@ public final class BFClient {
     }
     
     public boolean disconnect() {
-        return disconnect(true);
+        if (!channel.isOpen()) {
+            return false;
+        }
+        channel.close();
+        return true;
     }
     
-    public boolean disconnect(boolean send) {
-        return false;
+    public void send(IClientboundPacket packet) {
+        channel.writeAndFlush(packet);
     }
 
 }
