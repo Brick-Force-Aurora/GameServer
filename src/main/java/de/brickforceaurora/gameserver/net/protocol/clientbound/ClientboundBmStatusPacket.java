@@ -5,68 +5,95 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundBmStatusPacket implements IClientboundPacket {
 
-	private boolean val;
-	private int val2;
-	private int val3;
-	private float val4;
-	private float val5;
-	private float val6;
-	final String UnknownValue0 = "val4";
-	final String UnknownValue1 = "val5";
-	final String UnknownValue2 = "val6";
+	private boolean rounding;
+	private int bombInstaller;
+	private int blastTarget;
+	private float posX;
+	private float posY;
+	private float posZ;
+	private float normalX;
+    private float normalY;
+    private float normalZ;
 
-	public final ClientboundBmStatusPacket val(boolean val) {
-		this.val = val;
+	public final ClientboundBmStatusPacket rounding(boolean rounding) {
+		this.rounding = rounding;
 		return this;
 	}
 
-	public final boolean val() {
-		return this.val;
+	public final boolean rounding() {
+		return this.rounding;
 	}
 
-	public final ClientboundBmStatusPacket val2(int val2) {
-		this.val2 = val2;
+	public final ClientboundBmStatusPacket bombInstaller(int bombInstaller) {
+		this.bombInstaller = bombInstaller;
 		return this;
 	}
 
-	public final int val2() {
-		return this.val2;
+	public final int bombInstaller() {
+		return this.bombInstaller;
 	}
 
-	public final ClientboundBmStatusPacket val3(int val3) {
-		this.val3 = val3;
+	public final ClientboundBmStatusPacket blastTarget(int blastTarget) {
+		this.blastTarget = blastTarget;
 		return this;
 	}
 
-	public final int val3() {
-		return this.val3;
+	public final int blastTarget() {
+		return this.blastTarget;
 	}
 
-	public final ClientboundBmStatusPacket val4(float val4) {
-		this.val4 = val4;
+    public final ClientboundBmStatusPacket posX(float posX) {
+        this.posX = posX;
+        return this;
+    }
+
+    public final float posX() {
+        return this.posX;
+    }
+
+    public final ClientboundBmStatusPacket posY(float posY) {
+        this.posY = posY;
+        return this;
+    }
+
+    public final float posY() {
+        return this.posY;
+    }
+
+    public final ClientboundBmStatusPacket posZ(float posZ) {
+        this.posZ = posZ;
+        return this;
+    }
+
+    public final float posZ() {
+        return this.posZ;
+    }
+
+	public final ClientboundBmStatusPacket normalX(float normalX) {
+		this.normalX = normalX;
 		return this;
 	}
 
-	public final float val4() {
-		return this.val4;
+	public final float normalX() {
+		return this.normalX;
 	}
 
-	public final ClientboundBmStatusPacket val5(float val5) {
-		this.val5 = val5;
+	public final ClientboundBmStatusPacket normalY(float normalY) {
+		this.normalY = normalY;
 		return this;
 	}
 
-	public final float val5() {
-		return this.val5;
+	public final float normalY() {
+		return this.normalY;
 	}
 
-	public final ClientboundBmStatusPacket val6(float val6) {
-		this.val6 = val6;
+	public final ClientboundBmStatusPacket normalZ(float normalZ) {
+		this.normalZ = normalZ;
 		return this;
 	}
 
-	public final float val6() {
-		return this.val6;
+	public final float normalZ() {
+		return this.normalZ;
 	}
 
 	@Override
@@ -76,11 +103,14 @@ public final class ClientboundBmStatusPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(ByteBuf buffer) {
-		buffer.writeBoolean(this.val);
-		buffer.writeIntLE(this.val2);
-		buffer.writeIntLE(this.val3);
-		buffer.writeFloatLE(this.val4);
-		buffer.writeFloatLE(this.val5);
-		buffer.writeFloatLE(this.val6);
+		buffer.writeBoolean(this.rounding);
+		buffer.writeIntLE(this.bombInstaller);
+		buffer.writeIntLE(this.blastTarget);
+		buffer.writeFloatLE(this.posX);
+		buffer.writeFloatLE(this.posY);
+		buffer.writeFloatLE(this.posZ);
+        buffer.writeFloatLE(this.normalX);
+        buffer.writeFloatLE(this.normalY);
+        buffer.writeFloatLE(this.normalZ);
 	}
 }

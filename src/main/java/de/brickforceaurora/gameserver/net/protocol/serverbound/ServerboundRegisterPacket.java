@@ -2,7 +2,13 @@ package de.brickforceaurora.gameserver.net.protocol.serverbound;
 
 import de.brickforceaurora.gameserver.net.protocol.IServerboundPacket;
 import io.netty.buffer.ByteBuf;
+import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+
+import javax.imageio.ImageIO;
 
 public final class ServerboundRegisterPacket implements IServerboundPacket {
 
@@ -11,8 +17,7 @@ public final class ServerboundRegisterPacket implements IServerboundPacket {
 	private int regHow;
 	private int point;
 	private int downloadFee;
-	final String UnknownValue0 = "thumbnail.Length";
-	final String UnknownValue1 = "thumbnail[i]";
+	private BufferedImage thumbnail;
 	private String msgEval;
 
 	public final ServerboundRegisterPacket slot(int slot) {
@@ -64,6 +69,15 @@ public final class ServerboundRegisterPacket implements IServerboundPacket {
 		return this.downloadFee;
 	}
 
+    public final ServerboundRegisterPacket thumbnail(BufferedImage thumbnail) {
+        this.thumbnail = thumbnail;
+        return this;
+    }
+
+    public final BufferedImage thumbnail() {
+        return this.thumbnail;
+    }
+
 	public final ServerboundRegisterPacket msgEval(String msgEval) {
 		this.msgEval = msgEval;
 		return this;
@@ -79,12 +93,23 @@ public final class ServerboundRegisterPacket implements IServerboundPacket {
 	}
 
 	@Override
-	public final void read(ByteBuf buffer) {
+	public final void read(ByteBuf buffer) throws IOException {
 		this.slot = buffer.readIntLE();
 		this.modeMask = buffer.readUnsignedShortLE();
 		this.regHow = buffer.readIntLE();
 		this.point = buffer.readIntLE();
 		this.downloadFee = buffer.readIntLE();
+        {
+            int length = buffer.readIntLE();
+            if (length == 0) {
+                this.thumbnail = null;
+            } else {
+                byte[] bytes = new byte[length];
+                buffer.readBytes(bytes);
+                FastByteArrayInputStream input = new FastByteArrayInputStream(bytes);
+                this.thumbnail = ImageIO.read(input);
+            }
+        }
 		{
 			int length = buffer.readIntLE();
 			if (length == 0) {

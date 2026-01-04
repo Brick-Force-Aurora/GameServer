@@ -5,8 +5,17 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundDownloadThumbnailPacket implements IServerboundPacket {
 
-	final String UnknownValue0 = "(byte)(isUserMap?1:0)";
+    private boolean userMap;
 	private int clientId;
+	
+	public final ServerboundDownloadThumbnailPacket userMap(boolean userMap) {
+	    this.userMap = userMap;
+	    return this;
+	}
+	
+	public final boolean userMap() {
+	    return this.userMap;
+	}
 
 	public final ServerboundDownloadThumbnailPacket clientId(int clientId) {
 		this.clientId = clientId;
@@ -24,6 +33,7 @@ public final class ServerboundDownloadThumbnailPacket implements IServerboundPac
 
 	@Override
 	public final void read(ByteBuf buffer) {
+	    this.userMap = buffer.readBoolean();
 		this.clientId = buffer.readIntLE();
 	}
 }

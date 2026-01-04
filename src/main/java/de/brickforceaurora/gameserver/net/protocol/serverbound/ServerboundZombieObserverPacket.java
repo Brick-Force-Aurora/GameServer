@@ -4,8 +4,17 @@ import de.brickforceaurora.gameserver.net.protocol.IServerboundPacket;
 import io.netty.buffer.ByteBuf;
 
 public final class ServerboundZombieObserverPacket implements IServerboundPacket {
-
-	final String UnknownValue0 = "MyInfoManager.Instance.Seq";
+	
+	private int clientId;
+	
+	public final ServerboundZombieObserverPacket clientId(int clientId) {
+        this.clientId = clientId;
+        return this;
+    }
+	
+	public final int clientId() {
+        return clientId;
+    }
 
 	@Override
 	public int packetId() {
@@ -14,5 +23,6 @@ public final class ServerboundZombieObserverPacket implements IServerboundPacket
 
 	@Override
 	public final void read(ByteBuf buffer) {
+	    this.clientId = buffer.readIntLE();
 	}
 }

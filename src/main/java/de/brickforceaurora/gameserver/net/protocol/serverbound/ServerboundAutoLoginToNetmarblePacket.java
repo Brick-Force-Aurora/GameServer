@@ -6,11 +6,20 @@ import java.nio.charset.StandardCharsets;
 
 public final class ServerboundAutoLoginToNetmarblePacket implements IServerboundPacket {
 
-	final String UnknownValue0 = "CPCookie[i]";
+	private byte[] cpCookie;
 	private int major;
 	private int minor;
 	private String privateIpAddress;
 	private String macAddress;
+
+    public final ServerboundAutoLoginToNetmarblePacket cpCookie(byte[] cpCookie) {
+        this.cpCookie = cpCookie;
+        return this;
+    }
+
+    public final byte[] cpCookie() {
+        return this.cpCookie;
+    }
 
 	public final ServerboundAutoLoginToNetmarblePacket major(int major) {
 		this.major = major;
@@ -55,6 +64,9 @@ public final class ServerboundAutoLoginToNetmarblePacket implements IServerbound
 
 	@Override
 	public final void read(ByteBuf buffer) {
+	    {
+	        // TODO: NO IDEA HOW TO READ cpCookie
+	    }
 		this.major = buffer.readIntLE();
 		this.minor = buffer.readIntLE();
 		{

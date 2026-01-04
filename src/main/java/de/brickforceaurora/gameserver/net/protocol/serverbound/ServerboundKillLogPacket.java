@@ -2,6 +2,7 @@ package de.brickforceaurora.gameserver.net.protocol.serverbound;
 
 import de.brickforceaurora.gameserver.net.protocol.IServerboundPacket;
 import io.netty.buffer.ByteBuf;
+import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 
 public final class ServerboundKillLogPacket implements IServerboundPacket {
 
@@ -13,10 +14,7 @@ public final class ServerboundKillLogPacket implements IServerboundPacket {
 	private int slot;
 	private int category;
 	private int hitpart;
-	final String UnknownValue0 = "0";
-	final String UnknownValue1 = "damageLog.Count";
-	final String UnknownValue2 = "item.Key";
-	final String UnknownValue3 = "item.Value";
+	private final Int2IntArrayMap damageLog = new Int2IntArrayMap();
 
 	public final ServerboundKillLogPacket killerType(byte killerType) {
 		this.killerType = killerType;
@@ -90,6 +88,10 @@ public final class ServerboundKillLogPacket implements IServerboundPacket {
 		return this.hitpart;
 	}
 
+    public final Int2IntArrayMap damageLog() {
+        return this.damageLog;
+    }
+
 	@Override
 	public int packetId() {
 		return 44;
@@ -105,5 +107,14 @@ public final class ServerboundKillLogPacket implements IServerboundPacket {
 		this.slot = buffer.readIntLE();
 		this.category = buffer.readIntLE();
 		this.hitpart = buffer.readIntLE();
+		{
+		    damageLog.clear();
+	        int length = buffer.readIntLE();
+	        for (int i = 0; i < length; i++) {
+	            int key = buffer.readIntLE();
+	            int value = buffer.readIntLE();
+	            damageLog.put(key, value);
+	        }
+		}
 	}
 }

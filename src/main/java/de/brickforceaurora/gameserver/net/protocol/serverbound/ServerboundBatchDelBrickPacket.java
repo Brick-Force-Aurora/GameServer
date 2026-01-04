@@ -5,15 +5,31 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundBatchDelBrickPacket implements IServerboundPacket {
 
-	final String UnknownValue0 = "bricks.Length";
-	final String UnknownValue1 = "bricks[i]";
+    private int[] bricks;
 
-	@Override
-	public int packetId() {
-		return 479;
-	}
+    public final ServerboundBatchDelBrickPacket bricks(int[] bricks) {
+        this.bricks = bricks;
+        return this;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-	}
+    public final int[] bricks() {
+        return bricks;
+    }
+
+    @Override
+    public int packetId() {
+        return 479;
+    }
+
+    @Override
+    public final void read(ByteBuf buffer) {
+        {
+            int length = buffer.readIntLE();
+            int[] values = new int[length];
+            for (int i = 0; i < length; i++) {
+                values[i] = buffer.readIntLE();
+            }
+            this.bricks = values;
+        }
+    }
 }
