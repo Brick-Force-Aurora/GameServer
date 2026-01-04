@@ -25,10 +25,13 @@ import me.lauriichan.maven.sourcemod.api.source.SourcePackage;
 
 public class PacketGenerator implements ISourceGenerator {
     
-    private static final ObjectOpenHashSet<String> CLIENTBOUND_UNSUPPORTED = new ObjectOpenHashSet<>(),SERVERBOUND_UNSUPPORTED = new ObjectOpenHashSet<>();
+    private static final ObjectOpenHashSet<String> CLIENTBOUND_UNSUPPORTED = new ObjectOpenHashSet<>(), SERVERBOUND_UNSUPPORTED = new ObjectOpenHashSet<>();
+    private static final ObjectOpenHashSet<String> CLIENTBOUND_UNKNOWN = new ObjectOpenHashSet<>(), SERVERBOUND_UNKNOWN = new ObjectOpenHashSet<>();
     
     public PacketGenerator() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("Unknown (Clientbound): " + CLIENTBOUND_UNKNOWN.toString());
+            System.out.println("Unknown (Serverbound): " + SERVERBOUND_UNKNOWN.toString());
             System.out.println("Unsupported (Clientbound): " + CLIENTBOUND_UNSUPPORTED.toString());
             System.out.println("Unsupported (Serverbound): " + SERVERBOUND_UNSUPPORTED.toString());
         }));
@@ -238,6 +241,10 @@ public class PacketGenerator implements ISourceGenerator {
             }
             }
         }
+        
+        if (unknownCounter != 0) {
+            CLIENTBOUND_UNKNOWN.add(source.getName());
+        }
 
         source.addMethod().setPublic().setName("packetId").setReturnType("int").setBody("return %s;".formatted(data.getAsInt("id")))
             .addAnnotation("Override");
@@ -341,6 +348,10 @@ public class PacketGenerator implements ISourceGenerator {
                     .setStringInitializer("name:'%s',type:'%s'".formatted(name, type));
             }
             }
+        }
+        
+        if (unknownCounter != 0) {
+            SERVERBOUND_UNKNOWN.add(source.getName());
         }
 
         source.addMethod().setPublic().setName("packetId").setReturnType("int").setBody("return %s;".formatted(data.getAsInt("id")))
