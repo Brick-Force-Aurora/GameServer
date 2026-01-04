@@ -23,12 +23,27 @@ import me.lauriichan.maven.sourcemod.api.ISourceGenerator;
 import me.lauriichan.maven.sourcemod.api.SourceTransformerUtils;
 import me.lauriichan.maven.sourcemod.api.source.SourcePackage;
 
+/**
+ * The packet generator is used to transform the "raw_packets.json", which has
+ * been generated from the original CSharp code, to java classes.
+ * 
+ * This class generates each packet (REQ packets => Serverbound / ACK packets =>
+ * Clientbound) and a PacketRegistry class.
+ * 
+ * The packet generator won't do anything if the PacketRegistry class exists in
+ * the main source code.
+ */
 public class PacketGenerator implements ISourceGenerator {
-    
-    private static final ObjectOpenHashSet<String> CLIENTBOUND_UNSUPPORTED = new ObjectOpenHashSet<>(), SERVERBOUND_UNSUPPORTED = new ObjectOpenHashSet<>();
-    private static final ObjectOpenHashSet<String> CLIENTBOUND_UNKNOWN = new ObjectOpenHashSet<>(), SERVERBOUND_UNKNOWN = new ObjectOpenHashSet<>();
-    
+
+    private static final ObjectOpenHashSet<String> CLIENTBOUND_UNSUPPORTED = new ObjectOpenHashSet<>(),
+        SERVERBOUND_UNSUPPORTED = new ObjectOpenHashSet<>();
+    private static final ObjectOpenHashSet<String> CLIENTBOUND_UNKNOWN = new ObjectOpenHashSet<>(),
+        SERVERBOUND_UNKNOWN = new ObjectOpenHashSet<>();
+
     public PacketGenerator() {
+        // Uncomment this when wanting to know which classes are most definitely broken :)
+        // or which types are missing from the conversion (which there shouldn't be any if nothing was changed)
+        /*
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println("Unknown (Clientbound): " + CLIENTBOUND_UNKNOWN.toString());
             System.out.println("Unknown (Serverbound): " + SERVERBOUND_UNKNOWN.toString());
@@ -36,12 +51,17 @@ public class PacketGenerator implements ISourceGenerator {
             System.out.println("Unsupported (Serverbound): " + SERVERBOUND_UNSUPPORTED.toString());
         }));
         CLIENTBOUND_UNSUPPORTED.iterator();
+        */
     }
 
     @Override
     public void generateSources(SourcePackage root) {
         Path path = Paths.get("raw_packets.json");
         if (!Files.exists(path)) {
+            return;
+        }
+        SourcePackage packetRoot = root.getOrCreatePackage("de.brickforceaurora.gameserver.net.protocol");
+        if (packetRoot.hasDirectSource("PacketRegistry")) {
             return;
         }
         JsonArray packets;
@@ -55,20 +75,21 @@ public class PacketGenerator implements ISourceGenerator {
             throw new IllegalStateException("Failed to read raw_packets.json", throwable);
         }
 
-        SourcePackage packetRoot = root.getOrCreatePackage("de.brickforceaurora.gameserver.net.protocol");
         SourcePackage clientboundRoot = packetRoot.getOrCreatePackage("clientbound");
         SourcePackage serverboundRoot = packetRoot.getOrCreatePackage("serverbound");
 
         JavaInterfaceSource serverboundBase = packetRoot.findInterface("IServerboundPacket").orElse(null);
         JavaInterfaceSource clientboundBase = packetRoot.findInterface("IClientboundPacket").orElse(null);
-        
+
         JavaClassSource packetRegistry = packetRoot.createClass("PacketRegistry");
         packetRegistry.setFinal(true);
         packetRegistry.addMethod().setConstructor(true).setPrivate().setBody("throw new UnsupportedOperationException();");
-        
-        packetRegistry.addField().setPrivate().setStatic(true).setFinal(true).setName("CLIENTBOUND_PACKETS").setType("Int2ObjectMap<Supplier<? extends IClientboundPacket>>");
-        packetRegistry.addField().setPrivate().setStatic(true).setFinal(true).setName("SERVERBOUND_PACKETS").setType("Int2ObjectMap<Supplier<? extends IServerboundPacket>>");
-        
+
+        packetRegistry.addField().setPrivate().setStatic(true).setFinal(true).setName("CLIENTBOUND_PACKETS")
+            .setType("Int2ObjectMap<Supplier<? extends IClientboundPacket>>");
+        packetRegistry.addField().setPrivate().setStatic(true).setFinal(true).setName("SERVERBOUND_PACKETS")
+            .setType("Int2ObjectMap<Supplier<? extends IServerboundPacket>>");
+
         StringBuilder clientBuilder = new StringBuilder();
         StringBuilder serverBuilder = new StringBuilder();
 
@@ -106,7 +127,7 @@ public class PacketGenerator implements ISourceGenerator {
                 handleClientbound(packet, object);
             }
         }
-        
+
         packetRegistry.addImport(Int2ObjectMap.class);
         packetRegistry.addImport(Int2ObjectMaps.class);
         packetRegistry.addImport(Int2ObjectArrayMap.class);
@@ -127,7 +148,7 @@ public class PacketGenerator implements ISourceGenerator {
                 SERVERBOUND_PACKETS = Int2ObjectMaps.unmodifiable(serverbound);
             }
             """.formatted(clientBuilder.toString(), serverBuilder.toString()));
-        
+
         packetRegistry.addMethod("""
             public static IClientboundPacket newClientPacket(int id) {
                 Supplier<? extends IClientboundPacket> supplier = CLIENTBOUND_PACKETS.get(id);
@@ -241,7 +262,7 @@ public class PacketGenerator implements ISourceGenerator {
             }
             }
         }
-        
+
         if (unknownCounter != 0) {
             CLIENTBOUND_UNKNOWN.add(source.getName());
         }
@@ -349,7 +370,7 @@ public class PacketGenerator implements ISourceGenerator {
             }
             }
         }
-        
+
         if (unknownCounter != 0) {
             SERVERBOUND_UNKNOWN.add(source.getName());
         }
@@ -369,18 +390,16 @@ public class PacketGenerator implements ISourceGenerator {
 
     private void addField(JavaClassSource source, String name, String type) {
         source.addField().setPrivate().setType(type).setName(name);
-        source.addMethod().setPublic().setFinal(true).setReturnType(source).setName(name)
-        .setBody("""
-            this.%1$s = %1$s; 
+        source.addMethod().setPublic().setFinal(true).setReturnType(source).setName(name).setBody("""
+            this.%1$s = %1$s;
             return this;
             """.formatted(name)).addParameter(type, name);
         source.addMethod().setPublic().setFinal(true).setReturnType(type).setName(name).setBody("return this.%1$s;".formatted(name));
     }
-    
+
     private void addRemappedNumberField(JavaClassSource source, String name, String type, long minValue, long maxValue) {
         source.addField().setPrivate().setType(type).setName(name);
-        source.addMethod().setPublic().setFinal(true).setReturnType(source).setName(name)
-        .setBody("""
+        source.addMethod().setPublic().setFinal(true).setReturnType(source).setName(name).setBody("""
             if (%1$s > %2$sL || %1$s < %3$sL) {
                 throw new IllegalArgumentException("Value " + %1$s + " is out of bounds of allowed number range of %3$s - %2$s");
             }
