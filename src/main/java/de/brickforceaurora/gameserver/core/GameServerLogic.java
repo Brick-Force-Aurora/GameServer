@@ -264,11 +264,11 @@ public final class GameServerLogic {
         }
     }
 
-    private void sendToClient(ClientReference client, int id, MsgBody body) {
+    private void sendToClient(ClientReference client, MessageId id, MsgBody body) {
         if (client == null || client.socket == null) return;
         if (!client.socket.isActive()) return;
 
-        Msg4Send send = new Msg4Send(id, 0xFFFFFFFFL, 0xFFFFFFFFL, body, sendKey);
+        Msg4Send send = new Msg4Send(id.id(), 0xFFFFFFFFL, 0xFFFFFFFFL, body, sendKey);
         //logger.info("JAVA TX HEX (msgId={1}): {0}", io.netty.buffer.ByteBufUtil.hexDump(send.buffer()), id );
         client.socket.writeAndFlush(send.toByteBuf(client.socket.alloc()));
 
@@ -316,7 +316,7 @@ public final class GameServerLogic {
 
     public void sendConnected(ClientReference client) {
         MsgBody body = new MsgBody();
-        say(new MsgReference(ExtensionOpcodes.OP_CONNECTED_ACK.getOpCode(), body, client));
+        say(new MsgReference(MessageId.EXT_OP_CONNECTED_ACK, body, client));
 
         if (debugSend) {
             logger.debug("SendConnected to {0}", client.GetIdentifier());
@@ -329,7 +329,7 @@ public final class GameServerLogic {
 
     public void sendDisconnect(ClientReference client, SendType type) {
         MsgBody body = new MsgBody();
-        say(new MsgReference(ExtensionOpcodes.OP_DISCONNECT_REQ.getOpCode(), body, client, type, null, null));
+        say(new MsgReference(MessageId.EXT_OP_DISCONNECT_REQ, body, client, type, null, null));
     }
 
     public void SendDeleteRoom(MatchData matchData, ChannelReference channel)
@@ -338,7 +338,7 @@ public final class GameServerLogic {
 
         body.write(matchData.room.no);
 
-        say(new MsgReference(6, body, null, SendType.BROADCAST_CHANNEL, channel, matchData));
+        say(new MsgReference(MessageId.CS_DEL_ROOM_ACK, body, null, SendType.BROADCAST_CHANNEL, channel, matchData));
 
         if (debugSend) {
             logger.debug("Broadcasted SendDelRoom for room no: {0}", matchData.room.no);

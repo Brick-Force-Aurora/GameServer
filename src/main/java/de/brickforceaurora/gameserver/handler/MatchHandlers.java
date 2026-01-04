@@ -550,15 +550,15 @@ public class MatchHandlers {
                     break;
 
                 case ZOMBIE:
-                    if (HitPart.TYPE.values()[hitpart] == HitPart.TYPE.BRAIN && matchData.zombiePlayers.contains(victim))
-                    {
-                        matchData.zombiePlayers.remove(victim);
-                        matchData.killedPlayers.add(victim);
-                        if (matchData.zombiePlayers.isEmpty())
-                        {
-                            ZombieHandlers.roundEnd(logic, msgRef, matchData);
-                        }
-                    }
+//                    if (HitPart.TYPE.values()[hitpart] == HitPart.TYPE.BRAIN && matchData.zombiePlayers.contains(victim))
+//                    {
+//                        matchData.zombiePlayers.remove(victim);
+//                        matchData.killedPlayers.add(victim);
+//                        if (matchData.zombiePlayers.isEmpty())
+//                        {
+//                            ZombieHandlers.roundEnd(logic, msgRef, matchData);
+//                        }
+//                    }
                     break;
 
                 case BUNGEE:
