@@ -2,6 +2,8 @@ package de.brickforceaurora.gameserver.net;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -21,6 +23,10 @@ import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.signal.SignalManager;
 
 public final class NetManager implements AutoCloseable {
+    
+    private static final long TIMEOUT_TIME = TimeUnit.SECONDS.toNanos(3);
+    
+    public final AtomicInteger nextClientId = new AtomicInteger(0);
 
     private final NioEventLoopGroup mainGroup = new NioEventLoopGroup(1);
     private final NioEventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -33,15 +39,51 @@ public final class NetManager implements AutoCloseable {
     private final SignalManager signalManager;
     private final ISimpleLogger logger;
 
-    private final ObjectArrayList<BFClient> clients = new ObjectArrayList<>();
+    private final ObjectList<BFClient> clients = ObjectLists.synchronize(new ObjectArrayList<>());
 
     private final ObjectList<NetHandlerContainer> containers = ObjectLists.synchronize(new ObjectArrayList<>());
-
+    
+    private volatile long netTime = 0;
+    
     public NetManager(SnowFrame<GameServerApp> frame) {
         this.snowFrame = frame;
         this.logger = frame.logger();
         this.signalManager = frame.module(SignalModule.class).signalManager();
     }
+    
+    /*
+     * Heartbeat related
+     */
+
+    public void tick(long delta) {
+        netTime += delta;
+        BFClient client;
+        for (int i = 0; i < clients.size(); i++) {
+            client = clients.get(i);
+            if (client.shouldKeepAlive) {
+                client.shouldKeepAlive = false;
+                client.netTime = netTime;
+                continue;
+            }
+            if (netTime - client.netTime > TIMEOUT_TIME) {
+                // We first remove the client from the clientList
+                clientDisconnected(client);
+                // And then actually disconnect them
+                client.disconnect();
+                // Decrease index as client has been removed
+                i--;
+                continue;
+            }
+        }
+    }
+
+    public void keepClientAlive(BFClient client) {
+        client.shouldKeepAlive = true;
+    }
+
+    /*
+     * Getter
+     */
 
     public SnowFrame<GameServerApp> snowFrame() {
         return snowFrame;
@@ -54,6 +96,10 @@ public final class NetManager implements AutoCloseable {
     public ISimpleLogger logger() {
         return logger;
     }
+    
+    /*
+     * Client related
+     */
 
     public Optional<BFClient> clientById(int clientId) {
         if (clients.isEmpty()) {
@@ -73,6 +119,10 @@ public final class NetManager implements AutoCloseable {
     public void broadcast(Predicate<BFClient> predicate, IClientboundPacket packet) {
         activeClients().filter(predicate).forEach(client -> client.send(packet));
     }
+    
+    /*
+     * Listener related
+     */
 
     public NetHandlerContainer registerListener(INetListener listener) {
         for (int i = 0; i < containers.size(); i++) {
@@ -103,6 +153,10 @@ public final class NetManager implements AutoCloseable {
         }
         return context.intercepts();
     }
+    
+    /*
+     * Server logic related
+     */
 
     public void open() throws InterruptedException {
         if (serverChannel != null) {
@@ -123,7 +177,9 @@ public final class NetManager implements AutoCloseable {
         }
 
         // Disconnect all clients before closing
-        clients.clone().forEach(client -> client.disconnect());
+        for (int i = 0; i < clients.size(); i++) {
+            clients.get(i).disconnect();
+        }
 
         serverChannel.close().awaitUninterruptibly();
         mainGroup.close();
@@ -134,6 +190,8 @@ public final class NetManager implements AutoCloseable {
         if (clients.contains(client)) {
             return;
         }
+        // Set client net time to current net time
+        client.netTime = netTime;
         clients.add(client);
         logger.info("Client connected");
         signalManager.call(new NetSignal.ClientConnected(this, client));

@@ -55,8 +55,7 @@ public final class PacketListenerTransformer implements ISourceTransformer {
                 containerBuilder.append(",");
             }
             containerBuilder.append("\n\t\tnew NetHandler<>(").append(packetType.getQualifiedName()).append(".class, this::")
-                .append(method.getName()).append(", ")
-                .append(Boolean.parseBoolean(method.getAnnotation(PacketHandler.class).getLiteralValue())).append(')');
+                .append(method.getName()).append(')');
         }
         if (amount == 0) {
             return;

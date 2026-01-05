@@ -20,7 +20,10 @@ public final class BFClient {
     private boolean initialized = false;
 
     final byte[] buffer = new byte[8192];
-
+    
+    volatile boolean shouldKeepAlive = false;
+    volatile long netTime = 0;
+    
     private final ClientData data;
 
     public BFClient(Channel channel) {
@@ -46,6 +49,10 @@ public final class BFClient {
 
     public String identifier() {
         return identifier;
+    }
+    
+    public Channel channel() {
+        return channel;
     }
 
     public String name() {

@@ -5,75 +5,75 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundPlayerInitInfoPacket implements IClientboundPacket {
 
-	private int val;
-	private byte val2;
-	private int val3;
-	private byte val4;
-	private int val5;
-	private int val6;
-	private int val7;
+	private int xp;
+	private byte tutorialFlag;
+	private int country;
+	private boolean tosAccepted;
+	private int extraSlots;
+	private int rank;
+	private int firstLoginForcePoints;
 
-	public final ClientboundPlayerInitInfoPacket val(int val) {
-		this.val = val;
+	public final ClientboundPlayerInitInfoPacket xp(int xp) {
+		this.xp = xp;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int xp() {
+		return this.xp;
 	}
 
-	public final ClientboundPlayerInitInfoPacket val2(byte val2) {
-		this.val2 = val2;
+	public final ClientboundPlayerInitInfoPacket tutorialFlag(byte tutorialFlag) {
+		this.tutorialFlag = tutorialFlag;
 		return this;
 	}
 
-	public final byte val2() {
-		return this.val2;
+	public final byte tutorialFlag() {
+		return this.tutorialFlag;
 	}
 
-	public final ClientboundPlayerInitInfoPacket val3(int val3) {
-		this.val3 = val3;
+	public final ClientboundPlayerInitInfoPacket country(int country) {
+		this.country = country;
 		return this;
 	}
 
-	public final int val3() {
-		return this.val3;
+	public final int country() {
+		return this.country;
 	}
 
-	public final ClientboundPlayerInitInfoPacket val4(byte val4) {
-		this.val4 = val4;
+	public final ClientboundPlayerInitInfoPacket tosAccepted(boolean tosAccepted) {
+		this.tosAccepted = tosAccepted;
 		return this;
 	}
 
-	public final byte val4() {
-		return this.val4;
+	public final boolean tosAccepted() {
+		return this.tosAccepted;
 	}
 
-	public final ClientboundPlayerInitInfoPacket val5(int val5) {
-		this.val5 = val5;
+	public final ClientboundPlayerInitInfoPacket extraSlots(int extraSlots) {
+		this.extraSlots = extraSlots;
 		return this;
 	}
 
-	public final int val5() {
-		return this.val5;
+	public final int extraSlots() {
+		return this.extraSlots;
 	}
 
-	public final ClientboundPlayerInitInfoPacket val6(int val6) {
-		this.val6 = val6;
+	public final ClientboundPlayerInitInfoPacket rank(int rank) {
+		this.rank = rank;
 		return this;
 	}
 
-	public final int val6() {
-		return this.val6;
+	public final int rank() {
+		return this.rank;
 	}
 
-	public final ClientboundPlayerInitInfoPacket val7(int val7) {
-		this.val7 = val7;
+	public final ClientboundPlayerInitInfoPacket firstLoginForcePoints(int firstLoginForcePoints) {
+		this.firstLoginForcePoints = firstLoginForcePoints;
 		return this;
 	}
 
-	public final int val7() {
-		return this.val7;
+	public final int firstLoginForcePoints() {
+		return this.firstLoginForcePoints;
 	}
 
 	@Override
@@ -83,12 +83,12 @@ public final class ClientboundPlayerInitInfoPacket implements IClientboundPacket
 
 	@Override
 	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
-		buffer.writeByte(this.val2);
-		buffer.writeIntLE(this.val3);
-		buffer.writeByte(this.val4);
-		buffer.writeIntLE(this.val5);
-		buffer.writeIntLE(this.val6);
-		buffer.writeIntLE(this.val7);
+		buffer.writeIntLE(this.xp);
+		buffer.writeByte(this.tutorialFlag);
+		buffer.writeIntLE(this.country);
+		buffer.writeBoolean(this.tosAccepted);
+		buffer.writeIntLE(this.extraSlots);
+		buffer.writeIntLE(this.rank);
+		buffer.writeIntLE(this.firstLoginForcePoints);
 	}
 }
