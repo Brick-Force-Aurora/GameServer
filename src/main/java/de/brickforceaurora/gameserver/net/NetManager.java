@@ -49,6 +49,7 @@ public final class NetManager implements AutoCloseable {
         this.snowFrame = frame;
         this.logger = frame.logger();
         this.signalManager = frame.module(SignalModule.class).signalManager();
+        registerListenerExtensions();
     }
     
     /*
@@ -138,6 +139,10 @@ public final class NetManager implements AutoCloseable {
 
     public boolean unregisterListener(NetHandlerContainer container) {
         return containers.remove(container);
+    }
+    
+    final void registerListenerExtensions() {
+        snowFrame.extension(INetListener.class, true).callInstances(this::registerListener);
     }
 
     final <P extends IPacket> boolean handlePacket(BFClient client, P packet) {
