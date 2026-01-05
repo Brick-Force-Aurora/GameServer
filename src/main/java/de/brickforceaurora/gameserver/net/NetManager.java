@@ -2,8 +2,11 @@ package de.brickforceaurora.gameserver.net;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import de.brickforceaurora.gameserver.GameServerApp;
+import de.brickforceaurora.gameserver.net.protocol.IClientboundPacket;
 import de.brickforceaurora.gameserver.net.protocol.IPacket;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -57,6 +60,18 @@ public final class NetManager implements AutoCloseable {
             return Optional.empty();
         }
         return clients.stream().filter(client -> client.isLoggedIn() && client.id() == clientId).findFirst();
+    }
+    
+    public Stream<BFClient> activeClients() {
+        return clients.stream().filter(BFClient::isLoggedIn);
+    }
+    
+    public void broadcast(IClientboundPacket packet) {
+        activeClients().forEach(client -> client.send(packet));
+    }
+    
+    public void broadcast(Predicate<BFClient> predicate, IClientboundPacket packet) {
+        activeClients().filter(predicate).forEach(client -> client.send(packet));
     }
 
     public NetHandlerContainer registerListener(INetListener listener) {
