@@ -23,7 +23,7 @@
 		<dep.snowframe.version>0.1.0</dep.snowframe.version>
 		<dep.laylib.version>0.4.2-SNAPSHOT</dep.laylib.version>
 		<dep.fastutil.version>8.5.18</dep.fastutil.version>
-		<dep.sourcemod.version>2.1.1-SNAPSHOT</dep.sourcemod.version>
+		<dep.sourcemod.version>2.1.1</dep.sourcemod.version>
 	</properties>
 	
 	<pluginRepositories>
