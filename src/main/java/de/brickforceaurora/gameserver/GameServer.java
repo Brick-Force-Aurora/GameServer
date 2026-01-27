@@ -22,7 +22,6 @@ public class GameServer extends AbstractTickTimer {
         this.netManager = new NetManager(frame);
 
         // Setup timer
-        setDaemon(false);
         setName("GameServer");
         sync().length((long) Math.floor(SECOND_IN_NANOS / TARGET_TPS), TimeUnit.NANOSECONDS);
     }

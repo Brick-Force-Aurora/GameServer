@@ -58,7 +58,7 @@ public final class ClientReference {
     }
 
     public boolean Disconnect(boolean send) {
-        GameServerLogic logic = GameServerApp.get().server().logic();
+        /*GameServerLogic logic = GameServerApp.get().server().logic();
         if (send) {
             RoomHandlers.SendLeave(logic, this);
             RoomHandlers.sendSlotData(logic, matchData);
@@ -69,7 +69,8 @@ public final class ClientReference {
         if(channel != null){
             channel.removeClient(this);
         }
-        return logic.clientList.remove(this);
+        return logic.clientList.remove(this);*/
+        return false;
     }
 
     public boolean Disconnect() {

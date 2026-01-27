@@ -2,14 +2,17 @@ package de.brickforceaurora.gameserver.net.protocol;
 
 import java.util.List;
 
+import de.brickforceaurora.gameserver.GameServerApp;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
+import me.lauriichan.laylib.logger.ISimpleLogger;
 
 public final class BFServerboundPacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 
-    private final ByteBuf accumulator = Unpooled.buffer(4092);
+    private final ISimpleLogger logger = GameServerApp.logger();
+    private final ByteBuf accumulator = Unpooled.buffer(8092);
 
     private final byte receiveKey;
 
@@ -24,6 +27,7 @@ public final class BFServerboundPacketDecoder extends MessageToMessageDecoder<By
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
         msg.readBytes(accumulator);
+        logger.debug("Hello");
         if (accumulator.readableBytes() < ProtocolConstant.HEADER_SIZE) {
             return;
         }
@@ -37,11 +41,13 @@ public final class BFServerboundPacketDecoder extends MessageToMessageDecoder<By
         accumulator.skipBytes(8);
         //      long meta = accumulator.readUnsignedIntLE();
         //      long src = accumulator.readUnsignedIntLE();
+        logger.debug("Hello2");
         if (accumulator.readableBytes() < size) {
             accumulator.resetReaderIndex();
             return;
         }
         IServerboundPacket packet = PacketRegistry.newServerPacket(id);
+        logger.debug("Packet: {0} ({1})", packet.packetName(), packet.packetId());
         if (packet == null) {
             ctx.close();
             return;

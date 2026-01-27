@@ -90,7 +90,7 @@ public final class GameServerLogic {
                     protected void initChannel(SocketChannel ch) {
                         ClientReference client = new ClientReference(ch);
 
-                        ch.pipeline().addLast(new ReceiveHandler(client));
+                        //ch.pipeline().addLast(new ReceiveHandler(client));
 
                         handleClientAccepted(client);
                     }
