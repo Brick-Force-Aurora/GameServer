@@ -16,7 +16,7 @@ public class GameServer extends AbstractTickTimer {
 
     private final ISimpleLogger logger;
     private final GameServerLogic logic;
-    
+
     private final NetManager netManager;
 
     public GameServer(SnowFrame<GameServerApp> frame) {
@@ -33,7 +33,7 @@ public class GameServer extends AbstractTickTimer {
     public GameServerLogic logic() {
         return logic;
     }
-    
+
     public ISimpleLogger logger() {
         return logger;
     }
@@ -45,9 +45,14 @@ public class GameServer extends AbstractTickTimer {
 
         // Tick game server logic class
         logic.tick(deltaTime);
-        
+
         // Tick net manager
         netManager.tick(delta);
+    }
+
+    @Override
+    protected Thread createThread(Runnable runnable) {
+        return Thread.ofVirtual().unstarted(runnable);
     }
 
 }

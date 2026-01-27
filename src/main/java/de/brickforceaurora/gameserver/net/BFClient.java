@@ -18,8 +18,6 @@ public final class BFClient {
     private int id;
     
     private boolean initialized = false;
-
-    final byte[] buffer = new byte[8192];
     
     volatile boolean shouldKeepAlive = false;
     volatile long netTime = 0;
