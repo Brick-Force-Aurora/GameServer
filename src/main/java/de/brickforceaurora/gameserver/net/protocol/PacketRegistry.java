@@ -416,6 +416,7 @@ import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundMemoPa
 import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundChangeClanNoticePacket;
 import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundMeRegBrickEndPacket;
 import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundZombieStatusPacket;
+import de.brickforceaurora.gameserver.net.protocol.clientbound.emulator.ClientboundEmulatorConnected;
 import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundPremiumItemPacket;
 import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundWeaponSlotPacket;
 import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundTeamChangePacket;
@@ -597,6 +598,8 @@ public final class PacketRegistry {
 		var packetIdMap = new Object2IntArrayMap<Class<? extends IPacket>>();
 		packetIdMap.defaultReturnValue(Integer.MIN_VALUE);
 		var clientbound = new Int2ObjectArrayMap<Supplier<? extends IClientboundPacket>>();
+		clientbound.put(1000, ClientboundEmulatorConnected::new);
+		packetIdMap.put(ClientboundEmulatorConnected.class, 1000);
 		clientbound.put(161, ClientboundEmptyCannonPacket::new);
 		packetIdMap.put(ClientboundEmptyCannonPacket.class, 161);
 		clientbound.put(247, ClientboundLeaveSquadPacket::new);
