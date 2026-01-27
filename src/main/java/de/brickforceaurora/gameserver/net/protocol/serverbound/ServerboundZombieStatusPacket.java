@@ -1,0 +1,50 @@
+package de.brickforceaurora.gameserver.net.protocol.serverbound;
+
+import de.brickforceaurora.gameserver.net.protocol.IServerboundPacket;
+import io.netty.buffer.ByteBuf;
+
+public final class ServerboundZombieStatusPacket implements IServerboundPacket {
+
+	private int status;
+	private int time;
+	private int cntDn;
+
+	public final ServerboundZombieStatusPacket status(int status) {
+		this.status = status;
+		return this;
+	}
+
+	public final int status() {
+		return this.status;
+	}
+
+	public final ServerboundZombieStatusPacket time(int time) {
+		this.time = time;
+		return this;
+	}
+
+	public final int time() {
+		return this.time;
+	}
+
+	public final ServerboundZombieStatusPacket cntDn(int cntDn) {
+		this.cntDn = cntDn;
+		return this;
+	}
+
+	public final int cntDn() {
+		return this.cntDn;
+	}
+
+	@Override
+	public int packetId() {
+		return 547;
+	}
+
+	@Override
+	public final void read(ByteBuf buffer) {
+		this.status = buffer.readIntLE();
+		this.time = buffer.readIntLE();
+		this.cntDn = buffer.readIntLE();
+	}
+}

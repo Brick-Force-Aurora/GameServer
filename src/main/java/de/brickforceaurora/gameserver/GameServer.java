@@ -3,6 +3,7 @@ package de.brickforceaurora.gameserver;
 import java.util.concurrent.TimeUnit;
 
 import de.brickforceaurora.gameserver.core.GameServerLogic;
+import de.brickforceaurora.gameserver.net.NetManager;
 import me.lauriichan.laylib.logger.ISimpleLogger;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.util.tick.AbstractTickTimer;
@@ -15,9 +16,12 @@ public class GameServer extends AbstractTickTimer {
 
     private final ISimpleLogger logger;
     private final GameServerLogic logic;
+    
+    private final NetManager netManager;
 
-    public GameServer(SnowFrame<?> frame) {
+    public GameServer(SnowFrame<GameServerApp> frame) {
         this.logger = frame.logger();
+        this.netManager = new NetManager(frame);
         this.logic = new GameServerLogic(frame);
 
         // Setup timer
@@ -41,6 +45,9 @@ public class GameServer extends AbstractTickTimer {
 
         // Tick game server logic class
         logic.tick(deltaTime);
+        
+        // Tick net manager
+        netManager.tick(delta);
     }
 
 }

@@ -1,7 +1,9 @@
 package de.brickforceaurora.gameserver.data.asset;
 
 import java.io.File;
+import java.io.IOException;
 
+import de.brickforceaurora.gameserver.GameServerApp;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -12,28 +14,34 @@ import me.lauriichan.laylib.json.IJson;
 import me.lauriichan.laylib.json.JsonObject;
 import me.lauriichan.laylib.json.JsonType;
 import me.lauriichan.laylib.logger.ISimpleLogger;
+import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.data.DirectoryDataExtension;
 import me.lauriichan.snowframe.data.IDataHandler;
 import me.lauriichan.snowframe.data.handler.JsonDataHandler;
 
 public abstract class AssetDirectoryData<A extends Asset> extends DirectoryDataExtension<IJson<?>> {
 
-    public static final String PATH = "data://assets/%s";
+    public static final String INTERNAL_PATH = "jar://assets/%s";
+    public static final String EXTERNAL_PATH = "data://assets/%s";
 
     private final Object2ObjectMap<String, A> assetByName = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
     private final Int2ObjectMap<A> assetById = Int2ObjectMaps.synchronize(new Int2ObjectOpenHashMap<>());
 
-    private final String path;
+    private final String internalPath, externalPath;
     private final JsonDataHandler dataHandler;
 
+    private final SnowFrame<?> snowFrame;
+
     public AssetDirectoryData(String key) {
-        this.path = PATH.formatted(key);
+        this.internalPath = INTERNAL_PATH.formatted(key);
+        this.externalPath = EXTERNAL_PATH.formatted(key);
         this.dataHandler = JsonDataHandler.forKey(key);
+        this.snowFrame = GameServerApp.get().snowFrame();
     }
 
     @Override
     public final String path() {
-        return path;
+        return externalPath;
     }
 
     @Override
@@ -71,6 +79,12 @@ public abstract class AssetDirectoryData<A extends Asset> extends DirectoryDataE
     public void onLoadStart(ISimpleLogger logger) {
         assetByName.clear();
         assetById.clear();
+
+        try {
+            snowFrame.externalResource(internalPath, externalPath, true);
+        } catch (IOException e) {
+            logger.error("Failed to extract assets", e);
+        }
     }
 
     @Override

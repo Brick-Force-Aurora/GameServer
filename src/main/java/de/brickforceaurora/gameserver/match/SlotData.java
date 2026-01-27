@@ -1,6 +1,6 @@
 package de.brickforceaurora.gameserver.match;
 
-import de.brickforceaurora.gameserver.net.ClientReference;
+import de.brickforceaurora.gameserver.channel.ClientReference;
 
 public final class SlotData
 {

@@ -1,0 +1,50 @@
+package de.brickforceaurora.gameserver.net.protocol.serverbound;
+
+import de.brickforceaurora.gameserver.net.protocol.IServerboundPacket;
+import io.netty.buffer.ByteBuf;
+
+public final class ServerboundJoinSquadPacket implements IServerboundPacket {
+
+	private int clan;
+	private int index;
+	private int squadCounter;
+
+	public final ServerboundJoinSquadPacket clan(int clan) {
+		this.clan = clan;
+		return this;
+	}
+
+	public final int clan() {
+		return this.clan;
+	}
+
+	public final ServerboundJoinSquadPacket index(int index) {
+		this.index = index;
+		return this;
+	}
+
+	public final int index() {
+		return this.index;
+	}
+
+	public final ServerboundJoinSquadPacket squadCounter(int squadCounter) {
+		this.squadCounter = squadCounter;
+		return this;
+	}
+
+	public final int squadCounter() {
+		return this.squadCounter;
+	}
+
+	@Override
+	public int packetId() {
+		return 239;
+	}
+
+	@Override
+	public final void read(ByteBuf buffer) {
+		this.clan = buffer.readIntLE();
+		this.index = buffer.readIntLE();
+		this.squadCounter = buffer.readIntLE();
+	}
+}

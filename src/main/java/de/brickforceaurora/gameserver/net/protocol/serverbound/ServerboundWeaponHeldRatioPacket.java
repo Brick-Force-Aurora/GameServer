@@ -1,0 +1,32 @@
+package de.brickforceaurora.gameserver.net.protocol.serverbound;
+
+import de.brickforceaurora.gameserver.net.protocol.IServerboundPacket;
+import io.netty.buffer.ByteBuf;
+import it.unimi.dsi.fastutil.longs.Long2FloatArrayMap;
+
+public final class ServerboundWeaponHeldRatioPacket implements IServerboundPacket {
+
+    private final Long2FloatArrayMap weaponHeldRatio = new Long2FloatArrayMap();
+
+    public final Long2FloatArrayMap weaponHeldRatio() {
+        return weaponHeldRatio;
+    }
+
+    @Override
+    public int packetId() {
+        return 368;
+    }
+
+    @Override
+    public final void read(ByteBuf buffer) {
+        {
+            weaponHeldRatio.clear();
+            int length = buffer.readIntLE();
+            for (int i = 0; i < length; i++) {
+                long key = buffer.readLongLE();
+                float value = buffer.readFloatLE();
+                weaponHeldRatio.put(key, value);
+            }
+        }
+    }
+}

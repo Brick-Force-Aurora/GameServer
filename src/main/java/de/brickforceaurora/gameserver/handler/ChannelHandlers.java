@@ -1,17 +1,17 @@
 package de.brickforceaurora.gameserver.handler;
 
+import de.brickforceaurora.gameserver.channel.ChannelReference;
+import de.brickforceaurora.gameserver.channel.ClientReference;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
-import de.brickforceaurora.gameserver.net.ChannelReference;
-import de.brickforceaurora.gameserver.net.ClientReference;
-import de.brickforceaurora.gameserver.net.MsgReference;
-import de.brickforceaurora.gameserver.net.SendType;
 import de.brickforceaurora.gameserver.protocol.MessageId;
 import de.brickforceaurora.gameserver.protocol.MsgBody;
+import de.brickforceaurora.gameserver.protocol.MsgReference;
+import de.brickforceaurora.gameserver.protocol.SendType;
 
 public class ChannelHandlers {
 
     public static void register(MessageDispatcher d) {
-        d.register(MessageId.CS_CHANNEL_PLAYER_LIST_REQ.getId(), ChannelHandlers::userList);
+        d.register(MessageId.CS_CHANNEL_PLAYER_LIST_REQ.id(), ChannelHandlers::userList);
     }
 
     private static void userList(GameServerLogic server, MsgReference msgRef)
@@ -39,7 +39,7 @@ public class ChannelHandlers {
             body.write(client.channel.clientList.get(i).data.rank);
 
         }
-        server.say(new MsgReference(MessageId.CS_SVC_ENTER_LIST_ACK.getId(), body, client, sendType));
+        server.say(new MsgReference(MessageId.CS_SVC_ENTER_LIST_ACK, body, client, sendType));
 
         server.logger().debug("SendUserList to: " + client.GetIdentifier());
     }
@@ -66,7 +66,7 @@ public class ChannelHandlers {
             body.write(channelRef.channel.limitStarRate);
         }
 
-        server.say(new MsgReference(141, body, client));
+        server.say(new MsgReference(MessageId.CS_CHANNEL_ACK, body, client));
 
         server.logger().debug("SendChannels to: " + client.GetIdentifier());
     }
@@ -80,7 +80,7 @@ public class ChannelHandlers {
         MsgBody body = new MsgBody();
 
         body.write(curChannelId);
-        server.say(new MsgReference(147, body, client));
+        server.say(new MsgReference(MessageId.CS_CUR_CHANNEL_ACK, body, client));
 
         server.logger().debug("SendCurChannel to: " + client.GetIdentifier());
     }

@@ -3,9 +3,10 @@ package de.brickforceaurora.gameserver.handler.gamemodes;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.handler.RoomHandlers;
 import de.brickforceaurora.gameserver.match.MatchData;
-import de.brickforceaurora.gameserver.net.MsgReference;
-import de.brickforceaurora.gameserver.net.SendType;
+import de.brickforceaurora.gameserver.protocol.MessageId;
 import de.brickforceaurora.gameserver.protocol.MsgBody;
+import de.brickforceaurora.gameserver.protocol.MsgReference;
+import de.brickforceaurora.gameserver.protocol.SendType;
 import de.brickforceaurora.gameserver.room.RoomStatus;
 
 public class IndividualHandlers {
@@ -38,7 +39,7 @@ public class IndividualHandlers {
             body.write(matchData.clientList.get(i).data.xp);
             body.write((long)0); //buff
         }
-        logic.say(new MsgReference(180, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+        logic.say(new MsgReference(MessageId.CS_INDIVIDUAL_MATCH_END_ACK, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
 
         logic.logger().debug("Broadcasted SendIndivudalMatchEnd for room no: " + matchData.room.no);
     }
@@ -49,7 +50,7 @@ public class IndividualHandlers {
 
         body.write(matchData.redScore);
 
-        logic.say(new MsgReference(179, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+        logic.say(new MsgReference(MessageId.CS_INDIVIDUAL_SCORE_ACK, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
 
         logic.logger().debug("Broadcasted SendIndividualScore for room no: " + matchData.room.no);
     }

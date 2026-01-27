@@ -1,6 +1,8 @@
 package de.brickforceaurora.gameserver.handler;
 
-import de.brickforceaurora.gameserver.combat.HitPart;
+import de.brickforceaurora.gameserver.channel.BrickManStatus;
+import de.brickforceaurora.gameserver.channel.ClientReference;
+import de.brickforceaurora.gameserver.channel.ClientStatus;
 import de.brickforceaurora.gameserver.combat.WeaponBy;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.handler.gamemodes.DefusionHandlers;
@@ -10,9 +12,10 @@ import de.brickforceaurora.gameserver.handler.gamemodes.ZombieHandlers;
 import de.brickforceaurora.gameserver.match.KillLogEntry;
 import de.brickforceaurora.gameserver.match.MatchData;
 import de.brickforceaurora.gameserver.net.*;
-import de.brickforceaurora.gameserver.protocol.ExtensionOpcodes;
 import de.brickforceaurora.gameserver.protocol.MessageId;
 import de.brickforceaurora.gameserver.protocol.MsgBody;
+import de.brickforceaurora.gameserver.protocol.MsgReference;
+import de.brickforceaurora.gameserver.protocol.SendType;
 import de.brickforceaurora.gameserver.room.RoomStatus;
 import de.brickforceaurora.gameserver.room.RoomType;
 
@@ -22,15 +25,15 @@ import java.util.Map;
 public class MatchHandlers {
 
     public static void register(MessageDispatcher d) {
-        d.register(MessageId.CS_WEAPON_HELD_RATIO_REQ.getId(), MatchHandlers::weaponHeldRatio);
-        d.register(MessageId.CS_LOAD_COMPLETE_REQ.getId(), MatchHandlers::loadComplete);
-        d.register(MessageId.CS_MATCH_COUNTDOWN_REQ.getId(), MatchHandlers::matchCountdown);
-        d.register(MessageId.CS_TIMER_REQ.getId(), MatchHandlers::timer);
-        d.register(MessageId.CS_INFLICTED_DAMAGE_REQ.getId(), MatchHandlers::inflictedDamage);
-        d.register(MessageId.CS_RESPAWN_TICKET_REQ.getId(), MatchHandlers::respawnTicket);
-        d.register(MessageId.CS_KILL_LOG_REQ.getId(), MatchHandlers::killLog);
-        d.register(MessageId.CS_RESULT_DONE_REQ.getId(), MatchHandlers::resultDone);
-        d.register(MessageId.CS_BREAK_INTO_REQ.getId(), MatchHandlers::breakInto);
+        d.register(MessageId.CS_WEAPON_HELD_RATIO_REQ.id(), MatchHandlers::weaponHeldRatio);
+        d.register(MessageId.CS_LOAD_COMPLETE_REQ.id(), MatchHandlers::loadComplete);
+        d.register(MessageId.CS_MATCH_COUNTDOWN_REQ.id(), MatchHandlers::matchCountdown);
+        d.register(MessageId.CS_TIMER_REQ.id(), MatchHandlers::timer);
+        d.register(MessageId.CS_INFLICTED_DAMAGE_REQ.id(), MatchHandlers::inflictedDamage);
+        d.register(MessageId.CS_RESPAWN_TICKET_REQ.id(), MatchHandlers::respawnTicket);
+        d.register(MessageId.CS_KILL_LOG_REQ.id(), MatchHandlers::killLog);
+        d.register(MessageId.CS_RESULT_DONE_REQ.id(), MatchHandlers::resultDone);
+        d.register(MessageId.CS_BREAK_INTO_REQ.id(), MatchHandlers::breakInto);
     }
 
     private static void weaponHeldRatio(GameServerLogic logic, MsgReference msgRef)
@@ -69,7 +72,7 @@ public class MatchHandlers {
     {
         MsgBody body = new MsgBody();
 
-        logic.say(new MsgReference(ExtensionOpcodes.OP_POST_LOAD_INIT_ACK.getOpCode(), body, client));
+        logic.say(new MsgReference(MessageId.EXT_OP_POST_LOAD_INIT_ACK, body, client));
 
         logic.logger().debug("SendPostLoadInit to: " + client.GetIdentifier());
     }
@@ -85,7 +88,7 @@ public class MatchHandlers {
 
         body.write(brick);
 
-        logic.say(new MsgReference(78, body, client, sendType, matchData.channel, matchData));
+        logic.say(new MsgReference(MessageId.CS_DESTROYED_BRICK_ACK, body, client, sendType, matchData.channel, matchData));
 
         if (sendType == SendType.UNICAST)
             logic.logger().debug("SendDestroyedBrick to: " + client.GetIdentifier());
@@ -130,7 +133,7 @@ public class MatchHandlers {
         body.write(seq);
         body.write(brickSeq);
 
-        logic.say(new MsgReference(159, body, null, sendType, matchData.channel, matchData));
+        logic.say(new MsgReference(MessageId.CS_GET_CANNON_ACK, body, null, sendType, matchData.channel, matchData));
 
         if (sendType == SendType.BROADCAST_ROOM)
             logic.logger().debug("Broadcasted SendGetCannon for room no: " + matchData.room.no);
@@ -145,7 +148,7 @@ public class MatchHandlers {
         body.write(seq);
         body.write(trainId);
 
-        logic.say(new MsgReference(552, body, client, sendType, matchData.channel, matchData));
+        logic.say(new MsgReference(MessageId.CS_GET_TRAIN_ACK, body, client, sendType, matchData.channel, matchData));
 
 
         if (sendType == SendType.BROADCAST_ROOM)
@@ -189,7 +192,7 @@ public class MatchHandlers {
         MsgBody body = new MsgBody();
 
         body.write(matchData.countdownTime);
-        logic.say(new MsgReference(72, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+        logic.say(new MsgReference(MessageId.CS_MATCH_COUNTDOWN_ACK, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
 
         logic.logger().debug("Broadcasted SendMatchCountdown for: " + matchData.countdownTime);
     }
@@ -256,7 +259,7 @@ public class MatchHandlers {
 
         body.write(matchData.remainTime);
         body.write(matchData.playTime);
-        logic.say(new MsgReference(66, body, client, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+        logic.say(new MsgReference(MessageId.CS_TIMER_ACK, body, client, SendType.BROADCAST_ROOM, matchData.channel, matchData));
 
         logic.logger().debug("SendTimer to: " + client.GetIdentifier());
     }
@@ -326,7 +329,7 @@ public class MatchHandlers {
         msg.write(client.seq);      // val  → player sequence ID
         msg.write(client.score);    // val2 → updated score
 
-        logic.say(new MsgReference(300, msg, msgRef.client, SendType.UNICAST));
+        logic.say(new MsgReference(MessageId.CS_ROUND_SCORE_ACK, msg, msgRef.client, SendType.UNICAST));
     }
 
     public static void respawnTicket(GameServerLogic logic, MsgReference msgRef)
@@ -546,15 +549,15 @@ public class MatchHandlers {
                     break;
 
                 case ZOMBIE:
-                    if (HitPart.TYPE.values()[hitpart] == HitPart.TYPE.BRAIN && matchData.zombiePlayers.contains(victim))
-                    {
-                        matchData.zombiePlayers.remove(victim);
-                        matchData.killedPlayers.add(victim);
-                        if (matchData.zombiePlayers.isEmpty())
-                        {
-                            ZombieHandlers.roundEnd(logic, msgRef, matchData);
-                        }
-                    }
+//                    if (HitPart.TYPE.values()[hitpart] == HitPart.TYPE.BRAIN && matchData.zombiePlayers.contains(victim))
+//                    {
+//                        matchData.zombiePlayers.remove(victim);
+//                        matchData.killedPlayers.add(victim);
+//                        if (matchData.zombiePlayers.isEmpty())
+//                        {
+//                            ZombieHandlers.roundEnd(logic, msgRef, matchData);
+//                        }
+//                    }
                     break;
 
                 case BUNGEE:
@@ -579,7 +582,7 @@ public class MatchHandlers {
         body.write(client.seq);
         body.write(client.deaths);
 
-        logic.say(new MsgReference(68, body, null, SendType.BROADCAST_ROOM, client.channel, client.matchData));
+        logic.say(new MsgReference(MessageId.CS_DEATH_COUNT_ACK, body, null, SendType.BROADCAST_ROOM, client.channel, client.matchData));
 
         logic.logger().debug("Broadcasted SendDeatchCount for client " + client.GetIdentifier() + " for room no: " + matchData.room.no);
     }
@@ -593,7 +596,7 @@ public class MatchHandlers {
         body.write(client.seq);
         body.write(client.kills);
 
-        logic.say(new MsgReference(69, body, null, SendType.BROADCAST_ROOM, client.channel, client.matchData));
+        logic.say(new MsgReference(MessageId.CS_KILL_COUNT_ACK, body, null, SendType.BROADCAST_ROOM, client.channel, client.matchData));
 
         logic.logger().debug("Broadcasted SendKillCount for client " + client.GetIdentifier() + " for room no: " + matchData.room.no);
     }
@@ -607,7 +610,7 @@ public class MatchHandlers {
         body.write(client.seq);
         body.write(client.score);
 
-        logic.say(new MsgReference(300, body, null, SendType.BROADCAST_ROOM, client.channel, client.matchData));
+        logic.say(new MsgReference(MessageId.CS_ROUND_SCORE_ACK, body, null, SendType.BROADCAST_ROOM, client.channel, client.matchData));
 
         logic.logger().debug("Broadcasted SendRoundScore for client " + client.GetIdentifier() + " for room no: " + matchData.room.no);
     }
@@ -624,7 +627,7 @@ public class MatchHandlers {
         body.write(entry.weaponBy().getId());
         body.write(entry.hitpart());
 
-        logic.say(new MsgReference(45, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+        logic.say(new MsgReference(MessageId.CS_KILL_LOG_ACK, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
 
         logic.logger().debug("Broadcasted SendKillLogEntry for room no: " + matchData.room.no);
     }
@@ -639,7 +642,7 @@ public class MatchHandlers {
         body.write(client.assists);
         body.write(client.score);
 
-        logic.say(new MsgReference(185, body, null, SendType.BROADCAST_ROOM, client.channel, client.matchData));
+        logic.say(new MsgReference(MessageId.CS_ASSIST_COUNT_ACK, body, null, SendType.BROADCAST_ROOM, client.channel, client.matchData));
 
         logic.logger().debug("Broadcasted SendAssistCount for client " + client.GetIdentifier() + " for room no: " + matchData.room.no);
     }
@@ -691,7 +694,7 @@ public class MatchHandlers {
 
         body.write(reply);
 
-        logic.say(new MsgReference(74, body, client));
+        logic.say(new MsgReference(MessageId.CS_BREAK_INTO_ACK, body, client));
 
         logic.logger().debug("SendBreakInto to: " + client.GetIdentifier());
     }

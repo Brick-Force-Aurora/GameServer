@@ -1,0 +1,28 @@
+package de.brickforceaurora.gameserver.net.protocol.serverbound;
+
+import de.brickforceaurora.gameserver.net.protocol.IServerboundPacket;
+import io.netty.buffer.ByteBuf;
+
+public final class ServerboundDestroyBrickPacket implements IServerboundPacket {
+
+	private int brick;
+
+	public final ServerboundDestroyBrickPacket brick(int brick) {
+		this.brick = brick;
+		return this;
+	}
+
+	public final int brick() {
+		return this.brick;
+	}
+
+	@Override
+	public int packetId() {
+		return 76;
+	}
+
+	@Override
+	public final void read(ByteBuf buffer) {
+		this.brick = buffer.readIntLE();
+	}
+}
