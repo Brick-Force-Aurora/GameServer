@@ -4,7 +4,6 @@ import de.brickforceaurora.gameserver.channel.BrickManStatus;
 import de.brickforceaurora.gameserver.channel.ClientReference;
 import de.brickforceaurora.gameserver.channel.ClientStatus;
 import de.brickforceaurora.gameserver.combat.WeaponBy;
-import de.brickforceaurora.gameserver.combat.HitPart;
 import de.brickforceaurora.gameserver.core.GameServerLogic;
 import de.brickforceaurora.gameserver.handler.gamemodes.DefusionHandlers;
 import de.brickforceaurora.gameserver.handler.gamemodes.IndividualHandlers;
