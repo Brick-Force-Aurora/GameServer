@@ -198,7 +198,7 @@ public final class NetManager implements AutoCloseable {
         // Set client net time to current net time
         client.netTime = netTime;
         clients.add(client);
-        logger.info("Client connected: {0}:{1}", client.ip(), client.port());
+        logger.info("Client connected: {0}", client.ip());
         signalManager.call(new NetSignal.ClientConnected(this, client));
     }
 
@@ -206,7 +206,7 @@ public final class NetManager implements AutoCloseable {
         if (!clients.remove(client)) {
             return;
         }
-        logger.info("Client disconnected: {0}:{1}", client.ip(), client.port());
+        logger.info("Client disconnected: {0}", client.ip());
         signalManager.call(new NetSignal.ClientDisconnected(this, client));
     }
 

@@ -27,7 +27,6 @@ public final class BFServerboundPacketDecoder extends MessageToMessageDecoder<By
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
         msg.readBytes(accumulator);
-        logger.debug("Hello");
         if (accumulator.readableBytes() < ProtocolConstant.HEADER_SIZE) {
             return;
         }
@@ -41,7 +40,6 @@ public final class BFServerboundPacketDecoder extends MessageToMessageDecoder<By
         accumulator.skipBytes(8);
         //      long meta = accumulator.readUnsignedIntLE();
         //      long src = accumulator.readUnsignedIntLE();
-        logger.debug("Hello2");
         if (accumulator.readableBytes() < size) {
             accumulator.resetReaderIndex();
             return;
