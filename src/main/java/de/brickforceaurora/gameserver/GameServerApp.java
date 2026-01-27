@@ -46,7 +46,7 @@ public class GameServerApp implements ISnowFrameApp<GameServerApp> {
         });
         lifecycle.startupChain().register("ready", Stage.MAIN, _ -> {
             server.start();
-            server.logic().start();
+            server.netManager().open();
             snowFrame.logger().info("Server ready.");
             snowFrame.logger().info("Press Ctrl+C to exit.");
         });
