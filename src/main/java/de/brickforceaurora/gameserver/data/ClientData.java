@@ -25,6 +25,9 @@ public class ClientData {
     public DummyData data;
     public MatchData matchData;
     public ChannelReference channel;
+    public int xp = 7_000_000;
+    public int rank = 65;
+    public int extraSlots = 6;
     public int lastOpenedChestSeq = -1;
     
     public final BFClient client;
