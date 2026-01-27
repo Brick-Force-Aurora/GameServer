@@ -22,7 +22,7 @@ public final class BFClientboundPacketEncoder extends MessageToByteEncoder<IClie
 
     @Override
     protected void encode(ChannelHandlerContext ctx, IClientboundPacket msg, ByteBuf out) throws Exception {
-        ByteBuf bodyBuffer = Unpooled.directBuffer();
+        ByteBuf bodyBuffer = Unpooled.buffer();
         byte[] body;
         try {
             if (msg.requiresClientId()) {
