@@ -5,15 +5,15 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundCurChannelPacket implements IClientboundPacket {
 
-	private int val;
+	private int channelId;
 
-	public final ClientboundCurChannelPacket val(int val) {
-		this.val = val;
+	public final ClientboundCurChannelPacket channelId(int channelId) {
+		this.channelId = channelId;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int channelId() {
+		return this.channelId;
 	}
 
 	@Override
@@ -23,6 +23,6 @@ public final class ClientboundCurChannelPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
+		buffer.writeIntLE(this.channelId);
 	}
 }

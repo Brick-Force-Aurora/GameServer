@@ -6,125 +6,125 @@ import java.nio.charset.StandardCharsets;
 
 public final class ClientboundUserMapPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
-	private int val3;
-	private String val4;
-	private int val5;
-	private int val6;
-	private byte val7;
-	private byte val8;
-	private byte val9;
-	private byte val10;
-	private byte val11;
-	private byte val12;
+	private int page;
+	private int count;
+	private int slot;
+	private String alias;
+	private int brickCount;
+	private int year;
+	private byte month;
+	private byte day;
+	private byte hour;
+	private byte minute;
+	private byte second;
+	private byte premium;
 
-	public final ClientboundUserMapPacket val(int val) {
-		this.val = val;
+	public final ClientboundUserMapPacket page(int page) {
+		this.page = page;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int page() {
+		return this.page;
 	}
 
-	public final ClientboundUserMapPacket val2(int val2) {
-		this.val2 = val2;
+	public final ClientboundUserMapPacket count(int count) {
+		this.count = count;
 		return this;
 	}
 
-	public final int val2() {
-		return this.val2;
+	public final int count() {
+		return this.count;
 	}
 
-	public final ClientboundUserMapPacket val3(int val3) {
-		this.val3 = val3;
+	public final ClientboundUserMapPacket slot(int slot) {
+		this.slot = slot;
 		return this;
 	}
 
-	public final int val3() {
-		return this.val3;
+	public final int slot() {
+		return this.slot;
 	}
 
-	public final ClientboundUserMapPacket val4(String val4) {
-		this.val4 = val4;
+	public final ClientboundUserMapPacket alias(String alias) {
+		this.alias = alias;
 		return this;
 	}
 
-	public final String val4() {
-		return this.val4;
+	public final String alias() {
+		return this.alias;
 	}
 
-	public final ClientboundUserMapPacket val5(int val5) {
-		this.val5 = val5;
+	public final ClientboundUserMapPacket brickCount(int brickCount) {
+		this.brickCount = brickCount;
 		return this;
 	}
 
-	public final int val5() {
-		return this.val5;
+	public final int brickCount() {
+		return this.brickCount;
 	}
 
-	public final ClientboundUserMapPacket val6(int val6) {
-		this.val6 = val6;
+	public final ClientboundUserMapPacket year(int year) {
+		this.year = year;
 		return this;
 	}
 
-	public final int val6() {
-		return this.val6;
+	public final int year() {
+		return this.year;
 	}
 
-	public final ClientboundUserMapPacket val7(byte val7) {
-		this.val7 = val7;
+	public final ClientboundUserMapPacket month(byte month) {
+		this.month = month;
 		return this;
 	}
 
-	public final byte val7() {
-		return this.val7;
+	public final byte month() {
+		return this.month;
 	}
 
-	public final ClientboundUserMapPacket val8(byte val8) {
-		this.val8 = val8;
+	public final ClientboundUserMapPacket day(byte day) {
+		this.day = day;
 		return this;
 	}
 
-	public final byte val8() {
-		return this.val8;
+	public final byte day() {
+		return this.day;
 	}
 
-	public final ClientboundUserMapPacket val9(byte val9) {
-		this.val9 = val9;
+	public final ClientboundUserMapPacket hour(byte hour) {
+		this.hour = hour;
 		return this;
 	}
 
-	public final byte val9() {
-		return this.val9;
+	public final byte hour() {
+		return this.hour;
 	}
 
-	public final ClientboundUserMapPacket val10(byte val10) {
-		this.val10 = val10;
+	public final ClientboundUserMapPacket minute(byte minute) {
+		this.minute = minute;
 		return this;
 	}
 
-	public final byte val10() {
-		return this.val10;
+	public final byte minute() {
+		return this.minute;
 	}
 
-	public final ClientboundUserMapPacket val11(byte val11) {
-		this.val11 = val11;
+	public final ClientboundUserMapPacket second(byte second) {
+		this.second = second;
 		return this;
 	}
 
-	public final byte val11() {
-		return this.val11;
+	public final byte second() {
+		return this.second;
 	}
 
-	public final ClientboundUserMapPacket val12(byte val12) {
-		this.val12 = val12;
+	public final ClientboundUserMapPacket premium(byte premium) {
+		this.premium = premium;
 		return this;
 	}
 
-	public final byte val12() {
-		return this.val12;
+	public final byte premium() {
+		return this.premium;
 	}
 
 	@Override
@@ -134,23 +134,23 @@ public final class ClientboundUserMapPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
-		buffer.writeIntLE(this.val2);
-		buffer.writeIntLE(this.val3);
-		if (this.val4.isEmpty()) {
+		buffer.writeIntLE(this.page);
+		buffer.writeIntLE(this.count);
+		buffer.writeIntLE(this.slot);
+		if (this.alias.isEmpty()) {
 			buffer.writeIntLE(0);
 		} else {
-			byte[] bytes = this.val4.getBytes(StandardCharsets.UTF_16LE);
+			byte[] bytes = this.alias.getBytes(StandardCharsets.UTF_16LE);
 			buffer.writeIntLE(bytes.length);
 			buffer.writeBytes(bytes);
 		}
-		buffer.writeIntLE(this.val5);
-		buffer.writeIntLE(this.val6);
-		buffer.writeByte(this.val7);
-		buffer.writeByte(this.val8);
-		buffer.writeByte(this.val9);
-		buffer.writeByte(this.val10);
-		buffer.writeByte(this.val11);
-		buffer.writeByte(this.val12);
+		buffer.writeIntLE(this.brickCount);
+		buffer.writeIntLE(this.year);
+		buffer.writeByte(this.month);
+		buffer.writeByte(this.day);
+		buffer.writeByte(this.hour);
+		buffer.writeByte(this.minute);
+		buffer.writeByte(this.second);
+		buffer.writeByte(this.premium);
 	}
 }
