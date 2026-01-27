@@ -1,14 +1,12 @@
 package de.brickforceaurora.gameserver.net.protocol;
 
-import java.util.List;
-
 import de.brickforceaurora.gameserver.net.BFClient;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToMessageEncoder;
+import io.netty.handler.codec.MessageToByteEncoder;
 
-public final class BFClientboundPacketEncoder extends MessageToMessageEncoder<IClientboundPacket> {
+public final class BFClientboundPacketEncoder extends MessageToByteEncoder<IClientboundPacket> {
 
     private final BFClient client;
     private final byte sendKey;
@@ -23,7 +21,7 @@ public final class BFClientboundPacketEncoder extends MessageToMessageEncoder<IC
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, IClientboundPacket msg, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, IClientboundPacket msg, ByteBuf out) throws Exception {
         ByteBuf bodyBuffer = Unpooled.directBuffer();
         byte[] body;
         try {
@@ -48,14 +46,12 @@ public final class BFClientboundPacketEncoder extends MessageToMessageEncoder<IC
             }
         }
 
-        ByteBuf outputBuffer = Unpooled.buffer(ProtocolConstant.HEADER_SIZE + body.length);
-        outputBuffer.writeIntLE(body.length);
-        outputBuffer.writeShortLE(msg.packetId());
-        outputBuffer.writeByte(crc);
-        outputBuffer.writeIntLE(0xFFFFFFFF);
-        outputBuffer.writeIntLE(0xFFFFFFFF);
-        outputBuffer.writeBytes(body);
-        out.add(outputBuffer);
+        out.writeIntLE(body.length);
+        out.writeShortLE(msg.packetId());
+        out.writeByte(crc);
+        out.writeIntLE(0xFFFFFFFF);
+        out.writeIntLE(0xFFFFFFFF);
+        out.writeBytes(body);
     }
 
 }

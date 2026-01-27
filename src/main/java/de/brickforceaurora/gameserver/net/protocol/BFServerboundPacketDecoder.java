@@ -6,10 +6,10 @@ import de.brickforceaurora.gameserver.GameServerApp;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToMessageDecoder;
+import io.netty.handler.codec.ByteToMessageDecoder;
 import me.lauriichan.laylib.logger.ISimpleLogger;
 
-public final class BFServerboundPacketDecoder extends MessageToMessageDecoder<ByteBuf> {
+public final class BFServerboundPacketDecoder extends ByteToMessageDecoder {
 
     private final ISimpleLogger logger = GameServerApp.logger();
     private final ByteBuf accumulator = Unpooled.buffer(8092);
@@ -45,11 +45,12 @@ public final class BFServerboundPacketDecoder extends MessageToMessageDecoder<By
             return;
         }
         IServerboundPacket packet = PacketRegistry.newServerPacket(id);
-        logger.debug("Packet: {0} ({1})", packet.packetName(), packet.packetId());
         if (packet == null) {
+            logger.debug("Unknown packet: {0}", id);
             ctx.close();
             return;
         }
+        logger.debug("Packet: {0} ({1})", packet.packetName(), packet.packetId());
         // We simply hope this is never larger than Integer.MAX_VALUE
         byte[] messageBuffer = new byte[(int) size];
         accumulator.readBytes(messageBuffer);
