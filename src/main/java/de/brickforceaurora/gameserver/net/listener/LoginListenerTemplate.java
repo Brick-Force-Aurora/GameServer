@@ -3,6 +3,7 @@ package de.brickforceaurora.gameserver.net.listener;
 import de.brickforceaurora.gameserver.channel.ChannelManager;
 import de.brickforceaurora.gameserver.channel.Channel;
 import de.brickforceaurora.gameserver.legacy.channel.ChannelMode;
+import de.brickforceaurora.gameserver.legacy.maps.RegMap;
 import de.brickforceaurora.gameserver.net.BFClient;
 import de.brickforceaurora.gameserver.net.INetListener;
 import de.brickforceaurora.gameserver.net.NetContext;
@@ -13,6 +14,8 @@ import de.brickforceaurora.gameserver.net.protocol.serverbound.ServerboundHeartb
 import de.brickforceaurora.gameserver.net.protocol.serverbound.ServerboundLoginPacket;
 import de.brickforceaurora.gameserver.net.protocol.serverbound.ServerboundRoaminPacket;
 import me.lauriichan.snowframe.extension.Extension;
+
+import java.time.LocalDateTime;
 
 @Extension
 public class LoginListenerTemplate implements INetListener {
@@ -72,17 +75,10 @@ public class LoginListenerTemplate implements INetListener {
         //send all maps client.send(new ClientboundDownloadMapPacket());
         client.send(new ClientboundUserMapPacket()
             .page(-1)
-            .count(0)
-            .slot(0)
-            .alias("")
-            .brickCount(-1)
-            .year(2000)
-            .month((byte) 0)
-            .day((byte) 0)
-            .hour((byte) 0)
-            .minute((byte) 0)
-            .second((byte) 0)
-            .premium((byte) 0));
+            .offset(0)
+            .count(1).regMaps(new RegMap[]{
+                    new RegMap(0, "", "", LocalDateTime.of(2000, 1, 1, 0, 0, 0), 0, true, false, 0, 0, 0, 0, 0, 0, (byte) 0, false)
+                }));
         //send all user maps client.send(new ClientboundUserMapPacket());
     }
 

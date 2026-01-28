@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import de.brickforceaurora.gameserver.channel.ChannelManager;
 import de.brickforceaurora.gameserver.legacy.channel.ChannelMode;
+import de.brickforceaurora.gameserver.legacy.maps.RegMapManager;
 import de.brickforceaurora.gameserver.util.logging.AnsiSysOutLogger;
 import me.lauriichan.laylib.logger.ISimpleLogger;
 import me.lauriichan.snowframe.ISnowFrameApp;
@@ -49,6 +50,8 @@ public class GameServerApp implements ISnowFrameApp<GameServerApp> {
             frame.invoker().addExtra(channelManager);
             channelManager.newChannel(ChannelMode.BATTLE, "Play");
             channelManager.newChannel(ChannelMode.MAP_EDIT, "Edit");
+            //temporary
+            RegMapManager.getInstance().loadMaps();
         });
         lifecycle.startupChain().register("load", Stage.MAIN, frame -> {
             server = new GameServer(frame);

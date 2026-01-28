@@ -1,60 +1,21 @@
 package de.brickforceaurora.gameserver.net.protocol.clientbound;
 
+import de.brickforceaurora.gameserver.net.BFClient;
 import de.brickforceaurora.gameserver.net.protocol.IClientboundPacket;
 import io.netty.buffer.ByteBuf;
 import java.nio.charset.StandardCharsets;
 
 public final class ClientboundSvcEnterListPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
-	private String val3;
-	private int val4;
-	private int val5;
+	private BFClient[] clients;
 
-	public final ClientboundSvcEnterListPacket val(int val) {
-		this.val = val;
+	public final ClientboundSvcEnterListPacket clients(BFClient[] clients) {
+		this.clients = clients;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
-	}
-
-	public final ClientboundSvcEnterListPacket val2(int val2) {
-		this.val2 = val2;
-		return this;
-	}
-
-	public final int val2() {
-		return this.val2;
-	}
-
-	public final ClientboundSvcEnterListPacket val3(String val3) {
-		this.val3 = val3;
-		return this;
-	}
-
-	public final String val3() {
-		return this.val3;
-	}
-
-	public final ClientboundSvcEnterListPacket val4(int val4) {
-		this.val4 = val4;
-		return this;
-	}
-
-	public final int val4() {
-		return this.val4;
-	}
-
-	public final ClientboundSvcEnterListPacket val5(int val5) {
-		this.val5 = val5;
-		return this;
-	}
-
-	public final int val5() {
-		return this.val5;
+	public final BFClient[] clients() {
+		return this.clients;
 	}
 
 	@Override
@@ -64,16 +25,18 @@ public final class ClientboundSvcEnterListPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
-		buffer.writeIntLE(this.val2);
-		if (this.val3.isEmpty()) {
-			buffer.writeIntLE(0);
-		} else {
-			byte[] bytes = this.val3.getBytes(StandardCharsets.UTF_16LE);
-			buffer.writeIntLE(bytes.length);
-			buffer.writeBytes(bytes);
+		buffer.writeIntLE(this.clients.length);
+		for (BFClient client : this.clients){
+			buffer.writeIntLE(client.id());
+			if (client.name().isEmpty()) {
+				buffer.writeIntLE(0);
+			} else {
+				byte[] bytes = client.name().getBytes(StandardCharsets.UTF_16LE);
+				buffer.writeIntLE(bytes.length);
+				buffer.writeBytes(bytes);
+			}
+			buffer.writeIntLE(client.data().xp);
+			buffer.writeIntLE(client.data().rank);
 		}
-		buffer.writeIntLE(this.val4);
-		buffer.writeIntLE(this.val5);
 	}
 }
