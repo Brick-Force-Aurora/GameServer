@@ -1,4 +1,4 @@
-package de.brickforceaurora.gameserver.util;
+package de.brickforceaurora.gameserver.legacy.util;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package de.brickforceaurora.gameserver.match;
+package de.brickforceaurora.gameserver.legacy.match;
 
 import java.time.LocalDateTime;
 import java.util.*;

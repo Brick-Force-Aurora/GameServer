@@ -1,4 +1,4 @@
-package de.brickforceaurora.gameserver.maps;
+package de.brickforceaurora.gameserver.legacy.maps;
 
 import de.brickforceaurora.gameserver.legacy.room.RoomType;
 import de.brickforceaurora.gameserver.legacy.util.Texture2D;

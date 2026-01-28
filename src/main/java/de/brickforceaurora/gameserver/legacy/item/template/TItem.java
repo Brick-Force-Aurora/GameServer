@@ -1,10 +1,10 @@
-package de.brickforceaurora.gameserver.item.template;
+package de.brickforceaurora.gameserver.legacy.item.template;
 
-import de.brickforceaurora.gameserver.item.ItemSlot;
-import de.brickforceaurora.gameserver.item.ItemType;
-import de.brickforceaurora.gameserver.item.UpgradeCategory;
-import de.brickforceaurora.gameserver.util.StringMgr;
-import de.brickforceaurora.gameserver.util.Texture2D;
+import de.brickforceaurora.gameserver.legacy.item.ItemSlot;
+import de.brickforceaurora.gameserver.legacy.item.ItemType;
+import de.brickforceaurora.gameserver.legacy.item.UpgradeCategory;
+import de.brickforceaurora.gameserver.legacy.util.StringMgr;
+import de.brickforceaurora.gameserver.legacy.util.Texture2D;
 
 public class TItem {
 

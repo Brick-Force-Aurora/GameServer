@@ -1,9 +1,7 @@
-package de.brickforceaurora.gameserver.item;
+package de.brickforceaurora.gameserver.legacy.item;
 
 import de.brickforceaurora.gameserver.GameServerApp;
-import de.brickforceaurora.gameserver.item.template.TItem;
-import de.brickforceaurora.gameserver.item.template.TWeapon;
-import de.brickforceaurora.gameserver.util.Texture2D;
+import de.brickforceaurora.gameserver.legacy.util.Texture2D;
 import me.lauriichan.laylib.json.IJson;
 import me.lauriichan.laylib.json.JsonArray;
 import me.lauriichan.laylib.json.JsonObject;

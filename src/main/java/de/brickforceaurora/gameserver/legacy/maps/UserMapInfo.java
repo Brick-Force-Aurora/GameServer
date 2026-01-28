@@ -1,6 +1,6 @@
-package de.brickforceaurora.gameserver.maps;
+package de.brickforceaurora.gameserver.legacy.maps;
 
-import de.brickforceaurora.gameserver.util.Texture2D;
+import de.brickforceaurora.gameserver.legacy.util.Texture2D;
 
 import java.time.LocalDateTime;
 

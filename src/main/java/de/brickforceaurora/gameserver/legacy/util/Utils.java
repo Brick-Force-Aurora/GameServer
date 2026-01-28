@@ -1,4 +1,4 @@
-package de.brickforceaurora.gameserver.util;
+package de.brickforceaurora.gameserver.legacy.util;
 
 import java.util.ArrayList;
 import java.util.List;

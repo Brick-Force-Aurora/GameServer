@@ -1,6 +1,6 @@
-package de.brickforceaurora.gameserver.item;
+package de.brickforceaurora.gameserver.legacy.item;
 
-import de.brickforceaurora.gameserver.util.Texture2D;
+import de.brickforceaurora.gameserver.legacy.util.Texture2D;
 
 import java.io.Serial;
 import java.io.Serializable;

@@ -1,9 +1,8 @@
-package de.brickforceaurora.gameserver.item;
+package de.brickforceaurora.gameserver.legacy.item;
 
 import de.brickforceaurora.gameserver.GameServerApp;
-import de.brickforceaurora.gameserver.core.GameServerLogic;
-import de.brickforceaurora.gameserver.item.template.TBuff;
-import de.brickforceaurora.gameserver.util.Texture2D;
+import de.brickforceaurora.gameserver.legacy.item.template.TBuff;
+import de.brickforceaurora.gameserver.legacy.util.Texture2D;
 import me.lauriichan.laylib.json.IJson;
 import me.lauriichan.laylib.json.JsonArray;
 import me.lauriichan.laylib.json.JsonObject;
@@ -12,7 +11,6 @@ import me.lauriichan.laylib.json.io.JsonSyntaxException;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.resource.source.IDataSource;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;

@@ -1,4 +1,4 @@
-package de.brickforceaurora.gameserver.util;
+package de.brickforceaurora.gameserver.legacy.util;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

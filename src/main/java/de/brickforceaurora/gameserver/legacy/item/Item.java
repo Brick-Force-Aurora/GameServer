@@ -1,4 +1,4 @@
-package de.brickforceaurora.gameserver.item;
+package de.brickforceaurora.gameserver.legacy.item;
 
 import de.brickforceaurora.gameserver.GameServerApp;
 import de.brickforceaurora.gameserver.legacy.data.MyInfoManager;
