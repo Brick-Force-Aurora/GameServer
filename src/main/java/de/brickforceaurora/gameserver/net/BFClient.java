@@ -1,14 +1,22 @@
 package de.brickforceaurora.gameserver.net;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.atomic.AtomicReference;
 
+import de.brickforceaurora.gameserver.channel.Channel;
 import de.brickforceaurora.gameserver.legacy.data.ClientData;
 import de.brickforceaurora.gameserver.net.protocol.IClientboundPacket;
-import io.netty.channel.Channel;
 
 public final class BFClient {
 
-    private final Channel channel;
+    public final AtomicReference<Channel> channel = new AtomicReference<>();
+
+    private final io.netty.channel.Channel connection;
+
+    private final ClientData data;
+
+    volatile boolean shouldKeepAlive = false;
+    volatile long netTime = 0;
 
     private String identifier;
 
@@ -19,14 +27,9 @@ public final class BFClient {
 
     private boolean initialized = false;
 
-    volatile boolean shouldKeepAlive = false;
-    volatile long netTime = 0;
-
-    private final ClientData data;
-
-    public BFClient(final Channel channel) {
-        this.channel = channel;
-        this.ip = ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress();
+    public BFClient(final io.netty.channel.Channel connection) {
+        this.connection = connection;
+        this.ip = ((InetSocketAddress) connection.remoteAddress()).getAddress().getHostAddress();
         this.data = new ClientData(this);
     }
 
@@ -49,8 +52,8 @@ public final class BFClient {
         return identifier;
     }
 
-    public Channel channel() {
-        return channel;
+    public io.netty.channel.Channel connection() {
+        return connection;
     }
 
     public String name() {
@@ -74,15 +77,23 @@ public final class BFClient {
     }
 
     public boolean disconnect() {
-        if (!channel.isOpen()) {
+        if (!connection.isOpen()) {
             return false;
         }
-        channel.close();
+        connection.close();
         return true;
     }
 
     public void send(final IClientboundPacket packet) {
-        channel.writeAndFlush(packet);
+        connection.writeAndFlush(packet);
+    }
+    
+    @Override
+    public String toString() {
+        if (!initialized) {
+            return ip;
+        }
+        return identifier;
     }
 
 }

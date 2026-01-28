@@ -5,10 +5,11 @@ import de.brickforceaurora.gameserver.net.BFClient;
 import de.brickforceaurora.gameserver.net.protocol.IClientboundPacket;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
 
 public class Channel {
 
-    private final ObjectList<BFClient> clients = new ObjectArrayList<>();
+    private final ObjectList<BFClient> clients = ObjectLists.synchronize(new ObjectArrayList<>());
 
     private final int id;
     private final String name;
@@ -50,6 +51,14 @@ public class Channel {
         for (final BFClient client : clients) {
             client.send(packet);
         }
+    }
+
+    void removeClient(BFClient client) {
+        clients.remove(client);
+    }
+
+    void addClient(BFClient client) {
+        clients.add(client);
     }
 
 }

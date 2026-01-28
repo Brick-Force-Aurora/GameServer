@@ -25,6 +25,7 @@ public class GameServerApp implements ISnowFrameApp<GameServerApp> {
         // TODO: Do actual command line parsing
         final ISimpleLogger logger = AnsiSysOutLogger.INSTANCE;
         logger.setDebug(Arrays.stream(args).anyMatch(str -> "--debug".equalsIgnoreCase(str)));
+        logger.setTracking(Arrays.stream(args).anyMatch(str -> "--trace".equalsIgnoreCase(str)));
 
         return snowFrame = SnowFrame.builder(new GameServerApp()).logger(logger).build();
     }

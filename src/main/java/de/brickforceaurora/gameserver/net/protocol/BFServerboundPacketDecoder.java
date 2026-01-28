@@ -3,6 +3,7 @@ package de.brickforceaurora.gameserver.net.protocol;
 import java.util.List;
 
 import de.brickforceaurora.gameserver.GameServerApp;
+import de.brickforceaurora.gameserver.net.BFClient;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -13,13 +14,15 @@ public final class BFServerboundPacketDecoder extends ByteToMessageDecoder {
 
     private final ISimpleLogger logger = GameServerApp.logger();
 
+    private final BFClient client;
     private final byte receiveKey;
 
-    public BFServerboundPacketDecoder() {
-        this(ProtocolConstant.DEFAULT_RECEIVE_KEY);
+    public BFServerboundPacketDecoder(final BFClient client) {
+        this(client, ProtocolConstant.DEFAULT_RECEIVE_KEY);
     }
 
-    public BFServerboundPacketDecoder(final byte receiveKey) {
+    public BFServerboundPacketDecoder(final BFClient client, final byte receiveKey) {
+        this.client = client;
         this.receiveKey = receiveKey;
     }
 
@@ -45,11 +48,11 @@ public final class BFServerboundPacketDecoder extends ByteToMessageDecoder {
             }
             final IServerboundPacket packet = PacketRegistry.newServerPacket(id);
             if (packet == null) {
-                logger.debug("Unknown packet: {0}", id);
+                logger.debug("Received unknown from client {0}: {1}", id);
                 ctx.close();
                 return;
             }
-            logger.debug("Packet: {0} ({1})", packet.packetName(), packet.packetId());
+            logger.debug("Received from client {0}: {1} ({2})", client, packet.packetName(), packet.packetId());
             // We simply hope this is never larger than Integer.MAX_VALUE
             final byte[] messageBuffer = new byte[(int) size];
             accumulator.readBytes(messageBuffer);
@@ -78,6 +81,12 @@ public final class BFServerboundPacketDecoder extends ByteToMessageDecoder {
                 packetBuf.release();
             }
         }
+    }
+    
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        logger.error("Error in inbound netty pipeline of player '{0}'", cause, client);
+        ctx.close();
     }
 
 }

@@ -25,7 +25,7 @@ final class BFChannelInit extends ChannelInitializer<SocketChannel> {
 
         final ChannelPipeline pipeline = channel.pipeline();
         // Inbound
-        pipeline.addLast(new BFServerboundPacketDecoder());
+        pipeline.addLast(new BFServerboundPacketDecoder(client));
         pipeline.addLast(new BFServerboundPacketListener(netManager, client));
         // Outbound
         // pipeline.addLast(new BFClientboundPacketListener(netManager, client)); // We don't need this right now so its commented out

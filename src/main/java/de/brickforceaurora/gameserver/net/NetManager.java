@@ -24,7 +24,7 @@ import me.lauriichan.snowframe.signal.SignalManager;
 
 public final class NetManager implements AutoCloseable {
 
-    private static final long TIMEOUT_TIME = TimeUnit.SECONDS.toNanos(3);
+    private static final long TIMEOUT_TIME = TimeUnit.SECONDS.toNanos(5);
 
     public final AtomicInteger nextClientId = new AtomicInteger(0);
 
@@ -67,6 +67,7 @@ public final class NetManager implements AutoCloseable {
                 continue;
             }
             if (netTime - client.netTime > TIMEOUT_TIME) {
+                logger.debug("Client timedout: {0}", client.ip());
                 // We first remove the client from the clientList
                 clientDisconnected(client);
                 // And then actually disconnect them
@@ -197,7 +198,7 @@ public final class NetManager implements AutoCloseable {
         // Set client net time to current net time
         client.netTime = netTime;
         clients.add(client);
-        logger.info("Client connected: {0}", client.ip());
+        logger.info("Client connected: {0}", client);
         signalManager.call(new NetSignal.ClientConnected(this, client));
     }
 
@@ -205,7 +206,7 @@ public final class NetManager implements AutoCloseable {
         if (!clients.remove(client)) {
             return;
         }
-        logger.info("Client disconnected: {0}", client.ip());
+        logger.info("Client disconnected: {0}", client);
         signalManager.call(new NetSignal.ClientDisconnected(this, client));
     }
 

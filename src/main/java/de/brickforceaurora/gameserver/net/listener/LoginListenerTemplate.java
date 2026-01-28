@@ -71,7 +71,7 @@ public class LoginListenerTemplate implements INetListener {
         final BFClient client = context.client();
 
         //ChannelHandlers.SendUserList(server, msgRef.client);
-        client.send(new ClientboundRoaminPacket().channelDestinationId(1));
+        client.send(new ClientboundRoaminPacket().channelDestinationId(channelManager.channels(ChannelMode.BATTLE).get(0).id()));
         //client.clientStatus = ClientStatus.LOBBY;
     }
 

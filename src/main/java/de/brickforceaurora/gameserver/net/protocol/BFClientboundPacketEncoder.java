@@ -1,12 +1,16 @@
 package de.brickforceaurora.gameserver.net.protocol;
 
+import de.brickforceaurora.gameserver.GameServerApp;
 import de.brickforceaurora.gameserver.net.BFClient;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import me.lauriichan.laylib.logger.ISimpleLogger;
 
 public final class BFClientboundPacketEncoder extends MessageToByteEncoder<IClientboundPacket> {
+
+    private final ISimpleLogger logger = GameServerApp.logger();
 
     private final BFClient client;
     private final byte sendKey;
@@ -52,6 +56,13 @@ public final class BFClientboundPacketEncoder extends MessageToByteEncoder<IClie
         out.writeIntLE(0xFFFFFFFF);
         out.writeIntLE(0xFFFFFFFF);
         out.writeBytes(body);
+        logger.debug("Sent to client {0}: {1} ({2})", client, msg.packetName(), msg.packetId());
+    }
+    
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        logger.error("Error in outbound netty pipeline of player '{0}'", cause, client);
+        ctx.close();
     }
 
 }
