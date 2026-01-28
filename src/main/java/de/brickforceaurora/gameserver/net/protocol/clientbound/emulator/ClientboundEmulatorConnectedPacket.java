@@ -5,7 +5,7 @@ import java.io.IOException;
 import de.brickforceaurora.gameserver.net.protocol.IClientboundPacket;
 import io.netty.buffer.ByteBuf;
 
-public class ClientboundEmulatorConnected implements IClientboundPacket {
+public class ClientboundEmulatorConnectedPacket implements IClientboundPacket {
 
     @Override
     public int packetId() {
