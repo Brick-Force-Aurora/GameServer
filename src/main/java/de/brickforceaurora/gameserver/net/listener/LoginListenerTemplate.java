@@ -1,7 +1,7 @@
 package de.brickforceaurora.gameserver.net.listener;
 
-import de.brickforceaurora.gameserver.channel.Channel;
-import de.brickforceaurora.gameserver.channel.ChannelMode;
+import de.brickforceaurora.gameserver.legacy.channel.Channel;
+import de.brickforceaurora.gameserver.legacy.channel.ChannelMode;
 import de.brickforceaurora.gameserver.net.BFClient;
 import de.brickforceaurora.gameserver.net.INetListener;
 import de.brickforceaurora.gameserver.net.NetContext;
@@ -37,7 +37,7 @@ public class LoginListenerTemplate implements INetListener {
         }));
         client.send(new ClientboundCurChannelPacket().channelId(1)); //send actual channel
         client.send(new ClientboundEmulatorInventoryPacket());
-        client.send(new ClientboundLoginPacket().clientId(client.id()).channelId(1)); //send actual channelid
+        client.send(new ClientboundLoginPacket().channelId(1)); //send actual channelid
         client.send(new ClientboundPlayerInfoPacket()
             .name(client.name())
             .playerXp(client.data().xp)
@@ -82,6 +82,11 @@ public class LoginListenerTemplate implements INetListener {
     @PacketHandler
     public void onHeartbeat(NetContext<ServerboundHeartbeatPacket> context) {
         context.manager().keepClientAlive(context.client());
+    }
+
+    @PacketHandler
+    public void onRoamIn(NetContext<ServerboundHeartbeatPacket> context){
+
     }
 
 }

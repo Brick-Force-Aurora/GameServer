@@ -2,7 +2,7 @@ package de.brickforceaurora.gameserver.net;
 
 import java.net.InetSocketAddress;
 
-import de.brickforceaurora.gameserver.data.ClientData;
+import de.brickforceaurora.gameserver.legacy.data.ClientData;
 import de.brickforceaurora.gameserver.net.protocol.IClientboundPacket;
 import io.netty.channel.Channel;
 

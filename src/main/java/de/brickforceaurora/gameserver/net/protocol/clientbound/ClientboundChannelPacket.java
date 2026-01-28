@@ -1,6 +1,6 @@
 package de.brickforceaurora.gameserver.net.protocol.clientbound;
 
-import de.brickforceaurora.gameserver.channel.Channel;
+import de.brickforceaurora.gameserver.legacy.channel.Channel;
 import de.brickforceaurora.gameserver.net.protocol.IClientboundPacket;
 import io.netty.buffer.ByteBuf;
 

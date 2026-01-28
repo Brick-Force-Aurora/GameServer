@@ -5,18 +5,18 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundSeedPacket implements IClientboundPacket {
 
-	private int val;
+	private int seed;
 
-	public final ClientboundSeedPacket val(int val) {
-		if (val > 255L || val < 0L) {
-			throw new IllegalArgumentException("Value " + val + " is out of bounds of allowed number range of 0 - 255");
+	public final ClientboundSeedPacket seed(int seed) {
+		if (seed > 255L || seed < 0L) {
+			throw new IllegalArgumentException("Value " + seed + " is out of bounds of allowed number range of 0 - 255");
 		}
-		this.val = val;
+		this.seed = seed;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int seed() {
+		return this.seed;
 	}
 
 	@Override
@@ -26,6 +26,6 @@ public final class ClientboundSeedPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(ByteBuf buffer) {
-		buffer.writeByte(this.val & 0xFF);
+		buffer.writeByte(this.seed & 0xFF);
 	}
 }
