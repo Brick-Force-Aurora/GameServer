@@ -1,5 +1,11 @@
 package de.brickforceaurora.gameserver.legacy.maps;
-import java.io.*;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
@@ -35,23 +41,9 @@ public class RegMap {
 
     public RegMap() {}
 
-    public RegMap(
-            int map,
-            String developer,
-            String alias,
-            LocalDateTime regDate,
-            int modeMask,
-            boolean clanMatchable,
-            boolean officialMap,
-            int likes,
-            int disLikes,
-            int downloadCount,
-            int downloadFee,
-            int release,
-            int latestRelease,
-            byte tagMask,
-            boolean blocked
-    ) {
+    public RegMap(final int map, final String developer, final String alias, final LocalDateTime regDate, final int modeMask,
+        final boolean clanMatchable, final boolean officialMap, final int likes, final int disLikes, final int downloadCount,
+        final int downloadFee, final int release, final int latestRelease, final byte tagMask, final boolean blocked) {
         this.map = map;
         this.developer = developer;
         this.alias = alias;
@@ -73,12 +65,25 @@ public class RegMap {
        Properties
        ======================= */
 
-    public int getMap() { return map; }
-    public String getDeveloper() { return developer; }
-    public void setDeveloper(String v) { developer = v; }
+    public int getMap() {
+        return map;
+    }
 
-    public String getAlias() { return alias; }
-    public void setAlias(String v) { alias = v; }
+    public String getDeveloper() {
+        return developer;
+    }
+
+    public void setDeveloper(final String v) {
+        developer = v;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(final String v) {
+        alias = v;
+    }
 
     public String getVersion() {
         return "(" + release + "/" + latestRelease + ")";
@@ -88,31 +93,67 @@ public class RegMap {
         return regDate;
     }
 
-    public int getModeMask() { return modeMask; }
-    public void setModeMask(int v) { modeMask = v & 0xFFFF; }
+    public int getModeMask() {
+        return modeMask;
+    }
 
-    public int getRelease() { return release; }
-    public void setRelease(int v) { release = v; }
+    public void setModeMask(final int v) {
+        modeMask = v & 0xFFFF;
+    }
 
-    public int getLatestRelease() { return latestRelease; }
-    public void setLatestRelease(int v) {
-        if (v > latestRelease) latestRelease = v;
+    public int getRelease() {
+        return release;
+    }
+
+    public void setRelease(final int v) {
+        release = v;
+    }
+
+    public int getLatestRelease() {
+        return latestRelease;
+    }
+
+    public void setLatestRelease(final int v) {
+        if (v > latestRelease) {
+            latestRelease = v;
+        }
     }
 
     public boolean isLatest() {
         return release == latestRelease;
     }
 
-    public boolean isOfficialMap() { return officialMap; }
-    public void setOfficialMap(boolean v) { officialMap = v; }
+    public boolean isOfficialMap() {
+        return officialMap;
+    }
 
-    public boolean isBlocked() { return blocked; }
-    public void setBlocked(boolean v) { blocked = v; }
+    public void setOfficialMap(final boolean v) {
+        officialMap = v;
+    }
 
-    public int getLikes() { return likes; }
-    public int getDisLikes() { return disLikes; }
-    public int getDownloadCount() { return downloadCount; }
-    public int getDownloadFee() { return downloadFee; }
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(final boolean v) {
+        blocked = v;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public int getDisLikes() {
+        return disLikes;
+    }
+
+    public int getDownloadCount() {
+        return downloadCount;
+    }
+
+    public int getDownloadFee() {
+        return downloadFee;
+    }
 
     public boolean isAbuseMap() {
         return (tagMask & TAG_ABUSE) != 0;
@@ -122,7 +163,7 @@ public class RegMap {
        Rank
        ======================= */
 
-    public void setRank(int rk, int rkchg) {
+    public void setRank(final int rk, final int rkchg) {
         Rank = rk;
         RankChg = rkchg;
     }
@@ -131,7 +172,7 @@ public class RegMap {
        File IO (C# compatible)
        ======================= */
 
-    public boolean save(File file) {
+    public boolean save(final File file) {
         try (DataOutputStream out = new DataOutputStream(new FileOutputStream(file))) {
 
             writeIntLE(out, ver);
@@ -154,13 +195,13 @@ public class RegMap {
             writeIntLE(out, 0);
 
             return true;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public boolean load(File file) {
+    public boolean load(final File file) {
         try (DataInputStream in = new DataInputStream(new FileInputStream(file))) {
 
             ver = readIntLE(in);
@@ -168,23 +209,24 @@ public class RegMap {
             alias = readString(in);
             developer = readString(in);
 
-            int year = readIntLE(in);
-            int month = in.readByte();
-            int day = in.readByte();
-            int hour = in.readByte();
-            int min = in.readByte();
-            int sec = in.readByte();
+            final int year = readIntLE(in);
+            final int month = in.readByte();
+            final int day = in.readByte();
+            final int hour = in.readByte();
+            final int min = in.readByte();
+            final int sec = in.readByte();
             regDate = LocalDateTime.of(year, month, day, hour, min, sec);
 
-            if (ver > 2)
+            if (ver > 2) {
                 modeMask = readUnsignedShortLE(in);
-            else
+            } else {
                 modeMask = in.readUnsignedByte();
+            }
 
             clanMatchable = in.readBoolean();
             officialMap = ver >= 2 && in.readBoolean();
 
-            int thumbSize = readIntLE(in);
+            final int thumbSize = readIntLE(in);
             if (thumbSize > 0) {
                 in.skipBytes(thumbSize); // ignore image
             }
@@ -196,7 +238,7 @@ public class RegMap {
 
             return true;
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             return false;
         }
@@ -206,40 +248,38 @@ public class RegMap {
        Binary helpers (LE!)
        ======================= */
 
-    private static void writeIntLE(DataOutputStream out, int v) throws IOException {
+    private static void writeIntLE(final DataOutputStream out, final int v) throws IOException {
         out.writeByte(v & 0xFF);
-        out.writeByte((v >>> 8) & 0xFF);
-        out.writeByte((v >>> 16) & 0xFF);
-        out.writeByte((v >>> 24) & 0xFF);
+        out.writeByte(v >>> 8 & 0xFF);
+        out.writeByte(v >>> 16 & 0xFF);
+        out.writeByte(v >>> 24 & 0xFF);
     }
 
-    private static void writeShortLE(DataOutputStream out, int v) throws IOException {
+    private static void writeShortLE(final DataOutputStream out, final int v) throws IOException {
         out.writeByte(v & 0xFF);
-        out.writeByte((v >>> 8) & 0xFF);
+        out.writeByte(v >>> 8 & 0xFF);
     }
 
-    private static int readIntLE(DataInputStream in) throws IOException {
-        return (in.readUnsignedByte())
-                | (in.readUnsignedByte() << 8)
-                | (in.readUnsignedByte() << 16)
-                | (in.readUnsignedByte() << 24);
+    private static int readIntLE(final DataInputStream in) throws IOException {
+        return in.readUnsignedByte() | in.readUnsignedByte() << 8 | in.readUnsignedByte() << 16 | in.readUnsignedByte() << 24;
     }
 
-    private static int readUnsignedShortLE(DataInputStream in) throws IOException {
-        return in.readUnsignedByte() | (in.readUnsignedByte() << 8);
+    private static int readUnsignedShortLE(final DataInputStream in) throws IOException {
+        return in.readUnsignedByte() | in.readUnsignedByte() << 8;
     }
 
-    private static void writeString(DataOutputStream out, String s) throws IOException {
-        byte[] data = s.getBytes(StandardCharsets.UTF_8);
+    private static void writeString(final DataOutputStream out, final String s) throws IOException {
+        final byte[] data = s.getBytes(StandardCharsets.UTF_8);
         writeIntLE(out, data.length);
         out.write(data);
     }
-    private static int read7BitEncodedInt(DataInputStream in) throws IOException {
+
+    private static int read7BitEncodedInt(final DataInputStream in) throws IOException {
         int result = 0;
         int shift = 0;
 
         while (shift < 35) {
-            byte b = in.readByte();
+            final byte b = in.readByte();
             result |= (b & 0x7F) << shift;
             if ((b & 0x80) == 0) {
                 return result;
@@ -250,18 +290,17 @@ public class RegMap {
         throw new IOException("Invalid 7-bit encoded int");
     }
 
-    private static String readString(DataInputStream in) throws IOException {
-        int len = read7BitEncodedInt(in);
+    private static String readString(final DataInputStream in) throws IOException {
+        final int len = read7BitEncodedInt(in);
         if (len < 0) {
             throw new IOException("Negative string length");
         }
-        byte[] data = new byte[len];
+        final byte[] data = new byte[len];
         in.readFully(data);
         return new String(data, StandardCharsets.UTF_8);
     }
 
-
-    public void setDownloadFee(int fee) {
+    public void setDownloadFee(final int fee) {
         this.downloadFee = fee;
     }
 
@@ -269,4 +308,3 @@ public class RegMap {
         this.downloadCount++;
     }
 }
-

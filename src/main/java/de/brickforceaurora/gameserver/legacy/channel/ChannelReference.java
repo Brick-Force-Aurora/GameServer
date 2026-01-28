@@ -13,7 +13,7 @@ public final class ChannelReference {
 
     private static final int MAX_ROOM_NUMBER = 100;
 
-    public ChannelReference(Channel channel) {
+    public ChannelReference(final Channel channel) {
         this.channel = channel;
         this.matches = new ArrayList<>();
         this.clientList = new ArrayList<>();
@@ -21,8 +21,8 @@ public final class ChannelReference {
 
     /* ===== Matches ===== */
 
-    public MatchData getMatchByRoomNumber(int roomNumber) {
-        for (MatchData m : matches) {
+    public MatchData getMatchByRoomNumber(final int roomNumber) {
+        for (final MatchData m : matches) {
             if (m.room.no == roomNumber) {
                 return m;
             }
@@ -33,7 +33,7 @@ public final class ChannelReference {
     public int getNextRoomNumber() {
         for (int i = 0; i < MAX_ROOM_NUMBER; i++) {
             boolean used = false;
-            for (MatchData m : matches) {
+            for (final MatchData m : matches) {
                 if (m.room.no == i) {
                     used = true;
                     break;
@@ -48,16 +48,16 @@ public final class ChannelReference {
 
     /* ===== Clients ===== */
 
-    public void addClient(ClientReference client)
-    {
-        if (client.channel != null)
+    public void addClient(final ClientReference client) {
+        if (client.channel != null) {
             client.channel.removeClient(client);
+        }
         client.channel = this;
         clientList.add(client);
         channel.userCount = clientList.size();
     }
 
-    public void removeClient(ClientReference client) {
+    public void removeClient(final ClientReference client) {
         client.socket = null;
         clientList.remove(client);
         channel.userCount = clientList.size();
@@ -66,7 +66,7 @@ public final class ChannelReference {
     /* ===== Match management ===== */
 
     public MatchData addNewMatch() {
-        MatchData matchData = new MatchData();
+        final MatchData matchData = new MatchData();
         matchData.channel = this;
         matchData.roomCreated = true;
         matchData.room.no = getNextRoomNumber();
@@ -74,12 +74,12 @@ public final class ChannelReference {
         return matchData;
     }
 
-    public void addMatch(MatchData match) {
+    public void addMatch(final MatchData match) {
         match.channel = this;
         matches.add(match);
     }
 
-    public void removeMatch(MatchData match) {
+    public void removeMatch(final MatchData match) {
         match.channel = null;
         matches.remove(match);
     }
@@ -87,7 +87,7 @@ public final class ChannelReference {
     /* ===== Shutdown ===== */
 
     public void shutdown() {
-        for (MatchData match : matches) {
+        for (final MatchData match : matches) {
             match.Shutdown();
             match.channel = null;
         }

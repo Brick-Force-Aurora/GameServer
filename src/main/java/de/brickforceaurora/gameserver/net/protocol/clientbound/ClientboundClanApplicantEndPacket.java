@@ -5,12 +5,11 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundClanApplicantEndPacket implements IClientboundPacket {
 
-	@Override
-	public int packetId() {
-		return 208;
-	}
+    @Override
+    public int packetId() {
+        return 208;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-	}
+    @Override
+    public void write(final ByteBuf buffer) {}
 }

@@ -13,7 +13,7 @@ public final class WeaponAssetDirectoryData extends AssetDirectoryData<WeaponAss
     }
 
     @Override
-    protected WeaponAsset readAsset(ISimpleLogger logger, FileKey key, JsonObject root, String name, int id) {
+    protected WeaponAsset readAsset(final ISimpleLogger logger, final FileKey key, final JsonObject root, final String name, final int id) {
         return new WeaponAsset(name, id);
     }
 

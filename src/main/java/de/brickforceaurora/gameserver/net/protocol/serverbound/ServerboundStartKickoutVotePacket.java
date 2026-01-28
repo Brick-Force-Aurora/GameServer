@@ -5,35 +5,35 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundStartKickoutVotePacket implements IServerboundPacket {
 
-	private int target;
-	private int reason;
+    private int target;
+    private int reason;
 
-	public final ServerboundStartKickoutVotePacket target(int target) {
-		this.target = target;
-		return this;
-	}
+    public ServerboundStartKickoutVotePacket target(final int target) {
+        this.target = target;
+        return this;
+    }
 
-	public final int target() {
-		return this.target;
-	}
+    public int target() {
+        return this.target;
+    }
 
-	public final ServerboundStartKickoutVotePacket reason(int reason) {
-		this.reason = reason;
-		return this;
-	}
+    public ServerboundStartKickoutVotePacket reason(final int reason) {
+        this.reason = reason;
+        return this;
+    }
 
-	public final int reason() {
-		return this.reason;
-	}
+    public int reason() {
+        return this.reason;
+    }
 
-	@Override
-	public int packetId() {
-		return 494;
-	}
+    @Override
+    public int packetId() {
+        return 494;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.target = buffer.readIntLE();
-		this.reason = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.target = buffer.readIntLE();
+        this.reason = buffer.readIntLE();
+    }
 }

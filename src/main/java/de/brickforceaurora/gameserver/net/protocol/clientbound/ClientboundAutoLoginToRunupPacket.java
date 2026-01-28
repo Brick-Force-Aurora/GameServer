@@ -5,46 +5,46 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundAutoLoginToRunupPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
-	private boolean val3;
+    private int val;
+    private int val2;
+    private boolean val3;
 
-	public final ClientboundAutoLoginToRunupPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundAutoLoginToRunupPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	public final ClientboundAutoLoginToRunupPacket val2(int val2) {
-		this.val2 = val2;
-		return this;
-	}
+    public ClientboundAutoLoginToRunupPacket val2(final int val2) {
+        this.val2 = val2;
+        return this;
+    }
 
-	public final int val2() {
-		return this.val2;
-	}
+    public int val2() {
+        return this.val2;
+    }
 
-	public final ClientboundAutoLoginToRunupPacket val3(boolean val3) {
-		this.val3 = val3;
-		return this;
-	}
+    public ClientboundAutoLoginToRunupPacket val3(final boolean val3) {
+        this.val3 = val3;
+        return this;
+    }
 
-	public final boolean val3() {
-		return this.val3;
-	}
+    public boolean val3() {
+        return this.val3;
+    }
 
-	@Override
-	public int packetId() {
-		return 410;
-	}
+    @Override
+    public int packetId() {
+        return 410;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
-		buffer.writeIntLE(this.val2);
-		buffer.writeBoolean(this.val3);
-	}
+    @Override
+    public void write(final ByteBuf buffer) {
+        buffer.writeIntLE(this.val);
+        buffer.writeIntLE(this.val2);
+        buffer.writeBoolean(this.val3);
+    }
 }

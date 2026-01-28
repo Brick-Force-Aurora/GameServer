@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundDelMemoPacket implements IServerboundPacket {
 
-	private long seq;
+    private long seq;
 
-	public final ServerboundDelMemoPacket seq(long seq) {
-		this.seq = seq;
-		return this;
-	}
+    public ServerboundDelMemoPacket seq(final long seq) {
+        this.seq = seq;
+        return this;
+    }
 
-	public final long seq() {
-		return this.seq;
-	}
+    public long seq() {
+        return this.seq;
+    }
 
-	@Override
-	public int packetId() {
-		return 130;
-	}
+    @Override
+    public int packetId() {
+        return 130;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.seq = buffer.readLongLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.seq = buffer.readLongLE();
+    }
 }

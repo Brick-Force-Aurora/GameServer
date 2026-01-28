@@ -11,43 +11,12 @@ public class TCharacter extends TItem {
     public String gender;
     public String mainMat;
 
-    public TCharacter(
-            String itemCode,
-            String itemName,
-            Texture2D itemIcon,
-            int ct,
-            boolean itemTakeoffable,
-            String gender,
-            String prefix,
-            String itemComment,
-            TBuff tb,
-            boolean itemDiscomposable,
-            String itemBpBackCode,
-            int season,
-            String itemMainMat,
-            String grp1,
-            String grp2,
-            String grp3,
-            int starRate
-    ) {
-        super(
-                itemCode,
-                ItemType.CHARACTER,
-                itemName,
-                itemIcon,
-                ct,
-                0,
-                itemTakeoffable,
-                ItemSlot.CHARACTER,
-                itemComment,
-                tb,
-                itemDiscomposable,
-                itemBpBackCode,
-                -1,
-                UpgradeCategory.NONE,
-                false,
-                starRate
-        );
+    public TCharacter(final String itemCode, final String itemName, final Texture2D itemIcon, final int ct, final boolean itemTakeoffable,
+        final String gender, final String prefix, final String itemComment, final TBuff tb, final boolean itemDiscomposable,
+        final String itemBpBackCode, final int season, final String itemMainMat, final String grp1, final String grp2, final String grp3,
+        final int starRate) {
+        super(itemCode, ItemType.CHARACTER, itemName, itemIcon, ct, 0, itemTakeoffable, ItemSlot.CHARACTER, itemComment, tb,
+            itemDiscomposable, itemBpBackCode, -1, UpgradeCategory.NONE, false, starRate);
 
         this.gender = gender;
         this.prefix = prefix;

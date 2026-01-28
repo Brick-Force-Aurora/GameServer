@@ -1,12 +1,14 @@
 package de.brickforceaurora.gameserver.legacy.maps;
 
-import de.brickforceaurora.gameserver.util.CRC32;
-
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import de.brickforceaurora.gameserver.util.CRC32;
 
 public final class MapGenerator {
 
@@ -19,56 +21,112 @@ public final class MapGenerator {
     private MapGenerator() {
         landscapeTemplates = new HashMap<>();
 
-        landscapeTemplates.put(0, new Landscape(new byte[]{0, 1}, new float[]{0.7f, 0.3f}, (byte) 50, (byte) 1));
-        landscapeTemplates.put(1, new Landscape(new byte[]{0, 1}, new float[]{0.7f, 0.3f}, (byte) 100, (byte) 1));
-        landscapeTemplates.put(2, new Landscape(new byte[]{0, 1}, new float[]{0.7f, 0.3f}, (byte) 50, (byte) 5));
+        landscapeTemplates.put(0, new Landscape(new byte[] {
+            0,
+            1
+        }, new float[] {
+            0.7f,
+            0.3f
+        }, (byte) 50, (byte) 1));
+        landscapeTemplates.put(1, new Landscape(new byte[] {
+            0,
+            1
+        }, new float[] {
+            0.7f,
+            0.3f
+        }, (byte) 100, (byte) 1));
+        landscapeTemplates.put(2, new Landscape(new byte[] {
+            0,
+            1
+        }, new float[] {
+            0.7f,
+            0.3f
+        }, (byte) 50, (byte) 5));
 
-        landscapeTemplates.put(3, new Landscape(new byte[]{8, 9}, new float[]{0.7f, 0.3f}, (byte) 50, (byte) 1));
-        landscapeTemplates.put(4, new Landscape(new byte[]{8, 9}, new float[]{0.7f, 0.3f}, (byte) 100, (byte) 1));
-        landscapeTemplates.put(5, new Landscape(new byte[]{8, 9}, new float[]{0.7f, 0.3f}, (byte) 50, (byte) 5));
+        landscapeTemplates.put(3, new Landscape(new byte[] {
+            8,
+            9
+        }, new float[] {
+            0.7f,
+            0.3f
+        }, (byte) 50, (byte) 1));
+        landscapeTemplates.put(4, new Landscape(new byte[] {
+            8,
+            9
+        }, new float[] {
+            0.7f,
+            0.3f
+        }, (byte) 100, (byte) 1));
+        landscapeTemplates.put(5, new Landscape(new byte[] {
+            8,
+            9
+        }, new float[] {
+            0.7f,
+            0.3f
+        }, (byte) 50, (byte) 5));
 
-        landscapeTemplates.put(6, new Landscape(new byte[]{10, 25}, new float[]{0.7f, 0.3f}, (byte) 50, (byte) 1));
-        landscapeTemplates.put(7, new Landscape(new byte[]{10, 25}, new float[]{0.7f, 0.3f}, (byte) 100, (byte) 1));
-        landscapeTemplates.put(8, new Landscape(new byte[]{10, 25}, new float[]{0.7f, 0.3f}, (byte) 50, (byte) 5));
+        landscapeTemplates.put(6, new Landscape(new byte[] {
+            10,
+            25
+        }, new float[] {
+            0.7f,
+            0.3f
+        }, (byte) 50, (byte) 1));
+        landscapeTemplates.put(7, new Landscape(new byte[] {
+            10,
+            25
+        }, new float[] {
+            0.7f,
+            0.3f
+        }, (byte) 100, (byte) 1));
+        landscapeTemplates.put(8, new Landscape(new byte[] {
+            10,
+            25
+        }, new float[] {
+            0.7f,
+            0.3f
+        }, (byte) 50, (byte) 5));
 
-        landscapeTemplates.put(9, new Landscape(
-                new byte[]{9, (byte) 137, (byte) 138},
-                new float[]{0.5f, 0.25f, 0.25f},
-                (byte) 50,
-                (byte) 1
-        ));
+        landscapeTemplates.put(9, new Landscape(new byte[] {
+            9,
+            (byte) 137,
+            (byte) 138
+        }, new float[] {
+            0.5f,
+            0.25f,
+            0.25f
+        }, (byte) 50, (byte) 1));
 
-        landscapeTemplates.put(10, new Landscape(
-                new byte[]{9, (byte) 137, (byte) 138},
-                new float[]{0.5f, 0.25f, 0.25f},
-                (byte) 100,
-                (byte) 1
-        ));
+        landscapeTemplates.put(10, new Landscape(new byte[] {
+            9,
+            (byte) 137,
+            (byte) 138
+        }, new float[] {
+            0.5f,
+            0.25f,
+            0.25f
+        }, (byte) 100, (byte) 1));
 
-        landscapeTemplates.put(11, new Landscape(
-                new byte[]{9, (byte) 137, (byte) 138},
-                new float[]{0.5f, 0.25f, 0.25f},
-                (byte) 50,
-                (byte) 5
-        ));
+        landscapeTemplates.put(11, new Landscape(new byte[] {
+            9,
+            (byte) 137,
+            (byte) 138
+        }, new float[] {
+            0.5f,
+            0.25f,
+            0.25f
+        }, (byte) 50, (byte) 5));
     }
 
     /* ===================== HASH ===================== */
 
-    public int getHashIdForTime(LocalDateTime time) {
-        long bin = time
-                .atZone(ZoneId.systemDefault())
-                .toInstant()
-                .toEpochMilli();
-
+    public int getHashIdForTime(final LocalDateTime time) {
+        long bin = time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
         int hashId = CRC32.compute(ByteBuffer.allocate(8).putLong(bin).array());
 
-        int finalHashId = hashId;
-        while (RegMapManager.getInstance().getMaps()
-                .values()
-                .stream()
-                .anyMatch(x -> x.getMap() == finalHashId)) {
+        final int finalHashId = hashId;
+        while (RegMapManager.getInstance().getMaps().values().stream().anyMatch(x -> x.getMap() == finalHashId)) {
 
             bin ^= hashId;
             hashId = CRC32.compute(ByteBuffer.allocate(8).putLong(bin).array());
@@ -79,16 +137,12 @@ public final class MapGenerator {
 
     /* ===================== INTERNAL ===================== */
 
-    private byte getNextTemplateByDistribution(Landscape landscape) {
-        float rnd = (float) (
-                Math.random() *
-                        (landscape.distribution[landscape.ratios.length] - landscape.distribution[0])
-                        + landscape.distribution[0]
-        );
+    private byte getNextTemplateByDistribution(final Landscape landscape) {
+        final float rnd = (float) (Math.random() * (landscape.distribution[landscape.ratios.length] - landscape.distribution[0])
+            + landscape.distribution[0]);
 
         for (int i = 0; i < landscape.bricks.length; i++) {
-            if (rnd >= landscape.distribution[i] &&
-                    rnd < landscape.distribution[i + 1]) {
+            if (rnd >= landscape.distribution[i] && rnd < landscape.distribution[i + 1]) {
                 return landscape.bricks[i];
             }
         }
@@ -98,12 +152,12 @@ public final class MapGenerator {
 
     /* ===================== GENERATION ===================== */
 
-    public UserMap generateInternal(Landscape landscape, int skyboxIndex) {
+    public UserMap generateInternal(final Landscape landscape, final int skyboxIndex) {
 
-        byte size = landscape.size;
-        byte height = landscape.height;
+        final byte size = landscape.size;
+        final byte height = landscape.height;
 
-        UserMap map = new UserMap();
+        final UserMap map = new UserMap();
         map.skybox = skyboxIndex;
 
         map.min.x = 0;
@@ -117,14 +171,14 @@ public final class MapGenerator {
         map.cenX = (map.min.x + map.max.x) * 0.5f;
         map.cenZ = (map.min.z + map.max.z) * 0.5f;
 
-        List<Integer> morphes = new ArrayList<>();
+        final List<Integer> morphes = new ArrayList<>();
 
         int seq = 0;
 
         for (byte x = 0; x < size; x++) {
             for (byte z = 0; z < size; z++) {
                 for (byte y = 0; y < height; y++) {
-                    byte template = getNextTemplateByDistribution(landscape);
+                    final byte template = getNextTemplateByDistribution(landscape);
                     map.addBrickInst(seq, template, x, y, z, (byte) 0, morphes);
                     seq++;
                 }
@@ -134,7 +188,7 @@ public final class MapGenerator {
         return map;
     }
 
-    public UserMap generate(int landscapeIndex, int skyboxIndex) {
+    public UserMap generate(final int landscapeIndex, final int skyboxIndex) {
         return generateInternal(landscapeTemplates.get(landscapeIndex), skyboxIndex);
     }
 }

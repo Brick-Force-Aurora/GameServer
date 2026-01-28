@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundEmptyTrainPacket implements IServerboundPacket {
 
-	private int trainSeq;
+    private int trainSeq;
 
-	public final ServerboundEmptyTrainPacket trainSeq(int trainSeq) {
-		this.trainSeq = trainSeq;
-		return this;
-	}
+    public ServerboundEmptyTrainPacket trainSeq(final int trainSeq) {
+        this.trainSeq = trainSeq;
+        return this;
+    }
 
-	public final int trainSeq() {
-		return this.trainSeq;
-	}
+    public int trainSeq() {
+        return this.trainSeq;
+    }
 
-	@Override
-	public int packetId() {
-		return 553;
-	}
+    @Override
+    public int packetId() {
+        return 553;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.trainSeq = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.trainSeq = buffer.readIntLE();
+    }
 }

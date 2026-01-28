@@ -10,21 +10,18 @@ import de.brickforceaurora.gameserver.legacy.protocol.SendType;
 import de.brickforceaurora.gameserver.legacy.room.RoomStatus;
 
 public class IndividualHandlers {
-    public static void handleEnd(GameServerLogic logic, MatchData matchData)
-    {
+    public static void handleEnd(final GameServerLogic logic, final MatchData matchData) {
         matchData.room.status = RoomStatus.WAITING;
         SendIndividualMatchEnd(logic, matchData);
         matchData.Reset();
-        RoomHandlers.sendRoom(logic,null, matchData, SendType.BROADCAST_ROOM);
+        RoomHandlers.sendRoom(logic, null, matchData, SendType.BROADCAST_ROOM);
     }
 
-    public static void SendIndividualMatchEnd(GameServerLogic logic, MatchData matchData)
-    {
-        MsgBody body = new MsgBody();
+    public static void SendIndividualMatchEnd(final GameServerLogic logic, final MatchData matchData) {
+        final MsgBody body = new MsgBody();
 
         body.write(matchData.clientList.size());
-        for (int i = 0; i < matchData.clientList.size(); i++)
-        {
+        for (int i = 0; i < matchData.clientList.size(); i++) {
             body.write(matchData.clientList.get(i).slot.isRed);
             body.write(matchData.clientList.get(i).seq);
             body.write(matchData.clientList.get(i).name);
@@ -37,16 +34,16 @@ public class IndividualHandlers {
             body.write(0); //mission
             body.write(matchData.clientList.get(i).data.xp);
             body.write(matchData.clientList.get(i).data.xp);
-            body.write((long)0); //buff
+            body.write((long) 0); //buff
         }
-        logic.say(new MsgReference(MessageId.CS_INDIVIDUAL_MATCH_END_ACK, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
+        logic.say(
+            new MsgReference(MessageId.CS_INDIVIDUAL_MATCH_END_ACK, body, null, SendType.BROADCAST_ROOM, matchData.channel, matchData));
 
         logic.logger().debug("Broadcasted SendIndivudalMatchEnd for room no: " + matchData.room.no);
     }
 
-    public static void SendIndividualScore(GameServerLogic logic, MatchData matchData)
-    {
-        MsgBody body = new MsgBody();
+    public static void SendIndividualScore(final GameServerLogic logic, final MatchData matchData) {
+        final MsgBody body = new MsgBody();
 
         body.write(matchData.redScore);
 

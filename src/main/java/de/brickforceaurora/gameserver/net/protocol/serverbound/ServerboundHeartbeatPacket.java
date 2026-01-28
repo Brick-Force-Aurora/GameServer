@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundHeartbeatPacket implements IServerboundPacket {
 
-	private int gmFunction;
+    private int gmFunction;
 
-	public final ServerboundHeartbeatPacket gmFunction(int gmFunction) {
-		this.gmFunction = gmFunction;
-		return this;
-	}
+    public ServerboundHeartbeatPacket gmFunction(final int gmFunction) {
+        this.gmFunction = gmFunction;
+        return this;
+    }
 
-	public final int gmFunction() {
-		return this.gmFunction;
-	}
+    public int gmFunction() {
+        return this.gmFunction;
+    }
 
-	@Override
-	public int packetId() {
-		return 3;
-	}
+    @Override
+    public int packetId() {
+        return 3;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.gmFunction = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.gmFunction = buffer.readIntLE();
+    }
 }

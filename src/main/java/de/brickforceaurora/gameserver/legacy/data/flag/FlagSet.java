@@ -6,11 +6,11 @@ public final class FlagSet<F extends IFlag> {
 
     public FlagSet() {}
 
-    public FlagSet(int value) {
+    public FlagSet(final int value) {
         this.value = value;
     }
 
-    public FlagSet<F> set(F flag, boolean state) {
+    public FlagSet<F> set(final F flag, final boolean state) {
         if (state) {
             this.value |= flag.mask();
         } else {
@@ -19,11 +19,11 @@ public final class FlagSet<F extends IFlag> {
         return this;
     }
 
-    public boolean is(F flag) {
+    public boolean is(final F flag) {
         return (this.value & flag.mask()) == flag.mask();
     }
-    
-    public FlagSet<F> value(int value) {
+
+    public FlagSet<F> value(final int value) {
         this.value = value;
         return this;
     }

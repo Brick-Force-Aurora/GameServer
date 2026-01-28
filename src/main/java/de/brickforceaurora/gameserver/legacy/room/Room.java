@@ -1,13 +1,57 @@
 package de.brickforceaurora.gameserver.legacy.room;
 
 public class Room {
-    public static String[] sceneByMode = {"MapEditor", "TeamMatch", "IndividualMatch", "CaptureTheFlagMatch", "ExplosionMatch", "Defense", "BndMatch", "Bungee", "Escape", "Zombie"};
+    public static String[] sceneByMode = {
+        "MapEditor",
+        "TeamMatch",
+        "IndividualMatch",
+        "CaptureTheFlagMatch",
+        "ExplosionMatch",
+        "Defense",
+        "BndMatch",
+        "Bungee",
+        "Escape",
+        "Zombie"
+    };
 
-    public static String[] typeStringKey = {"ROOM_TYPE_MAP_EDITOR", "ROOM_TYPE_TEAM_MATCH", "ROOM_TYPE_INDIVIDUAL_MATCH", "ROOM_TYPE_CAPTURE_THE_FLAG", "ROOM_TYPE_EXPLOSION", "ROOM_TYPE_MISSION", "ROOM_TYPE_BND", "ROOM_TYPE_BUNGEE", "ROOM_TYPE_ESCAPE", "ROOM_TYPE_ZOMBIE"};
+    public static String[] typeStringKey = {
+        "ROOM_TYPE_MAP_EDITOR",
+        "ROOM_TYPE_TEAM_MATCH",
+        "ROOM_TYPE_INDIVIDUAL_MATCH",
+        "ROOM_TYPE_CAPTURE_THE_FLAG",
+        "ROOM_TYPE_EXPLOSION",
+        "ROOM_TYPE_MISSION",
+        "ROOM_TYPE_BND",
+        "ROOM_TYPE_BUNGEE",
+        "ROOM_TYPE_ESCAPE",
+        "ROOM_TYPE_ZOMBIE"
+    };
 
-    public static int[] modeMasks = {0, 1, 2, 4, 8, 16, 32, 64, 128, 256};
+    public static int[] modeMasks = {
+        0,
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        64,
+        128,
+        256
+    };
 
-    public static int[] modeSelector = {32767, 1, 2, 4, 8, 16, 32, 64, 128, 256};
+    public static int[] modeSelector = {
+        32767,
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        64,
+        128,
+        256
+    };
 
     public static byte official = 1;
 
@@ -17,7 +61,11 @@ public class Room {
 
     public static byte blocked = 8;
 
-    private static String[] statusStringKey = {"ROOM_STATUS_WAITING", "ROOM_STATUS_PENDING", "ROOM_STATUS_PLAYING"};
+    private static String[] statusStringKey = {
+        "ROOM_STATUS_WAITING",
+        "ROOM_STATUS_PENDING",
+        "ROOM_STATUS_PLAYING"
+    };
 
     public boolean locked;
 
@@ -61,8 +109,7 @@ public class Room {
 
     public boolean isWanted;
 
-    public Room(Room src)
-    {
+    public Room(final Room src) {
         locked = src.locked;
         no = src.no;
         title = src.title;
@@ -86,8 +133,10 @@ public class Room {
         squadCounter = src.squadCounter;
     }
 
-    public Room(boolean isLocked, int roomNo, String roomTitle, RoomType roomType, RoomStatus roomStatus, int cur, int max, int mapId, String alias, int roomGoal, int roomTimelimit, int RoomWeaponOption, int RoomPing, int RoomScore1, int RoomScore2, int countryFilter, boolean breakInto, boolean wanted, boolean dropItem, int _squad, int _squadCounter)
-    {
+    public Room(final boolean isLocked, final int roomNo, final String roomTitle, final RoomType roomType, final RoomStatus roomStatus,
+        final int cur, final int max, final int mapId, final String alias, final int roomGoal, final int roomTimelimit,
+        final int RoomWeaponOption, final int RoomPing, final int RoomScore1, final int RoomScore2, final int countryFilter,
+        final boolean breakInto, final boolean wanted, final boolean dropItem, final int _squad, final int _squadCounter) {
         locked = isLocked;
         no = roomNo;
         title = roomTitle;
@@ -111,22 +160,20 @@ public class Room {
         squadCounter = _squadCounter;
     }
 
-    public int Compare(Room arg, Column sortedBy, boolean ascending)
-    {
+    public int Compare(final Room arg, final Column sortedBy, final boolean ascending) {
         int num = 0;
         switch (sortedBy) {
-            case NO -> num = Integer.compare(this.no, arg.no);
-            case TYPE -> num = Integer.compare(this.type.getId(), arg.type.getId());
-            case TITLE -> num = this.title.compareTo(arg.title);
-            case STATUS -> num = Integer.compare(this.status.getId(), arg.status.getId());
-            case NUM_PLAYER -> num = Integer.compare(this.curPlayer, arg.curPlayer);
-            case MAP_ALIAS -> num = this.curMapAlias.compareTo(arg.curMapAlias);
-            case PING -> num = Integer.compare(this.ping, arg.ping);
-            case COUNTRY -> num = Integer.compare(CountryFilter, arg.CountryFilter);
-            case WPN_OPT -> num = Integer.compare(weaponOption, arg.weaponOption);
+        case NO -> num = Integer.compare(this.no, arg.no);
+        case TYPE -> num = Integer.compare(this.type.getId(), arg.type.getId());
+        case TITLE -> num = this.title.compareTo(arg.title);
+        case STATUS -> num = Integer.compare(this.status.getId(), arg.status.getId());
+        case NUM_PLAYER -> num = Integer.compare(this.curPlayer, arg.curPlayer);
+        case MAP_ALIAS -> num = this.curMapAlias.compareTo(arg.curMapAlias);
+        case PING -> num = Integer.compare(this.ping, arg.ping);
+        case COUNTRY -> num = Integer.compare(CountryFilter, arg.CountryFilter);
+        case WPN_OPT -> num = Integer.compare(weaponOption, arg.weaponOption);
         }
-        if (!ascending)
-        {
+        if (!ascending) {
             num = -num;
         }
         return num;

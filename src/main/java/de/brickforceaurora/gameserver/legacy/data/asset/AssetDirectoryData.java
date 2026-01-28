@@ -32,7 +32,7 @@ public abstract class AssetDirectoryData<A extends Asset> extends DirectoryDataE
 
     private final SnowFrame<?> snowFrame;
 
-    public AssetDirectoryData(String key) {
+    public AssetDirectoryData(final String key) {
         this.internalPath = INTERNAL_PATH.formatted(key);
         this.externalPath = EXTERNAL_PATH.formatted(key);
         this.dataHandler = JsonDataHandler.forKey(key);
@@ -49,20 +49,20 @@ public abstract class AssetDirectoryData<A extends Asset> extends DirectoryDataE
         return dataHandler;
     }
 
-    public final A asset(String name) {
+    public final A asset(final String name) {
         return assetByName.get(name);
     }
 
-    public final A asset(int id) {
+    public final A asset(final int id) {
         return assetById.get(id);
     }
 
     @Override
-    public boolean isSupported(File file, String name, String extension, boolean isFile) {
+    public boolean isSupported(final File file, final String name, final String extension, final boolean isFile) {
         if (!isFile) {
             return true;
         }
-        return extension.equals("json");
+        return "json".equals(extension);
     }
 
     @Override
@@ -76,25 +76,25 @@ public abstract class AssetDirectoryData<A extends Asset> extends DirectoryDataE
     }
 
     @Override
-    public void onLoadStart(ISimpleLogger logger) {
+    public void onLoadStart(final ISimpleLogger logger) {
         assetByName.clear();
         assetById.clear();
 
         try {
             snowFrame.externalResource(internalPath, externalPath, true);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             logger.error("Failed to extract assets", e);
         }
     }
 
     @Override
-    public void onLoad(ISimpleLogger logger, FileData<IJson<?>> value) throws Exception {
-        IJson<?> json = value.value();
+    public void onLoad(final ISimpleLogger logger, final FileData<IJson<?>> value) throws Exception {
+        final IJson<?> json = value.value();
         if (json == null || !json.isObject()) {
             logger.warning("Invalid json value for asset '{0}'", value.key().location().key());
             return;
         }
-        JsonObject root = json.asJsonObject();
+        final JsonObject root = json.asJsonObject();
         if (!root.has("name", JsonType.STRING)) {
             logger.warning("Invalid json value for asset '{0}': name is not set", value.key().location().key());
             return;
@@ -103,17 +103,17 @@ public abstract class AssetDirectoryData<A extends Asset> extends DirectoryDataE
             logger.warning("Invalid json value for asset '{0}': id is not set", value.key().location().key());
             return;
         }
-        String name = root.getAsString("name");
+        final String name = root.getAsString("name");
         if (assetByName.containsKey(name)) {
             logger.warning("Duplicate asset name for asset '{0}': {1}", value.key().location().key(), name);
             return;
         }
-        int id = root.getAsInt("id");
+        final int id = root.getAsInt("id");
         if (assetById.containsKey(id)) {
             logger.warning("Duplicate asset id for asset '{0}': {1}", value.key().location().key(), id);
             return;
         }
-        A asset = readAsset(logger, value.key(), root, name, id);
+        final A asset = readAsset(logger, value.key(), root, name, id);
         if (asset == null) {
             return;
         }

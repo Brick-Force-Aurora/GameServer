@@ -10,7 +10,7 @@ public final class NetContext<P extends IPacket> {
 
     private volatile boolean intercept = false;
 
-    public NetContext(NetManager manager, BFClient client, P packet) {
+    public NetContext(final NetManager manager, final BFClient client, final P packet) {
         this.manager = manager;
         this.client = client;
         this.packet = packet;
@@ -20,7 +20,7 @@ public final class NetContext<P extends IPacket> {
         return intercept;
     }
 
-    public void intercepts(boolean intercept) {
+    public void intercepts(final boolean intercept) {
         this.intercept = intercept;
     }
 

@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundCtfPickFlagPacket implements IServerboundPacket {
 
-	private int flag;
+    private int flag;
 
-	public final ServerboundCtfPickFlagPacket flag(int flag) {
-		this.flag = flag;
-		return this;
-	}
+    public ServerboundCtfPickFlagPacket flag(final int flag) {
+        this.flag = flag;
+        return this;
+    }
 
-	public final int flag() {
-		return this.flag;
-	}
+    public int flag() {
+        return this.flag;
+    }
 
-	@Override
-	public int packetId() {
-		return 285;
-	}
+    @Override
+    public int packetId() {
+        return 285;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.flag = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.flag = buffer.readIntLE();
+    }
 }

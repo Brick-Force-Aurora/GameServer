@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundLoadCompletePacket implements IServerboundPacket {
 
-	private int crc;
+    private int crc;
 
-	public final ServerboundLoadCompletePacket crc(int crc) {
-		this.crc = crc;
-		return this;
-	}
+    public ServerboundLoadCompletePacket crc(final int crc) {
+        this.crc = crc;
+        return this;
+    }
 
-	public final int crc() {
-		return this.crc;
-	}
+    public int crc() {
+        return this.crc;
+    }
 
-	@Override
-	public int packetId() {
-		return 42;
-	}
+    @Override
+    public int packetId() {
+        return 42;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.crc = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.crc = buffer.readIntLE();
+    }
 }

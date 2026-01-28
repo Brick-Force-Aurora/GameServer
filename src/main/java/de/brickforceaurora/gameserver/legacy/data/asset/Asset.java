@@ -5,7 +5,7 @@ public abstract class Asset {
     private final String name;
     private final int id;
 
-    public Asset(String name, int id) {
+    public Asset(final String name, final int id) {
         this.name = name;
         this.id = id;
     }

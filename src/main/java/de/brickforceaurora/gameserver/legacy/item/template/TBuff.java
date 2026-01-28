@@ -2,13 +2,13 @@ package de.brickforceaurora.gameserver.legacy.item.template;
 
 public class TBuff {
 
-    private int index;
+    private final int index;
 
-    private boolean isPoint;
-    private boolean isXp;
-    private boolean isLuck;
+    private final boolean isPoint;
+    private final boolean isXp;
+    private final boolean isLuck;
 
-    private float factor;
+    private final float factor;
 
     /* =====================
        Getters (properties)
@@ -59,11 +59,7 @@ public class TBuff {
        Constructor
        ===================== */
 
-    public TBuff(int index,
-                 boolean isPoint,
-                 boolean isXp,
-                 boolean isLuck,
-                 float factor) {
+    public TBuff(final int index, final boolean isPoint, final boolean isXp, final boolean isLuck, final float factor) {
 
         this.index = index;
         this.isPoint = isPoint;

@@ -5,35 +5,35 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundChgDoorStatusPacket implements IClientboundPacket {
 
-	private int val;
-	private byte val2;
+    private int val;
+    private byte val2;
 
-	public final ClientboundChgDoorStatusPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundChgDoorStatusPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	public final ClientboundChgDoorStatusPacket val2(byte val2) {
-		this.val2 = val2;
-		return this;
-	}
+    public ClientboundChgDoorStatusPacket val2(final byte val2) {
+        this.val2 = val2;
+        return this;
+    }
 
-	public final byte val2() {
-		return this.val2;
-	}
+    public byte val2() {
+        return this.val2;
+    }
 
-	@Override
-	public int packetId() {
-		return 449;
-	}
+    @Override
+    public int packetId() {
+        return 449;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
-		buffer.writeByte(this.val2);
-	}
+    @Override
+    public void write(final ByteBuf buffer) {
+        buffer.writeIntLE(this.val);
+        buffer.writeByte(this.val2);
+    }
 }

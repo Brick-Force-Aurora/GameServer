@@ -11,45 +11,45 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 
 public final class ServerboundSavePacket implements IServerboundPacket {
 
-	private int slot;
-	private BufferedImage thumbnail;
+    private int slot;
+    private BufferedImage thumbnail;
 
-	public final ServerboundSavePacket slot(int slot) {
-		this.slot = slot;
-		return this;
-	}
+    public ServerboundSavePacket slot(final int slot) {
+        this.slot = slot;
+        return this;
+    }
 
-	public final int slot() {
-		return this.slot;
-	}
+    public int slot() {
+        return this.slot;
+    }
 
-    public final ServerboundSavePacket thumbnail(BufferedImage thumbnail) {
+    public ServerboundSavePacket thumbnail(final BufferedImage thumbnail) {
         this.thumbnail = thumbnail;
         return this;
     }
 
-    public final BufferedImage thumbnail() {
+    public BufferedImage thumbnail() {
         return this.thumbnail;
     }
 
-	@Override
-	public int packetId() {
-		return 39;
-	}
+    @Override
+    public int packetId() {
+        return 39;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) throws IOException {
-		this.slot = buffer.readIntLE();
-		{
-		    int length = buffer.readIntLE();
-		    if (length == 0) {
-		        this.thumbnail = null;
-		    } else {
-		        byte[] bytes = new byte[length];
-		        buffer.readBytes(bytes);
-		        FastByteArrayInputStream input = new FastByteArrayInputStream(bytes);
-		        this.thumbnail = ImageIO.read(input);
-		    }
-		}
-	}
+    @Override
+    public void read(final ByteBuf buffer) throws IOException {
+        this.slot = buffer.readIntLE();
+        {
+            final int length = buffer.readIntLE();
+            if (length == 0) {
+                this.thumbnail = null;
+            } else {
+                final byte[] bytes = new byte[length];
+                buffer.readBytes(bytes);
+                final FastByteArrayInputStream input = new FastByteArrayInputStream(bytes);
+                this.thumbnail = ImageIO.read(input);
+            }
+        }
+    }
 }

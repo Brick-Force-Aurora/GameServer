@@ -5,12 +5,11 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundEscapeStatusPacket implements IClientboundPacket {
 
-	@Override
-	public int packetId() {
-		return 522;
-	}
+    @Override
+    public int packetId() {
+        return 522;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-	}
+    @Override
+    public void write(final ByteBuf buffer) {}
 }

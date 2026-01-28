@@ -11,13 +11,13 @@ public final class Msg4Send {
         return buffer;
     }
 
-    public Msg4Send(int id, long meta, long src, MsgBody body, byte sendKey) {
+    public Msg4Send(final int id, final long meta, final long src, final MsgBody body, final byte sendKey) {
 
-        int offset = body.offset();
-        byte[] srcBody = body.buffer();
+        final int offset = body.offset();
+        final byte[] srcBody = body.buffer();
 
         // Copy body (do NOT mutate original MsgBody)
-        byte[] bodyCopy = new byte[offset];
+        final byte[] bodyCopy = new byte[offset];
         System.arraycopy(srcBody, 0, bodyCopy, 0, offset);
 
         byte crc = 0;
@@ -33,9 +33,9 @@ public final class Msg4Send {
             }
         }
 
-        MsgHdr hdr = new MsgHdr(offset, id, crc, meta, src);
+        final MsgHdr hdr = new MsgHdr(offset, id, crc, meta, src);
 
-        byte[] hdrBytes = hdr.toArray();
+        final byte[] hdrBytes = hdr.toArray();
 
         // Final buffer
         buffer = new byte[MsgHdr.SIZE + offset];
@@ -43,9 +43,8 @@ public final class Msg4Send {
         System.arraycopy(bodyCopy, 0, buffer, MsgHdr.SIZE, offset);
     }
 
-
-    public ByteBuf toByteBuf(ByteBufAllocator allocator) {
-        ByteBuf buf = allocator.buffer(buffer.length);
+    public ByteBuf toByteBuf(final ByteBufAllocator allocator) {
+        final ByteBuf buf = allocator.buffer(buffer.length);
         buf.writeBytes(buffer);
         return buf;
     }

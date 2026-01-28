@@ -58,41 +58,41 @@ public class PacketGenerator implements ISourceGenerator {
     }
 
     @Override
-    public void generateSources(SourcePackage root) {
-        Path path = Paths.get("raw_packets.json");
+    public void generateSources(final SourcePackage root) {
+        final Path path = Paths.get("raw_packets.json");
         if (!Files.exists(path)) {
             return;
         }
-        SourcePackage packetRoot = root.getOrCreatePackage("de.brickforceaurora.gameserver.net.protocol");
+        final SourcePackage packetRoot = root.getOrCreatePackage("de.brickforceaurora.gameserver.net.protocol");
         if (packetRoot.hasDirectSource("PacketRegistry")) {
             return;
         }
         JsonArray packets;
         try (InputStream input = path.getFileSystem().provider().newInputStream(path)) {
-            IJson<?> json = JsonParser.fromStream(input);
+            final IJson<?> json = JsonParser.fromStream(input);
             if (json == null || !json.isArray()) {
                 return;
             }
             packets = json.asJsonArray();
-        } catch (Throwable throwable) {
+        } catch (final Throwable throwable) {
             throw new IllegalStateException("Failed to read raw_packets.json", throwable);
         }
 
-        SourcePackage clientboundRoot = packetRoot.getOrCreatePackage("clientbound");
-        SourcePackage serverboundRoot = packetRoot.getOrCreatePackage("serverbound");
+        final SourcePackage clientboundRoot = packetRoot.getOrCreatePackage("clientbound");
+        final SourcePackage serverboundRoot = packetRoot.getOrCreatePackage("serverbound");
 
-        JavaInterfaceSource serverboundBase = packetRoot.findInterface("IServerboundPacket").orElse(null);
-        JavaInterfaceSource clientboundBase = packetRoot.findInterface("IClientboundPacket").orElse(null);
+        final JavaInterfaceSource serverboundBase = packetRoot.findInterface("IServerboundPacket").orElse(null);
+        final JavaInterfaceSource clientboundBase = packetRoot.findInterface("IClientboundPacket").orElse(null);
 
-        JavaClassSource packetRegistry = packetRoot.createClass("PacketRegistry");
+        final JavaClassSource packetRegistry = packetRoot.createClass("PacketRegistry");
         packetRegistry.setFinal(true);
         packetRegistry.addMethod().setConstructor(true).setPrivate().setBody("throw new UnsupportedOperationException();");
 
-        StringBuilder clientBuilder = new StringBuilder();
-        StringBuilder serverBuilder = new StringBuilder();
+        final StringBuilder clientBuilder = new StringBuilder();
+        final StringBuilder serverBuilder = new StringBuilder();
 
-        for (IJson<?> entry : packets) {
-            JsonObject object = entry.asJsonObject();
+        for (final IJson<?> entry : packets) {
+            final JsonObject object = entry.asJsonObject();
             String name = object.getAsString("name") + "Packet";
             if (name.contains("Usermap")) {
                 name = name.replace("Usermap", "UserPrivateMap");
@@ -100,12 +100,12 @@ public class PacketGenerator implements ISourceGenerator {
             SourcePackage pkg;
             if (name.startsWith("Serverbound")) {
                 pkg = serverboundRoot;
-                int id = object.getAsInt("id");
+                final int id = object.getAsInt("id");
                 serverBuilder.append("serverbound.put(").append(id).append(", ").append(name).append("::new);");
                 serverBuilder.append("packetIdMap.put(").append(name).append(".class, ").append(id).append(");");
             } else {
                 pkg = clientboundRoot;
-                int id = object.getAsInt("id");
+                final int id = object.getAsInt("id");
                 clientBuilder.append("clientbound.put(").append(id).append(", ").append(name).append("::new);");
                 clientBuilder.append("packetIdMap.put(").append(name).append(".class, ").append(id).append(");");
             }
@@ -113,7 +113,7 @@ public class PacketGenerator implements ISourceGenerator {
                 packetRegistry.addImport(pkg.getDirectSource(name));
                 continue;
             }
-            JavaClassSource packet = pkg.createClass(name);
+            final JavaClassSource packet = pkg.createClass(name);
             packetRegistry.addImport(packet);
             packet.setFinal(true);
             if (pkg == serverboundRoot) {
@@ -173,7 +173,7 @@ public class PacketGenerator implements ISourceGenerator {
                 return id;
             }
             """);
-        
+
         packetRegistry.addInitializer("""
             static {
                 var packetIdMap = new Object2IntArrayMap<Class<? extends IPacket>>();
@@ -189,29 +189,36 @@ public class PacketGenerator implements ISourceGenerator {
             """.formatted(clientBuilder.toString(), serverBuilder.toString()));
     }
 
-    private void handleClientbound(JavaClassSource source, JsonObject data) {
+    private void handleClientbound(final JavaClassSource source, final JsonObject data) {
         int unknownCounter = 0, unsupportedCounter = 0, unnamedCounter = 0;
         boolean hasSequence = false;
-        StringBuilder writeOutput = new StringBuilder();
-        for (IJson<?> valueEntry : data.getAsArray("values")) {
-            JsonObject value = valueEntry.asJsonObject();
-            String name = value.getAsString("name"), type = value.getAsString("type");
-            if (name.equals("MyInfoManager.Instance.Seq") || name.equals("seq")) {
+        final StringBuilder writeOutput = new StringBuilder();
+        for (final IJson<?> valueEntry : data.getAsArray("values")) {
+            final JsonObject value = valueEntry.asJsonObject();
+            String name = value.getAsString("name");
+            final String type = value.getAsString("type");
+            switch (name) {
+            case "MyInfoManager.Instance.Seq":
+            case "seq":
                 hasSequence = true;
                 continue;
-            }
-            if (name.equals("_")) {
+            case "_":
                 name = "Unnamed%s".formatted(unnamedCounter++);
-            } else if (name.equals("hashCode")) {
+                break;
+            case "hashCode":
                 name = "hash";
+                break;
+            case null:
+            default:
+                break;
             }
             switch (type) {
             case "UNKNOWN" -> {
-                String fieldName = "UnknownValue%s".formatted(unknownCounter++);
+                final String fieldName = "UnknownValue%s".formatted(unknownCounter++);
                 source.addField().setType("String").setName(fieldName).setFinal(true).setStringInitializer(name);
             }
             case "int" -> {
-                if (name.equals("seq")) {
+                if ("seq".equals(name)) {
                     name = "clientId";
                 }
                 addField(source, name, "int");
@@ -276,7 +283,7 @@ public class PacketGenerator implements ISourceGenerator {
             }
             default -> {
                 CLIENTBOUND_UNSUPPORTED.add(type);
-                String fieldName = "UnsupportedValue%s".formatted(unsupportedCounter++);
+                final String fieldName = "UnsupportedValue%s".formatted(unsupportedCounter++);
                 source.addField().setType("String").setName(fieldName).setFinal(true)
                     .setStringInitializer("name:'%s',type:'%s'".formatted(name, type));
             }
@@ -305,24 +312,25 @@ public class PacketGenerator implements ISourceGenerator {
         source.removeMethod(source.getMethod("write", "ByteBuf"));
     }
 
-    private void handleServerbound(JavaClassSource source, JsonObject data) {
+    private void handleServerbound(final JavaClassSource source, final JsonObject data) {
         int unknownCounter = 0, unsupportedCounter = 0, unnamedCounter = 0;
-        StringBuilder readOutput = new StringBuilder();
-        for (IJson<?> valueEntry : data.getAsArray("values")) {
-            JsonObject value = valueEntry.asJsonObject();
-            String name = value.getAsString("name"), type = value.getAsString("type");
-            if (name.equals("_")) {
+        final StringBuilder readOutput = new StringBuilder();
+        for (final IJson<?> valueEntry : data.getAsArray("values")) {
+            final JsonObject value = valueEntry.asJsonObject();
+            String name = value.getAsString("name");
+            final String type = value.getAsString("type");
+            if ("_".equals(name)) {
                 name = "Unnamed%s".formatted(unnamedCounter++);
-            } else if (name.equals("hashCode")) {
+            } else if ("hashCode".equals(name)) {
                 name = "hash";
             }
             switch (type) {
             case "UNKNOWN" -> {
-                String fieldName = "UnknownValue%s".formatted(unknownCounter++);
+                final String fieldName = "UnknownValue%s".formatted(unknownCounter++);
                 source.addField().setType("String").setName(fieldName).setFinal(true).setStringInitializer(name);
             }
             case "int" -> {
-                if (name.equals("seq")) {
+                if ("seq".equals(name)) {
                     name = "clientId";
                 }
                 addField(source, name, "int");
@@ -384,7 +392,7 @@ public class PacketGenerator implements ISourceGenerator {
             }
             default -> {
                 SERVERBOUND_UNSUPPORTED.add(type);
-                String fieldName = "UnsupportedValue%s".formatted(unsupportedCounter++);
+                final String fieldName = "UnsupportedValue%s".formatted(unsupportedCounter++);
                 source.addField().setType("String").setName(fieldName).setFinal(true)
                     .setStringInitializer("name:'%s',type:'%s'".formatted(name, type));
             }
@@ -408,7 +416,7 @@ public class PacketGenerator implements ISourceGenerator {
         source.removeMethod(source.getMethod("read", "ByteBuf"));
     }
 
-    private void addField(JavaClassSource source, String name, String type) {
+    private void addField(final JavaClassSource source, final String name, final String type) {
         source.addField().setPrivate().setType(type).setName(name);
         source.addMethod().setPublic().setFinal(true).setReturnType(source).setName(name).setBody("""
             this.%1$s = %1$s;
@@ -417,7 +425,8 @@ public class PacketGenerator implements ISourceGenerator {
         source.addMethod().setPublic().setFinal(true).setReturnType(type).setName(name).setBody("return this.%1$s;".formatted(name));
     }
 
-    private void addRemappedNumberField(JavaClassSource source, String name, String type, long minValue, long maxValue) {
+    private void addRemappedNumberField(final JavaClassSource source, final String name, final String type, final long minValue,
+        final long maxValue) {
         source.addField().setPrivate().setType(type).setName(name);
         source.addMethod().setPublic().setFinal(true).setReturnType(source).setName(name).setBody("""
             if (%1$s > %2$sL || %1$s < %3$sL) {

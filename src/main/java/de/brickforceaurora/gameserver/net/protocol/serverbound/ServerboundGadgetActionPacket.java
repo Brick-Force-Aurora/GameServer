@@ -5,35 +5,35 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundGadgetActionPacket implements IServerboundPacket {
 
-	private int clientId;
-	private int action;
+    private int clientId;
+    private int action;
 
-	public final ServerboundGadgetActionPacket clientId(int clientId) {
-		this.clientId = clientId;
-		return this;
-	}
+    public ServerboundGadgetActionPacket clientId(final int clientId) {
+        this.clientId = clientId;
+        return this;
+    }
 
-	public final int clientId() {
-		return this.clientId;
-	}
+    public int clientId() {
+        return this.clientId;
+    }
 
-	public final ServerboundGadgetActionPacket action(int action) {
-		this.action = action;
-		return this;
-	}
+    public ServerboundGadgetActionPacket action(final int action) {
+        this.action = action;
+        return this;
+    }
 
-	public final int action() {
-		return this.action;
-	}
+    public int action() {
+        return this.action;
+    }
 
-	@Override
-	public int packetId() {
-		return 402;
-	}
+    @Override
+    public int packetId() {
+        return 402;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.clientId = buffer.readIntLE();
-		this.action = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.clientId = buffer.readIntLE();
+        this.action = buffer.readIntLE();
+    }
 }

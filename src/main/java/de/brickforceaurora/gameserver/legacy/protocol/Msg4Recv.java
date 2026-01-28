@@ -4,7 +4,12 @@ import java.util.Arrays;
 
 public final class Msg4Recv {
 
-    public enum Status { COMPLETE, INCOMPLETE, INVALID, OVERFLOW }
+    public enum Status {
+        COMPLETE,
+        INCOMPLETE,
+        INVALID,
+        OVERFLOW
+    }
 
     private byte[] buffer;
     private int io;
@@ -16,7 +21,7 @@ public final class Msg4Recv {
         buffer = new byte[4092];
     }
 
-    public Msg4Recv(byte[] src) {
+    public Msg4Recv(final byte[] src) {
         io = 0;
         hdr = new MsgHdr();
         buffer = Arrays.copyOf(src, src.length);
@@ -26,7 +31,7 @@ public final class Msg4Recv {
         buffer = Arrays.copyOf(buffer, buffer.length * 2);
     }
 
-    public void append(byte[] data) {
+    public void append(final byte[] data) {
         if (io + data.length > buffer.length) {
             expandBuffer();
         }
@@ -34,26 +39,29 @@ public final class Msg4Recv {
         io += data.length;
     }
 
-    public Status getStatus(byte recvKey) {
+    public Status getStatus(final byte recvKey) {
         if (io >= buffer.length) {
             expandBuffer();
         }
 
-        if (io < MsgHdr.SIZE)
+        if (io < MsgHdr.SIZE) {
             return Status.INCOMPLETE;
+        }
 
         hdr.fromArray(buffer);
 
-        if (io < MsgHdr.SIZE + hdr.size)
+        if (io < MsgHdr.SIZE + hdr.size) {
             return Status.INCOMPLETE;
+        }
 
         if ((recvKey & 0xFF) == 0xFF) {
             byte crc = 0;
             for (int i = 0; i < hdr.size; i++) {
                 crc ^= buffer[MsgHdr.SIZE + i];
             }
-            if (crc != hdr.crc)
+            if (crc != hdr.crc) {
                 return Status.INVALID;
+            }
         }
 
         return Status.COMPLETE;
@@ -64,18 +72,12 @@ public final class Msg4Recv {
     }
 
     public MsgBody flush() {
-        MsgBody body = new MsgBody(buffer, MsgHdr.SIZE, (int) hdr.size);
+        final MsgBody body = new MsgBody(buffer, MsgHdr.SIZE, (int) hdr.size);
 
         io -= MsgHdr.SIZE + hdr.size;
 
         if (io > 0) {
-            System.arraycopy(
-                    buffer,
-                    MsgHdr.SIZE + (int) hdr.size,
-                    buffer,
-                    0,
-                    io
-            );
+            System.arraycopy(buffer, MsgHdr.SIZE + (int) hdr.size, buffer, 0, io);
         }
 
         return body;

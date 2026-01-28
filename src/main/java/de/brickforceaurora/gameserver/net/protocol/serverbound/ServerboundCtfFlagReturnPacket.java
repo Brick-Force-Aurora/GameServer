@@ -5,46 +5,46 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundCtfFlagReturnPacket implements IServerboundPacket {
 
-	private float x;
-	private float y;
-	private float z;
+    private float x;
+    private float y;
+    private float z;
 
-	public final ServerboundCtfFlagReturnPacket x(float x) {
-		this.x = x;
-		return this;
-	}
+    public ServerboundCtfFlagReturnPacket x(final float x) {
+        this.x = x;
+        return this;
+    }
 
-	public final float x() {
-		return this.x;
-	}
+    public float x() {
+        return this.x;
+    }
 
-	public final ServerboundCtfFlagReturnPacket y(float y) {
-		this.y = y;
-		return this;
-	}
+    public ServerboundCtfFlagReturnPacket y(final float y) {
+        this.y = y;
+        return this;
+    }
 
-	public final float y() {
-		return this.y;
-	}
+    public float y() {
+        return this.y;
+    }
 
-	public final ServerboundCtfFlagReturnPacket z(float z) {
-		this.z = z;
-		return this;
-	}
+    public ServerboundCtfFlagReturnPacket z(final float z) {
+        this.z = z;
+        return this;
+    }
 
-	public final float z() {
-		return this.z;
-	}
+    public float z() {
+        return this.z;
+    }
 
-	@Override
-	public int packetId() {
-		return 366;
-	}
+    @Override
+    public int packetId() {
+        return 366;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.x = buffer.readFloatLE();
-		this.y = buffer.readFloatLE();
-		this.z = buffer.readFloatLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.x = buffer.readFloatLE();
+        this.y = buffer.readFloatLE();
+        this.z = buffer.readFloatLE();
+    }
 }

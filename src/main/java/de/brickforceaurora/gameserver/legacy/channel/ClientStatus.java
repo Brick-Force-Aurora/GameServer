@@ -8,7 +8,7 @@ public enum ClientStatus {
 
     private final int id;
 
-    ClientStatus(int id) {
+    ClientStatus(final int id) {
         this.id = id;
     }
 

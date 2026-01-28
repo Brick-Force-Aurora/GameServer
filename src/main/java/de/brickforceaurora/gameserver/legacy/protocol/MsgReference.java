@@ -12,32 +12,25 @@ public final class MsgReference {
     public final ChannelReference channelRef;
     public final MatchData matchData;
 
-    public MsgReference(Msg2Handle msg,
-                        ClientReference client,
-                        SendType sendType,
-                        ChannelReference channelRef,
-                        MatchData matchData) {
+    public MsgReference(final Msg2Handle msg, final ClientReference client, final SendType sendType, final ChannelReference channelRef,
+        final MatchData matchData) {
         this.msg = msg;
         this.client = client;
-        this.sendType = (sendType != null) ? sendType : SendType.UNICAST;
+        this.sendType = sendType != null ? sendType : SendType.UNICAST;
         this.channelRef = channelRef;
         this.matchData = matchData;
     }
 
-    public MsgReference(MessageId id,
-                        MsgBody body,
-                        ClientReference client,
-                        SendType sendType,
-                        ChannelReference channelRef,
-                        MatchData matchData) {
+    public MsgReference(final MessageId id, final MsgBody body, final ClientReference client, final SendType sendType,
+        final ChannelReference channelRef, final MatchData matchData) {
         this(new Msg2Handle(id, body), client, sendType, channelRef, matchData);
     }
 
-    public MsgReference(MessageId id, MsgBody body, ClientReference client) {
+    public MsgReference(final MessageId id, final MsgBody body, final ClientReference client) {
         this(id, body, client, SendType.UNICAST, null, null);
     }
 
-    public MsgReference(MessageId id, MsgBody body, ClientReference client, SendType sendType) {
+    public MsgReference(final MessageId id, final MsgBody body, final ClientReference client, final SendType sendType) {
         this(id, body, client, sendType, null, null);
     }
 }

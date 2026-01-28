@@ -16,7 +16,7 @@ public class Channel {
 
     private final ChannelData data = ChannelData.DEFAULT;
 
-    public Channel(int id, String name, ChannelMode mode) {
+    public Channel(final int id, final String name, final ChannelMode mode) {
         this.id = id;
         this.name = name;
         this.mode = mode;
@@ -46,8 +46,8 @@ public class Channel {
         return data;
     }
 
-    public void broadcast(IClientboundPacket packet) {
-        for (BFClient client : clients) {
+    public void broadcast(final IClientboundPacket packet) {
+        for (final BFClient client : clients) {
             client.send(packet);
         }
     }

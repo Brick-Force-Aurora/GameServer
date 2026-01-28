@@ -1,85 +1,86 @@
 package de.brickforceaurora.gameserver.net.protocol.clientbound;
 
+import java.nio.charset.StandardCharsets;
+
 import de.brickforceaurora.gameserver.net.protocol.IClientboundPacket;
 import io.netty.buffer.ByteBuf;
-import java.nio.charset.StandardCharsets;
 
 public final class ClientboundUpdateScriptPacket implements IClientboundPacket {
 
-	private int val;
-	private String val2;
-	private boolean val3;
-	private boolean val4;
-	private String val5;
+    private int val;
+    private String val2;
+    private boolean val3;
+    private boolean val4;
+    private String val5;
 
-	public final ClientboundUpdateScriptPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundUpdateScriptPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	public final ClientboundUpdateScriptPacket val2(String val2) {
-		this.val2 = val2;
-		return this;
-	}
+    public ClientboundUpdateScriptPacket val2(final String val2) {
+        this.val2 = val2;
+        return this;
+    }
 
-	public final String val2() {
-		return this.val2;
-	}
+    public String val2() {
+        return this.val2;
+    }
 
-	public final ClientboundUpdateScriptPacket val3(boolean val3) {
-		this.val3 = val3;
-		return this;
-	}
+    public ClientboundUpdateScriptPacket val3(final boolean val3) {
+        this.val3 = val3;
+        return this;
+    }
 
-	public final boolean val3() {
-		return this.val3;
-	}
+    public boolean val3() {
+        return this.val3;
+    }
 
-	public final ClientboundUpdateScriptPacket val4(boolean val4) {
-		this.val4 = val4;
-		return this;
-	}
+    public ClientboundUpdateScriptPacket val4(final boolean val4) {
+        this.val4 = val4;
+        return this;
+    }
 
-	public final boolean val4() {
-		return this.val4;
-	}
+    public boolean val4() {
+        return this.val4;
+    }
 
-	public final ClientboundUpdateScriptPacket val5(String val5) {
-		this.val5 = val5;
-		return this;
-	}
+    public ClientboundUpdateScriptPacket val5(final String val5) {
+        this.val5 = val5;
+        return this;
+    }
 
-	public final String val5() {
-		return this.val5;
-	}
+    public String val5() {
+        return this.val5;
+    }
 
-	@Override
-	public int packetId() {
-		return 168;
-	}
+    @Override
+    public int packetId() {
+        return 168;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
-		if (this.val2.isEmpty()) {
-			buffer.writeIntLE(0);
-		} else {
-			byte[] bytes = this.val2.getBytes(StandardCharsets.UTF_16LE);
-			buffer.writeIntLE(bytes.length);
-			buffer.writeBytes(bytes);
-		}
-		buffer.writeBoolean(this.val3);
-		buffer.writeBoolean(this.val4);
-		if (this.val5.isEmpty()) {
-			buffer.writeIntLE(0);
-		} else {
-			byte[] bytes = this.val5.getBytes(StandardCharsets.UTF_16LE);
-			buffer.writeIntLE(bytes.length);
-			buffer.writeBytes(bytes);
-		}
-	}
+    @Override
+    public void write(final ByteBuf buffer) {
+        buffer.writeIntLE(this.val);
+        if (this.val2.isEmpty()) {
+            buffer.writeIntLE(0);
+        } else {
+            final byte[] bytes = this.val2.getBytes(StandardCharsets.UTF_16LE);
+            buffer.writeIntLE(bytes.length);
+            buffer.writeBytes(bytes);
+        }
+        buffer.writeBoolean(this.val3);
+        buffer.writeBoolean(this.val4);
+        if (this.val5.isEmpty()) {
+            buffer.writeIntLE(0);
+        } else {
+            final byte[] bytes = this.val5.getBytes(StandardCharsets.UTF_16LE);
+            buffer.writeIntLE(bytes.length);
+            buffer.writeBytes(bytes);
+        }
+    }
 }

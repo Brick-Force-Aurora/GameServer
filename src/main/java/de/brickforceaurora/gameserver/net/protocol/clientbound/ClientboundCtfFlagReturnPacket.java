@@ -5,12 +5,11 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundCtfFlagReturnPacket implements IClientboundPacket {
 
-	@Override
-	public int packetId() {
-		return 367;
-	}
+    @Override
+    public int packetId() {
+        return 367;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-	}
+    @Override
+    public void write(final ByteBuf buffer) {}
 }

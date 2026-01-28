@@ -8,7 +8,7 @@ import de.brickforceaurora.gameserver.legacy.match.SlotData;
 import de.brickforceaurora.gameserver.net.BFClient;
 
 public class ClientData {
-    
+
     public boolean isLoaded;
     public boolean isHost;
     public int kills = 0;
@@ -29,10 +29,10 @@ public class ClientData {
     public int rank = 65;
     public int extraSlots = 6;
     public int lastOpenedChestSeq = -1;
-    
+
     public final BFClient client;
-    
-    public ClientData(BFClient client) {
+
+    public ClientData(final BFClient client) {
         this.client = client;
     }
 

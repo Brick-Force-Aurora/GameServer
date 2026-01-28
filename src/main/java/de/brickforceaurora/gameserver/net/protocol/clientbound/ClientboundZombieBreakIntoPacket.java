@@ -5,101 +5,101 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundZombieBreakIntoPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
-	private int val3;
-	private int val4;
-	private int val5;
-	private int val6;
-	private int val7;
-	private int val8;
+    private int val;
+    private int val2;
+    private int val3;
+    private int val4;
+    private int val5;
+    private int val6;
+    private int val7;
+    private int val8;
 
-	public final ClientboundZombieBreakIntoPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundZombieBreakIntoPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	public final ClientboundZombieBreakIntoPacket val2(int val2) {
-		this.val2 = val2;
-		return this;
-	}
+    public ClientboundZombieBreakIntoPacket val2(final int val2) {
+        this.val2 = val2;
+        return this;
+    }
 
-	public final int val2() {
-		return this.val2;
-	}
+    public int val2() {
+        return this.val2;
+    }
 
-	public final ClientboundZombieBreakIntoPacket val3(int val3) {
-		this.val3 = val3;
-		return this;
-	}
+    public ClientboundZombieBreakIntoPacket val3(final int val3) {
+        this.val3 = val3;
+        return this;
+    }
 
-	public final int val3() {
-		return this.val3;
-	}
+    public int val3() {
+        return this.val3;
+    }
 
-	public final ClientboundZombieBreakIntoPacket val4(int val4) {
-		this.val4 = val4;
-		return this;
-	}
+    public ClientboundZombieBreakIntoPacket val4(final int val4) {
+        this.val4 = val4;
+        return this;
+    }
 
-	public final int val4() {
-		return this.val4;
-	}
+    public int val4() {
+        return this.val4;
+    }
 
-	public final ClientboundZombieBreakIntoPacket val5(int val5) {
-		this.val5 = val5;
-		return this;
-	}
+    public ClientboundZombieBreakIntoPacket val5(final int val5) {
+        this.val5 = val5;
+        return this;
+    }
 
-	public final int val5() {
-		return this.val5;
-	}
+    public int val5() {
+        return this.val5;
+    }
 
-	public final ClientboundZombieBreakIntoPacket val6(int val6) {
-		this.val6 = val6;
-		return this;
-	}
+    public ClientboundZombieBreakIntoPacket val6(final int val6) {
+        this.val6 = val6;
+        return this;
+    }
 
-	public final int val6() {
-		return this.val6;
-	}
+    public int val6() {
+        return this.val6;
+    }
 
-	public final ClientboundZombieBreakIntoPacket val7(int val7) {
-		this.val7 = val7;
-		return this;
-	}
+    public ClientboundZombieBreakIntoPacket val7(final int val7) {
+        this.val7 = val7;
+        return this;
+    }
 
-	public final int val7() {
-		return this.val7;
-	}
+    public int val7() {
+        return this.val7;
+    }
 
-	public final ClientboundZombieBreakIntoPacket val8(int val8) {
-		this.val8 = val8;
-		return this;
-	}
+    public ClientboundZombieBreakIntoPacket val8(final int val8) {
+        this.val8 = val8;
+        return this;
+    }
 
-	public final int val8() {
-		return this.val8;
-	}
+    public int val8() {
+        return this.val8;
+    }
 
-	@Override
-	public int packetId() {
-		return 546;
-	}
+    @Override
+    public int packetId() {
+        return 546;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
-		buffer.writeIntLE(this.val2);
-		buffer.writeIntLE(this.val3);
-		buffer.writeIntLE(this.val4);
-		buffer.writeIntLE(this.val5);
-		buffer.writeIntLE(this.val6);
-		buffer.writeIntLE(this.val7);
-		buffer.writeIntLE(this.val8);
-	}
+    @Override
+    public void write(final ByteBuf buffer) {
+        buffer.writeIntLE(this.val);
+        buffer.writeIntLE(this.val2);
+        buffer.writeIntLE(this.val3);
+        buffer.writeIntLE(this.val4);
+        buffer.writeIntLE(this.val5);
+        buffer.writeIntLE(this.val6);
+        buffer.writeIntLE(this.val7);
+        buffer.writeIntLE(this.val8);
+    }
 }

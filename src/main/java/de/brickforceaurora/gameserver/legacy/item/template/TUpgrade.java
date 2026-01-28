@@ -14,37 +14,13 @@ public class TUpgrade extends TItem {
     public int maxLv;
     public int targetType;
 
-    public TUpgrade(
-            String itemCode,
-            String itemName,
-            Texture2D itemIcon,
-            int ct,
-            int tier,
-            String target,
-            int playerLv,
-            int reqLv,
-            int maxLv,
-            String itemComment,
-            int starRate
-    ) {
-        super(
-                itemCode,
-                ItemType.UPGRADE,
-                itemName,
-                itemIcon,
-                ct,
-                0,
-                false,               // itemTakeoffable
-                ItemSlot.NONE,
-                itemComment,
-                null,                // TBuff
-                false,               // itemDiscomposable
-                "",                  // bpBackCode
-                -1,
-                UpgradeCategory.NONE,
-                false,
-                starRate
-        );
+    public TUpgrade(final String itemCode, final String itemName, final Texture2D itemIcon, final int ct, final int tier,
+        final String target, final int playerLv, final int reqLv, final int maxLv, final String itemComment, final int starRate) {
+        super(itemCode, ItemType.UPGRADE, itemName, itemIcon, ct, 0, false,               // itemTakeoffable
+            ItemSlot.NONE, itemComment, null,                // TBuff
+            false,               // itemDiscomposable
+            "",                  // bpBackCode
+            -1, UpgradeCategory.NONE, false, starRate);
 
         this.tier = tier;
         this.target = target;

@@ -5,57 +5,57 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundCreateSquadPacket implements IServerboundPacket {
 
-	private int clan;
-	private int wannaPlanyMap;
-	private int wannaPlayMode;
-	private int maxMember;
+    private int clan;
+    private int wannaPlanyMap;
+    private int wannaPlayMode;
+    private int maxMember;
 
-	public final ServerboundCreateSquadPacket clan(int clan) {
-		this.clan = clan;
-		return this;
-	}
+    public ServerboundCreateSquadPacket clan(final int clan) {
+        this.clan = clan;
+        return this;
+    }
 
-	public final int clan() {
-		return this.clan;
-	}
+    public int clan() {
+        return this.clan;
+    }
 
-	public final ServerboundCreateSquadPacket wannaPlanyMap(int wannaPlanyMap) {
-		this.wannaPlanyMap = wannaPlanyMap;
-		return this;
-	}
+    public ServerboundCreateSquadPacket wannaPlanyMap(final int wannaPlanyMap) {
+        this.wannaPlanyMap = wannaPlanyMap;
+        return this;
+    }
 
-	public final int wannaPlanyMap() {
-		return this.wannaPlanyMap;
-	}
+    public int wannaPlanyMap() {
+        return this.wannaPlanyMap;
+    }
 
-	public final ServerboundCreateSquadPacket wannaPlayMode(int wannaPlayMode) {
-		this.wannaPlayMode = wannaPlayMode;
-		return this;
-	}
+    public ServerboundCreateSquadPacket wannaPlayMode(final int wannaPlayMode) {
+        this.wannaPlayMode = wannaPlayMode;
+        return this;
+    }
 
-	public final int wannaPlayMode() {
-		return this.wannaPlayMode;
-	}
+    public int wannaPlayMode() {
+        return this.wannaPlayMode;
+    }
 
-	public final ServerboundCreateSquadPacket maxMember(int maxMember) {
-		this.maxMember = maxMember;
-		return this;
-	}
+    public ServerboundCreateSquadPacket maxMember(final int maxMember) {
+        this.maxMember = maxMember;
+        return this;
+    }
 
-	public final int maxMember() {
-		return this.maxMember;
-	}
+    public int maxMember() {
+        return this.maxMember;
+    }
 
-	@Override
-	public int packetId() {
-		return 237;
-	}
+    @Override
+    public int packetId() {
+        return 237;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.clan = buffer.readIntLE();
-		this.wannaPlanyMap = buffer.readIntLE();
-		this.wannaPlayMode = buffer.readIntLE();
-		this.maxMember = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.clan = buffer.readIntLE();
+        this.wannaPlanyMap = buffer.readIntLE();
+        this.wannaPlayMode = buffer.readIntLE();
+        this.maxMember = buffer.readIntLE();
+    }
 }

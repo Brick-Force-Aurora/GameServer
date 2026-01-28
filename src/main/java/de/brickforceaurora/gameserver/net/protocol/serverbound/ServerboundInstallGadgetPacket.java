@@ -5,90 +5,90 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundInstallGadgetPacket implements IServerboundPacket {
 
-	private int gadget;
-	private float px;
-	private float py;
-	private float pz;
-	private float nx;
-	private float ny;
-	private float nz;
+    private int gadget;
+    private float px;
+    private float py;
+    private float pz;
+    private float nx;
+    private float ny;
+    private float nz;
 
-	public final ServerboundInstallGadgetPacket gadget(int gadget) {
-		this.gadget = gadget;
-		return this;
-	}
+    public ServerboundInstallGadgetPacket gadget(final int gadget) {
+        this.gadget = gadget;
+        return this;
+    }
 
-	public final int gadget() {
-		return this.gadget;
-	}
+    public int gadget() {
+        return this.gadget;
+    }
 
-	public final ServerboundInstallGadgetPacket px(float px) {
-		this.px = px;
-		return this;
-	}
+    public ServerboundInstallGadgetPacket px(final float px) {
+        this.px = px;
+        return this;
+    }
 
-	public final float px() {
-		return this.px;
-	}
+    public float px() {
+        return this.px;
+    }
 
-	public final ServerboundInstallGadgetPacket py(float py) {
-		this.py = py;
-		return this;
-	}
+    public ServerboundInstallGadgetPacket py(final float py) {
+        this.py = py;
+        return this;
+    }
 
-	public final float py() {
-		return this.py;
-	}
+    public float py() {
+        return this.py;
+    }
 
-	public final ServerboundInstallGadgetPacket pz(float pz) {
-		this.pz = pz;
-		return this;
-	}
+    public ServerboundInstallGadgetPacket pz(final float pz) {
+        this.pz = pz;
+        return this;
+    }
 
-	public final float pz() {
-		return this.pz;
-	}
+    public float pz() {
+        return this.pz;
+    }
 
-	public final ServerboundInstallGadgetPacket nx(float nx) {
-		this.nx = nx;
-		return this;
-	}
+    public ServerboundInstallGadgetPacket nx(final float nx) {
+        this.nx = nx;
+        return this;
+    }
 
-	public final float nx() {
-		return this.nx;
-	}
+    public float nx() {
+        return this.nx;
+    }
 
-	public final ServerboundInstallGadgetPacket ny(float ny) {
-		this.ny = ny;
-		return this;
-	}
+    public ServerboundInstallGadgetPacket ny(final float ny) {
+        this.ny = ny;
+        return this;
+    }
 
-	public final float ny() {
-		return this.ny;
-	}
+    public float ny() {
+        return this.ny;
+    }
 
-	public final ServerboundInstallGadgetPacket nz(float nz) {
-		this.nz = nz;
-		return this;
-	}
+    public ServerboundInstallGadgetPacket nz(final float nz) {
+        this.nz = nz;
+        return this;
+    }
 
-	public final float nz() {
-		return this.nz;
-	}
+    public float nz() {
+        return this.nz;
+    }
 
-	@Override
-	public int packetId() {
-		return 400;
-	}
+    @Override
+    public int packetId() {
+        return 400;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.gadget = buffer.readIntLE();
-		this.px = buffer.readFloatLE();
-		this.py = buffer.readFloatLE();
-		this.pz = buffer.readFloatLE();
-		this.nx = buffer.readFloatLE();
-		this.ny = buffer.readFloatLE();
-		this.nz = buffer.readFloatLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.gadget = buffer.readIntLE();
+        this.px = buffer.readFloatLE();
+        this.py = buffer.readFloatLE();
+        this.pz = buffer.readFloatLE();
+        this.nx = buffer.readFloatLE();
+        this.ny = buffer.readFloatLE();
+        this.nz = buffer.readFloatLE();
+    }
 }

@@ -1,5 +1,10 @@
 package de.brickforceaurora.gameserver.legacy.item.template;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 import de.brickforceaurora.gameserver.GameServerApp;
 import de.brickforceaurora.gameserver.legacy.item.BuffManager;
 import de.brickforceaurora.gameserver.legacy.util.Texture2D;
@@ -10,10 +15,6 @@ import me.lauriichan.laylib.json.io.JsonParser;
 import me.lauriichan.laylib.json.io.JsonSyntaxException;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.resource.source.IDataSource;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
 
 public final class TItemManager {
 
@@ -35,7 +36,7 @@ public final class TItemManager {
     public String[] coatBodyCodes;
     public String[] onlyOneCountingCodes;
 
-    private boolean iconRequesting;
+    private final boolean iconRequesting;
 
     private final Map<Integer, Integer> wpnBy2Slot;
     private final Map<Integer, Integer> wpnBy2Category;
@@ -57,7 +58,7 @@ public final class TItemManager {
     }
 
     private final SnowFrame<?> frame;
-    
+
     private TItemManager() {
         this.frame = GameServerApp.get().snowFrame();
         this.dic = new HashMap<>();
@@ -85,13 +86,13 @@ public final class TItemManager {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends TItem> T get(String key) {
+    public <T extends TItem> T get(final String key) {
         return (T) dic.get(key);
     }
 
     /* ===================== INTERNAL ===================== */
 
-    private void add(String code, TItem item) {
+    private void add(final String code, final TItem item) {
         if (dic.containsKey(code)) {
             GameServerApp.logger().error("ERROR, duplicated item code " + code);
             return;
@@ -102,13 +103,13 @@ public final class TItemManager {
     /* ===================== LOAD ALL ===================== */
 
     public void loadAll() {
-        isLoaded = loadCostumeFromLocalFileSystem() && loadWeaponFromLocalFileSystem() && loadAccessoryFromLocalFileSystem() &&
-                        loadCharacterFromLocalFileSystem() && loadSpecialFromLocalFileSystem() && loadUpgradeFromLocalFileSystem() &&
-                        loadBundleFromLocalFileSystem();
+        isLoaded = loadCostumeFromLocalFileSystem() && loadWeaponFromLocalFileSystem() && loadAccessoryFromLocalFileSystem()
+            && loadCharacterFromLocalFileSystem() && loadSpecialFromLocalFileSystem() && loadUpgradeFromLocalFileSystem()
+            && loadBundleFromLocalFileSystem();
     }
-    
-    private IJson<?> readJson(String path) throws IllegalStateException, IOException, JsonSyntaxException {
-        IDataSource source = frame.resource(path);
+
+    private IJson<?> readJson(final String path) throws IllegalStateException, IOException, JsonSyntaxException {
+        final IDataSource source = frame.resource(path);
         if (!source.exists()) {
             throw new IllegalStateException("File doesn't exist: " + source.getPath());
         }
@@ -119,7 +120,7 @@ public final class TItemManager {
 
     private boolean loadBundleFromLocalFileSystem() {
         try {
-            IJson<?> root = readJson("jar://bundle.json");
+            final IJson<?> root = readJson("jar://bundle.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");
@@ -128,25 +129,19 @@ public final class TItemManager {
             parseBundle(root.asJsonArray());
             return true;
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    private void parseBundle(JsonArray array) {
-        for (IJson<?> elem : array) {
-            JsonObject o = elem.asJsonObject();
+    private void parseBundle(final JsonArray array) {
+        for (final IJson<?> elem : array) {
+            final JsonObject o = elem.asJsonObject();
 
-            TBundle bundle = new TBundle(
-                    o.getAsString("code").toLowerCase(),
-                    o.getAsString("name"),
-                    findIcon(o.getAsString("iconName")),
-                    TItem.string2Type(o.getAsString("type").toLowerCase()),
-                    o.getAsBoolean("isAmount"),
-                    o.getAsString("comment"),
-                    o.getAsInt("season"),
-                    o.getAsInt("starRate"));
+            final TBundle bundle = new TBundle(o.getAsString("code").toLowerCase(), o.getAsString("name"),
+                findIcon(o.getAsString("iconName")), TItem.string2Type(o.getAsString("type").toLowerCase()), o.getAsBoolean("isAmount"),
+                o.getAsString("comment"), o.getAsInt("season"), o.getAsInt("starRate"));
 
             add(o.getAsString("code").toLowerCase(), bundle);
         }
@@ -154,7 +149,7 @@ public final class TItemManager {
 
     private boolean loadWeaponFromLocalFileSystem() {
         try {
-            IJson<?> root = readJson("jar://weapon.json");
+            final IJson<?> root = readJson("jar://weapon.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");
@@ -163,53 +158,34 @@ public final class TItemManager {
             parseWeapon(root.asJsonArray());
             return true;
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    private void parseWeapon(JsonArray array) {
+    private void parseWeapon(final JsonArray array) {
 
-        for (IJson<?> elem : array) {
-            JsonObject o = elem.asJsonObject();
+        for (final IJson<?> elem : array) {
+            final JsonObject o = elem.asJsonObject();
 
-            TWeapon weapon = new TWeapon(
-                    o.getAsString("code").toLowerCase(),
-                    o.getAsString("name"),
-                    o.getAsString("bone"),
-                    o.getAsString("prefab"),
-                    o.getAsString("prefab11"),
-                    findIcon(o.getAsString("icon")),
-                    findIcon(o.getAsString("icon11")),
-                    TItem.string2Type(o.getAsString("type")),
-                    TItem.string2Kind(TItem.string2Type(o.getAsString("type")), o.getAsString("kind")),
-                    TWeapon.String2WeaponCategory(o.getAsString("cat")),
-                    o.getAsBoolean("takeoffable"),
-                    TItem.string2Slot(o.getAsString("slot")),
-                    o.getAsString("comment"),
-                    BuffManager.getInstance().get(o.getAsInt("buff")),
-                    o.getAsBoolean("discomposable"),
-                    o.getAsString("bpBackCode"),
-                    o.getAsInt("durabilityMax"),
-                    TItem.string2UpgradeCategory(o.getAsString("upgradeCategory")),
-                    o.getAsBoolean("isBasic"),
-                    o.getAsInt("season"),
-                    o.getAsString("grp1"),
-                    o.getAsString("grp2"),
-                    o.getAsString("grp3"),
-                    o.getAsBoolean("twoHands"),
-                    o.getAsInt("starRate")
-            );
+            final TWeapon weapon = new TWeapon(o.getAsString("code").toLowerCase(), o.getAsString("name"), o.getAsString("bone"),
+                o.getAsString("prefab"), o.getAsString("prefab11"), findIcon(o.getAsString("icon")), findIcon(o.getAsString("icon11")),
+                TItem.string2Type(o.getAsString("type")),
+                TItem.string2Kind(TItem.string2Type(o.getAsString("type")), o.getAsString("kind")),
+                TWeapon.String2WeaponCategory(o.getAsString("cat")), o.getAsBoolean("takeoffable"),
+                TItem.string2Slot(o.getAsString("slot")), o.getAsString("comment"), BuffManager.getInstance().get(o.getAsInt("buff")),
+                o.getAsBoolean("discomposable"), o.getAsString("bpBackCode"), o.getAsInt("durabilityMax"),
+                TItem.string2UpgradeCategory(o.getAsString("upgradeCategory")), o.getAsBoolean("isBasic"), o.getAsInt("season"),
+                o.getAsString("grp1"), o.getAsString("grp2"), o.getAsString("grp3"), o.getAsBoolean("twoHands"), o.getAsInt("starRate"));
 
             add(o.getAsString("code").toLowerCase(), weapon);
         }
     }
 
-    private boolean loadCostumeFromLocalFileSystem()
-    {
+    private boolean loadCostumeFromLocalFileSystem() {
         try {
-            IJson<?> root = readJson("jar://costume.json");
+            final IJson<?> root = readJson("jar://costume.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");
@@ -218,57 +194,35 @@ public final class TItemManager {
             parseCostume(root.asJsonArray());
             return true;
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    private void parseCostume(JsonArray array) {
+    private void parseCostume(final JsonArray array) {
 
-        for (IJson<?> elem : array) {
-            JsonObject o = elem.asJsonObject();
+        for (final IJson<?> elem : array) {
+            final JsonObject o = elem.asJsonObject();
 
-            TCostume costume = new TCostume(
-                    o.getAsString("code").toLowerCase(),
-                    o.getAsString("name"),
-                    o.getAsString("main"),
-                    o.getAsString("aux"),
-                    o.getAsString("mainMat"),
-                    o.getAsString("auxMat"),
-                    findIcon(o.getAsString("icon")),
-                    TItem.string2Type(o.getAsString("type")),
-                    TItem.string2Kind(TItem.string2Type(o.getAsString("type")), o.getAsString("kind")),
-                    o.getAsBoolean("takeoffable"),
-                    TItem.string2Slot(o.getAsString("slot")),
-                    o.getAsString("comment"),
-                    BuffManager.getInstance().get(o.getAsInt("buff")),
-                    o.getAsBoolean("discomposable"),
-                    o.getAsString("bpBackCode"),
-                    o.getAsInt("armor"),
-                    TItem.string2UpgradeCategory(o.getAsString("upgradeCat")),
-                    o.getAsBoolean("isBasic"),
-                    o.getAsString("mark") ,
-                    o.getAsString("markMat"),
-                    o.getAsInt("season"),
-                    o.getAsString("grp1"),
-                    o.getAsString("grp2"),
-                    o.getAsString("grp3"),
-                    TItem.string2FunctionMask(o.getAsString("function")),
-                    o.getAsInt("funcFactor"),
-                    findIcon(o.getAsString("functionIcon")),
-                    o.getAsInt("starRate")
-            );
+            final TCostume costume = new TCostume(o.getAsString("code").toLowerCase(), o.getAsString("name"), o.getAsString("main"),
+                o.getAsString("aux"), o.getAsString("mainMat"), o.getAsString("auxMat"), findIcon(o.getAsString("icon")),
+                TItem.string2Type(o.getAsString("type")),
+                TItem.string2Kind(TItem.string2Type(o.getAsString("type")), o.getAsString("kind")), o.getAsBoolean("takeoffable"),
+                TItem.string2Slot(o.getAsString("slot")), o.getAsString("comment"), BuffManager.getInstance().get(o.getAsInt("buff")),
+                o.getAsBoolean("discomposable"), o.getAsString("bpBackCode"), o.getAsInt("armor"),
+                TItem.string2UpgradeCategory(o.getAsString("upgradeCat")), o.getAsBoolean("isBasic"), o.getAsString("mark"),
+                o.getAsString("markMat"), o.getAsInt("season"), o.getAsString("grp1"), o.getAsString("grp2"), o.getAsString("grp3"),
+                TItem.string2FunctionMask(o.getAsString("function")), o.getAsInt("funcFactor"), findIcon(o.getAsString("functionIcon")),
+                o.getAsInt("starRate"));
 
             add(o.getAsString("code").toLowerCase(), costume);
         }
     }
 
-
-    private boolean loadAccessoryFromLocalFileSystem()
-    {
+    private boolean loadAccessoryFromLocalFileSystem() {
         try {
-            IJson<?> root = readJson("jar://accessory.json");
+            final IJson<?> root = readJson("jar://accessory.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");
@@ -277,51 +231,33 @@ public final class TItemManager {
             parseAccessory(root.asJsonArray());
             return true;
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    private void parseAccessory(JsonArray array) {
+    private void parseAccessory(final JsonArray array) {
 
-        for (IJson<?> elem : array) {
-            JsonObject o = elem.asJsonObject();
+        for (final IJson<?> elem : array) {
+            final JsonObject o = elem.asJsonObject();
 
-            TAccessory accessory = new TAccessory(
-                    o.getAsString("code").toLowerCase(),
-                    o.getAsString("name"),
-                    o.getAsString("bone"),
-                    o.getAsString("prefab"),
-                    findIcon(o.getAsString("icon")),
-                    TItem.string2Type(o.getAsString("type")),
-                    TItem.string2Kind(TItem.string2Type(o.getAsString("type")), o.getAsString("kind")),
-                    o.getAsBoolean("takeoffable"),
-                    TItem.string2Slot(o.getAsString("slot")),
-                    o.getAsString("comment"),
-                    BuffManager.getInstance().get(o.getAsInt("buff")),
-                    o.getAsBoolean("discomposable"),
-                    o.getAsString("bpBackCode"),
-                    TItem.string2FunctionMask(o.getAsString("function")),
-                    o.getAsInt("armor"),
-                    o.getAsInt("funcFactor"),
-                    TItem.string2UpgradeCategory(o.getAsString("upgradeCategory")),
-                    o.getAsInt("season"),
-                    o.getAsString("grp1"),
-                    o.getAsString("grp2"),
-                    o.getAsString("grp3"),
-                    findIcon(o.getAsString("functionIcon")),
-                    o.getAsInt("starRate")
-            );
+            final TAccessory accessory = new TAccessory(o.getAsString("code").toLowerCase(), o.getAsString("name"), o.getAsString("bone"),
+                o.getAsString("prefab"), findIcon(o.getAsString("icon")), TItem.string2Type(o.getAsString("type")),
+                TItem.string2Kind(TItem.string2Type(o.getAsString("type")), o.getAsString("kind")), o.getAsBoolean("takeoffable"),
+                TItem.string2Slot(o.getAsString("slot")), o.getAsString("comment"), BuffManager.getInstance().get(o.getAsInt("buff")),
+                o.getAsBoolean("discomposable"), o.getAsString("bpBackCode"), TItem.string2FunctionMask(o.getAsString("function")),
+                o.getAsInt("armor"), o.getAsInt("funcFactor"), TItem.string2UpgradeCategory(o.getAsString("upgradeCategory")),
+                o.getAsInt("season"), o.getAsString("grp1"), o.getAsString("grp2"), o.getAsString("grp3"),
+                findIcon(o.getAsString("functionIcon")), o.getAsInt("starRate"));
 
             add(o.getAsString("code").toLowerCase(), accessory);
         }
     }
 
-    private boolean loadCharacterFromLocalFileSystem()
-    {
+    private boolean loadCharacterFromLocalFileSystem() {
         try {
-            IJson<?> root = readJson("jar://character.json");
+            final IJson<?> root = readJson("jar://character.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");
@@ -330,45 +266,31 @@ public final class TItemManager {
             parseCharacter(root.asJsonArray());
             return true;
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    private void parseCharacter(JsonArray array) {
+    private void parseCharacter(final JsonArray array) {
 
-        for (IJson<?> elem : array) {
-            JsonObject o = elem.asJsonObject();
+        for (final IJson<?> elem : array) {
+            final JsonObject o = elem.asJsonObject();
 
-            TCharacter character = new TCharacter(
-                    o.getAsString("code").toLowerCase(),
-                    o.getAsString("name"),
-                    findIcon(o.getAsString("icon")),
-                    TItem.string2Type(o.getAsString("type")),
-                    o.getAsBoolean("takeoffable"),
-                    o.getAsString("gender"),
-                    o.getAsString("prefix"),
-                    o.getAsString("comment"),
-                    BuffManager.getInstance().get(o.getAsInt("buff")),
-                    o.getAsBoolean("discomposable"),
-                    o.getAsString("bpBackCode"),
-                    o.getAsInt("season"),
-                    o.getAsString("mainMat"),
-                    o.getAsString("grp1"),
-                    o.getAsString("grp2"),
-                    o.getAsString("grp3"),
-                    o.getAsInt("starRate")
-            );
+            final TCharacter character = new TCharacter(o.getAsString("code").toLowerCase(), o.getAsString("name"),
+                findIcon(o.getAsString("icon")), TItem.string2Type(o.getAsString("type")), o.getAsBoolean("takeoffable"),
+                o.getAsString("gender"), o.getAsString("prefix"), o.getAsString("comment"),
+                BuffManager.getInstance().get(o.getAsInt("buff")), o.getAsBoolean("discomposable"), o.getAsString("bpBackCode"),
+                o.getAsInt("season"), o.getAsString("mainMat"), o.getAsString("grp1"), o.getAsString("grp2"), o.getAsString("grp3"),
+                o.getAsInt("starRate"));
 
             add(o.getAsString("code").toLowerCase(), character);
         }
     }
 
-    private boolean loadSpecialFromLocalFileSystem()
-    {
+    private boolean loadSpecialFromLocalFileSystem() {
         try {
-            IJson<?> root = readJson("jar://special.json");
+            final IJson<?> root = readJson("jar://special.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");
@@ -377,41 +299,30 @@ public final class TItemManager {
             parseSpecial(root.asJsonArray());
             return true;
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    private void parseSpecial(JsonArray array) {
+    private void parseSpecial(final JsonArray array) {
 
-        for (IJson<?> elem : array) {
-            JsonObject o = elem.asJsonObject();
+        for (final IJson<?> elem : array) {
+            final JsonObject o = elem.asJsonObject();
 
-            TSpecial special = new TSpecial(
-                    o.getAsString("code").toLowerCase(),
-                    o.getAsString("name"),
-                    findIcon(o.getAsString("icon")),
-                    TItem.string2Type(o.getAsString("type")),
-                    o.getAsBoolean("isAmount"),
-                    TItem.string2FunctionMask(o.getAsString("function")),
-                    o.getAsString("comment"),
-                    o.getAsBoolean("discomposable"),
-                    o.getAsString("bpBackCode"),
-                    o.getAsBoolean("isBasic"),
-                    o.getAsInt("season"),
-                    o.getAsString("param"),
-                    o.getAsInt("starRate")
-            );
+            final TSpecial special = new TSpecial(o.getAsString("code").toLowerCase(), o.getAsString("name"),
+                findIcon(o.getAsString("icon")), TItem.string2Type(o.getAsString("type")), o.getAsBoolean("isAmount"),
+                TItem.string2FunctionMask(o.getAsString("function")), o.getAsString("comment"), o.getAsBoolean("discomposable"),
+                o.getAsString("bpBackCode"), o.getAsBoolean("isBasic"), o.getAsInt("season"), o.getAsString("param"),
+                o.getAsInt("starRate"));
 
             add(o.getAsString("code").toLowerCase(), special);
         }
     }
 
-    private boolean loadUpgradeFromLocalFileSystem()
-    {
+    private boolean loadUpgradeFromLocalFileSystem() {
         try {
-            IJson<?> root = readJson("jar://upgrade.json");
+            final IJson<?> root = readJson("jar://upgrade.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");
@@ -420,30 +331,20 @@ public final class TItemManager {
             parseUpgrade(root.asJsonArray());
             return true;
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    private void parseUpgrade(JsonArray array) {
+    private void parseUpgrade(final JsonArray array) {
 
-        for (IJson<?> elem : array) {
-            JsonObject o = elem.asJsonObject();
+        for (final IJson<?> elem : array) {
+            final JsonObject o = elem.asJsonObject();
 
-            TUpgrade upgrade = new TUpgrade(
-                    o.getAsString("code").toLowerCase(),
-                    o.getAsString("name"),
-                    findIcon(o.getAsString("icon")),
-                    TItem.string2Type(o.getAsString("type")),
-                    o.getAsInt("tier"),
-                    o.getAsString("target"),
-                    o.getAsInt("playerLv"),
-                    o.getAsInt("reqLv"),
-                    o.getAsInt("maxLv"),
-                    o.getAsString("comment"),
-                    o.getAsInt("starRate")
-            );
+            final TUpgrade upgrade = new TUpgrade(o.getAsString("code").toLowerCase(), o.getAsString("name"),
+                findIcon(o.getAsString("icon")), TItem.string2Type(o.getAsString("type")), o.getAsInt("tier"), o.getAsString("target"),
+                o.getAsInt("playerLv"), o.getAsInt("reqLv"), o.getAsInt("maxLv"), o.getAsString("comment"), o.getAsInt("starRate"));
 
             add(o.getAsString("code").toLowerCase(), upgrade);
         }
@@ -451,7 +352,7 @@ public final class TItemManager {
 
     /* ===================== STUBS ===================== */
 
-    private Texture2D findIcon(String name) {
+    private Texture2D findIcon(final String name) {
         return null; // server-side stub
     }
 }

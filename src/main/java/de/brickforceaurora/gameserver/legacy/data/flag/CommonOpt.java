@@ -16,12 +16,12 @@ public enum CommonOpt implements IFlag {
     DONOT_FLAG_GUIDE(0x1000),
     DONOT_DEFENSE_GUIDE(0x2000),
     DONOT_ESCAPE_GUIDE(0x4000);
-    
+
     public static final CommonOpt[] ALL = values();
 
     private final int mask;
 
-    CommonOpt(int mask) {
+    CommonOpt(final int mask) {
         this.mask = mask;
     }
 

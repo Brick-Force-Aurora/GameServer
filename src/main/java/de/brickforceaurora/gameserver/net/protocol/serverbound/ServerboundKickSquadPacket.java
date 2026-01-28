@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundKickSquadPacket implements IServerboundPacket {
 
-	private int kicked;
+    private int kicked;
 
-	public final ServerboundKickSquadPacket kicked(int kicked) {
-		this.kicked = kicked;
-		return this;
-	}
+    public ServerboundKickSquadPacket kicked(final int kicked) {
+        this.kicked = kicked;
+        return this;
+    }
 
-	public final int kicked() {
-		return this.kicked;
-	}
+    public int kicked() {
+        return this.kicked;
+    }
 
-	@Override
-	public int packetId() {
-		return 257;
-	}
+    @Override
+    public int packetId() {
+        return 257;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.kicked = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.kicked = buffer.readIntLE();
+    }
 }

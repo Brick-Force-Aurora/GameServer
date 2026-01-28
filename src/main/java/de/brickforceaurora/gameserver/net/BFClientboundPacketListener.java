@@ -10,14 +10,14 @@ final class BFClientboundPacketListener extends ChannelOutboundHandlerAdapter {
     private final NetManager netManager;
     private final BFClient client;
 
-    public BFClientboundPacketListener(NetManager netManager, BFClient client) {
+    public BFClientboundPacketListener(final NetManager netManager, final BFClient client) {
         this.netManager = netManager;
         this.client = client;
     }
 
     @Override
-    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        if (!(msg instanceof IClientboundPacket packet)) {
+    public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) throws Exception {
+        if (!(msg instanceof final IClientboundPacket packet)) {
             ctx.write(msg, promise);
             return;
         }

@@ -1,10 +1,8 @@
 package de.brickforceaurora.gameserver.channel;
 
-import de.brickforceaurora.gameserver.legacy.channel.ChannelMode;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-
 import java.util.concurrent.atomic.AtomicInteger;
+
+import de.brickforceaurora.gameserver.legacy.channel.ChannelMode;
 
 public class ChannelHolder {
 
@@ -13,9 +11,9 @@ public class ChannelHolder {
     private final ChannelMode mode;
     private final int startId;
 
-    public ChannelHolder(ChannelMode mode) {
+    public ChannelHolder(final ChannelMode mode) {
         this.mode = mode;
-        idCount.set(startId = ((mode.id - 1) * 1000));
+        idCount.set(startId = (mode.id - 1) * 1000);
     }
 
     public int startId() {
@@ -26,7 +24,7 @@ public class ChannelHolder {
         return idCount.get() - startId;
     }
 
-    public Channel newChannel(String name) {
+    public Channel newChannel(final String name) {
         return new Channel(idCount.getAndIncrement(), name, mode);
     }
 }

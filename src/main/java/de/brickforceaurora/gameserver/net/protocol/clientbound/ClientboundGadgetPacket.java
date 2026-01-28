@@ -5,123 +5,123 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundGadgetPacket implements IClientboundPacket {
 
-	private int val;
-	private int Unnamed0;
-	private int Unnamed1;
-	private int val4;
-	private float val5;
-	private float val6;
-	private float val7;
-	private float val8;
-	private float val9;
-	private float val10;
+    private int val;
+    private int Unnamed0;
+    private int Unnamed1;
+    private int val4;
+    private float val5;
+    private float val6;
+    private float val7;
+    private float val8;
+    private float val9;
+    private float val10;
 
-	public final ClientboundGadgetPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundGadgetPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	public final ClientboundGadgetPacket Unnamed0(int Unnamed0) {
-		this.Unnamed0 = Unnamed0;
-		return this;
-	}
+    public ClientboundGadgetPacket Unnamed0(final int Unnamed0) {
+        this.Unnamed0 = Unnamed0;
+        return this;
+    }
 
-	public final int Unnamed0() {
-		return this.Unnamed0;
-	}
+    public int Unnamed0() {
+        return this.Unnamed0;
+    }
 
-	public final ClientboundGadgetPacket Unnamed1(int Unnamed1) {
-		this.Unnamed1 = Unnamed1;
-		return this;
-	}
+    public ClientboundGadgetPacket Unnamed1(final int Unnamed1) {
+        this.Unnamed1 = Unnamed1;
+        return this;
+    }
 
-	public final int Unnamed1() {
-		return this.Unnamed1;
-	}
+    public int Unnamed1() {
+        return this.Unnamed1;
+    }
 
-	public final ClientboundGadgetPacket val4(int val4) {
-		this.val4 = val4;
-		return this;
-	}
+    public ClientboundGadgetPacket val4(final int val4) {
+        this.val4 = val4;
+        return this;
+    }
 
-	public final int val4() {
-		return this.val4;
-	}
+    public int val4() {
+        return this.val4;
+    }
 
-	public final ClientboundGadgetPacket val5(float val5) {
-		this.val5 = val5;
-		return this;
-	}
+    public ClientboundGadgetPacket val5(final float val5) {
+        this.val5 = val5;
+        return this;
+    }
 
-	public final float val5() {
-		return this.val5;
-	}
+    public float val5() {
+        return this.val5;
+    }
 
-	public final ClientboundGadgetPacket val6(float val6) {
-		this.val6 = val6;
-		return this;
-	}
+    public ClientboundGadgetPacket val6(final float val6) {
+        this.val6 = val6;
+        return this;
+    }
 
-	public final float val6() {
-		return this.val6;
-	}
+    public float val6() {
+        return this.val6;
+    }
 
-	public final ClientboundGadgetPacket val7(float val7) {
-		this.val7 = val7;
-		return this;
-	}
+    public ClientboundGadgetPacket val7(final float val7) {
+        this.val7 = val7;
+        return this;
+    }
 
-	public final float val7() {
-		return this.val7;
-	}
+    public float val7() {
+        return this.val7;
+    }
 
-	public final ClientboundGadgetPacket val8(float val8) {
-		this.val8 = val8;
-		return this;
-	}
+    public ClientboundGadgetPacket val8(final float val8) {
+        this.val8 = val8;
+        return this;
+    }
 
-	public final float val8() {
-		return this.val8;
-	}
+    public float val8() {
+        return this.val8;
+    }
 
-	public final ClientboundGadgetPacket val9(float val9) {
-		this.val9 = val9;
-		return this;
-	}
+    public ClientboundGadgetPacket val9(final float val9) {
+        this.val9 = val9;
+        return this;
+    }
 
-	public final float val9() {
-		return this.val9;
-	}
+    public float val9() {
+        return this.val9;
+    }
 
-	public final ClientboundGadgetPacket val10(float val10) {
-		this.val10 = val10;
-		return this;
-	}
+    public ClientboundGadgetPacket val10(final float val10) {
+        this.val10 = val10;
+        return this;
+    }
 
-	public final float val10() {
-		return this.val10;
-	}
+    public float val10() {
+        return this.val10;
+    }
 
-	@Override
-	public int packetId() {
-		return 401;
-	}
+    @Override
+    public int packetId() {
+        return 401;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
-		buffer.writeIntLE(this.Unnamed0);
-		buffer.writeIntLE(this.Unnamed1);
-		buffer.writeIntLE(this.val4);
-		buffer.writeFloatLE(this.val5);
-		buffer.writeFloatLE(this.val6);
-		buffer.writeFloatLE(this.val7);
-		buffer.writeFloatLE(this.val8);
-		buffer.writeFloatLE(this.val9);
-		buffer.writeFloatLE(this.val10);
-	}
+    @Override
+    public void write(final ByteBuf buffer) {
+        buffer.writeIntLE(this.val);
+        buffer.writeIntLE(this.Unnamed0);
+        buffer.writeIntLE(this.Unnamed1);
+        buffer.writeIntLE(this.val4);
+        buffer.writeFloatLE(this.val5);
+        buffer.writeFloatLE(this.val6);
+        buffer.writeFloatLE(this.val7);
+        buffer.writeFloatLE(this.val8);
+        buffer.writeFloatLE(this.val9);
+        buffer.writeFloatLE(this.val10);
+    }
 }

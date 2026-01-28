@@ -9,30 +9,30 @@ import de.brickforceaurora.gameserver.legacy.protocol.MsgReference;
 
 public class LoginHandlers {
 
-    public static void register(MessageDispatcher d) {
+    public static void register(final MessageDispatcher d) {
         d.register(MessageId.CS_LOGIN_REQ.id(), LoginHandlers::login);
         d.register(MessageId.CS_HEARTBEAT_REQ.id(), LoginHandlers::heartbeat);
     }
 
-    private static void login(GameServerLogic server, MsgReference msgRef) {
+    private static void login(final GameServerLogic server, final MsgReference msgRef) {
 
-        MsgBody msg = msgRef.msg.msg();
+        final MsgBody msg = msgRef.msg.msg();
 
-        String id = msg.readString();
-        String pswd = msg.readString();
-        int major = msg.readInt();
-        int minor = msg.readInt();
-        String privateIpAddress = msg.readString();
-        String macAddress = msg.readString();
+        final String id = msg.readString();
+        final String pswd = msg.readString();
+        final int major = msg.readInt();
+        final int minor = msg.readInt();
+        final String privateIpAddress = msg.readString();
+        final String macAddress = msg.readString();
 
-        ClientReference client = msgRef.client;
+        final ClientReference client = msgRef.client;
 
         client.name = id;
         client.seq = server.curSeq;
         client.port = 6000 + client.seq;
         server.curSeq++;
 
-        ChannelReference channel = server.channelManager.getDefaultChannel();
+        final ChannelReference channel = server.channelManager.getDefaultChannel();
         channel.addClient(client);
 
         SendPlayerInitInfo(server, client);
@@ -46,25 +46,23 @@ public class LoginHandlers {
         MapHandlers.sendAllUserMaps(server, client);
     }
 
-    private static void heartbeat(GameServerLogic server, MsgReference msgRef) {
+    private static void heartbeat(final GameServerLogic server, final MsgReference msgRef) {
 
-        int gmFunction = msgRef.msg.msg().readInt();
+        final int gmFunction = msgRef.msg.msg().readInt();
 
-        ClientReference client = msgRef.client;
+        final ClientReference client = msgRef.client;
 
-        long now = System.nanoTime(); // monotonic, safe for deltas
+        final long now = System.nanoTime(); // monotonic, safe for deltas
 
-        if ((now - client.lastHeartBeatTime) > 3_000_000_000L) {
+        if (now - client.lastHeartBeatTime > 3_000_000_000L) {
             client.Disconnect(true);
         } else {
             client.lastHeartBeatTime = now;
         }
     }
 
-
-    public static void SendInventoryRequest(GameServerLogic server, ClientReference client)
-    {
-        MsgBody body = new MsgBody();
+    public static void SendInventoryRequest(final GameServerLogic server, final ClientReference client) {
+        final MsgBody body = new MsgBody();
 
         body.write(client.seq);
 
@@ -73,9 +71,8 @@ public class LoginHandlers {
         server.logger().debug("SendInventoryRequest to: " + client.GetIdentifier());
     }
 
-    public static void SendPlayerInitInfo(GameServerLogic server, ClientReference client)
-    {
-        MsgBody body = new MsgBody();
+    public static void SendPlayerInitInfo(final GameServerLogic server, final ClientReference client) {
+        final MsgBody body = new MsgBody();
 
         body.write(client.data.xp);
         body.write(client.data.tutorialed);
@@ -89,14 +86,12 @@ public class LoginHandlers {
         server.logger().debug("SendPlayerInitInfo to: " + client.GetIdentifier());
     }
 
-    public static void SendLogin(GameServerLogic server, ClientReference client)
-    {
+    public static void SendLogin(final GameServerLogic server, final ClientReference client) {
         SendLogin(server, client, 1);
     }
 
-    public static void SendLogin(GameServerLogic server, ClientReference client, int loginChannelId)
-    {
-        MsgBody body = new MsgBody();
+    public static void SendLogin(final GameServerLogic server, final ClientReference client, final int loginChannelId) {
+        final MsgBody body = new MsgBody();
 
         body.write(client.seq);
         body.write(loginChannelId);
@@ -105,9 +100,8 @@ public class LoginHandlers {
         server.logger().debug("SendLogin to: " + client.GetIdentifier());
     }
 
-    public static void SendPlayerInfo(GameServerLogic server, ClientReference client)
-    {
-        MsgBody body = new MsgBody();
+    public static void SendPlayerInfo(final GameServerLogic server, final ClientReference client) {
+        final MsgBody body = new MsgBody();
 
         body.write(client.name);
         body.write(client.data.xp);

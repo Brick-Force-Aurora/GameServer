@@ -10,28 +10,24 @@ import de.brickforceaurora.gameserver.legacy.protocol.SendType;
 import de.brickforceaurora.gameserver.legacy.room.RoomStatus;
 
 public class TeamHandlers {
-    public static void handleEnd(GameServerLogic logic, MatchData matchData)
-    {
+    public static void handleEnd(final GameServerLogic logic, final MatchData matchData) {
         matchData.room.status = RoomStatus.WAITING;
         SendTeamMatchEnd(logic, matchData);
         matchData.Reset();
-        RoomHandlers.sendRoom(logic,null, matchData, SendType.BROADCAST_ROOM);
+        RoomHandlers.sendRoom(logic, null, matchData, SendType.BROADCAST_ROOM);
     }
 
-    public static void SendTeamMatchEnd(GameServerLogic logic, MatchData matchData)
-    {
-        for (int team = 0; team < 2; team++)
-        {
-            MsgBody body = new MsgBody();
+    public static void SendTeamMatchEnd(final GameServerLogic logic, final MatchData matchData) {
+        for (int team = 0; team < 2; team++) {
+            final MsgBody body = new MsgBody();
 
-            body.write(team == 0 ? matchData.GetWinningTeam() : (byte)-matchData.GetWinningTeam());
+            body.write(team == 0 ? matchData.GetWinningTeam() : (byte) -matchData.GetWinningTeam());
             body.write(matchData.redScore);
             body.write(matchData.blueScore);
             body.write(matchData.blueScore);
             body.write(matchData.redScore);
             body.write(matchData.clientList.size());
-            for (int i = 0; i < matchData.clientList.size(); i++)
-            {
+            for (int i = 0; i < matchData.clientList.size(); i++) {
                 body.write(matchData.clientList.get(i).slot.isRed);
                 body.write(matchData.clientList.get(i).seq);
                 body.write(matchData.clientList.get(i).name);
@@ -44,17 +40,17 @@ public class TeamHandlers {
                 body.write(0); //mission
                 body.write(matchData.clientList.get(i).data.xp);
                 body.write(matchData.clientList.get(i).data.xp);
-                body.write((long)0); //buff
+                body.write((long) 0); //buff
             }
-            logic.say(new MsgReference(MessageId.CS_TEAM_MATCH_END_ACK, body, null, team == 0 ? SendType.BROADCAST_BLUE_TEAM : SendType.BROADCAST_RED_TEAM));
+            logic.say(new MsgReference(MessageId.CS_TEAM_MATCH_END_ACK, body, null,
+                team == 0 ? SendType.BROADCAST_BLUE_TEAM : SendType.BROADCAST_RED_TEAM));
         }
 
         logic.logger().debug("Broadcasted SendTeamMatchEnd for room no: " + matchData.room.no);
     }
 
-    public static void SendTeamScore(GameServerLogic logic, MatchData matchData)
-    {
-        MsgBody body = new MsgBody();
+    public static void SendTeamScore(final GameServerLogic logic, final MatchData matchData) {
+        final MsgBody body = new MsgBody();
         body.write(matchData.redScore);
         body.write(matchData.blueScore);
 

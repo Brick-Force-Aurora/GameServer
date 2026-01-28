@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundSelectClanMemberPacket implements IServerboundPacket {
 
-	private int clan;
+    private int clan;
 
-	public final ServerboundSelectClanMemberPacket clan(int clan) {
-		this.clan = clan;
-		return this;
-	}
+    public ServerboundSelectClanMemberPacket clan(final int clan) {
+        this.clan = clan;
+        return this;
+    }
 
-	public final int clan() {
-		return this.clan;
-	}
+    public int clan() {
+        return this.clan;
+    }
 
-	@Override
-	public int packetId() {
-		return 200;
-	}
+    @Override
+    public int packetId() {
+        return 200;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.clan = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.clan = buffer.readIntLE();
+    }
 }

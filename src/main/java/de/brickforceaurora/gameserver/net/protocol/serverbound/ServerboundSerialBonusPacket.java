@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundSerialBonusPacket implements IServerboundPacket {
 
-	private int bonus;
+    private int bonus;
 
-	public final ServerboundSerialBonusPacket bonus(int bonus) {
-		this.bonus = bonus;
-		return this;
-	}
+    public ServerboundSerialBonusPacket bonus(final int bonus) {
+        this.bonus = bonus;
+        return this;
+    }
 
-	public final int bonus() {
-		return this.bonus;
-	}
+    public int bonus() {
+        return this.bonus;
+    }
 
-	@Override
-	public int packetId() {
-		return 82;
-	}
+    @Override
+    public int packetId() {
+        return 82;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.bonus = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.bonus = buffer.readIntLE();
+    }
 }

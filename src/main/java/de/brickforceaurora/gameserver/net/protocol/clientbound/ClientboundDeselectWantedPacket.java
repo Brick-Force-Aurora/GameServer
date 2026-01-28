@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundDeselectWantedPacket implements IClientboundPacket {
 
-	private int val;
+    private int val;
 
-	public final ClientboundDeselectWantedPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundDeselectWantedPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	@Override
-	public int packetId() {
-		return 544;
-	}
+    @Override
+    public int packetId() {
+        return 544;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
-	}
+    @Override
+    public void write(final ByteBuf buffer) {
+        buffer.writeIntLE(this.val);
+    }
 }

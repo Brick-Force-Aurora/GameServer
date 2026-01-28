@@ -25,16 +25,16 @@ public enum UpgradeCategory {
     private static final Map<Integer, UpgradeCategory> BY_VALUE = new HashMap<>();
 
     static {
-        for (UpgradeCategory c : values()) {
+        for (final UpgradeCategory c : values()) {
             BY_VALUE.put(c.value, c);
         }
     }
 
-    UpgradeCategory(int v) {
+    UpgradeCategory(final int v) {
         this.value = v;
     }
 
-    public static UpgradeCategory fromValue(int v) {
+    public static UpgradeCategory fromValue(final int v) {
         return BY_VALUE.getOrDefault(v, NONE);
     }
 

@@ -23,15 +23,7 @@ public class BrickInst {
 
     public int pathcnt;
 
-    public BrickInst(
-            int seq,
-            byte template,
-            byte x,
-            byte y,
-            byte z,
-            int code,
-            byte rot
-    ) {
+    public BrickInst(final int seq, final byte template, final byte x, final byte y, final byte z, final int code, final byte rot) {
         this.seq = seq;
         this.template = template;
         this.posX = x;
@@ -43,17 +35,7 @@ public class BrickInst {
         this.pathcnt = 0;
     }
 
-    public void updateScript(
-            String alias,
-            boolean enableOnAwake,
-            boolean visibleOnAwake,
-            String commands
-    ) {
-        this.brickForceScript = new BfScript(
-                alias,
-                enableOnAwake,
-                visibleOnAwake,
-                commands
-        );
+    public void updateScript(final String alias, final boolean enableOnAwake, final boolean visibleOnAwake, final String commands) {
+        this.brickForceScript = new BfScript(alias, enableOnAwake, visibleOnAwake, commands);
     }
 }

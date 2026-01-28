@@ -563,7 +563,6 @@ public enum MessageId {
     CS_CLAN_NEED_CREATE_POINT_ACK(563),
     CS_CLAN_CHANGE_ROOM_NAME_ACK(564),
     CS_CLAN_GET_OUT_SQUAD_ACK(565),
-    
 
     EXT_OP_CONNECTED_ACK(1000),
     EXT_OP_SLOT_DATA_ACK(1001),
@@ -586,7 +585,7 @@ public enum MessageId {
 
     private final int id;
 
-    MessageId(int id) {
+    MessageId(final int id) {
         this.id = id;
     }
 
@@ -599,14 +598,14 @@ public enum MessageId {
     private static final Int2ObjectMap<MessageId> LOOKUP;
 
     static {
-        Int2ObjectArrayMap<MessageId> map = new Int2ObjectArrayMap<>();
-        for (MessageId msg : values()) {
+        final Int2ObjectArrayMap<MessageId> map = new Int2ObjectArrayMap<>();
+        for (final MessageId msg : values()) {
             map.put(msg.id, msg);
         }
         LOOKUP = Int2ObjectMaps.unmodifiable(map);
     }
 
-    public static MessageId fromId(int id) {
+    public static MessageId fromId(final int id) {
         return LOOKUP.get(id);
     }
 }

@@ -10,8 +10,8 @@ public class Item {
 
     public static final int MAX_UPGRADE_LEVEL = 10;
 
-    private long seq;
-    private TItem tItem;
+    private final long seq;
+    private final TItem tItem;
     private String code;
     private ItemUsage usage;
 
@@ -45,7 +45,7 @@ public class Item {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(final String code) {
         this.code = code;
     }
 
@@ -53,7 +53,7 @@ public class Item {
         return usage;
     }
 
-    public void setUsage(ItemUsage usage) {
+    public void setUsage(final ItemUsage usage) {
         this.usage = usage;
     }
 
@@ -61,7 +61,7 @@ public class Item {
         return remain;
     }
 
-    public void setRemain(int remain) {
+    public void setRemain(final int remain) {
         this.remain = remain;
     }
 
@@ -69,7 +69,7 @@ public class Item {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(final int amount) {
         this.amount = amount;
     }
 
@@ -77,7 +77,7 @@ public class Item {
         return amountBuf;
     }
 
-    public void setAmountBuf(int amountBuf) {
+    public void setAmountBuf(final int amountBuf) {
         this.amountBuf = amountBuf;
     }
 
@@ -85,7 +85,7 @@ public class Item {
         return durability;
     }
 
-    public void setDurability(int durability) {
+    public void setDurability(final int durability) {
         this.durability = durability;
     }
 
@@ -127,7 +127,7 @@ public class Item {
             return false;
         }
         if (premium == 1) {
-            long num = MyInfoManager.getInstance().haveFunction("premium_account");
+            final long num = MyInfoManager.getInstance().haveFunction("premium_account");
             if (num < 0) {
                 return false;
             }
@@ -141,7 +141,7 @@ public class Item {
 
     public boolean isEquipable() {
         if (premium == 1) {
-            long num = MyInfoManager.getInstance().haveFunction("premium_account");
+            final long num = MyInfoManager.getInstance().haveFunction("premium_account");
             if (num < 0) {
                 return false;
             }
@@ -165,7 +165,7 @@ public class Item {
     }
 
     public boolean isPimped() {
-        for (UpgradeProp prop : upgradeProps) {
+        for (final UpgradeProp prop : upgradeProps) {
             if (prop.grade() > 0) {
                 return true;
             }
@@ -174,13 +174,12 @@ public class Item {
     }
 
     public boolean isWeaponSlotAble() {
-        return tItem.type == ItemType.WEAPON &&
-                (usage == ItemUsage.EQUIP || usage == ItemUsage.UNEQUIP);
+        return tItem.type == ItemType.WEAPON && (usage == ItemUsage.EQUIP || usage == ItemUsage.UNEQUIP);
     }
 
     public boolean isShooterSlotAble() {
         if (tItem.type == ItemType.SPECIAL && isEnoughToConsume()) {
-            TSpecial tSpecial = (TSpecial) tItem;
+            final TSpecial tSpecial = (TSpecial) tItem;
             // same as C#, intentionally commented
         }
         return false;
@@ -190,13 +189,8 @@ public class Item {
        Constructor
        ===================== */
 
-    public Item(long itemSeq,
-                TItem itemTemplate,
-                String itemCode,
-                ItemUsage itemUsage,
-                int itemRemain,
-                byte itemPremium,
-                int itemDurability) {
+    public Item(final long itemSeq, final TItem itemTemplate, final String itemCode, final ItemUsage itemUsage, final int itemRemain,
+        final byte itemPremium, final int itemDurability) {
 
         this.seq = itemSeq;
         this.tItem = itemTemplate;
@@ -223,7 +217,7 @@ public class Item {
        Logic methods
        ===================== */
 
-    public void refresh(ItemUsage itemUsage, int itemRemain, byte itemPremium, int itemDurability) {
+    public void refresh(final ItemUsage itemUsage, final int itemRemain, final byte itemPremium, final int itemDurability) {
         if (tItem.isAmount) {
             amount = itemRemain;
         } else {
@@ -236,7 +230,7 @@ public class Item {
         durability = itemDurability;
     }
 
-    public void buy(int itemRemain, ItemUsage initialUsage, int itemDurability) {
+    public void buy(final int itemRemain, final ItemUsage initialUsage, final int itemDurability) {
         if (tItem.isAmount) {
             amount = itemRemain;
             if (amount > 0) {
@@ -250,20 +244,19 @@ public class Item {
     }
 
     public void tickTok() {
-        if ((remain >= 0 || amount >= 0)
-                && !tItem.isAmount
-                && usage != ItemUsage.DELETED
-                && usage != ItemUsage.NOT_USING) {
+        if ((remain >= 0 || amount >= 0) && !tItem.isAmount && usage != ItemUsage.DELETED && usage != ItemUsage.NOT_USING) {
 
             remain--;
-            if (remain < 0) remain = 0;
+            if (remain < 0) {
+                remain = 0;
+            }
         }
     }
 
     public boolean isExpiring() {
-        if (remain < 0 && amount < 0) return false;
-        if (tItem.isAmount) return false;
-        if (usage == ItemUsage.DELETED) return false;
+        if ((remain < 0 && amount < 0) || tItem.isAmount || (usage == ItemUsage.DELETED)) {
+            return false;
+        }
         return remain == 0;
     }
 
@@ -272,19 +265,37 @@ public class Item {
        ===================== */
 
     public String getAmountString() {
-        if (tItem == null || !tItem.isAmount) return "";
-        if (isPremium()) return StringMgr.getInstance().get("JUST_PREMIUM");
-        if (isPCBang()) return StringMgr.getInstance().get("PCBANG_INVEN_TAB");
-        if (usage == ItemUsage.DELETED) return "";
-        if (remain < 0 && amount < 0) return StringMgr.getInstance().get("INFINITE");
+        if (tItem == null || !tItem.isAmount) {
+            return "";
+        }
+        if (isPremium()) {
+            return StringMgr.getInstance().get("JUST_PREMIUM");
+        }
+        if (isPCBang()) {
+            return StringMgr.getInstance().get("PCBANG_INVEN_TAB");
+        }
+        if (usage == ItemUsage.DELETED) {
+            return "";
+        }
+        if (remain < 0 && amount < 0) {
+            return StringMgr.getInstance().get("INFINITE");
+        }
         return Integer.toString(amount);
     }
 
     public String getRemainString() {
-        if (isPremium()) return StringMgr.getInstance().get("JUST_PREMIUM");
-        if (isPCBang()) return StringMgr.getInstance().get("PCBANG_INVEN_TAB");
-        if (usage == ItemUsage.DELETED) return "";
-        if (remain < 0 && amount < 0) return StringMgr.getInstance().get("INFINITE");
+        if (isPremium()) {
+            return StringMgr.getInstance().get("JUST_PREMIUM");
+        }
+        if (isPCBang()) {
+            return StringMgr.getInstance().get("PCBANG_INVEN_TAB");
+        }
+        if (usage == ItemUsage.DELETED) {
+            return "";
+        }
+        if (remain < 0 && amount < 0) {
+            return StringMgr.getInstance().get("INFINITE");
+        }
         if (tItem.isAmount) {
             return amount + StringMgr.getInstance().get("TIMES_UNIT");
         }
@@ -295,16 +306,22 @@ public class Item {
         if (usage == ItemUsage.DELETED) {
             return StringMgr.getInstance().get("EXPIRED_ITEM");
         }
-        int days = Math.round(remain / 86400f);
-        int hours = Math.round(remain / 3600f);
-        int mins = Math.round(remain / 60f);
+        final int days = Math.round(remain / 86400f);
+        final int hours = Math.round(remain / 3600f);
+        final int mins = Math.round(remain / 60f);
 
         if (remain > 315360000) {
             return StringMgr.getInstance().get("REMAIN_OVERFLOW");
         }
-        if (days > 0) return days + StringMgr.getInstance().get("DAYS");
-        if (hours > 0) return hours + StringMgr.getInstance().get("HOURS");
-        if (mins > 0) return mins + StringMgr.getInstance().get("MINUTES");
+        if (days > 0) {
+            return days + StringMgr.getInstance().get("DAYS");
+        }
+        if (hours > 0) {
+            return hours + StringMgr.getInstance().get("HOURS");
+        }
+        if (mins > 0) {
+            return mins + StringMgr.getInstance().get("MINUTES");
+        }
         return StringMgr.getInstance().get("UNDER_ONE_MINUTE");
     }
 
@@ -312,9 +329,9 @@ public class Item {
        Filtering / sorting
        ===================== */
 
-    public int compare(Item a) {
-        int s1 = tItem.season <= 0 ? 1 : tItem.season;
-        int s2 = a.tItem.season <= 0 ? 1 : a.tItem.season;
+    public int compare(final Item a) {
+        final int s1 = tItem.season <= 0 ? 1 : tItem.season;
+        final int s2 = a.tItem.season <= 0 ? 1 : a.tItem.season;
 
         if (s1 == s2) {
             return tItem.name.compareTo(a.tItem.name);
@@ -322,35 +339,43 @@ public class Item {
         return -Integer.compare(tItem.season, a.tItem.season);
     }
 
-    public boolean isFiltered(int filter) {
+    public boolean isFiltered(final int filter) {
         switch (filter) {
-            case 0: return true;
-            case 1: return usage == ItemUsage.EQUIP || usage == ItemUsage.UNEQUIP;
-            case 2: return usage == ItemUsage.NOT_USING;
-            case 3: return usage != ItemUsage.DELETED
-                    && usage != ItemUsage.NOT_USING
-                    && tItem.upgradeCategory != UpgradeCategory.NONE;
-            case 4: return canBeMerged();
-            default: return false;
+        case 0:
+            return true;
+        case 1:
+            return usage == ItemUsage.EQUIP || usage == ItemUsage.UNEQUIP;
+        case 2:
+            return usage == ItemUsage.NOT_USING;
+        case 3:
+            return usage != ItemUsage.DELETED && usage != ItemUsage.NOT_USING && tItem.upgradeCategory != UpgradeCategory.NONE;
+        case 4:
+            return canBeMerged();
+        default:
+            return false;
         }
     }
 
     public boolean canBeMerged() {
-        if (tItem.isAmount) return false;
-        if (isPremium() || isPCBang()) return false;
-        if (usage == ItemUsage.DELETED) return true;
-        if (remain < 0 && amount < 0) return false;
+        if (tItem.isAmount || isPremium() || isPCBang()) {
+            return false;
+        }
+        if (usage == ItemUsage.DELETED) {
+            return true;
+        }
+        if (remain < 0 && amount < 0) {
+            return false;
+        }
         return true;
     }
 
     public boolean canUpgradeable() {
 
         int usableUpgradeSlots = 0;
-        int maxUpgradeSlots = 13;
+        final int maxUpgradeSlots = 13;
 
         for (int slotIndex = 0; slotIndex < maxUpgradeSlots; slotIndex++) {
-            if (UpgradePropManager.getInstance()
-                    .useProp(this.getTemplate().upgradeCategory.value, slotIndex)) {
+            if (UpgradePropManager.getInstance().useProp(this.getTemplate().upgradeCategory.value, slotIndex)) {
                 usableUpgradeSlots++;
             }
         }
@@ -366,14 +391,14 @@ public class Item {
         return usableUpgradeSlots != maxedUpgradeCount;
     }
 
-
     public boolean isUpgradedItem() {
-        if (usage == ItemUsage.NOT_USING ||
-                tItem.upgradeCategory == UpgradeCategory.NONE) {
+        if (usage == ItemUsage.NOT_USING || tItem.upgradeCategory == UpgradeCategory.NONE) {
             return false;
         }
-        for (UpgradeProp prop : upgradeProps) {
-            if (prop.grade() > 0) return true;
+        for (final UpgradeProp prop : upgradeProps) {
+            if (prop.grade() > 0) {
+                return true;
+            }
         }
         return false;
     }

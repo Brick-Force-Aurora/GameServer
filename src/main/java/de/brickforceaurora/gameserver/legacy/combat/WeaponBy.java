@@ -408,7 +408,7 @@ public enum WeaponBy {
 
     private final int id;
 
-    WeaponBy(int id) {
+    WeaponBy(final int id) {
         this.id = id;
     }
 
@@ -419,12 +419,12 @@ public enum WeaponBy {
     private static final Map<Integer, WeaponBy> BY_VALUE = new HashMap<>();
 
     static {
-        for (WeaponBy c : values()) {
+        for (final WeaponBy c : values()) {
             BY_VALUE.put(c.id, c);
         }
     }
 
-    public static WeaponBy fromValue(int v) {
+    public static WeaponBy fromValue(final int v) {
         return BY_VALUE.getOrDefault(v, FALLOUT);
     }
 

@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundGetCannonPacket implements IServerboundPacket {
 
-	private int cannon;
+    private int cannon;
 
-	public final ServerboundGetCannonPacket cannon(int cannon) {
-		this.cannon = cannon;
-		return this;
-	}
+    public ServerboundGetCannonPacket cannon(final int cannon) {
+        this.cannon = cannon;
+        return this;
+    }
 
-	public final int cannon() {
-		return this.cannon;
-	}
+    public int cannon() {
+        return this.cannon;
+    }
 
-	@Override
-	public int packetId() {
-		return 158;
-	}
+    @Override
+    public int packetId() {
+        return 158;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.cannon = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.cannon = buffer.readIntLE();
+    }
 }

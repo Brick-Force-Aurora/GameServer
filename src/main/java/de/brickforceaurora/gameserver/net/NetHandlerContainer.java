@@ -29,19 +29,19 @@ public final class NetHandlerContainer {
         this.handlers = ObjectLists.unmodifiable(handlerList);
     }
 
-    public final INetListener listener() {
+    public INetListener listener() {
         return listener;
     }
 
-    public final ObjectList<NetHandler<?>> handlers() {
+    public ObjectList<NetHandler<?>> handlers() {
         return handlers;
     }
-    
-    public final boolean supports(int packetId) {
+
+    public boolean supports(final int packetId) {
         return handledPackets.contains(packetId);
     }
 
-    final void handlePacket(NetContext<?> context) {
+    void handlePacket(final NetContext<?> context) {
         for (final NetHandler<?> handler : handlers) {
             if (context.packet().packetId() != handler.packetId()) {
                 continue;
@@ -51,7 +51,7 @@ public final class NetHandlerContainer {
     }
 
     @SuppressWarnings("unchecked")
-    private <P extends IPacket> void handle(NetHandler<P> handler, NetContext<?> context) {
+    private <P extends IPacket> void handle(final NetHandler<P> handler, final NetContext<?> context) {
         handler.handle((NetContext<P>) context);
     }
 

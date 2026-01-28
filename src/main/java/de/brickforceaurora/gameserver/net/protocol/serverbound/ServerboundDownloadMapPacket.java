@@ -5,35 +5,35 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundDownloadMapPacket implements IServerboundPacket {
 
-	private int mapSeq;
-	private int buyHow;
+    private int mapSeq;
+    private int buyHow;
 
-	public final ServerboundDownloadMapPacket mapSeq(int mapSeq) {
-		this.mapSeq = mapSeq;
-		return this;
-	}
+    public ServerboundDownloadMapPacket mapSeq(final int mapSeq) {
+        this.mapSeq = mapSeq;
+        return this;
+    }
 
-	public final int mapSeq() {
-		return this.mapSeq;
-	}
+    public int mapSeq() {
+        return this.mapSeq;
+    }
 
-	public final ServerboundDownloadMapPacket buyHow(int buyHow) {
-		this.buyHow = buyHow;
-		return this;
-	}
+    public ServerboundDownloadMapPacket buyHow(final int buyHow) {
+        this.buyHow = buyHow;
+        return this;
+    }
 
-	public final int buyHow() {
-		return this.buyHow;
-	}
+    public int buyHow() {
+        return this.buyHow;
+    }
 
-	@Override
-	public int packetId() {
-		return 174;
-	}
+    @Override
+    public int packetId() {
+        return 174;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.mapSeq = buffer.readIntLE();
-		this.buyHow = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.mapSeq = buffer.readIntLE();
+        this.buyHow = buffer.readIntLE();
+    }
 }

@@ -15,12 +15,12 @@ public enum RoomStatus {
     private static final Map<Integer, RoomStatus> BY_VALUE = new HashMap<>();
 
     static {
-        for (RoomStatus c : values()) {
+        for (final RoomStatus c : values()) {
             BY_VALUE.put(c.id, c);
         }
     }
 
-    RoomStatus(int id) {
+    RoomStatus(final int id) {
         this.id = id;
     }
 
@@ -28,7 +28,7 @@ public enum RoomStatus {
         return id;
     }
 
-    public static RoomStatus fromValue(int v) {
+    public static RoomStatus fromValue(final int v) {
         return BY_VALUE.getOrDefault(v, NONE);
     }
 }

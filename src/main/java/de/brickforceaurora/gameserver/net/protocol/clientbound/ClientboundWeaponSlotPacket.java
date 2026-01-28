@@ -5,35 +5,35 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundWeaponSlotPacket implements IClientboundPacket {
 
-	private int val;
-	private long val2;
+    private int val;
+    private long val2;
 
-	public final ClientboundWeaponSlotPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundWeaponSlotPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	public final ClientboundWeaponSlotPacket val2(long val2) {
-		this.val2 = val2;
-		return this;
-	}
+    public ClientboundWeaponSlotPacket val2(final long val2) {
+        this.val2 = val2;
+        return this;
+    }
 
-	public final long val2() {
-		return this.val2;
-	}
+    public long val2() {
+        return this.val2;
+    }
 
-	@Override
-	public int packetId() {
-		return 418;
-	}
+    @Override
+    public int packetId() {
+        return 418;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
-		buffer.writeLongLE(this.val2);
-	}
+    @Override
+    public void write(final ByteBuf buffer) {
+        buffer.writeIntLE(this.val);
+        buffer.writeLongLE(this.val2);
+    }
 }

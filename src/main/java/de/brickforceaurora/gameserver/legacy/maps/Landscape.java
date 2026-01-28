@@ -8,7 +8,7 @@ public final class Landscape {
     public final byte size;
     public final byte height;
 
-    public Landscape(byte[] bricks, float[] ratios, byte size, byte height) {
+    public Landscape(final byte[] bricks, final float[] ratios, final byte size, final byte height) {
         this.bricks = bricks;
         this.ratios = ratios;
         this.size = size;

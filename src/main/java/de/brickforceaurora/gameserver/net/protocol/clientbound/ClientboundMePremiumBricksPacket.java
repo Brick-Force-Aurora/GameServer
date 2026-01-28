@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundMePremiumBricksPacket implements IClientboundPacket {
 
-	private long val;
+    private long val;
 
-	public final ClientboundMePremiumBricksPacket val(long val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundMePremiumBricksPacket val(final long val) {
+        this.val = val;
+        return this;
+    }
 
-	public final long val() {
-		return this.val;
-	}
+    public long val() {
+        return this.val;
+    }
 
-	@Override
-	public int packetId() {
-		return 313;
-	}
+    @Override
+    public int packetId() {
+        return 313;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		buffer.writeLongLE(this.val);
-	}
+    @Override
+    public void write(final ByteBuf buffer) {
+        buffer.writeLongLE(this.val);
+    }
 }

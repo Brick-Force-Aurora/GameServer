@@ -7,12 +7,12 @@ public final class ServerboundBatchDelBrickPacket implements IServerboundPacket 
 
     private int[] bricks;
 
-    public final ServerboundBatchDelBrickPacket bricks(int[] bricks) {
+    public ServerboundBatchDelBrickPacket bricks(final int[] bricks) {
         this.bricks = bricks;
         return this;
     }
 
-    public final int[] bricks() {
+    public int[] bricks() {
         return bricks;
     }
 
@@ -22,10 +22,10 @@ public final class ServerboundBatchDelBrickPacket implements IServerboundPacket 
     }
 
     @Override
-    public final void read(ByteBuf buffer) {
+    public void read(final ByteBuf buffer) {
         {
-            int length = buffer.readIntLE();
-            int[] values = new int[length];
+            final int length = buffer.readIntLE();
+            final int[] values = new int[length];
             for (int i = 0; i < length; i++) {
                 values[i] = buffer.readIntLE();
             }

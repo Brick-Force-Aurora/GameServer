@@ -5,35 +5,35 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundCopyrightPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
+    private int val;
+    private int val2;
 
-	public final ClientboundCopyrightPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundCopyrightPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	public final ClientboundCopyrightPacket val2(int val2) {
-		this.val2 = val2;
-		return this;
-	}
+    public ClientboundCopyrightPacket val2(final int val2) {
+        this.val2 = val2;
+        return this;
+    }
 
-	public final int val2() {
-		return this.val2;
-	}
+    public int val2() {
+        return this.val2;
+    }
 
-	@Override
-	public int packetId() {
-		return 53;
-	}
+    @Override
+    public int packetId() {
+        return 53;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
-		buffer.writeIntLE(this.val2);
-	}
+    @Override
+    public void write(final ByteBuf buffer) {
+        buffer.writeIntLE(this.val);
+        buffer.writeIntLE(this.val2);
+    }
 }

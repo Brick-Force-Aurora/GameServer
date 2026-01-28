@@ -5,12 +5,11 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundTcLeavePacket implements IServerboundPacket {
 
-	@Override
-	public int packetId() {
-		return 392;
-	}
+    @Override
+    public int packetId() {
+        return 392;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-	}
+    @Override
+    public void read(final ByteBuf buffer) {}
 }

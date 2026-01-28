@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundEscapeActivePlayerPacket implements IServerboundPacket {
 
-	private boolean IsActive;
+    private boolean IsActive;
 
-	public final ServerboundEscapeActivePlayerPacket IsActive(boolean IsActive) {
-		this.IsActive = IsActive;
-		return this;
-	}
+    public ServerboundEscapeActivePlayerPacket IsActive(final boolean IsActive) {
+        this.IsActive = IsActive;
+        return this;
+    }
 
-	public final boolean IsActive() {
-		return this.IsActive;
-	}
+    public boolean IsActive() {
+        return this.IsActive;
+    }
 
-	@Override
-	public int packetId() {
-		return 525;
-	}
+    @Override
+    public int packetId() {
+        return 525;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.IsActive = buffer.readBoolean();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.IsActive = buffer.readBoolean();
+    }
 }

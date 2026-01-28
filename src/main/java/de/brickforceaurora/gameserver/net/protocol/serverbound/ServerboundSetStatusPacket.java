@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundSetStatusPacket implements IServerboundPacket {
 
-	private int status;
+    private int status;
 
-	public final ServerboundSetStatusPacket status(int status) {
-		this.status = status;
-		return this;
-	}
+    public ServerboundSetStatusPacket status(final int status) {
+        this.status = status;
+        return this;
+    }
 
-	public final int status() {
-		return this.status;
-	}
+    public int status() {
+        return this.status;
+    }
 
-	@Override
-	public int packetId() {
-		return 47;
-	}
+    @Override
+    public int packetId() {
+        return 47;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.status = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.status = buffer.readIntLE();
+    }
 }

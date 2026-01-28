@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundDelDownloadMapPacket implements IServerboundPacket {
 
-	private int mapSeq;
+    private int mapSeq;
 
-	public final ServerboundDelDownloadMapPacket mapSeq(int mapSeq) {
-		this.mapSeq = mapSeq;
-		return this;
-	}
+    public ServerboundDelDownloadMapPacket mapSeq(final int mapSeq) {
+        this.mapSeq = mapSeq;
+        return this;
+    }
 
-	public final int mapSeq() {
-		return this.mapSeq;
-	}
+    public int mapSeq() {
+        return this.mapSeq;
+    }
 
-	@Override
-	public int packetId() {
-		return 176;
-	}
+    @Override
+    public int packetId() {
+        return 176;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.mapSeq = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.mapSeq = buffer.readIntLE();
+    }
 }

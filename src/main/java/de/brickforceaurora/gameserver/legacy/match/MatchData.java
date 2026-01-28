@@ -1,7 +1,10 @@
 package de.brickforceaurora.gameserver.legacy.match;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import de.brickforceaurora.gameserver.GameServerApp;
 import de.brickforceaurora.gameserver.legacy.channel.BrickManStatus;
@@ -115,15 +118,17 @@ public final class MatchData {
         usedCannons = new HashMap<>();
         usedTrains = new HashMap<>();
 
-        for (int i = 0; i < 16; i++)
+        for (int i = 0; i < 16; i++) {
             slots.add(new SlotData(i));
+        }
 
-        List<List<SlotData>> split = Utils.SplitList(slots, 8);
+        final List<List<SlotData>> split = Utils.SplitList(slots, 8);
         redSlots = split.get(0);
         blueSlots = split.get(1);
 
-        for (SlotData s : redSlots)
+        for (final SlotData s : redSlots) {
             s.isRed = true;
+        }
 
         isBuildPhase = true;
         repeat = 0;
@@ -134,11 +139,7 @@ public final class MatchData {
         redKillCount = 0;
         blueKillCount = 0;
 
-        room = new Room(false, 0, "", RoomType.TEAM_MATCH,
-                RoomStatus.WAITING,
-                0, 0, 0, "", 0, 0, 0,
-                0, 0, 0, 0,
-                false, false, false, 0, 0);
+        room = new Room(false, 0, "", RoomType.TEAM_MATCH, RoomStatus.WAITING, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, false, false, false, 0, 0);
 
         //cachedMap = new UserMap();
         mapCached = false;
@@ -180,7 +181,7 @@ public final class MatchData {
 
         room.status = RoomStatus.WAITING;
 
-        for (ClientReference c : clientList) {
+        for (final ClientReference c : clientList) {
             c.clientStatus = ClientStatus.ROOM;
             c.deaths = 0;
             c.kills = 0;
@@ -206,8 +207,7 @@ public final class MatchData {
         deadBluePlayers.clear();
     }
 
-    public void ResetForNewRound()
-    {
+    public void ResetForNewRound() {
         // Reset round-specific data
         remainTime = countdownTime; // assuming countdownTime is set to the desired round duration
         playTime = 0;
@@ -223,8 +223,7 @@ public final class MatchData {
         zombieCountdown = 0;
         zombieDeltaTimer = 0;
         //zombieStatus = ZombieMatch.STEP.WAITING;
-        for(ClientReference client : clientList)
-        {
+        for (final ClientReference client : clientList) {
             client.isZombie = false;
         }
         deadRedPlayers.clear();
@@ -236,7 +235,7 @@ public final class MatchData {
                 //Does not work
                 ServerEmulator.instance.SendRespawnTicket(client);
             }
-
+        
             if (ServerEmulator.instance.debugHandle)
                 Console.WriteLine($"[ZombieSpawn] Reassigned {clientList.Count} random tickets for next round.");
         }*/
@@ -245,7 +244,7 @@ public final class MatchData {
     /* ============================================================ */
 
     public void Shutdown() {
-        for (ClientReference c : clientList) {
+        for (final ClientReference c : clientList) {
             c.matchData = null;
             c.DetachSlot();
             c.clientStatus = ClientStatus.LOBBY;
@@ -261,20 +260,19 @@ public final class MatchData {
 
     /* ============================================================ */
 
-    public void cacheMapGenerate(int landscapeIndex, int skyboxIndex, String alias)
-    {
+    public void cacheMapGenerate(final int landscapeIndex, final int skyboxIndex, final String alias) {
         mapCached = true;
         cachedMap.clear();
         cachedMap = MapGenerator.instance.generate(landscapeIndex, skyboxIndex);
-        LocalDateTime time = LocalDateTime.now();
-        int hashId = MapGenerator.instance.getHashIdForTime(time);
+        final LocalDateTime time = LocalDateTime.now();
+        final int hashId = MapGenerator.instance.getHashIdForTime(time);
         cachedMap.map = hashId;
-        cachedUMI = new UserMapInfo(hashId, alias, cachedMap.dic.keySet().size(), time, (byte) 0);
+        cachedUMI = new UserMapInfo(hashId, alias, cachedMap.dic.size(), time, (byte) 0);
     }
 
     /* ============================================================ */
 
-    public void AddClient(ClientReference client) {
+    public void AddClient(final ClientReference client) {
         client.matchData = this;
         client.AssignSlot(getNextFreeSlot());
         client.clientStatus = ClientStatus.ROOM;
@@ -282,7 +280,7 @@ public final class MatchData {
         room.curPlayer = clientList.size();
     }
 
-    public void RemoveClient(ClientReference client) {
+    public void RemoveClient(final ClientReference client) {
         client.matchData = null;
         client.DetachSlot();
         client.clientStatus = ClientStatus.LOBBY;
@@ -297,20 +295,17 @@ public final class MatchData {
 
     /* ============================================================ */
 
-    public void lockSlotsByMaxPlayers(int maxPlayers, RoomType roomType) {
+    public void lockSlotsByMaxPlayers(final int maxPlayers, final RoomType roomType) {
         int totalSlots;
         boolean isTeamMode;
-        boolean is8SlotLayout;
 
         // Determine mode rules
-        is8SlotLayout = (roomType == RoomType.BUNGEE ||
-                roomType == RoomType.MISSION);
+        boolean is8SlotLayout = roomType == RoomType.BUNGEE || roomType == RoomType.MISSION;
 
         totalSlots = is8SlotLayout ? 8 : 16;
 
         // DM / Zombie = NO teams
-        isTeamMode = !(roomType == RoomType.INDIVIDUAL ||
-                roomType == RoomType.ZOMBIE);
+        isTeamMode = ((roomType != RoomType.INDIVIDUAL) && (roomType != RoomType.ZOMBIE));
 
         // SPECIAL CASE: Deathmatch / Zombie → lock bottom-up
         if (!isTeamMode) {
@@ -326,7 +321,7 @@ public final class MatchData {
 
         // Alternating lock
         for (int i = totalSlots - 1; i >= maxPlayers; i--) {
-            boolean odd = (i % 2 != 0);
+            final boolean odd = i % 2 != 0;
 
             if (odd) { // RED
                 if (redIndex >= 0) {
@@ -345,10 +340,9 @@ public final class MatchData {
     public SlotData getNextFreeSlot() {
 
         // 1) Deathmatch / Zombie (no teams, 16 slots)
-        if (room.type == RoomType.INDIVIDUAL ||
-                room.type == RoomType.ZOMBIE) {
+        if (room.type == RoomType.INDIVIDUAL || room.type == RoomType.ZOMBIE) {
 
-            for (SlotData s : slots) {
+            for (final SlotData s : slots) {
                 if (!s.isUsed && !s.isLocked) {
                     return s;
                 }
@@ -357,35 +351,57 @@ public final class MatchData {
         }
 
         // 2) Bungee / Mission — limit to 8 total players
-        if (room.type == RoomType.BUNGEE ||
-                room.type == RoomType.MISSION) {
+        if (room.type == RoomType.BUNGEE || room.type == RoomType.MISSION) {
 
             int totalUsed = 0;
-            for (SlotData s : slots) {
-                if (s.isUsed) totalUsed++;
+            for (final SlotData s : slots) {
+                if (s.isUsed) {
+                    totalUsed++;
+                }
             }
 
-            if (totalUsed >= 8)
+            if (totalUsed >= 8) {
                 return null;
+            }
 
             int redCount = 0;
             int blueCount = 0;
 
-            for (SlotData s : redSlots) if (s.isUsed) redCount++;
-            for (SlotData s : blueSlots) if (s.isUsed) blueCount++;
+            for (final SlotData s : redSlots) {
+                if (s.isUsed) {
+                    redCount++;
+                }
+            }
+            for (final SlotData s : blueSlots) {
+                if (s.isUsed) {
+                    blueCount++;
+                }
+            }
 
             if (blueCount >= redCount) {
-                for (SlotData s : redSlots)
-                    if (!s.isUsed && !s.isLocked) return s;
+                for (final SlotData s : redSlots) {
+                    if (!s.isUsed && !s.isLocked) {
+                        return s;
+                    }
+                }
 
-                for (SlotData s : blueSlots)
-                    if (!s.isUsed && !s.isLocked) return s;
+                for (final SlotData s : blueSlots) {
+                    if (!s.isUsed && !s.isLocked) {
+                        return s;
+                    }
+                }
             } else {
-                for (SlotData s : blueSlots)
-                    if (!s.isUsed && !s.isLocked) return s;
+                for (final SlotData s : blueSlots) {
+                    if (!s.isUsed && !s.isLocked) {
+                        return s;
+                    }
+                }
 
-                for (SlotData s : redSlots)
-                    if (!s.isUsed && !s.isLocked) return s;
+                for (final SlotData s : redSlots) {
+                    if (!s.isUsed && !s.isLocked) {
+                        return s;
+                    }
+                }
             }
 
             return null;
@@ -395,95 +411,124 @@ public final class MatchData {
         int redCount = 0;
         int blueCount = 0;
 
-        for (SlotData s : redSlots) if (s.isUsed) redCount++;
-        for (SlotData s : blueSlots) if (s.isUsed) blueCount++;
+        for (final SlotData s : redSlots) {
+            if (s.isUsed) {
+                redCount++;
+            }
+        }
+        for (final SlotData s : blueSlots) {
+            if (s.isUsed) {
+                blueCount++;
+            }
+        }
 
         if (blueCount >= redCount) {
-            for (SlotData s : redSlots)
-                if (!s.isUsed && !s.isLocked) return s;
+            for (final SlotData s : redSlots) {
+                if (!s.isUsed && !s.isLocked) {
+                    return s;
+                }
+            }
 
-            for (SlotData s : blueSlots)
-                if (!s.isUsed && !s.isLocked) return s;
+            for (final SlotData s : blueSlots) {
+                if (!s.isUsed && !s.isLocked) {
+                    return s;
+                }
+            }
         } else {
-            for (SlotData s : blueSlots)
-                if (!s.isUsed && !s.isLocked) return s;
+            for (final SlotData s : blueSlots) {
+                if (!s.isUsed && !s.isLocked) {
+                    return s;
+                }
+            }
 
-            for (SlotData s : redSlots)
-                if (!s.isUsed && !s.isLocked) return s;
+            for (final SlotData s : redSlots) {
+                if (!s.isUsed && !s.isLocked) {
+                    return s;
+                }
+            }
         }
 
         return null;
     }
 
-    public SlotData getNextFreeSlotOnOtherTeam(SlotData slot) {
+    public SlotData getNextFreeSlotOnOtherTeam(final SlotData slot) {
 
-        boolean isLimited8 =
-                room.type == RoomType.BUNGEE ||
-                        room.type == RoomType.MISSION;
+        final boolean isLimited8 = room.type == RoomType.BUNGEE || room.type == RoomType.MISSION;
 
         int totalUsed = 0;
-        for (SlotData s : slots) {
-            if (s.isUsed) totalUsed++;
+        for (final SlotData s : slots) {
+            if (s.isUsed) {
+                totalUsed++;
+            }
         }
 
-        if (isLimited8 && totalUsed >= 8)
+        if (isLimited8 && totalUsed >= 8) {
             return null;
+        }
 
         // Player was on RED (0–7)
         if (slot.slotIndex < 8) {
 
-            for (SlotData s : blueSlots)
-                if (!s.isUsed && !s.isLocked) return s;
+            for (final SlotData s : blueSlots) {
+                if (!s.isUsed && !s.isLocked) {
+                    return s;
+                }
+            }
 
             if (!isLimited8) {
-                for (SlotData s : redSlots)
-                    if (!s.isUsed && !s.isLocked) return s;
+                for (final SlotData s : redSlots) {
+                    if (!s.isUsed && !s.isLocked) {
+                        return s;
+                    }
+                }
             }
 
             return null;
         }
-        // Player was on BLUE (8–15)
-        else {
-            for (SlotData s : redSlots)
-                if (!s.isUsed && !s.isLocked) return s;
-
-            if (!isLimited8) {
-                for (SlotData s : blueSlots)
-                    if (!s.isUsed && !s.isLocked) return s;
+        for (final SlotData s : redSlots) {
+            if (!s.isUsed && !s.isLocked) {
+                return s;
             }
-
-            return null;
         }
+
+        if (!isLimited8) {
+            for (final SlotData s : blueSlots) {
+                if (!s.isUsed && !s.isLocked) {
+                    return s;
+                }
+            }
+        }
+
+        return null;
     }
 
-    public byte GetWinningTeam()
-    {
+    public byte GetWinningTeam() {
         return (byte) Integer.compare(blueScore, redScore);
     }
 
-    public SlotData FindSlotByClient(ClientReference client) {
-        for (SlotData s : slots)
-            if (s.client == client)
+    public SlotData FindSlotByClient(final ClientReference client) {
+        for (final SlotData s : slots) {
+            if (s.client == client) {
                 return s;
+            }
+        }
 
         GameServerApp.logger().debug("FindSlotByClient: Could not find SlotData for client {0}", client.GetIdentifier());
         return null;
     }
 
-    public void EndMatch(GameServerLogic logic)
-    {
-        switch (room.type)
-        {
-            case RoomType.TEAM_MATCH -> TeamHandlers.handleEnd(logic,this);
-            case RoomType.INDIVIDUAL -> IndividualHandlers.handleEnd(logic, this);
-            //case RoomType.CAPTURE_THE_FLAG -> CtfHandlers.HandleCTFMatchEnd(this);
-            //case RoomType.BND -> BndHandlers.HandleBNDMatchEnd(this);
-            case RoomType.ZOMBIE -> ZombieHandlers.handleEnd(logic,this);
-            case RoomType.EXPLOSION -> DefusionHandlers.handleEnd(logic, this);
-            //case RoomType.ESCAPE -> Defense.HandleMatchEnd(this);
-            //case RoomType.BUNGEE -> BungeeHandlers.HandleMatchEnd(this);
-            //case RoomType.MISSION -> DefenseHandlers.HandleMatchEnd(this);
-            default -> IndividualHandlers.handleEnd(logic, this);
+    public void EndMatch(final GameServerLogic logic) {
+        switch (room.type) {
+        case RoomType.TEAM_MATCH -> TeamHandlers.handleEnd(logic, this);
+        case RoomType.INDIVIDUAL -> IndividualHandlers.handleEnd(logic, this);
+        //case RoomType.CAPTURE_THE_FLAG -> CtfHandlers.HandleCTFMatchEnd(this);
+        //case RoomType.BND -> BndHandlers.HandleBNDMatchEnd(this);
+        case RoomType.ZOMBIE -> ZombieHandlers.handleEnd(logic, this);
+        case RoomType.EXPLOSION -> DefusionHandlers.handleEnd(logic, this);
+        //case RoomType.ESCAPE -> Defense.HandleMatchEnd(this);
+        //case RoomType.BUNGEE -> BungeeHandlers.HandleMatchEnd(this);
+        //case RoomType.MISSION -> DefenseHandlers.HandleMatchEnd(this);
+        default -> IndividualHandlers.handleEnd(logic, this);
         }
     }
 }

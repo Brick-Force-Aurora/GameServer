@@ -5,35 +5,35 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundBuilderSlotPacket implements IClientboundPacket {
 
-	private int val;
-	private byte val2;
+    private int val;
+    private byte val2;
 
-	public final ClientboundBuilderSlotPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundBuilderSlotPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	public final ClientboundBuilderSlotPacket val2(byte val2) {
-		this.val2 = val2;
-		return this;
-	}
+    public ClientboundBuilderSlotPacket val2(final byte val2) {
+        this.val2 = val2;
+        return this;
+    }
 
-	public final byte val2() {
-		return this.val2;
-	}
+    public byte val2() {
+        return this.val2;
+    }
 
-	@Override
-	public int packetId() {
-		return 451;
-	}
+    @Override
+    public int packetId() {
+        return 451;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
-		buffer.writeByte(this.val2);
-	}
+    @Override
+    public void write(final ByteBuf buffer) {
+        buffer.writeIntLE(this.val);
+        buffer.writeByte(this.val2);
+    }
 }

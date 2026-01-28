@@ -1,26 +1,26 @@
 package de.brickforceaurora.gameserver.legacy.maps;
 
-import de.brickforceaurora.gameserver.legacy.util.Texture2D;
-
 import java.time.LocalDateTime;
+
+import de.brickforceaurora.gameserver.legacy.util.Texture2D;
 
 public class UserMapInfo {
     public int slot;
 
-    private String alias;
+    private final String alias;
 
-    private int brickCount;
+    private final int brickCount;
 
-    private LocalDateTime lastModified;
+    private final LocalDateTime lastModified;
 
-    private byte premium;
+    private final byte premium;
 
     private Texture2D thumbnail;
 
     public RegMap regMap; //added to support editing of existing maps
 
-    public UserMapInfo(int _slot, String _alias, int _brickCount, LocalDateTime _lastModified, byte _premium)
-    {
+    public UserMapInfo(final int _slot, final String _alias, final int _brickCount, final LocalDateTime _lastModified,
+        final byte _premium) {
         slot = _slot;
         alias = _alias;
         brickCount = _brickCount;

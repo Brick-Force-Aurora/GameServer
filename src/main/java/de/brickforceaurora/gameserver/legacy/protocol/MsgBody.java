@@ -10,26 +10,31 @@ public final class MsgBody {
     private byte[] buffer;
     private int offset;
 
-    public int offset() { return offset; }
-    public byte[] buffer() { return buffer; }
+    public int offset() {
+        return offset;
+    }
+
+    public byte[] buffer() {
+        return buffer;
+    }
 
     public MsgBody() {
         buffer = new byte[8192];
         offset = 0;
     }
 
-    public MsgBody(byte[] src, int off, int len) {
+    public MsgBody(final byte[] src, final int off, final int len) {
         buffer = Arrays.copyOfRange(src, off, off + len);
         offset = 0;
     }
 
-    private void ensure(int add) {
+    private void ensure(final int add) {
         if (offset + add > buffer.length) {
             buffer = Arrays.copyOf(buffer, buffer.length * 2);
         }
     }
 
-    public void decrypt(byte key) {
+    public void decrypt(final byte key) {
         if ((key & 0xFF) != 0xFF) {
             for (int i = 0; i < buffer.length; i++) {
                 buffer[i] ^= key;
@@ -39,50 +44,42 @@ public final class MsgBody {
 
     /* ===== WRITE ===== */
 
-    public void write(int v) {
+    public void write(final int v) {
         ensure(4);
-        ByteBuffer.wrap(buffer, offset, 4)
-                .order(ByteOrder.LITTLE_ENDIAN)
-                .putInt(v);
+        ByteBuffer.wrap(buffer, offset, 4).order(ByteOrder.LITTLE_ENDIAN).putInt(v);
         offset += 4;
     }
 
-    public void write(long v) {
+    public void write(final long v) {
         ensure(8);
-        ByteBuffer.wrap(buffer, offset, 8)
-                .order(ByteOrder.LITTLE_ENDIAN)
-                .putLong(v);
+        ByteBuffer.wrap(buffer, offset, 8).order(ByteOrder.LITTLE_ENDIAN).putLong(v);
         offset += 8;
     }
 
-    public void write(short v) {
+    public void write(final short v) {
         ensure(2);
-        ByteBuffer.wrap(buffer, offset, 2)
-                .order(ByteOrder.LITTLE_ENDIAN)
-                .putShort(v);
+        ByteBuffer.wrap(buffer, offset, 2).order(ByteOrder.LITTLE_ENDIAN).putShort(v);
         offset += 2;
     }
 
-    public void write(boolean v) {
+    public void write(final boolean v) {
         ensure(1);
         buffer[offset++] = (byte) (v ? 1 : 0);
     }
 
-
-    public void writeUShort(int v) {
+    public void writeUShort(final int v) {
         ensure(2);
         buffer[offset++] = (byte) (v & 0xFF);
-        buffer[offset++] = (byte) ((v >>> 8) & 0xFF);
+        buffer[offset++] = (byte) (v >>> 8 & 0xFF);
     }
 
-
-    public void write(byte v) {
+    public void write(final byte v) {
         ensure(1);
         buffer[offset++] = v;
     }
 
-    public void write(String s) {
-        byte[] data = s.getBytes(StandardCharsets.UTF_16LE);
+    public void write(final String s) {
+        final byte[] data = s.getBytes(StandardCharsets.UTF_16LE);
         write(data.length);
         ensure(data.length);
         System.arraycopy(data, 0, buffer, offset, data.length);
@@ -92,9 +89,7 @@ public final class MsgBody {
     /* ===== READ ===== */
 
     public int readInt() {
-        int v = ByteBuffer.wrap(buffer, offset, 4)
-                .order(ByteOrder.LITTLE_ENDIAN)
-                .getInt();
+        final int v = ByteBuffer.wrap(buffer, offset, 4).order(ByteOrder.LITTLE_ENDIAN).getInt();
         offset += 4;
         return v;
     }
@@ -104,47 +99,38 @@ public final class MsgBody {
     }
 
     public short readShort() {
-        short v = ByteBuffer.wrap(buffer, offset, 2)
-                .order(ByteOrder.LITTLE_ENDIAN)
-                .getShort();
+        final short v = ByteBuffer.wrap(buffer, offset, 2).order(ByteOrder.LITTLE_ENDIAN).getShort();
         offset += 2;
         return v;
     }
 
     public int readUShort() {
-        int v = ByteBuffer.wrap(buffer, offset, 2)
-                .order(ByteOrder.LITTLE_ENDIAN)
-                .getShort() & 0xFFFF;
+        final int v = ByteBuffer.wrap(buffer, offset, 2).order(ByteOrder.LITTLE_ENDIAN).getShort() & 0xFFFF;
         offset += 2;
         return v;
     }
 
-
     public String readString() {
         // length in BYTES (not chars)
-        int len = readInt();
+        final int len = readInt();
 
         if (len <= 0) {
             return "";
         }
 
-        String val = new String(buffer, offset, len, StandardCharsets.UTF_16LE);
+        final String val = new String(buffer, offset, len, StandardCharsets.UTF_16LE);
         offset += len;
         return val;
     }
 
     public float readFloat() {
-        float v = ByteBuffer.wrap(buffer, offset, 4)
-                .order(ByteOrder.LITTLE_ENDIAN)
-                .getFloat();
+        final float v = ByteBuffer.wrap(buffer, offset, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
         offset += 4;
         return v;
     }
 
     public long readLong() {
-        long v = ByteBuffer.wrap(buffer, offset, 8)
-                .order(ByteOrder.LITTLE_ENDIAN)
-                .getLong();
+        final long v = ByteBuffer.wrap(buffer, offset, 8).order(ByteOrder.LITTLE_ENDIAN).getLong();
         offset += 8;
         return v;
     }

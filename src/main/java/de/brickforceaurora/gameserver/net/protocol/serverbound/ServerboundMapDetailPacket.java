@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundMapDetailPacket implements IServerboundPacket {
 
-	private int mapSeq;
+    private int mapSeq;
 
-	public final ServerboundMapDetailPacket mapSeq(int mapSeq) {
-		this.mapSeq = mapSeq;
-		return this;
-	}
+    public ServerboundMapDetailPacket mapSeq(final int mapSeq) {
+        this.mapSeq = mapSeq;
+        return this;
+    }
 
-	public final int mapSeq() {
-		return this.mapSeq;
-	}
+    public int mapSeq() {
+        return this.mapSeq;
+    }
 
-	@Override
-	public int packetId() {
-		return 437;
-	}
+    @Override
+    public int packetId() {
+        return 437;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.mapSeq = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.mapSeq = buffer.readIntLE();
+    }
 }

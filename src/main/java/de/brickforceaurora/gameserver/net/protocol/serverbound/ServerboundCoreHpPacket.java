@@ -5,35 +5,35 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundCoreHpPacket implements IServerboundPacket {
 
-	private int redHp;
-	private int blueHp;
+    private int redHp;
+    private int blueHp;
 
-	public final ServerboundCoreHpPacket redHp(int redHp) {
-		this.redHp = redHp;
-		return this;
-	}
+    public ServerboundCoreHpPacket redHp(final int redHp) {
+        this.redHp = redHp;
+        return this;
+    }
 
-	public final int redHp() {
-		return this.redHp;
-	}
+    public int redHp() {
+        return this.redHp;
+    }
 
-	public final ServerboundCoreHpPacket blueHp(int blueHp) {
-		this.blueHp = blueHp;
-		return this;
-	}
+    public ServerboundCoreHpPacket blueHp(final int blueHp) {
+        this.blueHp = blueHp;
+        return this;
+    }
 
-	public final int blueHp() {
-		return this.blueHp;
-	}
+    public int blueHp() {
+        return this.blueHp;
+    }
 
-	@Override
-	public int packetId() {
-		return 342;
-	}
+    @Override
+    public int packetId() {
+        return 342;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.redHp = buffer.readIntLE();
-		this.blueHp = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.redHp = buffer.readIntLE();
+        this.blueHp = buffer.readIntLE();
+    }
 }

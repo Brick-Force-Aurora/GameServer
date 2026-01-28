@@ -16,8 +16,8 @@ public final class ChannelManager {
         return channels;
     }
 
-    public ChannelReference getChannelById(int id) {
-        for (ChannelReference ref : channels) {
+    public ChannelReference getChannelById(final int id) {
+        for (final ChannelReference ref : channels) {
             if (ref.channel.id == id) {
                 return ref;
             }
@@ -32,26 +32,12 @@ public final class ChannelManager {
         return channels.get(0);
     }
 
-    public void addChannel(Channel channel) {
+    public void addChannel(final Channel channel) {
         channels.add(new ChannelReference(channel));
     }
 
-    public void addChannel(int id, ChannelMode mode, String name) {
-        Channel channel = new Channel(
-                id,
-                mode,
-                name,
-                "",
-                5000,
-                1,
-                16,
-                1,
-                0,
-                66,
-                0,
-                0,
-                0
-        );
+    public void addChannel(final int id, final ChannelMode mode, final String name) {
+        final Channel channel = new Channel(id, mode, name, "", 5000, 1, 16, 1, 0, 66, 0, 0, 0);
         channels.add(new ChannelReference(channel));
     }
 
@@ -61,7 +47,7 @@ public final class ChannelManager {
     }
 
     public void shutdown() {
-        for (ChannelReference channel : channels) {
+        for (final ChannelReference channel : channels) {
             channel.shutdown();
         }
         channels.clear();

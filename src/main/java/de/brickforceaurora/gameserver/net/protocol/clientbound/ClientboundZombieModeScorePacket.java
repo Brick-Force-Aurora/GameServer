@@ -5,35 +5,35 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundZombieModeScorePacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
+    private int val;
+    private int val2;
 
-	public final ClientboundZombieModeScorePacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundZombieModeScorePacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	public final ClientboundZombieModeScorePacket val2(int val2) {
-		this.val2 = val2;
-		return this;
-	}
+    public ClientboundZombieModeScorePacket val2(final int val2) {
+        this.val2 = val2;
+        return this;
+    }
 
-	public final int val2() {
-		return this.val2;
-	}
+    public int val2() {
+        return this.val2;
+    }
 
-	@Override
-	public int packetId() {
-		return 536;
-	}
+    @Override
+    public int packetId() {
+        return 536;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
-		buffer.writeIntLE(this.val2);
-	}
+    @Override
+    public void write(final ByteBuf buffer) {
+        buffer.writeIntLE(this.val);
+        buffer.writeIntLE(this.val2);
+    }
 }

@@ -5,4 +5,3 @@ public record ChannelData(int maxUsers, int country, int minLevel, int maxLevel,
     public static final ChannelData DEFAULT = new ChannelData(256, 1, 0, Integer.MAX_VALUE, 0, 0, 0);
 
 }
-

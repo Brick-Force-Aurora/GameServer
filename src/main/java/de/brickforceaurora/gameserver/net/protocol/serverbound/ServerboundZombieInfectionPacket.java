@@ -5,12 +5,11 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundZombieInfectionPacket implements IServerboundPacket {
 
-	@Override
-	public int packetId() {
-		return 538;
-	}
+    @Override
+    public int packetId() {
+        return 538;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-	}
+    @Override
+    public void read(final ByteBuf buffer) {}
 }

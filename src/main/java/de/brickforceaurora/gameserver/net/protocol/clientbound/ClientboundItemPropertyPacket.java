@@ -1,102 +1,103 @@
 package de.brickforceaurora.gameserver.net.protocol.clientbound;
 
+import java.nio.charset.StandardCharsets;
+
 import de.brickforceaurora.gameserver.net.protocol.IClientboundPacket;
 import io.netty.buffer.ByteBuf;
-import java.nio.charset.StandardCharsets;
 
 public final class ClientboundItemPropertyPacket implements IClientboundPacket {
 
-	private int val;
-	private String val2;
-	private String val3;
-	private int val4;
-	private String val5;
-	private float val6;
+    private int val;
+    private String val2;
+    private String val3;
+    private int val4;
+    private String val5;
+    private float val6;
 
-	public final ClientboundItemPropertyPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundItemPropertyPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	public final ClientboundItemPropertyPacket val2(String val2) {
-		this.val2 = val2;
-		return this;
-	}
+    public ClientboundItemPropertyPacket val2(final String val2) {
+        this.val2 = val2;
+        return this;
+    }
 
-	public final String val2() {
-		return this.val2;
-	}
+    public String val2() {
+        return this.val2;
+    }
 
-	public final ClientboundItemPropertyPacket val3(String val3) {
-		this.val3 = val3;
-		return this;
-	}
+    public ClientboundItemPropertyPacket val3(final String val3) {
+        this.val3 = val3;
+        return this;
+    }
 
-	public final String val3() {
-		return this.val3;
-	}
+    public String val3() {
+        return this.val3;
+    }
 
-	public final ClientboundItemPropertyPacket val4(int val4) {
-		this.val4 = val4;
-		return this;
-	}
+    public ClientboundItemPropertyPacket val4(final int val4) {
+        this.val4 = val4;
+        return this;
+    }
 
-	public final int val4() {
-		return this.val4;
-	}
+    public int val4() {
+        return this.val4;
+    }
 
-	public final ClientboundItemPropertyPacket val5(String val5) {
-		this.val5 = val5;
-		return this;
-	}
+    public ClientboundItemPropertyPacket val5(final String val5) {
+        this.val5 = val5;
+        return this;
+    }
 
-	public final String val5() {
-		return this.val5;
-	}
+    public String val5() {
+        return this.val5;
+    }
 
-	public final ClientboundItemPropertyPacket val6(float val6) {
-		this.val6 = val6;
-		return this;
-	}
+    public ClientboundItemPropertyPacket val6(final float val6) {
+        this.val6 = val6;
+        return this;
+    }
 
-	public final float val6() {
-		return this.val6;
-	}
+    public float val6() {
+        return this.val6;
+    }
 
-	@Override
-	public int packetId() {
-		return 491;
-	}
+    @Override
+    public int packetId() {
+        return 491;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
-		if (this.val2.isEmpty()) {
-			buffer.writeIntLE(0);
-		} else {
-			byte[] bytes = this.val2.getBytes(StandardCharsets.UTF_16LE);
-			buffer.writeIntLE(bytes.length);
-			buffer.writeBytes(bytes);
-		}
-		if (this.val3.isEmpty()) {
-			buffer.writeIntLE(0);
-		} else {
-			byte[] bytes = this.val3.getBytes(StandardCharsets.UTF_16LE);
-			buffer.writeIntLE(bytes.length);
-			buffer.writeBytes(bytes);
-		}
-		buffer.writeIntLE(this.val4);
-		if (this.val5.isEmpty()) {
-			buffer.writeIntLE(0);
-		} else {
-			byte[] bytes = this.val5.getBytes(StandardCharsets.UTF_16LE);
-			buffer.writeIntLE(bytes.length);
-			buffer.writeBytes(bytes);
-		}
-		buffer.writeFloatLE(this.val6);
-	}
+    @Override
+    public void write(final ByteBuf buffer) {
+        buffer.writeIntLE(this.val);
+        if (this.val2.isEmpty()) {
+            buffer.writeIntLE(0);
+        } else {
+            final byte[] bytes = this.val2.getBytes(StandardCharsets.UTF_16LE);
+            buffer.writeIntLE(bytes.length);
+            buffer.writeBytes(bytes);
+        }
+        if (this.val3.isEmpty()) {
+            buffer.writeIntLE(0);
+        } else {
+            final byte[] bytes = this.val3.getBytes(StandardCharsets.UTF_16LE);
+            buffer.writeIntLE(bytes.length);
+            buffer.writeBytes(bytes);
+        }
+        buffer.writeIntLE(this.val4);
+        if (this.val5.isEmpty()) {
+            buffer.writeIntLE(0);
+        } else {
+            final byte[] bytes = this.val5.getBytes(StandardCharsets.UTF_16LE);
+            buffer.writeIntLE(bytes.length);
+            buffer.writeBytes(bytes);
+        }
+        buffer.writeFloatLE(this.val6);
+    }
 }

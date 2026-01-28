@@ -1,4 +1,5 @@
 package de.brickforceaurora.gameserver.legacy.channel;
+
 public final class Channel {
 
     /* ===== Immutable config ===== */
@@ -20,7 +21,9 @@ public final class Channel {
     public int fpBonus;
     public int limitStarRate;
 
-    public Channel(int id, ChannelMode mode, String name, String ip, int port, int userCount, int maxUserCount, int country, int minLvRank, int maxLvRank, int xpBonus, int fpBonus, int limitStarRate) {
+    public Channel(final int id, final ChannelMode mode, final String name, final String ip, final int port, final int userCount,
+        final int maxUserCount, final int country, final int minLvRank, final int maxLvRank, final int xpBonus, final int fpBonus,
+        final int limitStarRate) {
         this.id = id;
         this.mode = mode;
         this.name = name;

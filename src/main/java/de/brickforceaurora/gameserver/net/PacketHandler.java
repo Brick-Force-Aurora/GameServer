@@ -9,7 +9,5 @@ import java.lang.annotation.Target;
 @Retention(SOURCE)
 @Target(METHOD)
 public @interface PacketHandler {
-    
-    
 
 }

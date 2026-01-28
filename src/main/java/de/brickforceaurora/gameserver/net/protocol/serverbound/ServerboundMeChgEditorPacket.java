@@ -5,35 +5,35 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundMeChgEditorPacket implements IServerboundPacket {
 
-	private int clientId;
-	private boolean isEditor;
+    private int clientId;
+    private boolean isEditor;
 
-	public final ServerboundMeChgEditorPacket clientId(int clientId) {
-		this.clientId = clientId;
-		return this;
-	}
+    public ServerboundMeChgEditorPacket clientId(final int clientId) {
+        this.clientId = clientId;
+        return this;
+    }
 
-	public final int clientId() {
-		return this.clientId;
-	}
+    public int clientId() {
+        return this.clientId;
+    }
 
-	public final ServerboundMeChgEditorPacket isEditor(boolean isEditor) {
-		this.isEditor = isEditor;
-		return this;
-	}
+    public ServerboundMeChgEditorPacket isEditor(final boolean isEditor) {
+        this.isEditor = isEditor;
+        return this;
+    }
 
-	public final boolean isEditor() {
-		return this.isEditor;
-	}
+    public boolean isEditor() {
+        return this.isEditor;
+    }
 
-	@Override
-	public int packetId() {
-		return 304;
-	}
+    @Override
+    public int packetId() {
+        return 304;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.clientId = buffer.readIntLE();
-		this.isEditor = buffer.readBoolean();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.clientId = buffer.readIntLE();
+        this.isEditor = buffer.readBoolean();
+    }
 }

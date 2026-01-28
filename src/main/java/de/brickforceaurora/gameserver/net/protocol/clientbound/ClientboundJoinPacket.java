@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundJoinPacket implements IClientboundPacket {
 
-	private int val;
+    private int val;
 
-	public final ClientboundJoinPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundJoinPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	@Override
-	public int packetId() {
-		return 29;
-	}
+    @Override
+    public int packetId() {
+        return 29;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
-	}
+    @Override
+    public void write(final ByteBuf buffer) {
+        buffer.writeIntLE(this.val);
+    }
 }

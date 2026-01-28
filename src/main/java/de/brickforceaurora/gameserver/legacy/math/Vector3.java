@@ -12,21 +12,21 @@ public final class Vector3 {
         this(0f, 0f, 0f);
     }
 
-    public Vector3(float x, float y, float z) {
+    public Vector3(final float x, final float y, final float z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public Vector3 add(Vector3 o) {
+    public Vector3 add(final Vector3 o) {
         return new Vector3(x + o.x, y + o.y, z + o.z);
     }
 
-    public Vector3 sub(Vector3 o) {
+    public Vector3 sub(final Vector3 o) {
         return new Vector3(x - o.x, y - o.y, z - o.z);
     }
 
-    public Vector3 mul(float s) {
+    public Vector3 mul(final float s) {
         return new Vector3(x * s, y * s, z * s);
     }
 

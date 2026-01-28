@@ -24,12 +24,12 @@ public final class StringMgr {
         strings.put("DAYS", "days");
     }
 
-    public String get(String key) {
+    public String get(final String key) {
         if (key == null) {
             return "";
         }
 
-        String value = strings.get(key);
+        final String value = strings.get(key);
         if (value != null) {
             return value;
         }

@@ -1,6 +1,10 @@
 package de.brickforceaurora.gameserver.legacy.data;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.brickforceaurora.gameserver.legacy.data.flag.CommonOpt;
 import de.brickforceaurora.gameserver.legacy.data.flag.FlagSet;
@@ -13,7 +17,10 @@ public final class MyInfoManager {
     /* ================= SINGLETON ================= */
 
     private static final MyInfoManager INSTANCE = new MyInfoManager();
-    public static MyInfoManager getInstance() { return INSTANCE; }
+
+    public static MyInfoManager getInstance() {
+        return INSTANCE;
+    }
 
     private MyInfoManager() {
         autoLogin = AutoLogin.NONE;
@@ -39,24 +46,24 @@ public final class MyInfoManager {
 
     /* ================= FIELDS ================= */
 
-    private Map<Long, Item> inventory;
-    private Map<Integer, NameCard> friends;
-    private Map<Integer, NameCard> bans;
-    private Map<Integer, NameCard> clanee;
+    private final Map<Long, Item> inventory;
+    private final Map<Integer, NameCard> friends;
+    private final Map<Integer, NameCard> bans;
+    private final Map<Integer, NameCard> clanee;
 
-    private Deque<ResultEvent> qResultEvent;
-    private Deque<DurabilityEvent> qDurabilityEvent;
-    private Deque<String> qBattleStartRemain;
+    private final Deque<ResultEvent> qResultEvent;
+    private final Deque<DurabilityEvent> qDurabilityEvent;
+    private final Deque<String> qBattleStartRemain;
 
-    private AutoLogin autoLogin;
+    private final AutoLogin autoLogin;
     private ControlMode controlMode;
 
     private int seq;
     private int xp;
     private int rank;
-    private int clanSeq = -1;
-    private String clanName = "";
-    private int clanLv = -1;
+    private final int clanSeq = -1;
+    private final String clanName = "";
+    private final int clanLv = -1;
 
     private int gm;
     private boolean switchGOD;
@@ -84,22 +91,26 @@ public final class MyInfoManager {
 
     /* ================= INVENTORY ================= */
 
-    public Item getItemBySequence(long seq) {
+    public Item getItemBySequence(final long seq) {
         return inventory.get(seq);
     }
 
-    public void erase(long seq) {
+    public void erase(final long seq) {
         for (int i = 0; i < weaponSlots.length; i++) {
-            if (weaponSlots[i] == seq) weaponSlots[i] = -1;
+            if (weaponSlots[i] == seq) {
+                weaponSlots[i] = -1;
+            }
         }
         for (int i = 0; i < shooterTools.length; i++) {
-            if (shooterTools[i] == seq) shooterTools[i] = -1;
+            if (shooterTools[i] == seq) {
+                shooterTools[i] = -1;
+            }
         }
         inventory.remove(seq);
     }
 
-    public Item getUsingEquipByCode(String code) {
-        for (Item item : inventory.values()) {
+    public Item getUsingEquipByCode(final String code) {
+        for (final Item item : inventory.values()) {
             if (code.equals(item.getCode()) && item.getUsage() == ItemUsage.EQUIP) {
                 return item;
             }
@@ -135,7 +146,7 @@ public final class MyInfoManager {
 
     /* ================= STUBS (match original behavior) ================= */
 
-    public long haveFunction(String func) {
+    public long haveFunction(final String func) {
         // intentionally stubbed like your commented C# code
         return -1L;
     }
@@ -150,7 +161,7 @@ public final class MyInfoManager {
         public int rank;
         public boolean isConnected;
 
-        public NameCard(int seq, String nickname, int lv, int svrId, int rank) {
+        public NameCard(final int seq, final String nickname, final int lv, final int svrId, final int rank) {
             this.seq = seq;
             this.nickname = nickname;
             this.lv = lv;
@@ -164,7 +175,7 @@ public final class MyInfoManager {
         public final int durability;
         public final int diff;
 
-        public DurabilityEvent(String code, int durability, int diff) {
+        public DurabilityEvent(final String code, final int durability, final int diff) {
             this.code = code;
             this.durability = durability;
             this.diff = diff;

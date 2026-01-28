@@ -13,7 +13,8 @@ public class BodyPartAssetDirectoryData extends AssetDirectoryData<BodyPartAsset
     }
 
     @Override
-    protected BodyPartAsset readAsset(ISimpleLogger logger, FileKey key, JsonObject root, String name, int id) {
+    protected BodyPartAsset readAsset(final ISimpleLogger logger, final FileKey key, final JsonObject root, final String name,
+        final int id) {
         return new BodyPartAsset(name, id, root.getAsFloat("damage_factor", 1f));
     }
 

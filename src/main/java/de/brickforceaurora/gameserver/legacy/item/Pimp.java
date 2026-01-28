@@ -19,11 +19,11 @@ public enum Pimp {
 
     public final int id;
 
-    Pimp(int id) {
+    Pimp(final int id) {
         this.id = id;
     }
 
-    public int getId(){
+    public int getId() {
         return this.id;
     }
 }

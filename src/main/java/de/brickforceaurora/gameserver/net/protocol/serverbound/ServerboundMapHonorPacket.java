@@ -5,46 +5,46 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundMapHonorPacket implements IServerboundPacket {
 
-	private int prevPage;
-	private int nextPage;
-	private int indexer;
+    private int prevPage;
+    private int nextPage;
+    private int indexer;
 
-	public final ServerboundMapHonorPacket prevPage(int prevPage) {
-		this.prevPage = prevPage;
-		return this;
-	}
+    public ServerboundMapHonorPacket prevPage(final int prevPage) {
+        this.prevPage = prevPage;
+        return this;
+    }
 
-	public final int prevPage() {
-		return this.prevPage;
-	}
+    public int prevPage() {
+        return this.prevPage;
+    }
 
-	public final ServerboundMapHonorPacket nextPage(int nextPage) {
-		this.nextPage = nextPage;
-		return this;
-	}
+    public ServerboundMapHonorPacket nextPage(final int nextPage) {
+        this.nextPage = nextPage;
+        return this;
+    }
 
-	public final int nextPage() {
-		return this.nextPage;
-	}
+    public int nextPage() {
+        return this.nextPage;
+    }
 
-	public final ServerboundMapHonorPacket indexer(int indexer) {
-		this.indexer = indexer;
-		return this;
-	}
+    public ServerboundMapHonorPacket indexer(final int indexer) {
+        this.indexer = indexer;
+        return this;
+    }
 
-	public final int indexer() {
-		return this.indexer;
-	}
+    public int indexer() {
+        return this.indexer;
+    }
 
-	@Override
-	public int packetId() {
-		return 435;
-	}
+    @Override
+    public int packetId() {
+        return 435;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.prevPage = buffer.readIntLE();
-		this.nextPage = buffer.readIntLE();
-		this.indexer = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.prevPage = buffer.readIntLE();
+        this.nextPage = buffer.readIntLE();
+        this.indexer = buffer.readIntLE();
+    }
 }

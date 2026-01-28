@@ -6,34 +6,34 @@ import io.netty.buffer.ByteBuf;
 public final class ServerboundDownloadThumbnailPacket implements IServerboundPacket {
 
     private boolean userMap;
-	private int clientId;
-	
-	public final ServerboundDownloadThumbnailPacket userMap(boolean userMap) {
-	    this.userMap = userMap;
-	    return this;
-	}
-	
-	public final boolean userMap() {
-	    return this.userMap;
-	}
+    private int clientId;
 
-	public final ServerboundDownloadThumbnailPacket clientId(int clientId) {
-		this.clientId = clientId;
-		return this;
-	}
+    public ServerboundDownloadThumbnailPacket userMap(final boolean userMap) {
+        this.userMap = userMap;
+        return this;
+    }
 
-	public final int clientId() {
-		return this.clientId;
-	}
+    public boolean userMap() {
+        return this.userMap;
+    }
 
-	@Override
-	public int packetId() {
-		return 100;
-	}
+    public ServerboundDownloadThumbnailPacket clientId(final int clientId) {
+        this.clientId = clientId;
+        return this;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-	    this.userMap = buffer.readBoolean();
-		this.clientId = buffer.readIntLE();
-	}
+    public int clientId() {
+        return this.clientId;
+    }
+
+    @Override
+    public int packetId() {
+        return 100;
+    }
+
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.userMap = buffer.readBoolean();
+        this.clientId = buffer.readIntLE();
+    }
 }

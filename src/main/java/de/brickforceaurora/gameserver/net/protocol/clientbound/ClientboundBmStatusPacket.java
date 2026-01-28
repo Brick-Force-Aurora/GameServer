@@ -5,112 +5,112 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundBmStatusPacket implements IClientboundPacket {
 
-	private boolean rounding;
-	private int bombInstaller;
-	private int blastTarget;
-	private float posX;
-	private float posY;
-	private float posZ;
-	private float normalX;
+    private boolean rounding;
+    private int bombInstaller;
+    private int blastTarget;
+    private float posX;
+    private float posY;
+    private float posZ;
+    private float normalX;
     private float normalY;
     private float normalZ;
 
-	public final ClientboundBmStatusPacket rounding(boolean rounding) {
-		this.rounding = rounding;
-		return this;
-	}
+    public ClientboundBmStatusPacket rounding(final boolean rounding) {
+        this.rounding = rounding;
+        return this;
+    }
 
-	public final boolean rounding() {
-		return this.rounding;
-	}
+    public boolean rounding() {
+        return this.rounding;
+    }
 
-	public final ClientboundBmStatusPacket bombInstaller(int bombInstaller) {
-		this.bombInstaller = bombInstaller;
-		return this;
-	}
+    public ClientboundBmStatusPacket bombInstaller(final int bombInstaller) {
+        this.bombInstaller = bombInstaller;
+        return this;
+    }
 
-	public final int bombInstaller() {
-		return this.bombInstaller;
-	}
+    public int bombInstaller() {
+        return this.bombInstaller;
+    }
 
-	public final ClientboundBmStatusPacket blastTarget(int blastTarget) {
-		this.blastTarget = blastTarget;
-		return this;
-	}
+    public ClientboundBmStatusPacket blastTarget(final int blastTarget) {
+        this.blastTarget = blastTarget;
+        return this;
+    }
 
-	public final int blastTarget() {
-		return this.blastTarget;
-	}
+    public int blastTarget() {
+        return this.blastTarget;
+    }
 
-    public final ClientboundBmStatusPacket posX(float posX) {
+    public ClientboundBmStatusPacket posX(final float posX) {
         this.posX = posX;
         return this;
     }
 
-    public final float posX() {
+    public float posX() {
         return this.posX;
     }
 
-    public final ClientboundBmStatusPacket posY(float posY) {
+    public ClientboundBmStatusPacket posY(final float posY) {
         this.posY = posY;
         return this;
     }
 
-    public final float posY() {
+    public float posY() {
         return this.posY;
     }
 
-    public final ClientboundBmStatusPacket posZ(float posZ) {
+    public ClientboundBmStatusPacket posZ(final float posZ) {
         this.posZ = posZ;
         return this;
     }
 
-    public final float posZ() {
+    public float posZ() {
         return this.posZ;
     }
 
-	public final ClientboundBmStatusPacket normalX(float normalX) {
-		this.normalX = normalX;
-		return this;
-	}
+    public ClientboundBmStatusPacket normalX(final float normalX) {
+        this.normalX = normalX;
+        return this;
+    }
 
-	public final float normalX() {
-		return this.normalX;
-	}
+    public float normalX() {
+        return this.normalX;
+    }
 
-	public final ClientboundBmStatusPacket normalY(float normalY) {
-		this.normalY = normalY;
-		return this;
-	}
+    public ClientboundBmStatusPacket normalY(final float normalY) {
+        this.normalY = normalY;
+        return this;
+    }
 
-	public final float normalY() {
-		return this.normalY;
-	}
+    public float normalY() {
+        return this.normalY;
+    }
 
-	public final ClientboundBmStatusPacket normalZ(float normalZ) {
-		this.normalZ = normalZ;
-		return this;
-	}
+    public ClientboundBmStatusPacket normalZ(final float normalZ) {
+        this.normalZ = normalZ;
+        return this;
+    }
 
-	public final float normalZ() {
-		return this.normalZ;
-	}
+    public float normalZ() {
+        return this.normalZ;
+    }
 
-	@Override
-	public int packetId() {
-		return 301;
-	}
+    @Override
+    public int packetId() {
+        return 301;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		buffer.writeBoolean(this.rounding);
-		buffer.writeIntLE(this.bombInstaller);
-		buffer.writeIntLE(this.blastTarget);
-		buffer.writeFloatLE(this.posX);
-		buffer.writeFloatLE(this.posY);
-		buffer.writeFloatLE(this.posZ);
+    @Override
+    public void write(final ByteBuf buffer) {
+        buffer.writeBoolean(this.rounding);
+        buffer.writeIntLE(this.bombInstaller);
+        buffer.writeIntLE(this.blastTarget);
+        buffer.writeFloatLE(this.posX);
+        buffer.writeFloatLE(this.posY);
+        buffer.writeFloatLE(this.posZ);
         buffer.writeFloatLE(this.normalX);
         buffer.writeFloatLE(this.normalY);
         buffer.writeFloatLE(this.normalZ);
-	}
+    }
 }

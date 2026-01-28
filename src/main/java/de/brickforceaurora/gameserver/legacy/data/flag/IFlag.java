@@ -5,9 +5,9 @@ public interface IFlag {
     int mask();
 
     @SuppressWarnings("unchecked")
-    public static <F extends IFlag> int combine(F... flags) {
+    static <F extends IFlag> int combine(final F... flags) {
         int output = 0;
-        for (F flag : flags) {
+        for (final F flag : flags) {
             output |= flag.mask();
         }
         return output;

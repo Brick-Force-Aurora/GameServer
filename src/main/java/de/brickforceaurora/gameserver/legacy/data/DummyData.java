@@ -41,14 +41,48 @@ public class DummyData {
     public int qjOfficialMask = 0;
 
     public static final String[][] startingGear = {
-            { "MAIN", "wau" },
-            { "AUX", "wax" },
-            { "BOMB", "wba" },
-            { "MELEE", "wap" },
-            { "UPPER", "aac" },
-            { "LOWER", "aad" },
-            { "BRICK-GUN", "s07" },
-            { "NONE", "sb7", "sb8", "sb9", "sc0", "sc1", "sc2", "sc3", "sc4", "s34", "s43", "s78", "s79" }
+        {
+            "MAIN",
+            "wau"
+        },
+        {
+            "AUX",
+            "wax"
+        },
+        {
+            "BOMB",
+            "wba"
+        },
+        {
+            "MELEE",
+            "wap"
+        },
+        {
+            "UPPER",
+            "aac"
+        },
+        {
+            "LOWER",
+            "aad"
+        },
+        {
+            "BRICK-GUN",
+            "s07"
+        },
+        {
+            "NONE",
+            "sb7",
+            "sb8",
+            "sb9",
+            "sc0",
+            "sc1",
+            "sc2",
+            "sc3",
+            "sc4",
+            "s34",
+            "s43",
+            "s78",
+            "s79"
+        }
     };
 }
-

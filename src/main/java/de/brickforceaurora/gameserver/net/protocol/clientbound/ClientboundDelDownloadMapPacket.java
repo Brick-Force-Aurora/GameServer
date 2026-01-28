@@ -5,35 +5,35 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundDelDownloadMapPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
+    private int val;
+    private int val2;
 
-	public final ClientboundDelDownloadMapPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundDelDownloadMapPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	public final ClientboundDelDownloadMapPacket val2(int val2) {
-		this.val2 = val2;
-		return this;
-	}
+    public ClientboundDelDownloadMapPacket val2(final int val2) {
+        this.val2 = val2;
+        return this;
+    }
 
-	public final int val2() {
-		return this.val2;
-	}
+    public int val2() {
+        return this.val2;
+    }
 
-	@Override
-	public int packetId() {
-		return 177;
-	}
+    @Override
+    public int packetId() {
+        return 177;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.val);
-		buffer.writeIntLE(this.val2);
-	}
+    @Override
+    public void write(final ByteBuf buffer) {
+        buffer.writeIntLE(this.val);
+        buffer.writeIntLE(this.val2);
+    }
 }

@@ -21,12 +21,12 @@ public enum RoomType {
     private static final Map<Integer, RoomType> BY_VALUE = new HashMap<>();
 
     static {
-        for (RoomType c : values()) {
+        for (final RoomType c : values()) {
             BY_VALUE.put(c.id, c);
         }
     }
 
-    RoomType(int id) {
+    RoomType(final int id) {
         this.id = id;
     }
 
@@ -34,7 +34,7 @@ public enum RoomType {
         return id;
     }
 
-    public static RoomType fromValue(int v) {
+    public static RoomType fromValue(final int v) {
         return BY_VALUE.getOrDefault(v, NONE);
     }
 

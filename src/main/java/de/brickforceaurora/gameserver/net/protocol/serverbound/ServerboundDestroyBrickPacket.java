@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundDestroyBrickPacket implements IServerboundPacket {
 
-	private int brick;
+    private int brick;
 
-	public final ServerboundDestroyBrickPacket brick(int brick) {
-		this.brick = brick;
-		return this;
-	}
+    public ServerboundDestroyBrickPacket brick(final int brick) {
+        this.brick = brick;
+        return this;
+    }
 
-	public final int brick() {
-		return this.brick;
-	}
+    public int brick() {
+        return this.brick;
+    }
 
-	@Override
-	public int packetId() {
-		return 76;
-	}
+    @Override
+    public int packetId() {
+        return 76;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.brick = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.brick = buffer.readIntLE();
+    }
 }

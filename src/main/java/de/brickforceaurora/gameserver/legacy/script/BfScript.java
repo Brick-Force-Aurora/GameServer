@@ -9,7 +9,7 @@ public class BfScript {
     private String alias;
     private boolean enableOnAwake;
     private boolean visibleOnAwake;
-    private List<ScriptCmd> cmdList;
+    private final List<ScriptCmd> cmdList;
 
     /* ===================== PROPERTIES ===================== */
 
@@ -17,7 +17,7 @@ public class BfScript {
         return alias;
     }
 
-    public void setAlias(String alias) {
+    public void setAlias(final String alias) {
         this.alias = alias;
     }
 
@@ -25,7 +25,7 @@ public class BfScript {
         return enableOnAwake;
     }
 
-    public void setEnableOnAwake(boolean enableOnAwake) {
+    public void setEnableOnAwake(final boolean enableOnAwake) {
         this.enableOnAwake = enableOnAwake;
     }
 
@@ -33,7 +33,7 @@ public class BfScript {
         return visibleOnAwake;
     }
 
-    public void setVisibleOnAwake(boolean visibleOnAwake) {
+    public void setVisibleOnAwake(final boolean visibleOnAwake) {
         this.visibleOnAwake = visibleOnAwake;
     }
 
@@ -43,12 +43,7 @@ public class BfScript {
 
     /* ===================== CONSTRUCTOR ===================== */
 
-    public BfScript(
-            String alias,
-            boolean enableOnAwake,
-            boolean visibleOnAwake,
-            String cmdListStr
-    ) {
+    public BfScript(String alias, final boolean enableOnAwake, final boolean visibleOnAwake, final String cmdListStr) {
         if (alias != null) {
             alias = alias.trim();
         }
@@ -59,12 +54,10 @@ public class BfScript {
         this.cmdList = new ArrayList<>();
 
         if (cmdListStr != null && !cmdListStr.isEmpty()) {
-            String[] array = cmdListStr.split(
-                    Arrays.toString(ScriptCmd.CMD_DELIMITERS)
-            );
+            final String[] array = cmdListStr.split(Arrays.toString(ScriptCmd.CMD_DELIMITERS));
 
             if (array != null) {
-                for (String s : array) {
+                for (final String s : array) {
                     // ScriptCmd item = ScriptCmdFactory.create(s);
                     // cmdList.add(item);
                 }
@@ -75,7 +68,7 @@ public class BfScript {
     /* ===================== METHODS ===================== */
 
     public String getCommandString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < cmdList.size(); i++) {
             sb.append(cmdList.get(i).getDescription());

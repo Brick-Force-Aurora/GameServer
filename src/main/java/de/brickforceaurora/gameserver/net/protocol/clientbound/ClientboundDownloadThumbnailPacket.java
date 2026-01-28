@@ -14,21 +14,21 @@ public final class ClientboundDownloadThumbnailPacket implements IClientboundPac
     private int Unnamed0;
     private BufferedImage thumbnail;
 
-    public final ClientboundDownloadThumbnailPacket Unnamed0(int Unnamed0) {
+    public ClientboundDownloadThumbnailPacket Unnamed0(final int Unnamed0) {
         this.Unnamed0 = Unnamed0;
         return this;
     }
 
-    public final int Unnamed0() {
+    public int Unnamed0() {
         return this.Unnamed0;
     }
 
-    public final ClientboundDownloadThumbnailPacket thumbnail(BufferedImage thumbnail) {
+    public ClientboundDownloadThumbnailPacket thumbnail(final BufferedImage thumbnail) {
         this.thumbnail = thumbnail;
         return this;
     }
 
-    public final BufferedImage thumbnail() {
+    public BufferedImage thumbnail() {
         return this.thumbnail;
     }
 
@@ -38,10 +38,10 @@ public final class ClientboundDownloadThumbnailPacket implements IClientboundPac
     }
 
     @Override
-    public final void write(ByteBuf buffer) throws IOException {
+    public void write(final ByteBuf buffer) throws IOException {
         buffer.writeIntLE(this.Unnamed0);
         if (thumbnail != null) {
-            FastByteArrayOutputStream output = new FastByteArrayOutputStream();
+            final FastByteArrayOutputStream output = new FastByteArrayOutputStream();
             ImageIO.write(thumbnail, "png", output);
             buffer.writeIntLE(output.length);
             buffer.writeBytes(output.array, 0, output.length);

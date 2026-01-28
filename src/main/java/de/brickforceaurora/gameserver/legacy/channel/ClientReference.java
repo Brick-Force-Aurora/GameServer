@@ -1,12 +1,12 @@
 package de.brickforceaurora.gameserver.legacy.channel;
 
+import java.net.InetSocketAddress;
+
 import de.brickforceaurora.gameserver.legacy.data.DummyData;
 import de.brickforceaurora.gameserver.legacy.data.Inventory;
 import de.brickforceaurora.gameserver.legacy.match.MatchData;
 import de.brickforceaurora.gameserver.legacy.match.SlotData;
 import io.netty.channel.Channel;
-
-import java.net.InetSocketAddress;
 
 public final class ClientReference {
 
@@ -36,12 +36,12 @@ public final class ClientReference {
     //public ChunkedBuffer chunkedBuffer;
     public int lastOpenedChestSeq = -1;
 
-    public ClientReference(Channel socket, String name, int seq) {
+    public ClientReference(final Channel socket, final String name, final int seq) {
         this.socket = socket;
         this.name = name;
         this.seq = seq;
         this.data = new DummyData();
-        InetSocketAddress addr = (InetSocketAddress) socket.remoteAddress();
+        final InetSocketAddress addr = (InetSocketAddress) socket.remoteAddress();
         this.ip = addr.getAddress().getHostAddress();
         this.clientStatus = ClientStatus.INVALID;
         this.status = BrickManStatus.PLAYER_WAITING;
@@ -50,11 +50,11 @@ public final class ClientReference {
         this.toleranceTime = 0f;
     }
 
-    public ClientReference(Channel socket) {
+    public ClientReference(final Channel socket) {
         this(socket, "", -1);
     }
 
-    public boolean Disconnect(boolean send) {
+    public boolean Disconnect(final boolean send) {
         /*GameServerLogic logic = GameServerApp.get().server().logic();
         if (send) {
             RoomHandlers.SendLeave(logic, this);
@@ -74,25 +74,24 @@ public final class ClientReference {
         return this.Disconnect(true);
     }
 
-    public String GetIdentifier()
-    {
+    public String GetIdentifier() {
         return name + "-" + seq + "-" + ip;
     }
 
-    public void DetachSlot()
-    {
-        if (slot == null)
+    public void DetachSlot() {
+        if (slot == null) {
             return;
+        }
 
         slot.client = null;
         slot.isUsed = false;
         slot = null;
     }
 
-    public boolean AssignSlot(SlotData _slot)
-    {
-        if (_slot.isUsed || _slot.isLocked)
+    public boolean AssignSlot(final SlotData _slot) {
+        if (_slot.isUsed || _slot.isLocked) {
             return false;
+        }
 
         DetachSlot();
 

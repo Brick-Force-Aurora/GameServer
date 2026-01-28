@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundDelegateMasterPacket implements IServerboundPacket {
 
-	private int newMater;
+    private int newMater;
 
-	public final ServerboundDelegateMasterPacket newMater(int newMater) {
-		this.newMater = newMater;
-		return this;
-	}
+    public ServerboundDelegateMasterPacket newMater(final int newMater) {
+        this.newMater = newMater;
+        return this;
+    }
 
-	public final int newMater() {
-		return this.newMater;
-	}
+    public int newMater() {
+        return this.newMater;
+    }
 
-	@Override
-	public int packetId() {
-		return 389;
-	}
+    @Override
+    public int packetId() {
+        return 389;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.newMater = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.newMater = buffer.readIntLE();
+    }
 }

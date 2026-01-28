@@ -13,6 +13,6 @@ public class ClientboundEmulatorConnectedPacket implements IClientboundPacket {
     }
 
     @Override
-    public void write(ByteBuf buffer) throws IOException {}
+    public void write(final ByteBuf buffer) throws IOException {}
 
 }

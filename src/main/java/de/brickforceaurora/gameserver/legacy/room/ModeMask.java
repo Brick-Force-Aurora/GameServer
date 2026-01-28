@@ -14,7 +14,7 @@ public enum ModeMask {
 
     private final int id;
 
-    ModeMask(int id) {
+    ModeMask(final int id) {
         this.id = id;
     }
 

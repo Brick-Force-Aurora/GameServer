@@ -5,28 +5,27 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundTutorialCompletePacket implements IServerboundPacket {
 
-	private int endOf;
+    private int endOf;
 
-	public final ServerboundTutorialCompletePacket endOf(int endOf) {
-		if (endOf > 255L || endOf < 0L) {
-			throw new IllegalArgumentException(
-					"Value " + endOf + " is out of bounds of allowed number range of 0 - 255");
-		}
-		this.endOf = endOf;
-		return this;
-	}
+    public ServerboundTutorialCompletePacket endOf(final int endOf) {
+        if (endOf > 255L || endOf < 0L) {
+            throw new IllegalArgumentException("Value " + endOf + " is out of bounds of allowed number range of 0 - 255");
+        }
+        this.endOf = endOf;
+        return this;
+    }
 
-	public final int endOf() {
-		return this.endOf;
-	}
+    public int endOf() {
+        return this.endOf;
+    }
 
-	@Override
-	public int packetId() {
-		return 170;
-	}
+    @Override
+    public int packetId() {
+        return 170;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.endOf = buffer.readUnsignedByte();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.endOf = buffer.readUnsignedByte();
+    }
 }

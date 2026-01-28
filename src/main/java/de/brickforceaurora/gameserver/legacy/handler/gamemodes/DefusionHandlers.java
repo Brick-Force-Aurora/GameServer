@@ -10,18 +10,15 @@ import de.brickforceaurora.gameserver.legacy.protocol.SendType;
 import de.brickforceaurora.gameserver.legacy.room.RoomStatus;
 
 public class DefusionHandlers {
-    public static void roundEnd(GameServerLogic logic, MsgReference msgRef, byte roundCode)
-    {
-        MatchData data = msgRef.matchData;
+    public static void roundEnd(final GameServerLogic logic, final MsgReference msgRef, final byte roundCode) {
+        final MatchData data = msgRef.matchData;
         MsgBody msg = new MsgBody();
         msg = new MsgBody();
         msg.write(data.currentRound); //on Round End
-        if (roundCode == 0)
-        {
+        if (roundCode == 0) {
             msg.write(1); //endCode4Red
             msg.write(-1); //endCode4Blue
-        } else
-        {
+        } else {
             msg.write(-1); //endCode4Red
             msg.write(1); //endCode4Blue
         }
@@ -29,8 +26,7 @@ public class DefusionHandlers {
         logic.say(new MsgReference(MessageId.CS_ROUND_END_ACK, msg, msgRef.client, SendType.BROADCAST_ROOM, data.channel, data));
         SendScore(logic, data);
 
-        if (data.redScore >= data.room.goal || data.blueScore >= data.room.goal)
-        {
+        if (data.redScore >= data.room.goal || data.blueScore >= data.room.goal) {
             logic.logger().debug("Explosion match end: goal reached.");
             data.EndMatch(logic);
             return;
@@ -40,9 +36,8 @@ public class DefusionHandlers {
         data.ResetForNewRound();
     }
 
-    private static void SendScore(GameServerLogic logic, MatchData matchData)
-    {
-        MsgBody body = new MsgBody();
+    private static void SendScore(final GameServerLogic logic, final MatchData matchData) {
+        final MsgBody body = new MsgBody();
         body.write(matchData.redScore);
         body.write(matchData.blueScore);
 
@@ -51,22 +46,19 @@ public class DefusionHandlers {
         logic.logger().debug("Broadcasted SendDefusionScore for room no: " + matchData.room.no);
     }
 
-    public static void handleEnd(GameServerLogic logic, MatchData matchData)
-    {
+    public static void handleEnd(final GameServerLogic logic, final MatchData matchData) {
         matchData.room.status = RoomStatus.WAITING;
         SendMatchEnd(logic, matchData);
         matchData.Reset();
         RoomHandlers.sendRoom(logic, null, matchData, SendType.BROADCAST_ROOM);
     }
 
-    private static void SendMatchEnd(GameServerLogic logic, MatchData matchData)
-    {
+    private static void SendMatchEnd(final GameServerLogic logic, final MatchData matchData) {
         //fix this
-        for (int team = 0; team < 2; team++)
-        {
-            MsgBody body = new MsgBody();
+        for (int team = 0; team < 2; team++) {
+            final MsgBody body = new MsgBody();
 
-            body.write(team == 0 ? matchData.GetWinningTeam() : (byte)-matchData.GetWinningTeam());
+            body.write(team == 0 ? matchData.GetWinningTeam() : (byte) -matchData.GetWinningTeam());
             body.write(matchData.redScore); //RedScore
             body.write(matchData.blueScore); //BlueScore
             body.write(0); //RedMission
@@ -76,8 +68,7 @@ public class DefusionHandlers {
             body.write(matchData.blueKillCount); //RedTotalDeath
             body.write(matchData.redKillCount); //BlueTotalDeath
             body.write(matchData.clientList.size());
-            for (int i = 0; i < matchData.clientList.size(); i++)
-            {
+            for (int i = 0; i < matchData.clientList.size(); i++) {
                 body.write(matchData.clientList.get(i).slot.isRed);
                 body.write(matchData.clientList.get(i).seq);
                 body.write(matchData.clientList.get(i).name);
@@ -90,9 +81,10 @@ public class DefusionHandlers {
                 body.write(0); //mission
                 body.write(matchData.clientList.get(i).data.xp);
                 body.write(matchData.clientList.get(i).data.xp);
-                body.write((long)0); //buff
+                body.write((long) 0); //buff
             }
-            logic.say(new MsgReference(MessageId.CS_BLAST_MODE_END_ACK, body, null, team == 0 ? SendType.BROADCAST_BLUE_TEAM : SendType.BROADCAST_RED_TEAM));
+            logic.say(new MsgReference(MessageId.CS_BLAST_MODE_END_ACK, body, null,
+                team == 0 ? SendType.BROADCAST_BLUE_TEAM : SendType.BROADCAST_RED_TEAM));
         }
 
         logic.logger().debug("Broadcasted SendDefusionMatchEnd for room no: " + matchData.room.no);

@@ -18,49 +18,13 @@ public class TAccessory extends TItem {
     private int ah_key;
     private int ah_index;
 
-    public TAccessory(
-            String itemCode,
-            String itemName,
-            String itemBone,
-            String itemPrefab,
-            Texture2D itemIcon,
-            int ct,
-            int ck,
-            boolean itemTakeoffable,
-            ItemSlot itemSlot,
-            String itemComment,
-            TBuff tb,
-            boolean itemDiscomposable,
-            String itemBpBackCode,
-            int functionMask,
-            int armor,
-            float functionFactor,
-            int upCat,
-            int season,
-            String grp1,
-            String grp2,
-            String grp3,
-            Texture2D funcIcon,
-            int starRate
-    ) {
-        super(
-                itemCode,
-                ItemType.ACCESSORY,
-                itemName,
-                itemIcon,
-                ct,
-                ck,
-                itemTakeoffable,
-                itemSlot,
-                itemComment,
-                tb,
-                itemDiscomposable,
-                itemBpBackCode,
-                1,
-                UpgradeCategory.fromValue(upCat),
-                false,
-                starRate
-        );
+    public TAccessory(final String itemCode, final String itemName, final String itemBone, final String itemPrefab,
+        final Texture2D itemIcon, final int ct, final int ck, final boolean itemTakeoffable, final ItemSlot itemSlot,
+        final String itemComment, final TBuff tb, final boolean itemDiscomposable, final String itemBpBackCode, final int functionMask,
+        final int armor, final float functionFactor, final int upCat, final int season, final String grp1, final String grp2,
+        final String grp3, final Texture2D funcIcon, final int starRate) {
+        super(itemCode, ItemType.ACCESSORY, itemName, itemIcon, ct, ck, itemTakeoffable, itemSlot, itemComment, tb, itemDiscomposable,
+            itemBpBackCode, 1, UpgradeCategory.fromValue(upCat), false, starRate);
 
         this.armor = armor;
         this.functionMask = functionMask;
@@ -82,7 +46,7 @@ public class TAccessory extends TItem {
         this.funcIcon = funcIcon;
     }
 
-    public void resetArmor(int val) {
+    public void resetArmor(final int val) {
         this.armor = val;
         this.ah_armor = new int[5];
         this.ah_key = getName().length();

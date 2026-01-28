@@ -14,7 +14,7 @@ public final class MsgHdr {
 
     public MsgHdr() {}
 
-    public MsgHdr(long size, int id, byte crc, long meta, long src) {
+    public MsgHdr(final long size, final int id, final byte crc, final long meta, final long src) {
         this.size = size;
         this.id = id;
         this.crc = crc;
@@ -23,7 +23,7 @@ public final class MsgHdr {
     }
 
     public byte[] toArray() {
-        ByteBuffer buf = ByteBuffer.allocate(SIZE).order(ByteOrder.LITTLE_ENDIAN);
+        final ByteBuffer buf = ByteBuffer.allocate(SIZE).order(ByteOrder.LITTLE_ENDIAN);
         buf.putInt((int) size);
         buf.putShort((short) id);
         buf.put(crc);
@@ -32,8 +32,8 @@ public final class MsgHdr {
         return buf.array();
     }
 
-    public void fromArray(byte[] srcBuf) {
-        ByteBuffer buf = ByteBuffer.wrap(srcBuf).order(ByteOrder.LITTLE_ENDIAN);
+    public void fromArray(final byte[] srcBuf) {
+        final ByteBuffer buf = ByteBuffer.wrap(srcBuf).order(ByteOrder.LITTLE_ENDIAN);
         size = Integer.toUnsignedLong(buf.getInt());
         id = Short.toUnsignedInt(buf.getShort());
         crc = buf.get();

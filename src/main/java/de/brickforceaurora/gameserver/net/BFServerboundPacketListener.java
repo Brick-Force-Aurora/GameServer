@@ -9,18 +9,18 @@ final class BFServerboundPacketListener extends SimpleChannelInboundHandler<ISer
     private final NetManager netManager;
     private final BFClient client;
 
-    public BFServerboundPacketListener(NetManager netManager, BFClient client) {
+    public BFServerboundPacketListener(final NetManager netManager, final BFClient client) {
         this.netManager = netManager;
         this.client = client;
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, IServerboundPacket msg) throws Exception {
+    protected void channelRead0(final ChannelHandlerContext ctx, final IServerboundPacket msg) throws Exception {
         netManager.handlePacket(client, msg);
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
         netManager.clientDisconnected(client);
         ctx.fireChannelInactive();
     }

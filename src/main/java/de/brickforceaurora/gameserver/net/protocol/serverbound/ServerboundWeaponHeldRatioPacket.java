@@ -8,7 +8,7 @@ public final class ServerboundWeaponHeldRatioPacket implements IServerboundPacke
 
     private final Long2FloatArrayMap weaponHeldRatio = new Long2FloatArrayMap();
 
-    public final Long2FloatArrayMap weaponHeldRatio() {
+    public Long2FloatArrayMap weaponHeldRatio() {
         return weaponHeldRatio;
     }
 
@@ -18,13 +18,13 @@ public final class ServerboundWeaponHeldRatioPacket implements IServerboundPacke
     }
 
     @Override
-    public final void read(ByteBuf buffer) {
+    public void read(final ByteBuf buffer) {
         {
             weaponHeldRatio.clear();
-            int length = buffer.readIntLE();
+            final int length = buffer.readIntLE();
             for (int i = 0; i < length; i++) {
-                long key = buffer.readLongLE();
-                float value = buffer.readFloatLE();
+                final long key = buffer.readLongLE();
+                final float value = buffer.readFloatLE();
                 weaponHeldRatio.put(key, value);
             }
         }

@@ -13,24 +13,24 @@ public final class BFClient {
     private String identifier;
 
     private String name;
-    private String ip;
+    private final String ip;
     private int port;
     private int id;
-    
+
     private boolean initialized = false;
-    
+
     volatile boolean shouldKeepAlive = false;
     volatile long netTime = 0;
-    
+
     private final ClientData data;
 
-    public BFClient(Channel channel) {
+    public BFClient(final Channel channel) {
         this.channel = channel;
         this.ip = ((InetSocketAddress) channel.remoteAddress()).getAddress().getHostAddress();
         this.data = new ClientData(this);
     }
 
-    public void init(String name, int id) {
+    public void init(final String name, final int id) {
         if (this.initialized) {
             throw new IllegalStateException("Already initialized");
         }
@@ -48,7 +48,7 @@ public final class BFClient {
     public String identifier() {
         return identifier;
     }
-    
+
     public Channel channel() {
         return channel;
     }
@@ -68,11 +68,11 @@ public final class BFClient {
     public int id() {
         return id;
     }
-    
+
     public ClientData data() {
         return data;
     }
-    
+
     public boolean disconnect() {
         if (!channel.isOpen()) {
             return false;
@@ -80,8 +80,8 @@ public final class BFClient {
         channel.close();
         return true;
     }
-    
-    public void send(IClientboundPacket packet) {
+
+    public void send(final IClientboundPacket packet) {
         channel.writeAndFlush(packet);
     }
 

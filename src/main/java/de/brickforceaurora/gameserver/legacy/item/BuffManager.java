@@ -1,5 +1,12 @@
 package de.brickforceaurora.gameserver.legacy.item;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import de.brickforceaurora.gameserver.GameServerApp;
 import de.brickforceaurora.gameserver.legacy.item.template.TBuff;
 import de.brickforceaurora.gameserver.legacy.util.Texture2D;
@@ -10,10 +17,6 @@ import me.lauriichan.laylib.json.io.JsonParser;
 import me.lauriichan.laylib.json.io.JsonSyntaxException;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.resource.source.IDataSource;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
 
 public final class BuffManager {
 
@@ -81,7 +84,7 @@ public final class BuffManager {
        Buff access
        ======================= */
 
-    private boolean add(int index, String name, TBuff buff) {
+    private boolean add(final int index, final String name, final TBuff buff) {
         if (dic.containsKey(index) || dicByName.containsKey(name)) {
             return false;
         }
@@ -90,11 +93,11 @@ public final class BuffManager {
         return true;
     }
 
-    public TBuff get(int index) {
+    public TBuff get(final int index) {
         return dic.get(index);
     }
 
-    public TBuff get(String name) {
+    public TBuff get(final String name) {
         return dicByName.get(name);
     }
 
@@ -102,8 +105,8 @@ public final class BuffManager {
        WHY mask helpers
        ======================= */
 
-    public BuffDesc[] toWhyArray(long mask) {
-        List<BuffDesc> list = new ArrayList<>();
+    public BuffDesc[] toWhyArray(final long mask) {
+        final List<BuffDesc> list = new ArrayList<>();
         long bit = 1L;
 
         for (int i = 0; i < 64 && i < why.length; i++) {
@@ -120,8 +123,8 @@ public final class BuffManager {
        Loading
        ======================= */
 
-    private IJson<?> readJson(String path) throws IllegalStateException, IOException, JsonSyntaxException {
-        IDataSource source = frame.resource(path);
+    private IJson<?> readJson(final String path) throws IllegalStateException, IOException, JsonSyntaxException {
+        final IDataSource source = frame.resource(path);
         if (!source.exists()) {
             throw new IllegalStateException("File doesn't exist: " + source.getPath());
         }
@@ -132,7 +135,7 @@ public final class BuffManager {
 
     private boolean loadFromLocalFileSystem() {
         try {
-            IJson<?> root = readJson("jar://buff.json");
+            final IJson<?> root = readJson("jar://buff.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");
@@ -141,30 +144,26 @@ public final class BuffManager {
             parse(root.asJsonArray());
             return true;
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    private void parse(JsonArray array) {
+    private void parse(final JsonArray array) {
 
-        for (IJson<?> elem : array) {
-            JsonObject o = elem.asJsonObject();
+        for (final IJson<?> elem : array) {
+            final JsonObject o = elem.asJsonObject();
 
-            int index = o.getAsInt("index");
-            String name = o.getAsString("name");
+            final int index = o.getAsInt("index");
+            final String name = o.getAsString("name");
 
-            TBuff buff = new TBuff(
-                    index,
-                    o.getAsBoolean("isPoint"),
-                    o.getAsBoolean("isXp"),
-                    o.getAsBoolean("isLuck"),
-                    o.getAsFloat("factor")
-            );
+            final TBuff buff = new TBuff(index, o.getAsBoolean("isPoint"), o.getAsBoolean("isXp"), o.getAsBoolean("isLuck"),
+                o.getAsFloat("factor"));
 
-            if (!add(index, name, buff)) GameServerApp.logger().error("Fail to add buff: " + index);
+            if (!add(index, name, buff)) {
+                GameServerApp.logger().error("Fail to add buff: " + index);
+            }
         }
     }
 }
-

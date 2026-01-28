@@ -3,13 +3,13 @@ package de.brickforceaurora.gameserver.legacy.script;
 public abstract class ScriptCmd {
 
     public static final String[] CMD_DELIMITERS = {
-            ")(*&",
-            "\0"
+        ")(*&",
+        "\0"
     };
 
     public static final String[] ARG_DELIMITERS = {
-            "!@#$",
-            "\0"
+        "!@#$",
+        "\0"
     };
 
     public abstract String getDescription();

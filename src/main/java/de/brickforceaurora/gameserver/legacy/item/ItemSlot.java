@@ -24,7 +24,7 @@ public enum ItemSlot {
 
     public final int value;
 
-    ItemSlot(int v) {
+    ItemSlot(final int v) {
         value = v;
     }
 }

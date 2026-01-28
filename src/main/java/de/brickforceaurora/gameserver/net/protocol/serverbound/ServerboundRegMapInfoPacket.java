@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundRegMapInfoPacket implements IServerboundPacket {
 
-	private int map;
+    private int map;
 
-	public final ServerboundRegMapInfoPacket map(int map) {
-		this.map = map;
-		return this;
-	}
+    public ServerboundRegMapInfoPacket map(final int map) {
+        this.map = map;
+        return this;
+    }
 
-	public final int map() {
-		return this.map;
-	}
+    public int map() {
+        return this.map;
+    }
 
-	@Override
-	public int packetId() {
-		return 337;
-	}
+    @Override
+    public int packetId() {
+        return 337;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.map = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.map = buffer.readIntLE();
+    }
 }

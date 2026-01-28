@@ -39,7 +39,11 @@ public class Brick {
 
     public RoomType gameModeDependent = RoomType.NONE;
 
-    public Brick (String brickName, int seq, String brickAlias, String brickComment, boolean destructible, boolean directionable, int function, boolean meshOptimize, boolean chunkOptimize, boolean chunkOptimizeOnMatch, boolean onlyTutor, int season, int horz, int vert, int maxChildrenPerChunk, int maxInstancePerMap, int category, int hitPoint, boolean disable, boolean replace, boolean bnd, int gameModeDependent) {
+    public Brick(final String brickName, final int seq, final String brickAlias, final String brickComment, final boolean destructible,
+        final boolean directionable, final int function, final boolean meshOptimize, final boolean chunkOptimize,
+        final boolean chunkOptimizeOnMatch, final boolean onlyTutor, final int season, final int horz, final int vert,
+        final int maxChildrenPerChunk, final int maxInstancePerMap, final int category, final int hitPoint, final boolean disable,
+        final boolean replace, final boolean bnd, final int gameModeDependent) {
         this.brickName = brickName;
         this.seq = seq;
         this.brickAlias = brickAlias;
@@ -66,29 +70,39 @@ public class Brick {
     /* ===================== STATIC TABLES ===================== */
 
     public static final String[] NEED_FUNC = {
-            "",
-            "brickstar_builder"
+        "",
+        "brickstar_builder"
     };
 
     public static final int[] SHADOW_CODE_SET = {
-            256, 512, 1024, 2048, 4096, 8192
+        256,
+        512,
+        1024,
+        2048,
+        4096,
+        8192
     };
 
     public static final int[] SHADOW_CODE_RESET = new int[6];
 
     public static final int[] MESH_CODE_SET = {
-            1, 2, 4, 8, 16, 32
+        1,
+        2,
+        4,
+        8,
+        16,
+        32
     };
 
     public static final int[] MESH_CODE_RESET = new int[6];
 
     public static final BrickDirection[] OPPOSITE = {
-            BrickDirection.BOTTOM,
-            BrickDirection.TOP,
-            BrickDirection.BACK,
-            BrickDirection.FRONT,
-            BrickDirection.RIGHT,
-            BrickDirection.LEFT
+        BrickDirection.BOTTOM,
+        BrickDirection.TOP,
+        BrickDirection.BACK,
+        BrickDirection.FRONT,
+        BrickDirection.RIGHT,
+        BrickDirection.LEFT
     };
 
     /* ===================== DERIVED PROPERTIES ===================== */
@@ -114,7 +128,7 @@ public class Brick {
 
     /* ===================== LOGIC ===================== */
 
-    public boolean isEnable(RoomType roomType) {
+    public boolean isEnable(final RoomType roomType) {
         if (disable) {
             return false;
         }
@@ -136,22 +150,30 @@ public class Brick {
             return SpawnerType.NONE;
         }
 
-        if (brickName.contains("blue_team_spawner"))
+        if (brickName.contains("blue_team_spawner")) {
             return SpawnerType.BLUE_TEAM_SPAWNER;
-        if (brickName.contains("red_team_spawner"))
+        }
+        if (brickName.contains("red_team_spawner")) {
             return SpawnerType.RED_TEAM_SPAWNER;
-        if (brickName.contains("single_spawner"))
+        }
+        if (brickName.contains("single_spawner")) {
             return SpawnerType.SINGLE_SPAWNER;
-        if (brickName.contains("red_flag_spawner"))
+        }
+        if (brickName.contains("red_flag_spawner")) {
             return SpawnerType.RED_FLAG_SPAWNER;
-        if (brickName.contains("blue_flag_spawner"))
+        }
+        if (brickName.contains("blue_flag_spawner")) {
             return SpawnerType.BLUE_FLAG_SPAWNER;
-        if (brickName.contains("flag_spawner"))
+        }
+        if (brickName.contains("flag_spawner")) {
             return SpawnerType.FLAG_SPAWNER;
-        if (brickName.contains("bomb_spawner"))
+        }
+        if (brickName.contains("bomb_spawner")) {
             return SpawnerType.BOMB_SPAWNER;
-        if (brickName.contains("df_spawner_start"))
+        }
+        if (brickName.contains("df_spawner_start")) {
             return SpawnerType.DEFENCE_SPAWNER;
+        }
 
         return SpawnerType.NONE;
     }

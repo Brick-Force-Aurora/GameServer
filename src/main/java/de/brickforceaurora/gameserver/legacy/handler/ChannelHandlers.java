@@ -10,29 +10,25 @@ import de.brickforceaurora.gameserver.legacy.protocol.SendType;
 
 public class ChannelHandlers {
 
-    public static void register(MessageDispatcher d) {
+    public static void register(final MessageDispatcher d) {
         d.register(MessageId.CS_CHANNEL_PLAYER_LIST_REQ.id(), ChannelHandlers::userList);
     }
 
-    private static void userList(GameServerLogic server, MsgReference msgRef)
-    {
+    private static void userList(final GameServerLogic server, final MsgReference msgRef) {
         server.logger().debug("HandleRequestUserList from: " + msgRef.client.GetIdentifier());
 
         SendUserList(server, msgRef.client);
     }
 
-    public static void SendUserList(GameServerLogic server, ClientReference client)
-    {
+    public static void SendUserList(final GameServerLogic server, final ClientReference client) {
         SendUserList(server, client, SendType.UNICAST);
     }
 
-    public static void SendUserList(GameServerLogic server, ClientReference client, SendType sendType)
-    {
-        MsgBody body = new MsgBody();
+    public static void SendUserList(final GameServerLogic server, final ClientReference client, final SendType sendType) {
+        final MsgBody body = new MsgBody();
 
         body.write(client.channel.clientList.size());
-        for (int i = 0; i < client.channel.clientList.size(); i++)
-        {
+        for (int i = 0; i < client.channel.clientList.size(); i++) {
             body.write(client.channel.clientList.get(i).seq);
             body.write(client.channel.clientList.get(i).name);
             body.write(client.channel.clientList.get(i).data.xp);
@@ -44,13 +40,11 @@ public class ChannelHandlers {
         server.logger().debug("SendUserList to: " + client.GetIdentifier());
     }
 
-    public static void SendChannels(GameServerLogic server, ClientReference client)
-    {
-        MsgBody body = new MsgBody();
+    public static void SendChannels(final GameServerLogic server, final ClientReference client) {
+        final MsgBody body = new MsgBody();
 
         body.write(server.channelManager.getChannels().size());
-        for (ChannelReference channelRef : server.channelManager.getChannels())
-        {
+        for (final ChannelReference channelRef : server.channelManager.getChannels()) {
             body.write(channelRef.channel.id);
             body.write(channelRef.channel.mode.getId());
             body.write(channelRef.channel.name);
@@ -59,8 +53,8 @@ public class ChannelHandlers {
             body.write(channelRef.channel.userCount);
             body.write(channelRef.channel.maxUserCount);
             body.write(channelRef.channel.country);
-            body.write((byte)channelRef.channel.minLvRank);
-            body.write((byte)channelRef.channel.maxLvRank);
+            body.write((byte) channelRef.channel.minLvRank);
+            body.write((byte) channelRef.channel.maxLvRank);
             body.writeUShort(channelRef.channel.xpBonus);
             body.writeUShort(channelRef.channel.fpBonus);
             body.write(channelRef.channel.limitStarRate);
@@ -71,13 +65,12 @@ public class ChannelHandlers {
         server.logger().debug("SendChannels to: " + client.GetIdentifier());
     }
 
-    public static void SendCurChannel(GameServerLogic server, ClientReference client)
-    {
+    public static void SendCurChannel(final GameServerLogic server, final ClientReference client) {
         SendCurChannel(server, client, 1);
     }
-    public static void SendCurChannel(GameServerLogic server, ClientReference client, int curChannelId)
-    {
-        MsgBody body = new MsgBody();
+
+    public static void SendCurChannel(final GameServerLogic server, final ClientReference client, final int curChannelId) {
+        final MsgBody body = new MsgBody();
 
         body.write(curChannelId);
         server.say(new MsgReference(MessageId.CS_CUR_CHANNEL_ACK, body, client));

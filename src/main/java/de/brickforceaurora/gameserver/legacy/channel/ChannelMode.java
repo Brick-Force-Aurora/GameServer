@@ -8,13 +8,15 @@ public enum ChannelMode {
 
     public final int id;
 
-    ChannelMode(int id) {
+    ChannelMode(final int id) {
         this.id = id;
     }
 
-    public static ChannelMode fromId(int id) {
-        for (ChannelMode m : values()) {
-            if (m.id == id) return m;
+    public static ChannelMode fromId(final int id) {
+        for (final ChannelMode m : values()) {
+            if (m.id == id) {
+                return m;
+            }
         }
         return null;
     }

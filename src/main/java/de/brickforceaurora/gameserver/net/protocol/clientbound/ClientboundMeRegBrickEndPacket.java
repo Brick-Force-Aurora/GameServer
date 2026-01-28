@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundMeRegBrickEndPacket implements IClientboundPacket {
 
-	private boolean val;
+    private boolean val;
 
-	public final ClientboundMeRegBrickEndPacket val(boolean val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundMeRegBrickEndPacket val(final boolean val) {
+        this.val = val;
+        return this;
+    }
 
-	public final boolean val() {
-		return this.val;
-	}
+    public boolean val() {
+        return this.val;
+    }
 
-	@Override
-	public int packetId() {
-		return 341;
-	}
+    @Override
+    public int packetId() {
+        return 341;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		buffer.writeBoolean(this.val);
-	}
+    @Override
+    public void write(final ByteBuf buffer) {
+        buffer.writeBoolean(this.val);
+    }
 }

@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundRoamoutPacket implements IServerboundPacket {
 
-	private int dst;
+    private int dst;
 
-	public final ServerboundRoamoutPacket dst(int dst) {
-		this.dst = dst;
-		return this;
-	}
+    public ServerboundRoamoutPacket dst(final int dst) {
+        this.dst = dst;
+        return this;
+    }
 
-	public final int dst() {
-		return this.dst;
-	}
+    public int dst() {
+        return this.dst;
+    }
 
-	@Override
-	public int packetId() {
-		return 143;
-	}
+    @Override
+    public int packetId() {
+        return 143;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.dst = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.dst = buffer.readIntLE();
+    }
 }

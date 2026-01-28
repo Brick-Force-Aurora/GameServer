@@ -5,46 +5,46 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundWeeklyChartPacket implements IServerboundPacket {
 
-	private int prevPage;
-	private int nextPage;
-	private int indexer;
+    private int prevPage;
+    private int nextPage;
+    private int indexer;
 
-	public final ServerboundWeeklyChartPacket prevPage(int prevPage) {
-		this.prevPage = prevPage;
-		return this;
-	}
+    public ServerboundWeeklyChartPacket prevPage(final int prevPage) {
+        this.prevPage = prevPage;
+        return this;
+    }
 
-	public final int prevPage() {
-		return this.prevPage;
-	}
+    public int prevPage() {
+        return this.prevPage;
+    }
 
-	public final ServerboundWeeklyChartPacket nextPage(int nextPage) {
-		this.nextPage = nextPage;
-		return this;
-	}
+    public ServerboundWeeklyChartPacket nextPage(final int nextPage) {
+        this.nextPage = nextPage;
+        return this;
+    }
 
-	public final int nextPage() {
-		return this.nextPage;
-	}
+    public int nextPage() {
+        return this.nextPage;
+    }
 
-	public final ServerboundWeeklyChartPacket indexer(int indexer) {
-		this.indexer = indexer;
-		return this;
-	}
+    public ServerboundWeeklyChartPacket indexer(final int indexer) {
+        this.indexer = indexer;
+        return this;
+    }
 
-	public final int indexer() {
-		return this.indexer;
-	}
+    public int indexer() {
+        return this.indexer;
+    }
 
-	@Override
-	public int packetId() {
-		return 433;
-	}
+    @Override
+    public int packetId() {
+        return 433;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.prevPage = buffer.readIntLE();
-		this.nextPage = buffer.readIntLE();
-		this.indexer = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.prevPage = buffer.readIntLE();
+        this.nextPage = buffer.readIntLE();
+        this.indexer = buffer.readIntLE();
+    }
 }

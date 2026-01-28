@@ -23,9 +23,9 @@ import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.signal.SignalManager;
 
 public final class NetManager implements AutoCloseable {
-    
+
     private static final long TIMEOUT_TIME = TimeUnit.SECONDS.toNanos(3);
-    
+
     public final AtomicInteger nextClientId = new AtomicInteger(0);
 
     private final NioEventLoopGroup mainGroup = new NioEventLoopGroup(1);
@@ -42,21 +42,21 @@ public final class NetManager implements AutoCloseable {
     private final ObjectList<BFClient> clients = ObjectLists.synchronize(new ObjectArrayList<>());
 
     private final ObjectList<NetHandlerContainer> containers = ObjectLists.synchronize(new ObjectArrayList<>());
-    
+
     private volatile long netTime = 0;
-    
-    public NetManager(SnowFrame<GameServerApp> frame) {
+
+    public NetManager(final SnowFrame<GameServerApp> frame) {
         this.snowFrame = frame;
         this.logger = frame.logger();
         this.signalManager = frame.module(SignalModule.class).signalManager();
         registerListenerExtensions();
     }
-    
+
     /*
      * Heartbeat related
      */
 
-    public void tick(long delta) {
+    public void tick(final long delta) {
         netTime += delta;
         BFClient client;
         for (int i = 0; i < clients.size(); i++) {
@@ -73,12 +73,11 @@ public final class NetManager implements AutoCloseable {
                 client.disconnect();
                 // Decrease index as client has been removed
                 i--;
-                continue;
             }
         }
     }
 
-    public void keepClientAlive(BFClient client) {
+    public void keepClientAlive(final BFClient client) {
         client.shouldKeepAlive = true;
     }
 
@@ -97,60 +96,60 @@ public final class NetManager implements AutoCloseable {
     public ISimpleLogger logger() {
         return logger;
     }
-    
+
     /*
      * Client related
      */
 
-    public Optional<BFClient> clientById(int clientId) {
+    public Optional<BFClient> clientById(final int clientId) {
         if (clients.isEmpty()) {
             return Optional.empty();
         }
         return clients.stream().filter(client -> client.isLoggedIn() && client.id() == clientId).findFirst();
     }
-    
+
     public Stream<BFClient> activeClients() {
         return clients.stream().filter(BFClient::isLoggedIn);
     }
-    
-    public void broadcast(IClientboundPacket packet) {
+
+    public void broadcast(final IClientboundPacket packet) {
         activeClients().forEach(client -> client.send(packet));
     }
-    
-    public void broadcast(Predicate<BFClient> predicate, IClientboundPacket packet) {
+
+    public void broadcast(final Predicate<BFClient> predicate, final IClientboundPacket packet) {
         activeClients().filter(predicate).forEach(client -> client.send(packet));
     }
-    
+
     /*
      * Listener related
      */
 
-    public NetHandlerContainer registerListener(INetListener listener) {
+    public NetHandlerContainer registerListener(final INetListener listener) {
         for (int i = 0; i < containers.size(); i++) {
             final NetHandlerContainer container = containers.get(i);
             if (Objects.equals(container.listener(), listener)) {
                 return container;
             }
         }
-        NetHandlerContainer container = listener.newContainer();
+        final NetHandlerContainer container = listener.newContainer();
         containers.add(container);
         return container;
     }
 
-    public boolean unregisterListener(NetHandlerContainer container) {
+    public boolean unregisterListener(final NetHandlerContainer container) {
         return containers.remove(container);
     }
-    
-    final void registerListenerExtensions() {
+
+    void registerListenerExtensions() {
         snowFrame.extension(INetListener.class, true).callInstances(this::registerListener);
     }
 
-    final <P extends IPacket> boolean handlePacket(BFClient client, P packet) {
+    <P extends IPacket> boolean handlePacket(final BFClient client, final P packet) {
         if (containers.isEmpty()) {
             return false;
         }
-        NetContext<P> context = new NetContext<>(this, client, packet);
-        for (NetHandlerContainer container : containers) {
+        final NetContext<P> context = new NetContext<>(this, client, packet);
+        for (final NetHandlerContainer container : containers) {
             if (!container.supports(packet.packetId())) {
                 continue;
             }
@@ -158,7 +157,7 @@ public final class NetManager implements AutoCloseable {
         }
         return context.intercepts();
     }
-    
+
     /*
      * Server logic related
      */
@@ -191,7 +190,7 @@ public final class NetManager implements AutoCloseable {
         workerGroup.close();
     }
 
-    final void clientConnected(BFClient client) {
+    void clientConnected(final BFClient client) {
         if (clients.contains(client)) {
             return;
         }
@@ -202,7 +201,7 @@ public final class NetManager implements AutoCloseable {
         signalManager.call(new NetSignal.ClientConnected(this, client));
     }
 
-    final void clientDisconnected(BFClient client) {
+    void clientDisconnected(final BFClient client) {
         if (!clients.remove(client)) {
             return;
         }

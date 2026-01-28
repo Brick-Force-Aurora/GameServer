@@ -8,13 +8,15 @@ public enum ItemUsage {
 
     public final int id;
 
-    ItemUsage(int id) {
+    ItemUsage(final int id) {
         this.id = id;
     }
 
-    public static ItemUsage fromId(int id) {
-        for (ItemUsage m : values()) {
-            if (m.id == id) return m;
+    public static ItemUsage fromId(final int id) {
+        for (final ItemUsage m : values()) {
+            if (m.id == id) {
+                return m;
+            }
         }
         return null;
     }

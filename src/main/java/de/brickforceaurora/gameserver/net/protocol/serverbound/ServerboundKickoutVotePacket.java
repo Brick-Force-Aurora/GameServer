@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundKickoutVotePacket implements IServerboundPacket {
 
-	private boolean yes;
+    private boolean yes;
 
-	public final ServerboundKickoutVotePacket yes(boolean yes) {
-		this.yes = yes;
-		return this;
-	}
+    public ServerboundKickoutVotePacket yes(final boolean yes) {
+        this.yes = yes;
+        return this;
+    }
 
-	public final boolean yes() {
-		return this.yes;
-	}
+    public boolean yes() {
+        return this.yes;
+    }
 
-	@Override
-	public int packetId() {
-		return 496;
-	}
+    @Override
+    public int packetId() {
+        return 496;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.yes = buffer.readBoolean();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.yes = buffer.readBoolean();
+    }
 }

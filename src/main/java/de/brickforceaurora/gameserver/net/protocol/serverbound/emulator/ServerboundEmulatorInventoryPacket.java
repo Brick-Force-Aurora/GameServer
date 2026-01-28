@@ -7,7 +7,7 @@ public class ServerboundEmulatorInventoryPacket implements IServerboundPacket {
 
     private int playerId;
 
-    public final ServerboundEmulatorInventoryPacket playerId(int playerId) {
+    public final ServerboundEmulatorInventoryPacket playerId(final int playerId) {
         this.playerId = playerId;
         return this;
     }
@@ -22,7 +22,7 @@ public class ServerboundEmulatorInventoryPacket implements IServerboundPacket {
     }
 
     @Override
-    public final void read(ByteBuf buffer) {
+    public final void read(final ByteBuf buffer) {
         this.playerId = buffer.readIntLE();
     }
 }

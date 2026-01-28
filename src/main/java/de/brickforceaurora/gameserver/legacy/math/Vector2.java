@@ -11,20 +11,20 @@ public final class Vector2 {
         this(0f, 0f);
     }
 
-    public Vector2(float x, float y) {
+    public Vector2(final float x, final float y) {
         this.x = x;
         this.y = y;
     }
 
-    public Vector2 add(Vector2 o) {
+    public Vector2 add(final Vector2 o) {
         return new Vector2(x + o.x, y + o.y);
     }
 
-    public Vector2 sub(Vector2 o) {
+    public Vector2 sub(final Vector2 o) {
         return new Vector2(x - o.x, y - o.y);
     }
 
-    public Vector2 mul(float s) {
+    public Vector2 mul(final float s) {
         return new Vector2(x * s, y * s);
     }
 

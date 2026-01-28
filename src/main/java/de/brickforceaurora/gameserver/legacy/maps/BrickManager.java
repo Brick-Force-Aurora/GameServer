@@ -1,5 +1,12 @@
 package de.brickforceaurora.gameserver.legacy.maps;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import de.brickforceaurora.gameserver.GameServerApp;
 import de.brickforceaurora.gameserver.legacy.math.Vector3;
 import me.lauriichan.laylib.json.IJson;
@@ -10,18 +17,20 @@ import me.lauriichan.laylib.json.io.JsonSyntaxException;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.resource.source.IDataSource;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-
 public final class BrickManager {
 
     /* ===================== ENUMS ===================== */
 
     public enum DRUM_BOOM {
-        EXP(115), TOXIC(116), TNT(193);
+        EXP(115),
+        TOXIC(116),
+        TNT(193);
+
         public final int seq;
-        DRUM_BOOM(int seq) { this.seq = seq; }
+
+        DRUM_BOOM(final int seq) {
+            this.seq = seq;
+        }
     }
 
     public enum GRAVITY_BRICK_SEQ {
@@ -29,15 +38,23 @@ public final class BrickManager {
         PLUS(156),
         MINUS_DESTROY(157),
         PLUS_DESTROY(158);
+
         public final int seq;
-        GRAVITY_BRICK_SEQ(int seq) { this.seq = seq; }
+
+        GRAVITY_BRICK_SEQ(final int seq) {
+            this.seq = seq;
+        }
     }
 
     public enum BOOSTER_SEQ {
         Y_UP(159),
         Z_MINUS(160);
+
         public final int seq;
-        BOOSTER_SEQ(int seq) { this.seq = seq; }
+
+        BOOSTER_SEQ(final int seq) {
+            this.seq = seq;
+        }
     }
 
     public enum DAMAGE_SEQ {
@@ -46,22 +63,34 @@ public final class BrickManager {
         TRAP(166),
         CACTUS(190),
         DOOR_T(191);
+
         public final int seq;
-        DAMAGE_SEQ(int seq) { this.seq = seq; }
+
+        DAMAGE_SEQ(final int seq) {
+            this.seq = seq;
+        }
     }
 
     public enum PORTAL_SEQ {
         RED(163),
         BLUE(164),
         NEUTRAL(178);
+
         public final int seq;
-        PORTAL_SEQ(int seq) { this.seq = seq; }
+
+        PORTAL_SEQ(final int seq) {
+            this.seq = seq;
+        }
     }
 
     public enum ETC_SPAWNER_SEQ {
         RAIL(196);
+
         public final int seq;
-        ETC_SPAWNER_SEQ(int seq) { this.seq = seq; }
+
+        ETC_SPAWNER_SEQ(final int seq) {
+            this.seq = seq;
+        }
     }
 
     public enum SPECIAL_SEQ {
@@ -73,8 +102,12 @@ public final class BrickManager {
         RAILLINK_L(202),
         RAILSLOPE_DN(203),
         DEFENSE_END(136);
+
         public final int seq;
-        SPECIAL_SEQ(int seq) { this.seq = seq; }
+
+        SPECIAL_SEQ(final int seq) {
+            this.seq = seq;
+        }
     }
 
     public enum SYSTEM_MAP {
@@ -138,17 +171,17 @@ public final class BrickManager {
         dicTBrick = new HashMap<>();
 
         bricks = loadBricks();
-        for (Brick brick : bricks) {
-            byte idx = brick.getIndex();
+        for (final Brick brick : bricks) {
+            final byte idx = brick.getIndex();
             if (dicTBrick.containsKey(idx)) {
                 GameServerApp.logger().error("Duplicate brick index found: " + idx);
             }
             dicTBrick.put(idx, brick);
         }
 
-        int cx = (UserMap.X_MAX + 9) / 10;
-        int cy = (UserMap.Y_MAX + 9) / 10;
-        int cz = (UserMap.Z_MAX + 9) / 10;
+        final int cx = (UserMap.X_MAX + 9) / 10;
+        final int cy = (UserMap.Y_MAX + 9) / 10;
+        final int cz = (UserMap.Z_MAX + 9) / 10;
 
         chunks = new ArrayList[cx][cy][cz][bricks.length];
         for (int x = 0; x < cx; x++) {
@@ -164,8 +197,8 @@ public final class BrickManager {
 
     /* ===================== LOAD BRICKS ===================== */
 
-    private IJson<?> readJson(String path) throws IllegalStateException, IOException, JsonSyntaxException {
-        IDataSource source = frame.resource(path);
+    private IJson<?> readJson(final String path) throws IllegalStateException, IOException, JsonSyntaxException {
+        final IDataSource source = frame.resource(path);
         if (!source.exists()) {
             throw new IllegalStateException("File doesn't exist: " + source.getPath());
         }
@@ -174,10 +207,9 @@ public final class BrickManager {
         }
     }
 
-    private Brick[] loadBricks()
-    {
+    private Brick[] loadBricks() {
         try {
-            IJson<?> root = readJson("jar://bricks.json");
+            final IJson<?> root = readJson("jar://bricks.json");
 
             if (!root.isArray()) {
                 throw new IllegalStateException("Root must be a JSON array");
@@ -185,42 +217,24 @@ public final class BrickManager {
 
             return parseBricks(root.asJsonArray());
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             GameServerApp.logger().error("Error when loading bricks.json " + e.getMessage());
         }
         return new Brick[0];
     }
 
-    private Brick[] parseBricks(JsonArray array) {
-        Brick[] bricks = new Brick[array.size()];
+    private Brick[] parseBricks(final JsonArray array) {
+        final Brick[] bricks = new Brick[array.size()];
 
         for (int index = 0; index < array.size(); index++) {
-            JsonObject o = array.get(index).asJsonObject();
+            final JsonObject o = array.get(index).asJsonObject();
 
-            Brick brick = new Brick(
-                    o.getAsString("brickName"),
-                    o.getAsInt("seq"),
-                    o.getAsString("brickAlias"),
-                    o.getAsString("brickComment"),
-                    o.getAsBoolean("destructible"),
-                    o.getAsBoolean("directionable"),
-                    o.getAsInt("function"),
-                    o.getAsBoolean("meshOptimize"),
-                    o.getAsBoolean("chunkOptimize"),
-                    o.getAsBoolean("chunkOptimizeOnMatch"),
-                    o.getAsBoolean("onlyTutor"),
-                    o.getAsInt("season"),
-                    o.getAsInt("horz"),
-                    o.getAsInt("vert"),
-                    o.getAsInt("maxChildrenPerChunk"),
-                    o.getAsInt("maxChildrenPerMap"),
-                    o.getAsInt("category"),
-                    o.getAsInt("hitPoint"),
-                    o.getAsBoolean("disable"),
-                    o.getAsBoolean("replace"),
-                    o.getAsBoolean("bnd"),
-                    o.getAsInt("gameModeDependant")
-            );
+            final Brick brick = new Brick(o.getAsString("brickName"), o.getAsInt("seq"), o.getAsString("brickAlias"),
+                o.getAsString("brickComment"), o.getAsBoolean("destructible"), o.getAsBoolean("directionable"), o.getAsInt("function"),
+                o.getAsBoolean("meshOptimize"), o.getAsBoolean("chunkOptimize"), o.getAsBoolean("chunkOptimizeOnMatch"),
+                o.getAsBoolean("onlyTutor"), o.getAsInt("season"), o.getAsInt("horz"), o.getAsInt("vert"),
+                o.getAsInt("maxChildrenPerChunk"), o.getAsInt("maxChildrenPerMap"), o.getAsInt("category"), o.getAsInt("hitPoint"),
+                o.getAsBoolean("disable"), o.getAsBoolean("replace"), o.getAsBoolean("bnd"), o.getAsInt("gameModeDependant"));
 
             bricks[index] = brick;
         }
@@ -229,22 +243,53 @@ public final class BrickManager {
 
     /* ===================== GETTERS ===================== */
 
-    public boolean isLoaded() { return isLoaded; }
-    public boolean isIconLoaded() { return isIconLoaded; }
-    public boolean isMaterialLoaded() { return isMaterialLoaded; }
-    public boolean isBrightLoaded() { return isBrightLoaded; }
-    public boolean isDarkLoaded() { return isDarkLoaded; }
+    public boolean isLoaded() {
+        return isLoaded;
+    }
 
-    public int getSpecialCount() { return specialCount; }
+    public boolean isIconLoaded() {
+        return isIconLoaded;
+    }
 
-    public int getGravityValue() { return gravityValue; }
-    public void setGravityValue(int v) { gravityValue = v; }
+    public boolean isMaterialLoaded() {
+        return isMaterialLoaded;
+    }
 
-    public int getNumPlusBrick() { return numPlusBrick; }
-    public void setNumPlusBrick(int v) { numPlusBrick = v; }
+    public boolean isBrightLoaded() {
+        return isBrightLoaded;
+    }
 
-    public int getNumMinusBrick() { return numMinusBrick; }
-    public void setNumMinusBrick(int v) { numMinusBrick = v; }
+    public boolean isDarkLoaded() {
+        return isDarkLoaded;
+    }
+
+    public int getSpecialCount() {
+        return specialCount;
+    }
+
+    public int getGravityValue() {
+        return gravityValue;
+    }
+
+    public void setGravityValue(final int v) {
+        gravityValue = v;
+    }
+
+    public int getNumPlusBrick() {
+        return numPlusBrick;
+    }
+
+    public void setNumPlusBrick(final int v) {
+        numPlusBrick = v;
+    }
+
+    public int getNumMinusBrick() {
+        return numMinusBrick;
+    }
+
+    public void setNumMinusBrick(final int v) {
+        numMinusBrick = v;
+    }
 
     /* ===================== MAP / BRICK ACCESS ===================== */
 
@@ -252,16 +297,16 @@ public final class BrickManager {
         return userMap == null ? null : userMap.toArray();
     }
 
-    public int countLimitedBrick(byte template) {
+    public int countLimitedBrick(final byte template) {
         return userMap == null ? 0 : userMap.countLimitedBrick(template);
     }
 
-    public BrickInst getBrickInst(int seq) {
+    public BrickInst getBrickInst(final int seq) {
         return userMap == null ? null : userMap.get(seq);
     }
 
-    public Brick getBrick(int index) {
-        Brick brick = dicTBrick.get((byte) index);
+    public Brick getBrick(final int index) {
+        final Brick brick = dicTBrick.get((byte) index);
         if (brick == null) {
             GameServerApp.logger().error("Invalid brick index requested: " + index);
         }
@@ -270,37 +315,37 @@ public final class BrickManager {
 
     /* ===================== SPAWNERS ===================== */
 
-    public SpawnerDesc getSpawner(SpawnerType type, int ticket) {
+    public SpawnerDesc getSpawner(final SpawnerType type, final int ticket) {
         return userMap == null ? null : userMap.getSpawner(type, ticket);
     }
 
-    public SpawnerDesc getAwardSpawner4TeamMatch(SpawnerType type, int rank) {
+    public SpawnerDesc getAwardSpawner4TeamMatch(final SpawnerType type, final int rank) {
         return result4TeamMatch.getSpawner(type, rank);
     }
 
     /* ===================== MAP BUILD ===================== */
 
-    public void cacheBrick(int seq, byte template, byte x, byte y, byte z, short meshCode, byte rot) {
+    public void cacheBrick(final int seq, final byte template, final byte x, final byte y, final byte z, final short meshCode,
+        final byte rot) {
         userMap.calcCRC(seq, template);
         if (userMap.addBrickInst(seq, template, x, y, z, meshCode, rot) == null) {
             GameServerApp.logger().error("CacheBrick failed");
         }
     }
 
-    public void addDoorTDic(int seq, Vector3 pos) {
+    public void addDoorTDic(final int seq, final Vector3 pos) {
         dicDoorT.putIfAbsent(seq, pos);
     }
 
-    public void updateScript(int seq,
-                             String alias,
-                             boolean enableOnAwake,
-                             boolean visibleOnAwake,
-                             String commands) {
+    public void updateScript(final int seq, final String alias, final boolean enableOnAwake, final boolean visibleOnAwake,
+        final String commands) {
 
-        BrickInst inst = getBrickInst(seq);
-        if (inst == null) return;
+        final BrickInst inst = getBrickInst(seq);
+        if (inst == null) {
+            return;
+        }
 
-        Brick brick = getBrick(inst.template);
+        final Brick brick = getBrick(inst.template);
         if (brick != null && brick.function == BrickFunction.SCRIPT) {
             inst.updateScript(alias, enableOnAwake, visibleOnAwake, commands);
         } else {
@@ -308,4 +353,3 @@ public final class BrickManager {
         }
     }
 }
-

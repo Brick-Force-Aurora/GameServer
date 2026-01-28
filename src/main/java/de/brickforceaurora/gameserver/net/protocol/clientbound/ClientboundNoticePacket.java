@@ -1,46 +1,47 @@
 package de.brickforceaurora.gameserver.net.protocol.clientbound;
 
+import java.nio.charset.StandardCharsets;
+
 import de.brickforceaurora.gameserver.net.protocol.IClientboundPacket;
 import io.netty.buffer.ByteBuf;
-import java.nio.charset.StandardCharsets;
 
 public final class ClientboundNoticePacket implements IClientboundPacket {
 
-	private String val;
-	private byte val2;
+    private String val;
+    private byte val2;
 
-	public final ClientboundNoticePacket val(String val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundNoticePacket val(final String val) {
+        this.val = val;
+        return this;
+    }
 
-	public final String val() {
-		return this.val;
-	}
+    public String val() {
+        return this.val;
+    }
 
-	public final ClientboundNoticePacket val2(byte val2) {
-		this.val2 = val2;
-		return this;
-	}
+    public ClientboundNoticePacket val2(final byte val2) {
+        this.val2 = val2;
+        return this;
+    }
 
-	public final byte val2() {
-		return this.val2;
-	}
+    public byte val2() {
+        return this.val2;
+    }
 
-	@Override
-	public int packetId() {
-		return 346;
-	}
+    @Override
+    public int packetId() {
+        return 346;
+    }
 
-	@Override
-	public final void write(ByteBuf buffer) {
-		if (this.val.isEmpty()) {
-			buffer.writeIntLE(0);
-		} else {
-			byte[] bytes = this.val.getBytes(StandardCharsets.UTF_16LE);
-			buffer.writeIntLE(bytes.length);
-			buffer.writeBytes(bytes);
-		}
-		buffer.writeByte(this.val2);
-	}
+    @Override
+    public void write(final ByteBuf buffer) {
+        if (this.val.isEmpty()) {
+            buffer.writeIntLE(0);
+        } else {
+            final byte[] bytes = this.val.getBytes(StandardCharsets.UTF_16LE);
+            buffer.writeIntLE(bytes.length);
+            buffer.writeBytes(bytes);
+        }
+        buffer.writeByte(this.val2);
+    }
 }

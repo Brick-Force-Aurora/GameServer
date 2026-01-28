@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundAddFriendPacket implements IServerboundPacket {
 
-	private int friendWannabe;
+    private int friendWannabe;
 
-	public final ServerboundAddFriendPacket friendWannabe(int friendWannabe) {
-		this.friendWannabe = friendWannabe;
-		return this;
-	}
+    public ServerboundAddFriendPacket friendWannabe(final int friendWannabe) {
+        this.friendWannabe = friendWannabe;
+        return this;
+    }
 
-	public final int friendWannabe() {
-		return this.friendWannabe;
-	}
+    public int friendWannabe() {
+        return this.friendWannabe;
+    }
 
-	@Override
-	public int packetId() {
-		return 103;
-	}
+    @Override
+    public int packetId() {
+        return 103;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.friendWannabe = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.friendWannabe = buffer.readIntLE();
+    }
 }

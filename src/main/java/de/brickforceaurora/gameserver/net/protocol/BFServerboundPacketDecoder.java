@@ -24,16 +24,16 @@ public final class BFServerboundPacketDecoder extends ByteToMessageDecoder {
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf accumulator, List<Object> out) throws Exception {
+    protected void decode(final ChannelHandlerContext ctx, final ByteBuf accumulator, final List<Object> out) throws Exception {
         while (accumulator.isReadable()) {
             if (accumulator.readableBytes() < ProtocolConstant.HEADER_SIZE) {
                 return;
             }
             accumulator.markReaderIndex();
-            long size = accumulator.readUnsignedIntLE();
-            int id = accumulator.readUnsignedShortLE();
+            final long size = accumulator.readUnsignedIntLE();
+            final int id = accumulator.readUnsignedShortLE();
 
-            byte crc = accumulator.readByte();
+            final byte crc = accumulator.readByte();
             // We don't really care about the meta and src value anywhere therefore we just skip it.
             // If we ever need it the code can simply be uncommented
             accumulator.skipBytes(8);
@@ -43,7 +43,7 @@ public final class BFServerboundPacketDecoder extends ByteToMessageDecoder {
                 accumulator.resetReaderIndex();
                 return;
             }
-            IServerboundPacket packet = PacketRegistry.newServerPacket(id);
+            final IServerboundPacket packet = PacketRegistry.newServerPacket(id);
             if (packet == null) {
                 logger.debug("Unknown packet: {0}", id);
                 ctx.close();
@@ -51,7 +51,7 @@ public final class BFServerboundPacketDecoder extends ByteToMessageDecoder {
             }
             logger.debug("Packet: {0} ({1})", packet.packetName(), packet.packetId());
             // We simply hope this is never larger than Integer.MAX_VALUE
-            byte[] messageBuffer = new byte[(int) size];
+            final byte[] messageBuffer = new byte[(int) size];
             accumulator.readBytes(messageBuffer);
             accumulator.discardReadBytes();
             byte calculatedCrc = 0;
@@ -70,7 +70,7 @@ public final class BFServerboundPacketDecoder extends ByteToMessageDecoder {
                 ctx.close();
                 return;
             }
-            ByteBuf packetBuf = Unpooled.wrappedBuffer(messageBuffer);
+            final ByteBuf packetBuf = Unpooled.wrappedBuffer(messageBuffer);
             try {
                 packet.read(packetBuf);
                 out.add(packet);

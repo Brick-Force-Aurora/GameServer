@@ -1,5 +1,8 @@
 package de.brickforceaurora.gameserver.legacy.handler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.brickforceaurora.gameserver.legacy.channel.ClientReference;
 import de.brickforceaurora.gameserver.legacy.core.GameServerLogic;
 import de.brickforceaurora.gameserver.legacy.data.Inventory;
@@ -13,50 +16,41 @@ import de.brickforceaurora.gameserver.legacy.protocol.MessageId;
 import de.brickforceaurora.gameserver.legacy.protocol.MsgBody;
 import de.brickforceaurora.gameserver.legacy.protocol.MsgReference;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class InventoryHandlers {
 
-    public static void register(MessageDispatcher d) {
+    public static void register(final MessageDispatcher d) {
         d.register(MessageId.EXT_OP_INVENTORY_ACK.id(), InventoryHandlers::inventoryData);
     }
 
-    private static void inventoryData(GameServerLogic server, MsgReference msgRef)
-    {
+    private static void inventoryData(final GameServerLogic server, final MsgReference msgRef) {
         // List to hold new equipment
-        List<Item> newEquipment = new ArrayList<Item>();
+        final List<Item> newEquipment = new ArrayList<>();
 
         // Read the total count of items
-        int itemCount = msgRef.msg.msg().readInt();
+        final int itemCount = msgRef.msg.msg().readInt();
         msgRef.client.inventory = new Inventory(msgRef.client.seq);
         msgRef.client.inventory.equipment.clear();
 
         // Read each item's slot and code
-        for (int i = 0; i < itemCount; i++)
-        {
-            String code = msgRef.msg.msg().readString();
-            int usage = msgRef.msg.msg().readInt();
-            byte toolSlot = msgRef.msg.msg().readByte(); //sbyte
+        for (int i = 0; i < itemCount; i++) {
+            final String code = msgRef.msg.msg().readString();
+            final int usage = msgRef.msg.msg().readInt();
+            final byte toolSlot = msgRef.msg.msg().readByte(); //sbyte
 
             // Fetch the item template
-            TItem template = TItemManager.getInstance().get(code);
-            if (template != null)
-            {
-                try
-                {
-                    Item item = msgRef.client.inventory.addItem(template, false, -1, ItemUsage.fromId(usage));
+            final TItem template = TItemManager.getInstance().get(code);
+            if (template != null) {
+                try {
+                    final Item item = msgRef.client.inventory.addItem(template, false, -1, ItemUsage.fromId(usage));
                     //var item = msgRef.client.inventory.AddItem(template, false, -1, (Item.USAGE)Enum.Parse(typeof(Item.USAGE), usage, true));
                     item.toolSlot = toolSlot;
                 }
 
-                catch (Exception ex)
-                {
-                    server.logger().warning("HandleInventoryData: Couldn't add item " + template.name + " (" + template.code + ") | " + ex.getMessage());
+                catch (final Exception ex) {
+                    server.logger().warning(
+                        "HandleInventoryData: Couldn't add item " + template.name + " (" + template.code + ") | " + ex.getMessage());
                 }
-            }
-            else
-            {
+            } else {
                 server.logger().warning("Template not found for code: {0}", code);
             }
         }
@@ -67,8 +61,7 @@ public class InventoryHandlers {
         SendInventory(server, msgRef.client);
     }
 
-    public static void SendInventory(GameServerLogic server, ClientReference client)
-    {
+    public static void SendInventory(final GameServerLogic server, final ClientReference client) {
         client.inventory.updateActiveEquipment();
         SendItemList(server, client);
         SendShooterToolList(server, client);
@@ -78,13 +71,11 @@ public class InventoryHandlers {
         SendPremiumItems(server, client);
     }
 
-    public static void SendItemList(GameServerLogic server, ClientReference client)
-    {
-        MsgBody body = new MsgBody();
+    public static void SendItemList(final GameServerLogic server, final ClientReference client) {
+        final MsgBody body = new MsgBody();
 
         body.write(client.inventory.equipment.size());
-        for (int i = 0; i < client.inventory.equipment.size(); i++)
-        {
+        for (int i = 0; i < client.inventory.equipment.size(); i++) {
             body.write(client.inventory.equipment.get(i).getSeq());
             body.write(client.inventory.equipment.get(i).getCode());
             body.write((byte) client.inventory.equipment.get(i).getUsage().id);
@@ -98,21 +89,17 @@ public class InventoryHandlers {
         server.logger().debug("SendItemList to: " + client.GetIdentifier());
     }
 
-    public static void SendShooterToolList(GameServerLogic server, ClientReference client)
-    {
-        MsgBody body = new MsgBody();
+    public static void SendShooterToolList(final GameServerLogic server, final ClientReference client) {
+        final MsgBody body = new MsgBody();
 
         body.write(client.inventory.shooterTools.length);
-        for (int i = 0; i < client.inventory.shooterTools.length; i++)
-        {
-            if (client.inventory.shooterTools[i] == null)
-            {
-                body.write((byte)i);
-                body.write((long)-1);
+        for (int i = 0; i < client.inventory.shooterTools.length; i++) {
+            if (client.inventory.shooterTools[i] == null) {
+                body.write((byte) i);
+                body.write((long) -1);
             }
 
-            else
-            {
+            else {
                 body.write(client.inventory.shooterTools[i].toolSlot);
                 body.write(client.inventory.shooterTools[i].getSeq());
             }
@@ -123,22 +110,18 @@ public class InventoryHandlers {
         server.logger().debug("SendShooterToolList to: " + client.GetIdentifier());
     }
 
-    public static void SendWeaponSlotList(GameServerLogic server, ClientReference client)
-    {
-        MsgBody body = new MsgBody();
+    public static void SendWeaponSlotList(final GameServerLogic server, final ClientReference client) {
+        final MsgBody body = new MsgBody();
 
         body.write(client.inventory.weaponChg.length);
-        for (int i = 0; i < client.inventory.weaponChg.length; i++)
-        {
-            if (client.inventory.weaponChg[i] == null)
-            {
+        for (int i = 0; i < client.inventory.weaponChg.length; i++) {
+            if (client.inventory.weaponChg[i] == null) {
                 body.write(i);
-                body.write((long)-1);
+                body.write((long) -1);
             }
 
-            else
-            {
-                body.write((int)client.inventory.weaponChg[i].toolSlot);
+            else {
+                body.write((int) client.inventory.weaponChg[i].toolSlot);
                 body.write(client.inventory.weaponChg[i].getSeq());
             }
         }
@@ -148,17 +131,17 @@ public class InventoryHandlers {
         server.logger().debug("SendWeaponSlotList to: " + client.GetIdentifier());
     }
 
-    public static void SendItemPimps(GameServerLogic server, ClientReference client) {
+    public static void SendItemPimps(final GameServerLogic server, final ClientReference client) {
 
-        List<Item> weapons = new ArrayList<>();
+        final List<Item> weapons = new ArrayList<>();
 
-        for (Item item : client.inventory.equipment) {
+        for (final Item item : client.inventory.equipment) {
             if (item.getTemplate().type == ItemType.WEAPON) {
                 weapons.add(item);
             }
         }
 
-        for (Item weapon : weapons) {
+        for (final Item weapon : weapons) {
             sendItemPimp(server, client, weapon, Pimp.PROP_ATK_POW, 10);
             sendItemPimp(server, client, weapon, Pimp.PROP_ACCURACY, 10);
             sendItemPimp(server, client, weapon, Pimp.PROP_RECOIL, 10);
@@ -168,19 +151,17 @@ public class InventoryHandlers {
         }
     }
 
-
-    public static void sendItemPimp(GameServerLogic server, ClientReference client, Item item, Pimp pimp, int grade)
-    {
-        try
-        {
-            if (!item.canUpgradeable())
+    public static void sendItemPimp(final GameServerLogic server, final ClientReference client, final Item item, final Pimp pimp,
+        final int grade) {
+        try {
+            if (!item.canUpgradeable()) {
                 return;
-        }
-        catch (Exception ex) {
+            }
+        } catch (final Exception ex) {
             return;
         }
 
-        MsgBody body = new MsgBody();
+        final MsgBody body = new MsgBody();
 
         body.write(item.getSeq());
         body.write(pimp.getId());
@@ -189,9 +170,8 @@ public class InventoryHandlers {
         server.say(new MsgReference(MessageId.CS_ITEM_PIMP_ACK, body, client));
     }
 
-    public static void SendPremiumItems(GameServerLogic server, ClientReference client)
-    {
-        MsgBody body = new MsgBody();
+    public static void SendPremiumItems(final GameServerLogic server, final ClientReference client) {
+        final MsgBody body = new MsgBody();
 
         body.write(2);
         body.write("s20");

@@ -5,24 +5,24 @@ import io.netty.buffer.ByteBuf;
 
 public final class ServerboundOpenRandomBoxPacket implements IServerboundPacket {
 
-	private int randombox;
+    private int randombox;
 
-	public final ServerboundOpenRandomBoxPacket randombox(int randombox) {
-		this.randombox = randombox;
-		return this;
-	}
+    public ServerboundOpenRandomBoxPacket randombox(final int randombox) {
+        this.randombox = randombox;
+        return this;
+    }
 
-	public final int randombox() {
-		return this.randombox;
-	}
+    public int randombox() {
+        return this.randombox;
+    }
 
-	@Override
-	public int packetId() {
-		return 219;
-	}
+    @Override
+    public int packetId() {
+        return 219;
+    }
 
-	@Override
-	public final void read(ByteBuf buffer) {
-		this.randombox = buffer.readIntLE();
-	}
+    @Override
+    public void read(final ByteBuf buffer) {
+        this.randombox = buffer.readIntLE();
+    }
 }

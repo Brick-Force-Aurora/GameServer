@@ -17,7 +17,7 @@ public class GameServer extends AbstractTickTimer {
 
     private final NetManager netManager;
 
-    public GameServer(SnowFrame<GameServerApp> frame) {
+    public GameServer(final SnowFrame<GameServerApp> frame) {
         this.logger = frame.logger();
         this.netManager = new NetManager(frame);
 
@@ -35,16 +35,16 @@ public class GameServer extends AbstractTickTimer {
     }
 
     @Override
-    protected void tick(long delta) {
+    protected void tick(final long delta) {
         // Calculate floating point delta time
-        float deltaTime = delta / SECOND_IN_NANOS;
+        final float deltaTime = delta / SECOND_IN_NANOS;
 
         // Tick net manager
         netManager.tick(delta);
     }
 
     @Override
-    protected Thread createThread(Runnable runnable) {
+    protected Thread createThread(final Runnable runnable) {
         return Thread.ofVirtual().unstarted(runnable);
     }
 

@@ -13,7 +13,8 @@ public final class DeathReasonAssetDirectoryData extends AssetDirectoryData<Deat
     }
 
     @Override
-    protected DeathReasonAsset readAsset(ISimpleLogger logger, FileKey key, JsonObject root, String name, int id) {
+    protected DeathReasonAsset readAsset(final ISimpleLogger logger, final FileKey key, final JsonObject root, final String name,
+        final int id) {
         return new DeathReasonAsset(name, id);
     }
 
