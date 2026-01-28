@@ -3,6 +3,8 @@ package de.brickforceaurora.gameserver;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
+import de.brickforceaurora.gameserver.channel.ChannelManager;
+import de.brickforceaurora.gameserver.legacy.channel.ChannelMode;
 import de.brickforceaurora.gameserver.util.logging.AnsiSysOutLogger;
 import me.lauriichan.laylib.logger.ISimpleLogger;
 import me.lauriichan.snowframe.ISnowFrameApp;
@@ -35,14 +37,22 @@ public class GameServerApp implements ISnowFrameApp<GameServerApp> {
     }
 
     private GameServer server;
+    private ChannelManager channelManager;
 
     @Override
     public void registerLifecycle(Lifecycle<GameServerApp> lifecycle) {
         lifecycle.startupChain().register("load", Stage.PRE, frame -> {
             frame.resourceManager().register("data", Paths.get("data")); 
         });
+        lifecycle.startupChain().register("load", Stage.PRE, frame -> {
+            channelManager = new ChannelManager();
+            frame.invoker().addExtra(channelManager);
+            channelManager.newChannel(ChannelMode.BATTLE, "Play");
+            channelManager.newChannel(ChannelMode.MAP_EDIT, "Edit");
+        });
         lifecycle.startupChain().register("load", Stage.MAIN, frame -> {
             server = new GameServer(frame);
+            frame.invoker().addExtra(server);
         });
         lifecycle.startupChain().register("ready", Stage.MAIN, _ -> {
             server.start();
@@ -59,6 +69,10 @@ public class GameServerApp implements ISnowFrameApp<GameServerApp> {
 
     public GameServer server() {
         return server;
+    }
+
+    public ChannelManager channelManager() {
+        return channelManager;
     }
 
 }

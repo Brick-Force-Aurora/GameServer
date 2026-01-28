@@ -1,6 +1,7 @@
 package de.brickforceaurora.gameserver.net.listener;
 
-import de.brickforceaurora.gameserver.legacy.channel.Channel;
+import de.brickforceaurora.gameserver.channel.ChannelManager;
+import de.brickforceaurora.gameserver.channel.Channel;
 import de.brickforceaurora.gameserver.legacy.channel.ChannelMode;
 import de.brickforceaurora.gameserver.net.BFClient;
 import de.brickforceaurora.gameserver.net.INetListener;
@@ -10,10 +11,17 @@ import de.brickforceaurora.gameserver.net.protocol.clientbound.*;
 import de.brickforceaurora.gameserver.net.protocol.clientbound.emulator.ClientboundEmulatorInventoryPacket;
 import de.brickforceaurora.gameserver.net.protocol.serverbound.ServerboundHeartbeatPacket;
 import de.brickforceaurora.gameserver.net.protocol.serverbound.ServerboundLoginPacket;
+import de.brickforceaurora.gameserver.net.protocol.serverbound.ServerboundRoaminPacket;
 import me.lauriichan.snowframe.extension.Extension;
 
 @Extension
 public class LoginListenerTemplate implements INetListener {
+
+    private final ChannelManager channelManager;
+
+    public LoginListenerTemplate(ChannelManager channelManager){
+        this.channelManager = channelManager;
+    }
 
     @PacketHandler
     public void onLogin(NetContext<ServerboundLoginPacket> context) {
@@ -32,12 +40,11 @@ public class LoginListenerTemplate implements INetListener {
             .extraSlots(client.data().extraSlots)
             .rank(client.data().rank)
             .firstLoginForcePoints(0)); // They basically have infinite FP so we don't need that
-        client.send(new ClientboundChannelPacket().channels(new Channel[]{
-                new Channel(1, ChannelMode.BATTLE, "Play", "", 5000, 1, 16, 1, 0, 66, 0, 0, 0)
-        }));
-        client.send(new ClientboundCurChannelPacket().channelId(1)); //send actual channel
+        client.send(new ClientboundChannelPacket().channels(channelManager.channels().toArray(Channel[]::new)));
+        int channelId = channelManager.channels(ChannelMode.BATTLE).get(0).id();
+        client.send(new ClientboundCurChannelPacket().channelId(channelId)); //send actual channel
         client.send(new ClientboundEmulatorInventoryPacket());
-        client.send(new ClientboundLoginPacket().channelId(1)); //send actual channelid
+        client.send(new ClientboundLoginPacket().channelId(channelId)); //send actual channelid
         client.send(new ClientboundPlayerInfoPacket()
             .name(client.name())
             .playerXp(client.data().xp)
@@ -85,8 +92,12 @@ public class LoginListenerTemplate implements INetListener {
     }
 
     @PacketHandler
-    public void onRoamIn(NetContext<ServerboundHeartbeatPacket> context){
+    public void onRoamIn(NetContext<ServerboundRoaminPacket> context){
+        BFClient client = context.client();
 
+        //ChannelHandlers.SendUserList(server, msgRef.client);
+        client.send(new ClientboundRoaminPacket().channelDestinationId(1));
+        //client.clientStatus = ClientStatus.LOBBY;
     }
 
 }

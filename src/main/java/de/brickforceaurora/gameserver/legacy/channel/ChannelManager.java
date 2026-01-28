@@ -57,7 +57,7 @@ public final class ChannelManager {
 
     private void setupDefaultChannels() {
         addChannel(1, ChannelMode.BATTLE, "Play");
-        addChannel(2, ChannelMode.MAPEDIT, "Build");
+        addChannel(2, ChannelMode.MAP_EDIT, "Build");
     }
 
     public void shutdown() {

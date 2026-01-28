@@ -3,7 +3,7 @@ package de.brickforceaurora.gameserver.legacy.channel;
 public enum ChannelMode {
     NEWBIE(1),
     BATTLE(2),
-    MAPEDIT(3),
+    MAP_EDIT(3),
     CLAN(4);
 
     public final int id;

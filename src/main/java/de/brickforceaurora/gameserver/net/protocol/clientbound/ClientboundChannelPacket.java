@@ -1,6 +1,6 @@
 package de.brickforceaurora.gameserver.net.protocol.clientbound;
 
-import de.brickforceaurora.gameserver.legacy.channel.Channel;
+import de.brickforceaurora.gameserver.channel.Channel;
 import de.brickforceaurora.gameserver.net.protocol.IClientboundPacket;
 import io.netty.buffer.ByteBuf;
 
@@ -28,31 +28,31 @@ public final class ClientboundChannelPacket implements IClientboundPacket {
 	public final void write(ByteBuf buffer) {
 		buffer.writeIntLE(this.channels.length);
 		for (Channel channel : channels){
-			buffer.writeIntLE(channel.id);
-			buffer.writeIntLE(channel.mode.getId());
-			if (channel.name.isEmpty()) {
+			buffer.writeIntLE(channel.id());
+			buffer.writeIntLE(channel.mode().getId());
+			if (channel.name().isEmpty()) {
 				buffer.writeIntLE(0);
 			} else {
-				byte[] bytes = channel.name.getBytes(StandardCharsets.UTF_16LE);
+				byte[] bytes = channel.name().getBytes(StandardCharsets.UTF_16LE);
 				buffer.writeIntLE(bytes.length);
 				buffer.writeBytes(bytes);
 			}
-			if (channel.ip.isEmpty()) {
+			if ("".isEmpty()) {
 				buffer.writeIntLE(0);
 			} else {
-				byte[] bytes = channel.ip.getBytes(StandardCharsets.UTF_16LE);
+				byte[] bytes = "".getBytes(StandardCharsets.UTF_16LE);
 				buffer.writeIntLE(bytes.length);
 				buffer.writeBytes(bytes);
 			}
-			buffer.writeIntLE(channel.port);
-			buffer.writeIntLE(channel.userCount);
-			buffer.writeIntLE(channel.maxUserCount);
-			buffer.writeIntLE(channel.country);
-			buffer.writeByte(channel.minLvRank);
-			buffer.writeByte(channel.maxLvRank);
-			buffer.writeShortLE(channel.xpBonus);
-			buffer.writeShortLE(channel.fpBonus);
-			buffer.writeIntLE(channel.limitStarRate);
+			buffer.writeIntLE(5000);
+			buffer.writeIntLE(channel.userCount());
+			buffer.writeIntLE(channel.data().maxUsers());
+			buffer.writeIntLE(channel.data().country());
+			buffer.writeByte(channel.data().minLevel());
+			buffer.writeByte(channel.data().maxLevel());
+			buffer.writeShortLE(channel.data().xpBonus());
+			buffer.writeShortLE(channel.data().fpBonus());
+			buffer.writeIntLE(channel.data().limitStarRate());
 		}
 	}
 }
