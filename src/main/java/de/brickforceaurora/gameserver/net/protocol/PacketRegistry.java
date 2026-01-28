@@ -1,5 +1,6 @@
 package de.brickforceaurora.gameserver.net.protocol;
 
+import de.brickforceaurora.gameserver.net.protocol.clientbound.emulator.ClientboundEmulatorInventoryRequestPacket;
 import de.brickforceaurora.gameserver.net.protocol.serverbound.ServerboundClearShooterToolsPacket;
 import de.brickforceaurora.gameserver.net.protocol.serverbound.ServerboundGetCannonPacket;
 import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundEmptyCannonPacket;
@@ -416,7 +417,7 @@ import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundMemoPa
 import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundChangeClanNoticePacket;
 import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundMeRegBrickEndPacket;
 import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundZombieStatusPacket;
-import de.brickforceaurora.gameserver.net.protocol.clientbound.emulator.ClientboundEmulatorConnected;
+import de.brickforceaurora.gameserver.net.protocol.clientbound.emulator.ClientboundEmulatorConnectedPacket;
 import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundPremiumItemPacket;
 import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundWeaponSlotPacket;
 import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundTeamChangePacket;
@@ -552,6 +553,7 @@ import de.brickforceaurora.gameserver.net.protocol.serverbound.ServerboundRankMa
 import de.brickforceaurora.gameserver.net.protocol.serverbound.ServerboundClanChatPacket;
 import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundChannelPacket;
 import de.brickforceaurora.gameserver.net.protocol.clientbound.ClientboundPlayerWeaponChangePacket;
+import de.brickforceaurora.gameserver.net.protocol.serverbound.emulator.ServerboundEmulatorRequestInventoryPacket;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -598,8 +600,10 @@ public final class PacketRegistry {
 		var packetIdMap = new Object2IntArrayMap<Class<? extends IPacket>>();
 		packetIdMap.defaultReturnValue(Integer.MIN_VALUE);
 		var clientbound = new Int2ObjectArrayMap<Supplier<? extends IClientboundPacket>>();
-		clientbound.put(1000, ClientboundEmulatorConnected::new);
-		packetIdMap.put(ClientboundEmulatorConnected.class, 1000);
+		clientbound.put(1000, ClientboundEmulatorConnectedPacket::new);
+		packetIdMap.put(ClientboundEmulatorConnectedPacket.class, 1000);
+        clientbound.put(1003, ClientboundEmulatorInventoryRequestPacket::new);
+        packetIdMap.put(ClientboundEmulatorInventoryRequestPacket.class, 1003);
 		clientbound.put(161, ClientboundEmptyCannonPacket::new);
 		packetIdMap.put(ClientboundEmptyCannonPacket.class, 161);
 		clientbound.put(247, ClientboundLeaveSquadPacket::new);
@@ -1268,6 +1272,8 @@ public final class PacketRegistry {
 		packetIdMap.put(ClientboundPlayerWeaponChangePacket.class, 416);
 		CLIENTBOUND_PACKETS = Int2ObjectMaps.unmodifiable(clientbound);
 		var serverbound = new Int2ObjectArrayMap<Supplier<? extends IServerboundPacket>>();
+        serverbound.put(1004, ServerboundEmulatorRequestInventoryPacket::new);
+        packetIdMap.put(ServerboundEmulatorRequestInventoryPacket.class, 1004);
 		serverbound.put(334, ServerboundClearShooterToolsPacket::new);
 		packetIdMap.put(ServerboundClearShooterToolsPacket.class, 334);
 		serverbound.put(158, ServerboundGetCannonPacket::new);

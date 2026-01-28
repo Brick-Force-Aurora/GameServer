@@ -1,10 +1,13 @@
 package de.brickforceaurora.gameserver.net.listener;
 
+import de.brickforceaurora.gameserver.channel.Channel;
+import de.brickforceaurora.gameserver.channel.ChannelMode;
 import de.brickforceaurora.gameserver.net.BFClient;
 import de.brickforceaurora.gameserver.net.INetListener;
 import de.brickforceaurora.gameserver.net.NetContext;
 import de.brickforceaurora.gameserver.net.PacketHandler;
 import de.brickforceaurora.gameserver.net.protocol.clientbound.*;
+import de.brickforceaurora.gameserver.net.protocol.clientbound.emulator.ClientboundEmulatorInventoryRequestPacket;
 import de.brickforceaurora.gameserver.net.protocol.serverbound.ServerboundHeartbeatPacket;
 import de.brickforceaurora.gameserver.net.protocol.serverbound.ServerboundLoginPacket;
 import me.lauriichan.snowframe.extension.Extension;
@@ -29,10 +32,36 @@ public class LoginListenerTemplate implements INetListener {
             .extraSlots(client.data().extraSlots)
             .rank(client.data().rank)
             .firstLoginForcePoints(0)); // They basically have infinite FP so we don't need that
-        //send all channels client.send(new ClientboundChannelPacket());
+        client.send(new ClientboundChannelPacket().channels(new Channel[]{
+                new Channel(1, ChannelMode.BATTLE, "Play", "", 5000, 1, 16, 1, 0, 66, 0, 0, 0)
+        }));
         client.send(new ClientboundCurChannelPacket().channelId(1)); //send actual channel
+        client.send(new ClientboundEmulatorInventoryRequestPacket().clientId(client.id()));
         client.send(new ClientboundLoginPacket().clientId(client.id()).channelId(1)); //send actual channelid
-        //send player info client.send(new ClientboundPlayerInfoPacket());
+        client.send(new ClientboundPlayerInfoPacket()
+            .name(client.name())
+            .playerXp(client.data().xp)
+            .forcePoints(100_000_000)
+            .brickPoints(100_000_000)
+            .tokens(100_000_000)
+            .unused(0)
+            .coins(100_000_000)
+            .starDust(100_000_000)
+            .apsType(6)
+            .apsLevel(5)
+            .gm(0)
+            .clanId(0)
+            .clanName("Clan")
+            .clanMark(0)
+            .clanLv(0)
+            .rank(client.data().rank)
+            .heavy(0)
+            .assault(0)
+            .sniper(0)
+            .subMachine(0)
+            .handGun(0)
+            .melee(0)
+            .special(0));
         //send all maps client.send(new ClientboundDownloadMapPacket());
         client.send(new ClientboundUserMapPacket()
             .page(-1)
