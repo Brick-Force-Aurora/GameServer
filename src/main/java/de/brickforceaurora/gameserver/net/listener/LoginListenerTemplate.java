@@ -7,7 +7,7 @@ import de.brickforceaurora.gameserver.net.INetListener;
 import de.brickforceaurora.gameserver.net.NetContext;
 import de.brickforceaurora.gameserver.net.PacketHandler;
 import de.brickforceaurora.gameserver.net.protocol.clientbound.*;
-import de.brickforceaurora.gameserver.net.protocol.clientbound.emulator.ClientboundEmulatorInventoryRequestPacket;
+import de.brickforceaurora.gameserver.net.protocol.clientbound.emulator.ClientboundEmulatorInventoryPacket;
 import de.brickforceaurora.gameserver.net.protocol.serverbound.ServerboundHeartbeatPacket;
 import de.brickforceaurora.gameserver.net.protocol.serverbound.ServerboundLoginPacket;
 import me.lauriichan.snowframe.extension.Extension;
@@ -36,7 +36,7 @@ public class LoginListenerTemplate implements INetListener {
                 new Channel(1, ChannelMode.BATTLE, "Play", "", 5000, 1, 16, 1, 0, 66, 0, 0, 0)
         }));
         client.send(new ClientboundCurChannelPacket().channelId(1)); //send actual channel
-        client.send(new ClientboundEmulatorInventoryRequestPacket().clientId(client.id()));
+        client.send(new ClientboundEmulatorInventoryPacket());
         client.send(new ClientboundLoginPacket().clientId(client.id()).channelId(1)); //send actual channelid
         client.send(new ClientboundPlayerInfoPacket()
             .name(client.name())

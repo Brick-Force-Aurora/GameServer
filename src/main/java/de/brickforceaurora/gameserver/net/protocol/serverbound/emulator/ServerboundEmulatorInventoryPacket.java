@@ -3,11 +3,11 @@ package de.brickforceaurora.gameserver.net.protocol.serverbound.emulator;
 import de.brickforceaurora.gameserver.net.protocol.IServerboundPacket;
 import io.netty.buffer.ByteBuf;
 
-public class ServerboundEmulatorRequestInventoryPacket implements IServerboundPacket {
+public class ServerboundEmulatorInventoryPacket implements IServerboundPacket {
 
     private int playerId;
 
-    public final ServerboundEmulatorRequestInventoryPacket playerId(int playerId) {
+    public final ServerboundEmulatorInventoryPacket playerId(int playerId) {
         this.playerId = playerId;
         return this;
     }

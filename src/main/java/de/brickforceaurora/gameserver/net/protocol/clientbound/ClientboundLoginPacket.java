@@ -5,17 +5,7 @@ import io.netty.buffer.ByteBuf;
 
 public final class ClientboundLoginPacket implements IClientboundPacket {
 
-	private int clientId;
 	private int channelId;
-
-	public final ClientboundLoginPacket clientId(int clientId) {
-		this.clientId = clientId;
-		return this;
-	}
-
-	public final int clientId() {
-		return this.clientId;
-	}
 
 	public final ClientboundLoginPacket channelId(int channelId) {
 		this.channelId = channelId;
@@ -27,13 +17,17 @@ public final class ClientboundLoginPacket implements IClientboundPacket {
 	}
 
 	@Override
+	public boolean requiresClientId() {
+		return true;
+	}
+
+	@Override
 	public int packetId() {
 		return 2;
 	}
 
 	@Override
 	public final void write(ByteBuf buffer) {
-		buffer.writeIntLE(this.clientId);
 		buffer.writeIntLE(this.channelId);
 	}
 }
