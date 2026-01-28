@@ -6,235 +6,235 @@ import java.nio.charset.StandardCharsets;
 
 public final class ClientboundPlayerInfoPacket implements IClientboundPacket {
 
-	private String val;
-	private int val2;
-	private int val3;
-	private int val4;
-	private int val5;
-	private int Unnamed0;
-	private int val7;
-	private int val8;
-	private int val9;
-	private int val10;
-	private int val11;
-	private int val12;
-	private String val13;
-	private int val14;
-	private int val15;
-	private int val16;
-	private int val17;
-	private int val18;
-	private int val19;
-	private int val20;
-	private int val21;
-	private int val22;
-	private int val23;
+	private String name;
+	private int playerXp;
+	private int forcePoints;
+	private int brickPoints;
+	private int tokens;
+	private int unused; 		//unused, send empty int
+	private int coins;
+	private int starDust;
+	private int apsType; 		//Age Protection Type (China, Korea)
+	private int apsLevel; 		//Age Protection Level (China, Korea)
+	private int gm; 			//has to do something with anitcheat
+	private int clanId;
+	private String clanName;
+	private int clanMark;
+	private int clanLv;
+	private int rank;
+	private int heavy;
+	private int assault;
+	private int sniper;
+	private int subMachine;
+	private int handGun;
+	private int melee;
+	private int special;
 
-	public final ClientboundPlayerInfoPacket val(String val) {
-		this.val = val;
+	public final ClientboundPlayerInfoPacket name(String name) {
+		this.name = name;
 		return this;
 	}
 
-	public final String val() {
-		return this.val;
+	public final String name() {
+		return this.name;
 	}
 
-	public final ClientboundPlayerInfoPacket val2(int val2) {
-		this.val2 = val2;
+	public final ClientboundPlayerInfoPacket playerXp(int playerXp) {
+		this.playerXp = playerXp;
 		return this;
 	}
 
-	public final int val2() {
-		return this.val2;
+	public final int playerXp() {
+		return this.playerXp;
 	}
 
-	public final ClientboundPlayerInfoPacket val3(int val3) {
-		this.val3 = val3;
+	public final ClientboundPlayerInfoPacket forcePoints(int forcePoints) {
+		this.forcePoints = forcePoints;
 		return this;
 	}
 
-	public final int val3() {
-		return this.val3;
+	public final int forcePoints() {
+		return this.forcePoints;
 	}
 
-	public final ClientboundPlayerInfoPacket val4(int val4) {
-		this.val4 = val4;
+	public final ClientboundPlayerInfoPacket brickPoints(int brickPoints) {
+		this.brickPoints = brickPoints;
 		return this;
 	}
 
-	public final int val4() {
-		return this.val4;
+	public final int brickPoints() {
+		return this.brickPoints;
 	}
 
-	public final ClientboundPlayerInfoPacket val5(int val5) {
-		this.val5 = val5;
+	public final ClientboundPlayerInfoPacket tokens(int tokens) {
+		this.tokens = tokens;
 		return this;
 	}
 
-	public final int val5() {
-		return this.val5;
+	public final int tokens() {
+		return this.tokens;
 	}
 
-	public final ClientboundPlayerInfoPacket Unnamed0(int Unnamed0) {
-		this.Unnamed0 = Unnamed0;
+	public final ClientboundPlayerInfoPacket unused(int unused) {
+		this.unused = unused;
 		return this;
 	}
 
-	public final int Unnamed0() {
-		return this.Unnamed0;
+	public final int unused() {
+		return this.unused;
 	}
 
-	public final ClientboundPlayerInfoPacket val7(int val7) {
-		this.val7 = val7;
+	public final ClientboundPlayerInfoPacket coins(int coins) {
+		this.coins = coins;
 		return this;
 	}
 
-	public final int val7() {
-		return this.val7;
+	public final int coins() {
+		return this.coins;
 	}
 
-	public final ClientboundPlayerInfoPacket val8(int val8) {
-		this.val8 = val8;
+	public final ClientboundPlayerInfoPacket starDust(int starDust) {
+		this.starDust = starDust;
 		return this;
 	}
 
-	public final int val8() {
-		return this.val8;
+	public final int starDust() {
+		return this.starDust;
 	}
 
-	public final ClientboundPlayerInfoPacket val9(int val9) {
-		this.val9 = val9;
+	public final ClientboundPlayerInfoPacket apsType(int apsType) {
+		this.apsType = apsType;
 		return this;
 	}
 
-	public final int val9() {
-		return this.val9;
+	public final int apsType() {
+		return this.apsType;
 	}
 
-	public final ClientboundPlayerInfoPacket val10(int val10) {
-		this.val10 = val10;
+	public final ClientboundPlayerInfoPacket apsLevel(int apsLevel) {
+		this.apsLevel = apsLevel;
 		return this;
 	}
 
-	public final int val10() {
-		return this.val10;
+	public final int apsLevel() {
+		return this.apsLevel;
 	}
 
-	public final ClientboundPlayerInfoPacket val11(int val11) {
-		this.val11 = val11;
+	public final ClientboundPlayerInfoPacket gm(int gm) {
+		this.gm = gm;
 		return this;
 	}
 
-	public final int val11() {
-		return this.val11;
+	public final int gm() {
+		return this.gm;
 	}
 
-	public final ClientboundPlayerInfoPacket val12(int val12) {
-		this.val12 = val12;
+	public final ClientboundPlayerInfoPacket clanId(int clanId) {
+		this.clanId = clanId;
 		return this;
 	}
 
-	public final int val12() {
-		return this.val12;
+	public final int clanId() {
+		return this.clanId;
 	}
 
-	public final ClientboundPlayerInfoPacket val13(String val13) {
-		this.val13 = val13;
+	public final ClientboundPlayerInfoPacket clanName(String clanName) {
+		this.clanName = clanName;
 		return this;
 	}
 
-	public final String val13() {
-		return this.val13;
+	public final String clanName() {
+		return this.clanName;
 	}
 
-	public final ClientboundPlayerInfoPacket val14(int val14) {
-		this.val14 = val14;
+	public final ClientboundPlayerInfoPacket clanMark(int clanMark) {
+		this.clanMark = clanMark;
 		return this;
 	}
 
-	public final int val14() {
-		return this.val14;
+	public final int clanMark() {
+		return this.clanMark;
 	}
 
-	public final ClientboundPlayerInfoPacket val15(int val15) {
-		this.val15 = val15;
+	public final ClientboundPlayerInfoPacket clanLv(int clanLv) {
+		this.clanLv = clanLv;
 		return this;
 	}
 
-	public final int val15() {
-		return this.val15;
+	public final int clanLv() {
+		return this.clanLv;
 	}
 
-	public final ClientboundPlayerInfoPacket val16(int val16) {
-		this.val16 = val16;
+	public final ClientboundPlayerInfoPacket rank(int rank) {
+		this.rank = rank;
 		return this;
 	}
 
-	public final int val16() {
-		return this.val16;
+	public final int rank() {
+		return this.rank;
 	}
 
-	public final ClientboundPlayerInfoPacket val17(int val17) {
-		this.val17 = val17;
+	public final ClientboundPlayerInfoPacket heavy(int heavy) {
+		this.heavy = heavy;
 		return this;
 	}
 
-	public final int val17() {
-		return this.val17;
+	public final int heavy() {
+		return this.heavy;
 	}
 
-	public final ClientboundPlayerInfoPacket val18(int val18) {
-		this.val18 = val18;
+	public final ClientboundPlayerInfoPacket assault(int assault) {
+		this.assault = assault;
 		return this;
 	}
 
-	public final int val18() {
-		return this.val18;
+	public final int assault() {
+		return this.assault;
 	}
 
-	public final ClientboundPlayerInfoPacket val19(int val19) {
-		this.val19 = val19;
+	public final ClientboundPlayerInfoPacket sniper(int sniper) {
+		this.sniper = sniper;
 		return this;
 	}
 
-	public final int val19() {
-		return this.val19;
+	public final int sniper() {
+		return this.sniper;
 	}
 
-	public final ClientboundPlayerInfoPacket val20(int val20) {
-		this.val20 = val20;
+	public final ClientboundPlayerInfoPacket subMachine(int subMachine) {
+		this.subMachine = subMachine;
 		return this;
 	}
 
-	public final int val20() {
-		return this.val20;
+	public final int subMachine() {
+		return this.subMachine;
 	}
 
-	public final ClientboundPlayerInfoPacket val21(int val21) {
-		this.val21 = val21;
+	public final ClientboundPlayerInfoPacket handGun(int handGun) {
+		this.handGun = handGun;
 		return this;
 	}
 
-	public final int val21() {
-		return this.val21;
+	public final int handGun() {
+		return this.handGun;
 	}
 
-	public final ClientboundPlayerInfoPacket val22(int val22) {
-		this.val22 = val22;
+	public final ClientboundPlayerInfoPacket melee(int melee) {
+		this.melee = melee;
 		return this;
 	}
 
-	public final int val22() {
-		return this.val22;
+	public final int melee() {
+		return this.melee;
 	}
 
-	public final ClientboundPlayerInfoPacket val23(int val23) {
-		this.val23 = val23;
+	public final ClientboundPlayerInfoPacket special(int special) {
+		this.special = special;
 		return this;
 	}
 
-	public final int val23() {
-		return this.val23;
+	public final int special() {
+		return this.special;
 	}
 
 	@Override
@@ -244,40 +244,40 @@ public final class ClientboundPlayerInfoPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(ByteBuf buffer) {
-		if (this.val.isEmpty()) {
+		if (this.name.isEmpty()) {
 			buffer.writeIntLE(0);
 		} else {
-			byte[] bytes = this.val.getBytes(StandardCharsets.UTF_16LE);
+			byte[] bytes = this.name.getBytes(StandardCharsets.UTF_16LE);
 			buffer.writeIntLE(bytes.length);
 			buffer.writeBytes(bytes);
 		}
-		buffer.writeIntLE(this.val2);
-		buffer.writeIntLE(this.val3);
-		buffer.writeIntLE(this.val4);
-		buffer.writeIntLE(this.val5);
-		buffer.writeIntLE(this.Unnamed0);
-		buffer.writeIntLE(this.val7);
-		buffer.writeIntLE(this.val8);
-		buffer.writeIntLE(this.val9);
-		buffer.writeIntLE(this.val10);
-		buffer.writeIntLE(this.val11);
-		buffer.writeIntLE(this.val12);
-		if (this.val13.isEmpty()) {
+		buffer.writeIntLE(this.playerXp);
+		buffer.writeIntLE(this.forcePoints);
+		buffer.writeIntLE(this.brickPoints);
+		buffer.writeIntLE(this.tokens);
+		buffer.writeIntLE(this.unused);
+		buffer.writeIntLE(this.coins);
+		buffer.writeIntLE(this.starDust);
+		buffer.writeIntLE(this.apsType);
+		buffer.writeIntLE(this.apsLevel);
+		buffer.writeIntLE(this.gm);
+		buffer.writeIntLE(this.clanId);
+		if (this.clanName.isEmpty()) {
 			buffer.writeIntLE(0);
 		} else {
-			byte[] bytes = this.val13.getBytes(StandardCharsets.UTF_16LE);
+			byte[] bytes = this.clanName.getBytes(StandardCharsets.UTF_16LE);
 			buffer.writeIntLE(bytes.length);
 			buffer.writeBytes(bytes);
 		}
-		buffer.writeIntLE(this.val14);
-		buffer.writeIntLE(this.val15);
-		buffer.writeIntLE(this.val16);
-		buffer.writeIntLE(this.val17);
-		buffer.writeIntLE(this.val18);
-		buffer.writeIntLE(this.val19);
-		buffer.writeIntLE(this.val20);
-		buffer.writeIntLE(this.val21);
-		buffer.writeIntLE(this.val22);
-		buffer.writeIntLE(this.val23);
+		buffer.writeIntLE(this.clanMark);
+		buffer.writeIntLE(this.clanLv);
+		buffer.writeIntLE(this.rank);
+		buffer.writeIntLE(this.heavy);
+		buffer.writeIntLE(this.assault);
+		buffer.writeIntLE(this.sniper);
+		buffer.writeIntLE(this.subMachine);
+		buffer.writeIntLE(this.handGun);
+		buffer.writeIntLE(this.melee);
+		buffer.writeIntLE(this.special);
 	}
 }
