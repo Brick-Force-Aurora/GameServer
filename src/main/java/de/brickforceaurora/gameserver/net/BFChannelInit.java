@@ -1,7 +1,7 @@
 package de.brickforceaurora.gameserver.net;
 
 import de.brickforceaurora.gameserver.net.protocol.BFServerboundPacketDecoder;
-import de.brickforceaurora.gameserver.net.protocol.clientbound.emulator.ClientboundEmulatorConnected;
+import de.brickforceaurora.gameserver.net.protocol.clientbound.emulator.ClientboundEmulatorConnectedPacket;
 import de.brickforceaurora.gameserver.net.protocol.BFClientboundPacketEncoder;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -9,7 +9,7 @@ import io.netty.channel.socket.SocketChannel;
 
 final class BFChannelInit extends ChannelInitializer<SocketChannel> {
     
-    private static final ClientboundEmulatorConnected CONNECTED = new ClientboundEmulatorConnected();
+    private static final ClientboundEmulatorConnectedPacket CONNECTED = new ClientboundEmulatorConnectedPacket();
 
     private final NetManager netManager;
 
