@@ -23,7 +23,7 @@
 <details open="open">
     <summary><h3 style="display: inline-block">Table of Contents</h3></summary>
     <ol>
-        <li><a href="#what-is-the-brickforce-aurora-server">What is the Brick-Force Aurora Server?</a></li>
+        <li><a href="#what-is-the-brick-force-aurora-server">What is the Brick-Force Aurora Server?</a></li>
         <li><a href="#project-goals-">Project Goals</a></li>
         <li><a href="#features-">Features</a></li>
         <li><a href="#getting-started-%EF%B8%8F">Getting Started</a></li>
