@@ -1,6 +1,5 @@
 package de.brickforceaurora.gameserver.net.listener;
 
-import de.brickforceaurora.gameserver.channel.Channel;
 import de.brickforceaurora.gameserver.channel.ChannelManager;
 import de.brickforceaurora.gameserver.net.BFClient;
 import de.brickforceaurora.gameserver.net.INetListener;
@@ -25,6 +24,6 @@ public class ChannelListenerTemplate implements INetListener {
 
         //send player list of current channel where player is in
         client.send(new ClientboundSvcEnterListPacket()
-            .clients(channelManager.channels().toArray(Channel[]::new)[0].clients().toArray(BFClient[]::new)));
+            .clients(client.channel().clients().toArray(BFClient[]::new)));
     }
 }

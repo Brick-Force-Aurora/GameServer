@@ -6,8 +6,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import de.brickforceaurora.gameserver.channel.Channel;
 import de.brickforceaurora.gameserver.legacy.data.ClientData;
 import de.brickforceaurora.gameserver.net.protocol.IClientboundPacket;
+import de.brickforceaurora.gameserver.util.Attribute;
+import me.lauriichan.snowframe.util.attribute.Attributable;
 
-public final class BFClient {
+public final class BFClient extends Attributable {
+
+    public static final Attribute<Integer> NEXT_CHANNEL_ATTR = Attribute.of("NEXT_CHANNEL", Integer.class);
 
     public final AtomicReference<Channel> channel = new AtomicReference<>();
 
@@ -56,6 +60,10 @@ public final class BFClient {
         return connection;
     }
 
+    public Channel channel() {
+        return channel.get();
+    }
+
     public String name() {
         return name;
     }
@@ -87,7 +95,7 @@ public final class BFClient {
     public void send(final IClientboundPacket packet) {
         connection.writeAndFlush(packet);
     }
-    
+
     @Override
     public String toString() {
         if (!initialized) {
