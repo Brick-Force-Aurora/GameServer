@@ -106,3 +106,13 @@ mvn clean package
 ```bash
 java.exe -jar gameserver.jar
 ```
+
+<!-- MARKDOWN LINKS & IMAGES -->
+[contributors-shield]: https://img.shields.io/github/contributors/Brick-Force-Aurora/Launcher.svg?style=flat-square&labelColor=%231D1F22&logo=devbox&logoColor=%230088cc&color=%230088cc
+[contributors-url]: https://github.com/Brick-Force-Aurora/Launcher/graphs/contributors
+[stars-shield]: https://img.shields.io/github/stars/Brick-Force-Aurora/Launcher.svg?style=flat-square&labelColor=%231D1F22&logo=reverbnation&logoColor=%23E3B341&color=%23E3B341
+[stars-url]: https://github.com/Brick-Force-Aurora/Launcher/stargazers
+[issues-shield]: https://img.shields.io/github/issues/Brick-Force-Aurora/Launcher.svg?style=flat-square&labelColor=%231D1F22&logo=buffer&logoColor=%230ec784&color=%230ec784
+[issues-url]: https://github.com/Brick-Force-Aurora/Launcher/issues
+[discord-shield]: https://img.shields.io/discord/777075012032004107?style=flat-square&logo=discord&logoColor=%235865f2&label=Discord&labelColor=%231D1F22&color=%23404eed
+[discord-url]: https://discord.com/invite/npqB9f6xXZ
