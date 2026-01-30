@@ -12,9 +12,9 @@
     <p align="center">
         A custom server implementation for Brick-Force Aurora written from scratch in Java
         <br/><br/>
-        <a href="https://github.com/Brick-Force-Aurora/Server/issues/new">Report Bug</a>
+        <a href="https://github.com/Brick-Force-Aurora/GameServer/issues/new">Report Bug</a>
         ·
-        <a href="https://github.com/Brick-Force-Aurora/Server/issues/new">Request Feature</a>
+        <a href="https://github.com/Brick-Force-Aurora/GameServer/issues/new">Request Feature</a>
         ·
         <a href="https://brickforce-aurora.de/roadmap/">Roadmap</a>
     </p>
