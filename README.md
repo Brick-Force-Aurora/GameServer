@@ -23,12 +23,10 @@
 <details open="open">
     <summary><h3 style="display: inline-block">Table of Contents</h3></summary>
     <ol>
-        <li><a href="#what-is-the-brickforce-aurora-server-">What is the Brick-Force Aurora Server?</a></li>
-        <li><a href="#goals-">Project Goals</a></li>
+        <li><a href="#what-is-the-brickforce-aurora-server">What is the Brick-Force Aurora Server?</a></li>
+        <li><a href="#project-goals-">Project Goals</a></li>
         <li><a href="#features-">Features</a></li>
-        <li><a href="#getting-started-">Getting Started</a></li>
-        <li><a href="#contributing-">Contributing</a></li>
-        <li><a href="#license-">License</a></li>
+        <li><a href="#getting-started-%EF%B8%8F">Getting Started</a></li>
     </ol>
 </details>
 
