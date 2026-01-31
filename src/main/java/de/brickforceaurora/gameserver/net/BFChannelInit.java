@@ -22,6 +22,7 @@ final class BFChannelInit extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(final SocketChannel channel) throws Exception {
         final BFClient client = new BFClient(channel);
+        client.shouldKeepAlive = true;
 
         final ChannelPipeline pipeline = channel.pipeline();
         // Inbound
@@ -33,8 +34,8 @@ final class BFChannelInit extends ChannelInitializer<SocketChannel> {
 
         netManager.clientConnected(client);
 
-        channel.writeAndFlush(CONNECTED);
         channel.writeAndFlush(SEED);
+        channel.writeAndFlush(CONNECTED);
     }
 
 }

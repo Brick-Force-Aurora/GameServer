@@ -67,7 +67,7 @@ public final class NetManager implements AutoCloseable {
                 continue;
             }
             if (netTime - client.netTime > TIMEOUT_TIME) {
-                logger.debug("Client timedout: {0}", client.ip());
+                logger.debug("Client timedout: {0}", client);
                 // We first remove the client from the clientList
                 clientDisconnected(client);
                 // And then actually disconnect them
