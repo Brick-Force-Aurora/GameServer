@@ -1,0 +1,270 @@
+package de.brickforceaurora.server.net.protocol.clientbound.original;
+
+import de.brickforceaurora.server.net.protocol.IClientboundPacket;
+import de.brickforceaurora.server.net.protocol.PacketBuf;
+
+public final class ClientboundBlastModeEndPacket implements IClientboundPacket {
+
+	private byte val;
+	private int val2;
+	private int val3;
+	private int val4;
+	private int val5;
+	private int val6;
+	private int val7;
+	private int val8;
+	private int val9;
+	private int val10;
+	private boolean val11;
+	private int val12;
+	private String val13;
+	private int val14;
+	private int val15;
+	private int val16;
+	private int val17;
+	private int val18;
+	private int val19;
+	private int val20;
+	private int val21;
+	private int val22;
+	private long val23;
+
+	public final ClientboundBlastModeEndPacket val(byte val) {
+		this.val = val;
+		return this;
+	}
+
+	public final byte val() {
+		return this.val;
+	}
+
+	public final ClientboundBlastModeEndPacket val2(int val2) {
+		this.val2 = val2;
+		return this;
+	}
+
+	public final int val2() {
+		return this.val2;
+	}
+
+	public final ClientboundBlastModeEndPacket val3(int val3) {
+		this.val3 = val3;
+		return this;
+	}
+
+	public final int val3() {
+		return this.val3;
+	}
+
+	public final ClientboundBlastModeEndPacket val4(int val4) {
+		this.val4 = val4;
+		return this;
+	}
+
+	public final int val4() {
+		return this.val4;
+	}
+
+	public final ClientboundBlastModeEndPacket val5(int val5) {
+		this.val5 = val5;
+		return this;
+	}
+
+	public final int val5() {
+		return this.val5;
+	}
+
+	public final ClientboundBlastModeEndPacket val6(int val6) {
+		this.val6 = val6;
+		return this;
+	}
+
+	public final int val6() {
+		return this.val6;
+	}
+
+	public final ClientboundBlastModeEndPacket val7(int val7) {
+		this.val7 = val7;
+		return this;
+	}
+
+	public final int val7() {
+		return this.val7;
+	}
+
+	public final ClientboundBlastModeEndPacket val8(int val8) {
+		this.val8 = val8;
+		return this;
+	}
+
+	public final int val8() {
+		return this.val8;
+	}
+
+	public final ClientboundBlastModeEndPacket val9(int val9) {
+		this.val9 = val9;
+		return this;
+	}
+
+	public final int val9() {
+		return this.val9;
+	}
+
+	public final ClientboundBlastModeEndPacket val10(int val10) {
+		this.val10 = val10;
+		return this;
+	}
+
+	public final int val10() {
+		return this.val10;
+	}
+
+	public final ClientboundBlastModeEndPacket val11(boolean val11) {
+		this.val11 = val11;
+		return this;
+	}
+
+	public final boolean val11() {
+		return this.val11;
+	}
+
+	public final ClientboundBlastModeEndPacket val12(int val12) {
+		this.val12 = val12;
+		return this;
+	}
+
+	public final int val12() {
+		return this.val12;
+	}
+
+	public final ClientboundBlastModeEndPacket val13(String val13) {
+		this.val13 = val13;
+		return this;
+	}
+
+	public final String val13() {
+		return this.val13;
+	}
+
+	public final ClientboundBlastModeEndPacket val14(int val14) {
+		this.val14 = val14;
+		return this;
+	}
+
+	public final int val14() {
+		return this.val14;
+	}
+
+	public final ClientboundBlastModeEndPacket val15(int val15) {
+		this.val15 = val15;
+		return this;
+	}
+
+	public final int val15() {
+		return this.val15;
+	}
+
+	public final ClientboundBlastModeEndPacket val16(int val16) {
+		this.val16 = val16;
+		return this;
+	}
+
+	public final int val16() {
+		return this.val16;
+	}
+
+	public final ClientboundBlastModeEndPacket val17(int val17) {
+		this.val17 = val17;
+		return this;
+	}
+
+	public final int val17() {
+		return this.val17;
+	}
+
+	public final ClientboundBlastModeEndPacket val18(int val18) {
+		this.val18 = val18;
+		return this;
+	}
+
+	public final int val18() {
+		return this.val18;
+	}
+
+	public final ClientboundBlastModeEndPacket val19(int val19) {
+		this.val19 = val19;
+		return this;
+	}
+
+	public final int val19() {
+		return this.val19;
+	}
+
+	public final ClientboundBlastModeEndPacket val20(int val20) {
+		this.val20 = val20;
+		return this;
+	}
+
+	public final int val20() {
+		return this.val20;
+	}
+
+	public final ClientboundBlastModeEndPacket val21(int val21) {
+		this.val21 = val21;
+		return this;
+	}
+
+	public final int val21() {
+		return this.val21;
+	}
+
+	public final ClientboundBlastModeEndPacket val22(int val22) {
+		this.val22 = val22;
+		return this;
+	}
+
+	public final int val22() {
+		return this.val22;
+	}
+
+	public final ClientboundBlastModeEndPacket val23(long val23) {
+		this.val23 = val23;
+		return this;
+	}
+
+	public final long val23() {
+		return this.val23;
+	}
+
+	@Override
+	public int packetId() {
+		return 291;
+	}
+
+	@Override
+	public final void write(PacketBuf buf) {
+		buf.writeByte(this.val);
+		buf.writeInt(this.val2);
+		buf.writeInt(this.val3);
+		buf.writeInt(this.val4);
+		buf.writeInt(this.val5);
+		buf.writeInt(this.val6);
+		buf.writeInt(this.val7);
+		buf.writeInt(this.val8);
+		buf.writeInt(this.val9);
+		buf.writeInt(this.val10);
+		buf.writeBoolean(this.val11);
+		buf.writeInt(this.val12);
+		buf.writeString(this.val13);
+		buf.writeInt(this.val14);
+		buf.writeInt(this.val15);
+		buf.writeInt(this.val16);
+		buf.writeInt(this.val17);
+		buf.writeInt(this.val18);
+		buf.writeInt(this.val19);
+		buf.writeInt(this.val20);
+		buf.writeInt(this.val21);
+		buf.writeInt(this.val22);
+		buf.writeLong(this.val23);
+	}
+}

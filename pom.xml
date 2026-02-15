@@ -1,0 +1,129 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.brickforceaurora.server</groupId>
+	<artifactId>parent</artifactId>
+	<version>0.0.1</version>
+	<packaging>pom</packaging>
+	<modules>
+		<module>core</module>
+		<module>login</module>
+		<module>match</module>
+	</modules>
+
+	<properties>
+		<java.version>25</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<!-- Dependency versions -->
+		<dep.netty.version>4.1.104.Final</dep.netty.version>
+		<dep.snowframe.version>0.1.4</dep.snowframe.version>
+		<dep.laylib.version>0.4.2-SNAPSHOT</dep.laylib.version>
+		<dep.fastutil.version>8.5.18</dep.fastutil.version>
+		<dep.sourcemod.version>2.1.1</dep.sourcemod.version>
+	</properties>
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>lauriichan-release</id>
+			<url>https://maven.lauriichan.me/release/</url>
+		</pluginRepository>
+	</pluginRepositories>
+	
+	<repositories>
+		<repository>
+			<id>lauriichan-snapshot</id>
+			<url>https://maven.lauriichan.me/snapshot/</url>
+		</repository>
+		<repository>
+			<id>lauriichan-release</id>
+			<url>https://maven.lauriichan.me/release/</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<!-- Netty (TCP networking) -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport</artifactId>
+            <version>${dep.netty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec</artifactId>
+            <version>${dep.netty.version}</version>
+        </dependency>
+        
+        <!-- Utilities -->
+        <dependency>
+            <groupId>it.unimi.dsi</groupId>
+            <artifactId>fastutil</artifactId>
+            <version>${dep.fastutil.version}</version>
+        </dependency>
+
+		<!-- LayLib -->
+		<dependency>
+            <groupId>me.lauriichan.laylib</groupId>
+            <artifactId>command</artifactId>
+            <version>${dep.laylib.version}</version>
+		</dependency>
+		<dependency>
+            <groupId>me.lauriichan.laylib</groupId>
+            <artifactId>json</artifactId>
+            <version>${dep.laylib.version}</version>
+		</dependency>
+        
+        <!-- Code Generation -->
+        <dependency>
+			<groupId>me.lauriichan.maven</groupId>
+			<artifactId>maven-source-modification-plugin</artifactId>
+			<version>${dep.sourcemod.version}</version>
+        </dependency>
+
+		<!-- SnowFrame -->
+		<dependency>
+            <groupId>me.lauriichan.snowframe</groupId>
+            <artifactId>snowframe-core</artifactId>
+            <version>${dep.snowframe.version}</version>
+		</dependency>
+		<dependency>
+            <groupId>me.lauriichan.snowframe</groupId>
+            <artifactId>snowframe-signal</artifactId>
+            <version>${dep.snowframe.version}</version>
+		</dependency>
+		<dependency>
+            <groupId>me.lauriichan.snowframe</groupId>
+            <artifactId>snowframe-data</artifactId>
+            <version>${dep.snowframe.version}</version>
+		</dependency>
+		<dependency>
+            <groupId>me.lauriichan.snowframe</groupId>
+            <artifactId>snowframe-config</artifactId>
+            <version>${dep.snowframe.version}</version>
+		</dependency>
+	</dependencies>
+	
+
+	<build>
+		<plugins>
+			<!-- Java compiler -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.14.0</version>
+				<configuration>
+					<release>${java.version}</release>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<compilerArgs>
+						<arg>-parameters</arg>
+					</compilerArgs>
+					<annotationProcessors>
+						<annotationProcessor>
+							me.lauriichan.snowframe.extension.processor.ExtensionProcessor</annotationProcessor>
+					</annotationProcessors>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
