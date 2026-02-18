@@ -26,5 +26,10 @@ public class ServerboundAuroraHandshakeChallengePacket implements IServerboundPa
 
     @Override
     public void read(PacketBuf buffer) throws IOException {}
+    
+    @Override
+    public boolean requiresLogIn() {
+        return false;
+    }
 
 }

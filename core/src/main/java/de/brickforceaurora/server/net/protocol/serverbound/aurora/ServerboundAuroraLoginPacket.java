@@ -40,5 +40,10 @@ public class ServerboundAuroraLoginPacket implements IServerboundPacket {
         this.version = buffer.readVersion();
         this.encryptedLoginData = buffer.readByteArray();
     }
+    
+    @Override
+    public boolean requiresLogIn() {
+        return false;
+    }
 
 }

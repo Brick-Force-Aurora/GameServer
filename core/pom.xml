@@ -122,7 +122,7 @@
 										</transformer>
 										<transformer>
 											<className>
-												de.brickforceaurora.maven.PacketListenerTransformer</className>
+												de.brickforceaurora.maven.server.PacketListenerTransformer</className>
 											<properties>
 												<property>
 													<name>test</name>
@@ -132,7 +132,7 @@
 										</transformer>
 									</transformers>
 									<includes>
-										<include>**/*Template.java</include>
+										<include>**/*_.java</include>
 									</includes>
 									<replacements>
 										<replacement>

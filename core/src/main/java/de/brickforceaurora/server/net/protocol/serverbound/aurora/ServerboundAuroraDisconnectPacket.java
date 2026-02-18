@@ -15,5 +15,10 @@ public class ServerboundAuroraDisconnectPacket implements IServerboundPacket {
 
     @Override
     public void read(PacketBuf buffer) throws IOException {}
+    
+    @Override
+    public boolean requiresLogIn() {
+        return false;
+    }
 
 }

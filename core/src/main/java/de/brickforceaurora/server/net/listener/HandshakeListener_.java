@@ -6,6 +6,7 @@ import de.brickforceaurora.server.net.NetSignal;
 import de.brickforceaurora.server.net.PacketHandler;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
 import de.brickforceaurora.server.net.protocol.ProtocolExtension;
+import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraDisconnectPacket;
 import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraHandshakePacket;
 import de.brickforceaurora.server.net.protocol.serverbound.aurora.ServerboundAuroraHandshakeChallengePacket;
 import de.brickforceaurora.server.net.protocol.serverbound.aurora.ServerboundAuroraHandshakePacket;
@@ -28,7 +29,8 @@ public class HandshakeListener_ implements INetListener {
     public void onHandshakeChallenge(final NetContext<ServerboundAuroraHandshakeChallengePacket> context) {
         context.client().validateChallenge(Encryption.decrypt(context.packet().encryptedChallenge(), Encryption.KEYS.getPrivate()));
         if (!context.client().wasChallanged()) {
-            // TODO: KICK CLIENT
+            context.client().send(new ClientboundAuroraDisconnectPacket().message("Handshake challenge failed"));
+            context.client().disconnect();
             return;
         }
         context.manager().keepClientAlive(context.client());
@@ -37,12 +39,18 @@ public class HandshakeListener_ implements INetListener {
 
     @PacketHandler
     public void onLogin(final NetContext<ServerboundAuroraLoginPacket> context) {
+        if (!context.client().wasChallanged()) {
+            context.client().send(new ClientboundAuroraDisconnectPacket().message("No successful handshake"));
+            context.client().disconnect();
+            return;
+        }
         PacketBuf loginData = Encryption.decryptBuffer(context.packet().encryptedLoginData(), Encryption.KEYS.getPrivate());
         String userName = loginData.readString();
         String passwordHash = loginData.readString();
         context.manager().snowFrame().app().loginHandler().login(context.client(), context.packet().version(), userName, passwordHash);
         if (!context.client().isLoggedIn()) {
-            // TODO: KICK CLIENT
+            context.client().send(new ClientboundAuroraDisconnectPacket().message("Invalid login information"));
+            context.client().disconnect();
             return;
         }
         context.manager().keepClientAlive(context.client());
