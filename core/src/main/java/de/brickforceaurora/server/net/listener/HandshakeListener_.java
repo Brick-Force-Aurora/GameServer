@@ -4,7 +4,6 @@ import de.brickforceaurora.server.net.INetListener;
 import de.brickforceaurora.server.net.NetContext;
 import de.brickforceaurora.server.net.NetSignal;
 import de.brickforceaurora.server.net.PacketHandler;
-import de.brickforceaurora.server.net.protocol.PacketBuf;
 import de.brickforceaurora.server.net.protocol.ProtocolExtension;
 import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraDisconnectPacket;
 import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraHandshakePacket;
@@ -22,12 +21,12 @@ public class HandshakeListener_ implements INetListener {
         context.manager().keepClientAlive(context.client());
         context.client().setupSecret(context.packet().clientKey());
         context.client().send(new ClientboundAuroraHandshakePacket().serverKey(Encryption.KEYS.getPublic())
-            .encryptedChallenge(Encryption.encrypt(context.client().encryptionChallenge(), context.client().encryptionKey())));
+            .encryptedChallenge(Encryption.encryptString(context.client().encryptionChallenge(), context.client().encryptionKey())));
     }
 
     @PacketHandler
     public void onHandshakeChallenge(final NetContext<ServerboundAuroraHandshakeChallengePacket> context) {
-        context.client().validateChallenge(Encryption.decrypt(context.packet().encryptedChallenge(), Encryption.KEYS.getPrivate()));
+        context.client().validateChallenge(Encryption.decryptString(context.packet().encryptedChallenge(), Encryption.KEYS.getPrivate()));
         if (!context.client().wasChallanged()) {
             context.client().send(new ClientboundAuroraDisconnectPacket().message("Handshake challenge failed"));
             context.client().disconnect();
@@ -44,10 +43,8 @@ public class HandshakeListener_ implements INetListener {
             context.client().disconnect();
             return;
         }
-        PacketBuf loginData = Encryption.decryptBuffer(context.packet().encryptedLoginData(), Encryption.KEYS.getPrivate());
-        String userName = loginData.readString();
-        String passwordHash = loginData.readString();
-        context.manager().snowFrame().app().loginHandler().login(context.client(), context.packet().version(), userName, passwordHash);
+        context.manager().snowFrame().app().loginHandler().login(context.client(), context.packet().version(), context.packet().session(),
+            context.packet().username(), context.packet().tokenOrPassword());
         if (!context.client().isLoggedIn()) {
             context.client().send(new ClientboundAuroraDisconnectPacket().message("Invalid login information"));
             context.client().disconnect();

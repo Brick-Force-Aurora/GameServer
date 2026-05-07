@@ -1,6 +1,7 @@
 package de.brickforceaurora.server.net.protocol;
 
 import de.brickforceaurora.server.net.BFClient;
+import de.brickforceaurora.server.util.Encryption;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -33,9 +34,17 @@ public final class BFClientboundPacketEncoder extends MessageToByteEncoder<IClie
             }
             msg.write(packetBuf);
             ByteBuf nettyBuf = packetBuf.buffer();
-            body = nettyBuf.array();
-            bodyOffset = nettyBuf.arrayOffset();
-            bodyLength = nettyBuf.readableBytes();
+            if (msg.encrypted()) {
+                byte[] bytes = new byte[nettyBuf.readableBytes()];
+                System.arraycopy(nettyBuf.array(), nettyBuf.arrayOffset(), bytes, 0, bytes.length);
+                body = Encryption.encrypt(bytes, client.encryptionKey());
+                bodyOffset = 0;
+                bodyLength = body.length;
+            } else {
+                body = nettyBuf.array();
+                bodyOffset = nettyBuf.arrayOffset();
+                bodyLength = nettyBuf.readableBytes();
+            }
         }
 
         byte crc = 0;

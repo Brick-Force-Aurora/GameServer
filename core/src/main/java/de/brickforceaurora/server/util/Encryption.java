@@ -14,8 +14,6 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import de.brickforceaurora.server.net.protocol.PacketBuf;
-
 public final class Encryption {
 
     public static final KeyPair KEYS;
@@ -27,7 +25,7 @@ public final class Encryption {
         KeyPairGenerator generator;
         try {
             generator = KeyPairGenerator.getInstance("RSA");
-            generator.initialize(1024);
+            generator.initialize(1024, SECURE_RANDOM);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException("Couldn't initialize key gen", e);
         }
@@ -47,36 +45,47 @@ public final class Encryption {
         return builder.toString();
     }
 
-    public static byte[] encrypt(String string, PublicKey key) {
+    public static byte[] encryptString(String string, PublicKey key) {
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, key);
             return cipher.doFinal(string.getBytes(StandardCharsets.UTF_16LE));
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException
             | InvalidKeyException e) {
-            throw new IllegalStateException("Couldn't encrypt", e);
+            throw new IllegalStateException("Couldn't encrypt string", e);
         }
     }
 
-    public static String decrypt(byte[] bytes, PrivateKey key) {
+    public static String decryptString(byte[] bytes, PrivateKey key) {
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, key);
             return new String(cipher.doFinal(bytes), StandardCharsets.UTF_16LE);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException
             | InvalidKeyException e) {
-            throw new IllegalStateException("Couldn't decrypt", e);
+            throw new IllegalStateException("Couldn't decrypt string", e);
         }
     }
 
-    public static PacketBuf decryptBuffer(byte[] bytes, PrivateKey key) {
+    public static byte[] encrypt(byte[] bytes, PublicKey key) {
+        try {
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            return cipher.doFinal(bytes);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException
+            | InvalidKeyException e) {
+            throw new IllegalStateException("Couldn't encrypt buffer", e);
+        }
+    }
+
+    public static byte[] decrypt(byte[] bytes, PrivateKey key) {
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, key);
-            return new PacketBuf(cipher.doFinal(bytes));
+            return cipher.doFinal(bytes);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException
             | InvalidKeyException e) {
-            throw new IllegalStateException("Couldn't decrypt", e);
+            throw new IllegalStateException("Couldn't decrypt buffer", e);
         }
     }
 

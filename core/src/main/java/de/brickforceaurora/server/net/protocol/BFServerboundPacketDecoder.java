@@ -3,6 +3,7 @@ package de.brickforceaurora.server.net.protocol;
 import java.util.List;
 
 import de.brickforceaurora.server.net.BFClient;
+import de.brickforceaurora.server.util.Encryption;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -53,7 +54,7 @@ public final class BFServerboundPacketDecoder extends ByteToMessageDecoder {
             }
             logger.debug("Received from client {0}: {1} ({2})", client, packet.packetName(), packet.packetId());
             // We simply hope this is never larger than Integer.MAX_VALUE
-            final byte[] messageBuffer = new byte[(int) size];
+            byte[] messageBuffer = new byte[(int) size];
             accumulator.readBytes(messageBuffer);
             accumulator.discardReadBytes();
             byte calculatedCrc = 0;
@@ -71,6 +72,9 @@ public final class BFServerboundPacketDecoder extends ByteToMessageDecoder {
             if (crc != calculatedCrc) {
                 ctx.close();
                 return;
+            }
+            if (packet.encrypted()) {
+                messageBuffer = Encryption.decrypt(messageBuffer, Encryption.KEYS.getPrivate());
             }
             try (PacketBuf packetBuf = new PacketBuf(messageBuffer)) {
                 packet.read(packetBuf);

@@ -10,7 +10,9 @@ import me.lauriichan.snowframe.util.Version;
 public class ServerboundAuroraLoginPacket implements IServerboundPacket {
 
     private Version version;
-    private byte[] encryptedLoginData;
+    private boolean session;
+    private String username;
+    private String tokenOrPassword;
 
     public final ServerboundAuroraLoginPacket version(Version version) {
         this.version = version;
@@ -21,13 +23,31 @@ public class ServerboundAuroraLoginPacket implements IServerboundPacket {
         return this.version;
     }
 
-    public final ServerboundAuroraLoginPacket encryptedLoginData(byte[] encryptedLoginData) {
-        this.encryptedLoginData = encryptedLoginData;
+    public final ServerboundAuroraLoginPacket session(boolean session) {
+        this.session = session;
         return this;
     }
 
-    public final byte[] encryptedLoginData() {
-        return this.encryptedLoginData;
+    public final boolean session() {
+        return this.session;
+    }
+
+    public final ServerboundAuroraLoginPacket username(String username) {
+        this.username = username;
+        return this;
+    }
+
+    public final String username() {
+        return this.username;
+    }
+
+    public final ServerboundAuroraLoginPacket tokenOrPassword(String tokenOrPassword) {
+        this.tokenOrPassword = tokenOrPassword;
+        return this;
+    }
+
+    public final String tokenOrPassword() {
+        return this.tokenOrPassword;
     }
 
     @Override
@@ -38,7 +58,14 @@ public class ServerboundAuroraLoginPacket implements IServerboundPacket {
     @Override
     public void read(PacketBuf buffer) throws IOException {
         this.version = buffer.readVersion();
-        this.encryptedLoginData = buffer.readByteArray();
+        this.session = buffer.readBoolean();
+        this.username = buffer.readString();
+        this.tokenOrPassword = buffer.readString();
+    }
+    
+    @Override
+    public boolean encrypted() {
+        return true;
     }
     
     @Override

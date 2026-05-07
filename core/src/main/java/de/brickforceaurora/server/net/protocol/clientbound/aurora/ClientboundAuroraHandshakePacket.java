@@ -37,6 +37,7 @@ public class ClientboundAuroraHandshakePacket implements IClientboundPacket {
 
     @Override
     public void write(final PacketBuf buffer) throws IOException {
+        // TODO: Fix this to match csharp
         buffer.writeByteArray(serverKey.getEncoded());
         buffer.writeByteArray(encryptedChallenge);
     }
