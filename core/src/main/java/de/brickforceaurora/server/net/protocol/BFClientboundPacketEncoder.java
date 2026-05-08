@@ -1,8 +1,10 @@
 package de.brickforceaurora.server.net.protocol;
 
 import de.brickforceaurora.server.net.BFClient;
+import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraDisconnectPacket;
 import de.brickforceaurora.server.util.Encryption;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import me.lauriichan.laylib.logger.ISimpleLogger;
@@ -35,6 +37,11 @@ public final class BFClientboundPacketEncoder extends MessageToByteEncoder<IClie
             msg.write(packetBuf);
             ByteBuf nettyBuf = packetBuf.buffer();
             if (msg.encrypted()) {
+                if (client.encryptionKey() == null) {
+                    ctx.writeAndFlush(new ClientboundAuroraDisconnectPacket().message("Server: Failed to encrypt packet")).addListener(ChannelFutureListener.CLOSE);
+                    logger.error("Failed to send encrypted {1} ({2}) to client {0}", client, msg.packetName(), msg.packetId());
+                    return;
+                }
                 byte[] bytes = new byte[nettyBuf.readableBytes()];
                 System.arraycopy(nettyBuf.array(), nettyBuf.arrayOffset(), bytes, 0, bytes.length);
                 body = Encryption.encrypt(bytes, client.encryptionKey());
@@ -65,12 +72,16 @@ public final class BFClientboundPacketEncoder extends MessageToByteEncoder<IClie
         out.writeIntLE(0xFFFFFFFF);
         out.writeIntLE(0xFFFFFFFF);
         out.writeBytes(body, bodyOffset, bodyLength);
-        logger.debug("Sent to client {0}: {1} ({2})", client, msg.packetName(), msg.packetId());
+        if (client != null) {
+            logger.debug("Sent to client {0}: {1} ({2})", client, msg.packetName(), msg.packetId());
+        }
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("Error in outbound netty pipeline of player '{0}'", cause, client);
+        if (client != null) {
+            logger.error("Error in outbound netty pipeline of player '{0}'", cause, client);
+        }
         ctx.close();
     }
 

@@ -1,5 +1,6 @@
 package de.brickforceaurora.server.net;
 
+import java.net.InetAddress;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -10,6 +11,7 @@ import java.util.stream.Stream;
 import de.brickforceaurora.server.IBrickForceServer;
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.IPacket;
+import de.brickforceaurora.server.util.RateLimiter;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -34,6 +36,8 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
 
     private final ServerBootstrap bootstrap = new ServerBootstrap();
     private volatile Channel serverChannel;
+    
+    private final RateLimiter<InetAddress> rateLimiter = new RateLimiter<>();
 
     private final SnowFrame<S> snowFrame;
 
@@ -43,7 +47,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
     private final ObjectList<BFClient> clients = ObjectLists.synchronize(new ObjectArrayList<>());
 
     private final ObjectList<NetHandlerContainer> containers = ObjectLists.synchronize(new ObjectArrayList<>());
-
+    
     private volatile long netTime = 0;
 
     public NetManager(final SnowFrame<S> frame) {
@@ -58,6 +62,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
      */
 
     public void tick(final long delta) {
+        rateLimiter.tick(delta);
         netTime += delta;
         BFClient client;
         for (int i = 0; i < clients.size(); i++) {
@@ -102,6 +107,10 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
 
     public ISimpleLogger logger() {
         return logger;
+    }
+    
+    public RateLimiter<InetAddress> rateLimiter() {
+        return rateLimiter;
     }
 
     /*
