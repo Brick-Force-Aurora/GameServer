@@ -15,6 +15,7 @@ import de.brickforceaurora.server.util.RateLimiter;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioChannelOption;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
@@ -36,7 +37,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
 
     private final ServerBootstrap bootstrap = new ServerBootstrap();
     private volatile Channel serverChannel;
-    
+
     private final RateLimiter<InetAddress> rateLimiter = new RateLimiter<>();
 
     private final SnowFrame<S> snowFrame;
@@ -47,7 +48,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
     private final ObjectList<BFClient> clients = ObjectLists.synchronize(new ObjectArrayList<>());
 
     private final ObjectList<NetHandlerContainer> containers = ObjectLists.synchronize(new ObjectArrayList<>());
-    
+
     private volatile long netTime = 0;
 
     public NetManager(final SnowFrame<S> frame) {
@@ -83,7 +84,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
             }
         }
     }
-    
+
     public int nextClientId() {
         nextClientId.compareAndSet(Short.MAX_VALUE, 0);
         return nextClientId.getAndIncrement();
@@ -108,7 +109,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
     public ISimpleLogger logger() {
         return logger;
     }
-    
+
     public RateLimiter<InetAddress> rateLimiter() {
         return rateLimiter;
     }
@@ -182,11 +183,10 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
         if (serverChannel != null) {
             return;
         }
-        bootstrap.group(mainGroup, workerGroup);
-        bootstrap.channel(NioServerSocketChannel.class);
-        bootstrap.childHandler(new BFChannelInit(this));
-        serverChannel = bootstrap.bind(5000).sync().channel();
-        logger.info("Listening on 0.0.0.0:5000");
+        bootstrap.group(mainGroup, workerGroup).channel(NioServerSocketChannel.class).childOption(NioChannelOption.SO_KEEPALIVE, true)
+            .childOption(NioChannelOption.TCP_NODELAY, true).childHandler(new BFChannelInit(this));
+        serverChannel = bootstrap.bind(18890).sync().channel();
+        logger.info("Listening on 0.0.0.0:18890");
         signalManager.call(new NetSignal.ServerStarted(this));
     }
 

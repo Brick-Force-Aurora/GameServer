@@ -16,7 +16,6 @@ public class DevLoginHandler implements ILoginHandler {
 
     @Override
     public void login(BFClient client, Version version, boolean session, String userName, String tokenOrPassword) {
-        //LoginServerApp.logger().debug("version: " + version + " username: " + userName + " password: " + tokenOrPassword);
         client.init(version, userName, loginServerAppNetManager.nextClientId());
     }
 }

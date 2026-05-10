@@ -122,6 +122,10 @@ public final class PacketBuf implements AutoCloseable {
         buffer.readBytes(bytes);
         return bytes;
     }
+    
+    public byte[] readReversedByteArray() {
+        return reverse(readByteArray());
+    }
 
     public int[] readIntArray() {
         final int length = buffer.readIntLE();
@@ -217,6 +221,10 @@ public final class PacketBuf implements AutoCloseable {
         buffer.writeIntLE(bytes.length);
         buffer.writeBytes(bytes);
     }
+
+    public void writeReversedByteArray(byte[] bytes) {
+        writeByteArray(reverse(bytes));
+    }
     
     public void writeIntArray(int[] values) {
         if (values == null || values.length == 0) {
@@ -227,6 +235,21 @@ public final class PacketBuf implements AutoCloseable {
         for (int value : values) {
             buffer.writeIntLE(value);
         }
+    }
+    
+    /*
+     * Helper
+     */
+    
+    private byte[] reverse(byte[] input) {
+        if (input == null || input.length < 2) {
+            return input;
+        }
+        byte[] output = new byte[input.length];
+        for (int i = 0; i < input.length; i++) {
+            output[output.length - 1 - i] = input[i]; 
+        }
+        return output;
     }
 
     /*

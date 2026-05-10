@@ -4,7 +4,6 @@ import java.net.InetAddress;
 
 import de.brickforceaurora.server.net.protocol.BFClientboundPacketEncoder;
 import de.brickforceaurora.server.net.protocol.BFServerboundPacketDecoder;
-import de.brickforceaurora.server.net.protocol.ProtocolExtension;
 import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraDisconnectPacket;
 import de.brickforceaurora.server.util.RateLimiter;
 import io.netty.channel.ChannelFutureListener;
@@ -24,7 +23,6 @@ final class BFChannelInit extends ChannelInitializer<SocketChannel> {
 
     @Override
     protected void initChannel(final SocketChannel channel) throws Exception {
-
         final ChannelPipeline pipeline = channel.pipeline();
 
         if (!rateLimiter.acquire(channel.remoteAddress().getAddress())) {
@@ -44,8 +42,6 @@ final class BFChannelInit extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(new BFClientboundPacketEncoder(netManager.logger(), client));
 
         netManager.clientConnected(client);
-
-        channel.writeAndFlush(ProtocolExtension.PACKET_CONNECTED);
     }
 
 }

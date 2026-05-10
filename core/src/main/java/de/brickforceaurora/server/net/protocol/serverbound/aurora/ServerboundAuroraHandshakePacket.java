@@ -1,11 +1,13 @@
 package de.brickforceaurora.server.net.protocol.serverbound.aurora;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.PublicKey;
 
 import de.brickforceaurora.server.net.protocol.IServerboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
 import de.brickforceaurora.server.net.protocol.ProtocolExtension;
+import de.brickforceaurora.server.util.Encryption;
 
 public class ServerboundAuroraHandshakePacket implements IServerboundPacket {
     
@@ -26,7 +28,18 @@ public class ServerboundAuroraHandshakePacket implements IServerboundPacket {
     }
 
     @Override
-    public void read(PacketBuf buffer) throws IOException {}
+    public void read(PacketBuf buffer) throws IOException {
+        BigInteger modulus = new BigInteger(appendPositiveZero(buffer.readByteArray()));
+        BigInteger exponent = new BigInteger(appendPositiveZero(buffer.readByteArray()));
+        this.clientKey = Encryption.createPublicKey(modulus, exponent);
+    }
+    
+    private byte[] appendPositiveZero(byte[] bytes) {
+        byte[] out = new byte[bytes.length + 1];
+        out[0] = 0;
+        System.arraycopy(bytes, 0, out, 1, bytes.length);
+        return out;
+    }
     
     @Override
     public boolean requiresLogIn() {

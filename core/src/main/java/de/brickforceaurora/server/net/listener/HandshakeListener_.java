@@ -20,13 +20,13 @@ public class HandshakeListener_ implements INetListener {
     public void onHandshake(final NetContext<ServerboundAuroraHandshakePacket> context) {
         context.manager().keepClientAlive(context.client());
         context.client().setupSecret(context.packet().clientKey());
-        context.client().send(new ClientboundAuroraHandshakePacket().serverKey(Encryption.KEYS.getPublic())
+        context.client().send(new ClientboundAuroraHandshakePacket().serverKey(Encryption.PUBLIC)
             .encryptedChallenge(Encryption.encryptString(context.client().encryptionChallenge(), context.client().encryptionKey())));
     }
 
     @PacketHandler
     public void onHandshakeChallenge(final NetContext<ServerboundAuroraHandshakeChallengePacket> context) {
-        context.client().validateChallenge(Encryption.decryptString(context.packet().encryptedChallenge(), Encryption.KEYS.getPrivate()));
+        context.client().validateChallenge(Encryption.decryptString(context.packet().encryptedChallenge(), Encryption.PRIVATE));
         if (!context.client().wasChallanged()) {
             context.client().send(new ClientboundAuroraDisconnectPacket().message("Handshake challenge failed"));
             context.client().disconnect();

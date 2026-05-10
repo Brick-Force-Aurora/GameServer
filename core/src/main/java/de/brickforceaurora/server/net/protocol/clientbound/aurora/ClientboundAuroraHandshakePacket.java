@@ -1,7 +1,7 @@
 package de.brickforceaurora.server.net.protocol.clientbound.aurora;
 
 import java.io.IOException;
-import java.security.PublicKey;
+import java.security.interfaces.RSAPublicKey;
 
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
@@ -9,15 +9,15 @@ import de.brickforceaurora.server.net.protocol.ProtocolExtension;
 
 public class ClientboundAuroraHandshakePacket implements IClientboundPacket {
     
-    private PublicKey serverKey;
+    private RSAPublicKey serverKey;
     private byte[] encryptedChallenge;
 
-    public final ClientboundAuroraHandshakePacket serverKey(PublicKey serverKey) {
+    public final ClientboundAuroraHandshakePacket serverKey(RSAPublicKey serverKey) {
         this.serverKey = serverKey;
         return this;
     }
 
-    public final PublicKey serverKey() {
+    public final RSAPublicKey serverKey() {
         return this.serverKey;
     }
 
@@ -37,9 +37,15 @@ public class ClientboundAuroraHandshakePacket implements IClientboundPacket {
 
     @Override
     public void write(final PacketBuf buffer) throws IOException {
-        // TODO: Fix this to match csharp
-        buffer.writeByteArray(serverKey.getEncoded());
+        buffer.writeByteArray(stripLeadingByte(serverKey.getModulus().toByteArray()));
+        buffer.writeByteArray(stripLeadingByte(serverKey.getPublicExponent().toByteArray()));
         buffer.writeByteArray(encryptedChallenge);
+    }
+    
+    private byte[] stripLeadingByte(byte[] bytes) {
+        byte[] out = new byte[bytes.length - 1];
+        System.arraycopy(bytes, 1, out, 0, out.length);
+        return out;
     }
 
 }

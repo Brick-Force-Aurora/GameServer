@@ -10,6 +10,7 @@ public final class NetHandler<P extends IPacket> {
 
     public NetHandler(final Class<P> packetType, final INetHandler<P> handler) {
         this.packetId = PacketRegistry.packetIdByType(packetType);
+        System.out.println("Packet: " + packetType.getSimpleName() + " (" + packetId + ")");
         this.handler = handler;
     }
 

@@ -3,8 +3,10 @@ package de.brickforceaurora.server.net.protocol;
 import java.util.List;
 
 import de.brickforceaurora.server.net.BFClient;
+import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraDisconnectPacket;
 import de.brickforceaurora.server.util.Encryption;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import me.lauriichan.laylib.logger.ISimpleLogger;
@@ -49,7 +51,7 @@ public final class BFServerboundPacketDecoder extends ByteToMessageDecoder {
             final IServerboundPacket packet = PacketRegistry.newServerPacket(id);
             if (packet == null) {
                 logger.debug("Received unknown from client {0}: {1}", id);
-                ctx.close();
+                ctx.writeAndFlush(new ClientboundAuroraDisconnectPacket().message("Server: Received unknwon packet")).addListener(ChannelFutureListener.CLOSE);
                 return;
             }
             logger.debug("Received from client {0}: {1} ({2})", client, packet.packetName(), packet.packetId());
@@ -74,7 +76,7 @@ public final class BFServerboundPacketDecoder extends ByteToMessageDecoder {
                 return;
             }
             if (packet.encrypted()) {
-                messageBuffer = Encryption.decrypt(messageBuffer, Encryption.KEYS.getPrivate());
+                messageBuffer = Encryption.decrypt(messageBuffer, Encryption.PRIVATE);
             }
             try (PacketBuf packetBuf = new PacketBuf(messageBuffer)) {
                 packet.read(packetBuf);

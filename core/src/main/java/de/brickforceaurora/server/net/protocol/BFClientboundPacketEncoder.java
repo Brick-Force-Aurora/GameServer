@@ -34,12 +34,20 @@ public final class BFClientboundPacketEncoder extends MessageToByteEncoder<IClie
             if (msg.requiresClientId()) {
                 packetBuf.writeInt(client.id());
             }
-            msg.write(packetBuf);
+            try {
+                msg.write(packetBuf);
+            } catch (RuntimeException exp) {
+                logger.error("Failed to serialize {1} ({2}) to client {0}", client, msg.packetName(), msg.packetId());
+                ctx.writeAndFlush(new ClientboundAuroraDisconnectPacket().message("Server: Failed to serialize packet"))
+                    .addListener(ChannelFutureListener.CLOSE);
+                return;
+            }
             ByteBuf nettyBuf = packetBuf.buffer();
             if (msg.encrypted()) {
                 if (client.encryptionKey() == null) {
-                    ctx.writeAndFlush(new ClientboundAuroraDisconnectPacket().message("Server: Failed to encrypt packet")).addListener(ChannelFutureListener.CLOSE);
                     logger.error("Failed to send encrypted {1} ({2}) to client {0}", client, msg.packetName(), msg.packetId());
+                    ctx.writeAndFlush(new ClientboundAuroraDisconnectPacket().message("Server: Failed to encrypt packet"))
+                        .addListener(ChannelFutureListener.CLOSE);
                     return;
                 }
                 byte[] bytes = new byte[nettyBuf.readableBytes()];
@@ -66,7 +74,7 @@ public final class BFClientboundPacketEncoder extends MessageToByteEncoder<IClie
             }
         }
 
-        out.writeIntLE(body.length);
+        out.writeIntLE(bodyLength);
         out.writeShortLE(msg.packetId());
         out.writeByte(crc);
         out.writeIntLE(0xFFFFFFFF);
