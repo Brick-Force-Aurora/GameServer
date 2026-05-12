@@ -43,6 +43,9 @@ public class ClientboundAuroraHandshakePacket implements IClientboundPacket {
     }
     
     private byte[] stripLeadingByte(byte[] bytes) {
+        if (bytes[0] != 0) {
+            return bytes;
+        }
         byte[] out = new byte[bytes.length - 1];
         System.arraycopy(bytes, 1, out, 0, out.length);
         return out;

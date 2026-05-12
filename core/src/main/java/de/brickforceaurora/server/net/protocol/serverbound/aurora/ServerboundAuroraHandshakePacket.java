@@ -35,6 +35,9 @@ public class ServerboundAuroraHandshakePacket implements IServerboundPacket {
     }
     
     private byte[] appendPositiveZero(byte[] bytes) {
+        if (bytes[0] == 0xFF) {
+            return bytes;
+        }
         byte[] out = new byte[bytes.length + 1];
         out[0] = 0;
         System.arraycopy(bytes, 0, out, 1, bytes.length);

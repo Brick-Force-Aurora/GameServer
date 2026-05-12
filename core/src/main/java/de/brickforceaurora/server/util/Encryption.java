@@ -2,7 +2,6 @@ package de.brickforceaurora.server.util;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -14,15 +13,12 @@ import java.security.SecureRandom;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.MGF1ParameterSpec;
 import java.security.spec.RSAPublicKeySpec;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.OAEPParameterSpec;
-import javax.crypto.spec.PSource;
 
 public final class Encryption {
 
@@ -31,9 +27,6 @@ public final class Encryption {
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
     private static final char[] CHARS;
-
-    private static final OAEPParameterSpec OAEP_SPEC = new OAEPParameterSpec("SHA-1", "MGF1", MGF1ParameterSpec.SHA1,
-        PSource.PSpecified.DEFAULT);
 
     static {
         KeyPairGenerator generator;
@@ -71,44 +64,36 @@ public final class Encryption {
 
     public static byte[] encryptString(String string, PublicKey key) {
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPPadding");
-            cipher.init(Cipher.ENCRYPT_MODE, key, OAEP_SPEC);
-            return cipher.doFinal(string.getBytes(StandardCharsets.UTF_16LE));
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException
-            | InvalidAlgorithmParameterException e) {
-            throw new IllegalStateException("Couldn't encrypt string", e);
+            return encrypt(string.getBytes(StandardCharsets.UTF_8), key);
+        } catch (IllegalStateException e) {
+            throw new IllegalStateException("Couldn't encrypt string", e.getCause());
         }
     }
 
     public static String decryptString(byte[] bytes, PrivateKey key) {
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPPadding");
-            cipher.init(Cipher.DECRYPT_MODE, key, OAEP_SPEC);
-            return new String(cipher.doFinal(bytes), StandardCharsets.UTF_16LE);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException
-            | InvalidAlgorithmParameterException e) {
-            throw new IllegalStateException("Couldn't decrypt string", e);
+            return new String(decrypt(bytes, key), StandardCharsets.UTF_8);
+        } catch (IllegalStateException e) {
+            throw new IllegalStateException("Couldn't decrypt string", e.getCause());
         }
     }
 
     public static byte[] encrypt(byte[] bytes, PublicKey key) {
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPPadding");
-            cipher.init(Cipher.ENCRYPT_MODE, key, OAEP_SPEC);
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
             return cipher.doFinal(bytes);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException
-            | InvalidAlgorithmParameterException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
             throw new IllegalStateException("Couldn't encrypt buffer", e);
         }
     }
 
     public static byte[] decrypt(byte[] bytes, PrivateKey key) {
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPPadding");
-            cipher.init(Cipher.DECRYPT_MODE, key, OAEP_SPEC);
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.DECRYPT_MODE, key);
             return cipher.doFinal(bytes);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException
-            | InvalidAlgorithmParameterException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
             throw new IllegalStateException("Couldn't decrypt buffer", e);
         }
     }

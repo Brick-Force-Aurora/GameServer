@@ -25,7 +25,9 @@ public class ServerboundAuroraHandshakeChallengePacket implements IServerboundPa
     }
 
     @Override
-    public void read(PacketBuf buffer) throws IOException {}
+    public void read(PacketBuf buffer) throws IOException {
+        this.encryptedChallenge = buffer.readByteArray();
+    }
     
     @Override
     public boolean requiresLogIn() {
