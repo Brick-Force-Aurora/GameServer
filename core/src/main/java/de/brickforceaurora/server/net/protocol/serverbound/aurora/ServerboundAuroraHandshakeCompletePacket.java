@@ -6,11 +6,11 @@ import de.brickforceaurora.server.net.protocol.IServerboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
 import de.brickforceaurora.server.net.protocol.ProtocolExtension;
 
-public class ServerboundAuroraHandshakeChallengePacket implements IServerboundPacket {
+public class ServerboundAuroraHandshakeCompletePacket implements IServerboundPacket {
     
     private byte[] encryptedChallenge;
 
-    public final ServerboundAuroraHandshakeChallengePacket encryptedChallenge(byte[] encryptedChallenge) {
+    public final ServerboundAuroraHandshakeCompletePacket encryptedChallenge(byte[] encryptedChallenge) {
         this.encryptedChallenge = encryptedChallenge;
         return this;
     }
@@ -21,7 +21,7 @@ public class ServerboundAuroraHandshakeChallengePacket implements IServerboundPa
 
     @Override
     public int packetId() {
-        return ProtocolExtension.SERVERBOUND_AURORA_HANDSHAKE_CHALLENGE;
+        return ProtocolExtension.SERVERBOUND_AURORA_HANDSHAKE_COMPLETE;
     }
 
     @Override

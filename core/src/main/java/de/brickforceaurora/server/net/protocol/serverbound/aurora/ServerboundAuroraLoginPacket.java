@@ -5,12 +5,13 @@ import java.io.IOException;
 import de.brickforceaurora.server.net.protocol.IServerboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
 import de.brickforceaurora.server.net.protocol.ProtocolExtension;
+import de.brickforceaurora.server.net.protocol.data.LoginType;
 import me.lauriichan.snowframe.util.Version;
 
 public class ServerboundAuroraLoginPacket implements IServerboundPacket {
 
     private Version version;
-    private boolean session;
+    private LoginType loginType;
     private String username;
     private String tokenOrPassword;
 
@@ -23,13 +24,13 @@ public class ServerboundAuroraLoginPacket implements IServerboundPacket {
         return this.version;
     }
 
-    public final ServerboundAuroraLoginPacket session(boolean session) {
-        this.session = session;
+    public final ServerboundAuroraLoginPacket loginType(LoginType loginType) {
+        this.loginType = loginType;
         return this;
     }
 
-    public final boolean session() {
-        return this.session;
+    public final LoginType loginType() {
+        return this.loginType;
     }
 
     public final ServerboundAuroraLoginPacket username(String username) {
@@ -58,7 +59,7 @@ public class ServerboundAuroraLoginPacket implements IServerboundPacket {
     @Override
     public void read(PacketBuf buffer) throws IOException {
         this.version = buffer.readVersion();
-        this.session = buffer.readBoolean();
+        this.loginType = LoginType.MANAGER.byMask(buffer.readInt());
         this.username = buffer.readString();
         this.tokenOrPassword = buffer.readString();
     }

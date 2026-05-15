@@ -52,6 +52,15 @@ public final class FlagManager<F> {
         return maskGetter.apply(flag);
     }
 
+    public F byMask(int mask) {
+        for (F flag : flags) {
+            if (maskGetter.apply(flag) == mask) {
+                return flag;
+            }
+        }
+        throw new IllegalArgumentException("No flag found for mask: 0x" + Integer.toHexString(mask));
+    }
+
     public int maxMask() {
         return maxMask;
     }

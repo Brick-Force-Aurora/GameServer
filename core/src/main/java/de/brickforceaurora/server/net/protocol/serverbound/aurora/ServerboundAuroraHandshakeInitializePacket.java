@@ -9,11 +9,11 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 import de.brickforceaurora.server.net.protocol.ProtocolExtension;
 import de.brickforceaurora.server.util.Encryption;
 
-public class ServerboundAuroraHandshakePacket implements IServerboundPacket {
+public class ServerboundAuroraHandshakeInitializePacket implements IServerboundPacket {
     
     private PublicKey clientKey;
 
-    public final ServerboundAuroraHandshakePacket clientKey(PublicKey clientKey) {
+    public final ServerboundAuroraHandshakeInitializePacket clientKey(PublicKey clientKey) {
         this.clientKey = clientKey;
         return this;
     }
@@ -24,7 +24,7 @@ public class ServerboundAuroraHandshakePacket implements IServerboundPacket {
 
     @Override
     public int packetId() {
-        return ProtocolExtension.SERVERBOUND_AURORA_HANDSHAKE;
+        return ProtocolExtension.SERVERBOUND_AURORA_HANDSHAKE_INITIALIZE;
     }
 
     @Override

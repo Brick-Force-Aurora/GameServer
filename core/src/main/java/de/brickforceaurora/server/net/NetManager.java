@@ -12,6 +12,7 @@ import de.brickforceaurora.server.IBrickForceServer;
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.IPacket;
 import de.brickforceaurora.server.util.RateLimiter;
+import de.brickforceaurora.server.util.TimeMath;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -62,6 +63,10 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
      * Heartbeat related
      */
 
+    public long netTime() {
+        return netTime;
+    }
+
     public void tick(final long delta) {
         rateLimiter.tick(delta);
         netTime += delta;
@@ -73,7 +78,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
                 client.netTime = netTime;
                 continue;
             }
-            if (netTime - client.netTime > TIMEOUT_TIME) {
+            if (TimeMath.calculateDifference(netTime, client.netTime) > TIMEOUT_TIME) {
                 logger.debug("Client timedout: {0}", client);
                 // We first remove the client from the clientList
                 clientDisconnected(client);

@@ -6,11 +6,11 @@ import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
 import de.brickforceaurora.server.net.protocol.ProtocolExtension;
 
-public class ClientboundAuroraLoginPacket implements IClientboundPacket {
+public class ClientboundAuroraLoggedInPacket implements IClientboundPacket {
 
     @Override
     public int packetId() {
-        return ProtocolExtension.CLIENTBOUND_AURORA_LOGIN;
+        return ProtocolExtension.CLIENTBOUND_AURORA_LOGGED_IN;
     }
 
     @Override
