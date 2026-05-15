@@ -4,6 +4,7 @@ import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.INetListener;
 import de.brickforceaurora.server.net.NetContext;
 import de.brickforceaurora.server.net.PacketHandler;
+import de.brickforceaurora.server.net.protocol.serverbound.aurora.ServerboundAuroraDisconnectPacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundHeartbeatPacket;
 import de.brickforceaurora.server.util.TimeMath;
 import me.lauriichan.snowframe.extension.Extension;
@@ -23,5 +24,11 @@ public class ConnectionListener_ implements INetListener {
         }
         context.manager().keepClientAlive(context.client());
     }
-    
+
+    @PacketHandler
+    public void onDisconnect(final NetContext<ServerboundAuroraDisconnectPacket> context) {
+        // TODO: Do we even need this packet? (ServerboundAuroraDisconnectPacket)
+        context.client().disconnect("Disconnected by client");
+    }
+
 }

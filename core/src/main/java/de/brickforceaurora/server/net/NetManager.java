@@ -83,7 +83,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
                 // We first remove the client from the clientList
                 clientDisconnected(client);
                 // And then actually disconnect them
-                client.disconnect();
+                client.close();
                 // Decrease index as client has been removed
                 i--;
             }
@@ -203,7 +203,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
 
         // Disconnect all clients before closing
         for (int i = 0; i < clients.size(); i++) {
-            clients.get(i).disconnect();
+            clients.get(i).close();
         }
 
         serverChannel.close().awaitUninterruptibly();

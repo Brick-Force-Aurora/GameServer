@@ -10,7 +10,6 @@ import de.brickforceaurora.server.net.login.ILoginHandler;
 import de.brickforceaurora.server.net.login.IOAuthLoginHandler;
 import de.brickforceaurora.server.net.login.LoginType;
 import de.brickforceaurora.server.net.protocol.ProtocolExtension;
-import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraDisconnectPacket;
 import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraHandshakeChallengePacket;
 import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraLoginDetailsPacket;
 import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraRequestLoginPacket;
@@ -38,8 +37,7 @@ public class HandshakeListener_ implements INetListener {
     public void onHandshakeChallenge(final NetContext<ServerboundAuroraHandshakeCompletePacket> context) {
         context.client().validateChallenge(Encryption.decryptString(context.packet().encryptedChallenge(), Encryption.PRIVATE));
         if (!context.client().wasChallanged()) {
-            context.client().send(new ClientboundAuroraDisconnectPacket().message("Handshake challenge failed"));
-            context.client().disconnect();
+            context.client().disconnect("Handshake challenge failed");
             return;
         }
         context.manager().keepClientAlive(context.client());
@@ -51,8 +49,7 @@ public class HandshakeListener_ implements INetListener {
     @PacketHandler
     public void onLogin(final NetContext<ServerboundAuroraLoginPacket> context) {
         if (!context.client().wasChallanged()) {
-            context.client().send(new ClientboundAuroraDisconnectPacket().message("No successful handshake"));
-            context.client().disconnect();
+            context.client().disconnect("No successful handshake");
             return;
         }
         ILoginHandler handler = context.manager().snowFrame().app().loginHandler();
@@ -64,23 +61,18 @@ public class HandshakeListener_ implements INetListener {
             // We have to set it to PASSWORD as DEBUG login is usually null, also we don't support any other login method
             // So the client **should** only send null
         } else if (loginType == null || !handler.supportedTypes().is(loginType)) {
-            context.client().send(
-                new ClientboundAuroraDisconnectPacket().message("Unsupported login type: " + (loginType == null ? "DEBUG" : loginType)));
-            context.client().disconnect();
+            context.client().disconnect("Unsupported login type: " + (loginType == null ? "DEBUG" : loginType));
             return;
         }
         switch (loginType) {
         case OAUTH -> {
             if (!(handler instanceof IOAuthLoginHandler oauthHandler)) {
-                context.client().send(new ClientboundAuroraDisconnectPacket()
-                    .message("Server Error: Login handler doesn't support OAuth even tho it claims to support it"));
-                context.client().disconnect();
+                context.client().disconnect("Server Error: Login handler doesn't support OAuth even tho it claims to support it");
                 return;
             }
             String verificationUri = oauthHandler.generateOAuthRequest(context.client(), context.packet().version());
             if (verificationUri == null) {
-                context.client().send(new ClientboundAuroraDisconnectPacket().message("Server Error: Couldn't create OAuth request"));
-                context.client().disconnect();
+                context.client().disconnect("Server Error: Couldn't create OAuth request");
                 return;
             }
             context.client().send(new ClientboundAuroraLoginDetailsPacket());
@@ -93,8 +85,7 @@ public class HandshakeListener_ implements INetListener {
             handler.login(context.client(), context.packet().version(), context.packet().loginType(), context.packet().username(),
                 context.packet().loginData());
             if (!context.client().isLoggedIn()) {
-                context.client().send(new ClientboundAuroraDisconnectPacket().message("Invalid login information"));
-                context.client().disconnect();
+                context.client().disconnect("Invalid login information");
                 return;
             }
             context.manager().keepClientAlive(context.client());

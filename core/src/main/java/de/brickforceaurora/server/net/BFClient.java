@@ -5,7 +5,9 @@ import java.security.PublicKey;
 import java.util.Objects;
 
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraDisconnectPacket;
 import de.brickforceaurora.server.util.Encryption;
+import io.netty.channel.ChannelFutureListener;
 import me.lauriichan.snowframe.util.Version;
 import me.lauriichan.snowframe.util.attribute.Attributable;
 
@@ -105,7 +107,7 @@ public final class BFClient extends Attributable {
         return id;
     }
 
-    public boolean disconnect() {
+    public boolean close() {
         if (!connection.isOpen()) {
             return false;
         }
@@ -115,6 +117,10 @@ public final class BFClient extends Attributable {
 
     public void send(final IClientboundPacket packet) {
         connection.writeAndFlush(packet);
+    }
+
+    public void disconnect(String message) {
+        connection.writeAndFlush(new ClientboundAuroraDisconnectPacket().message(message)).addListener(ChannelFutureListener.CLOSE);
     }
 
     @Override
