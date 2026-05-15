@@ -2,10 +2,10 @@ package de.brickforceaurora.server.net.protocol.clientbound.aurora;
 
 import java.io.IOException;
 
+import de.brickforceaurora.server.net.login.LoginType;
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
 import de.brickforceaurora.server.net.protocol.ProtocolExtension;
-import de.brickforceaurora.server.net.protocol.data.LoginType;
 import de.brickforceaurora.server.util.flag.IFlags;
 
 public class ClientboundAuroraRequestLoginPacket implements IClientboundPacket {
@@ -29,6 +29,11 @@ public class ClientboundAuroraRequestLoginPacket implements IClientboundPacket {
     @Override
     public void write(final PacketBuf buffer) throws IOException {
         buffer.writeInt(supportedTypes.value());
+    }
+    
+    @Override
+    public boolean encrypted() {
+        return true;
     }
 
 }

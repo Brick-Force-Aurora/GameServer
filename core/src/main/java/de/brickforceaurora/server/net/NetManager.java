@@ -188,7 +188,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
         if (serverChannel != null) {
             return;
         }
-        bootstrap.group(mainGroup, workerGroup).channel(NioServerSocketChannel.class).childOption(NioChannelOption.SO_KEEPALIVE, true)
+        bootstrap.group(mainGroup, workerGroup).channel(NioServerSocketChannel.class).childOption(NioChannelOption.SO_KEEPALIVE, false)
             .childOption(NioChannelOption.TCP_NODELAY, true).childHandler(new BFChannelInit(this));
         serverChannel = bootstrap.bind(18890).sync().channel();
         logger.info("Listening on 0.0.0.0:18890");

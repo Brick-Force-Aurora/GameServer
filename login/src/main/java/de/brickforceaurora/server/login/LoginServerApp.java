@@ -4,9 +4,9 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 import de.brickforceaurora.server.IBrickForceServer;
-import de.brickforceaurora.server.ILoginHandler;
 import de.brickforceaurora.server.login.net.DevLoginHandler;
 import de.brickforceaurora.server.net.BrickForceServer;
+import de.brickforceaurora.server.net.login.ILoginHandler;
 import de.brickforceaurora.server.util.AnsiSysOutLogger;
 import me.lauriichan.laylib.logger.ISimpleLogger;
 import me.lauriichan.snowframe.ISnowFrameApp;

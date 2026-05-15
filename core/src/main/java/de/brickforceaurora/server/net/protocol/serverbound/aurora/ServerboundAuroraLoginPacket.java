@@ -2,10 +2,11 @@ package de.brickforceaurora.server.net.protocol.serverbound.aurora;
 
 import java.io.IOException;
 
+import de.brickforceaurora.server.net.login.ILoginData;
+import de.brickforceaurora.server.net.login.LoginType;
 import de.brickforceaurora.server.net.protocol.IServerboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
 import de.brickforceaurora.server.net.protocol.ProtocolExtension;
-import de.brickforceaurora.server.net.protocol.data.LoginType;
 import me.lauriichan.snowframe.util.Version;
 
 public class ServerboundAuroraLoginPacket implements IServerboundPacket {
@@ -13,7 +14,7 @@ public class ServerboundAuroraLoginPacket implements IServerboundPacket {
     private Version version;
     private LoginType loginType;
     private String username;
-    private String tokenOrPassword;
+    private ILoginData loginData;
 
     public final ServerboundAuroraLoginPacket version(Version version) {
         this.version = version;
@@ -42,13 +43,13 @@ public class ServerboundAuroraLoginPacket implements IServerboundPacket {
         return this.username;
     }
 
-    public final ServerboundAuroraLoginPacket tokenOrPassword(String tokenOrPassword) {
-        this.tokenOrPassword = tokenOrPassword;
+    public final ServerboundAuroraLoginPacket loginData(ILoginData loginData) {
+        this.loginData = loginData;
         return this;
     }
 
-    public final String tokenOrPassword() {
-        return this.tokenOrPassword;
+    public final ILoginData loginData() {
+        return this.loginData;
     }
 
     @Override
@@ -61,14 +62,27 @@ public class ServerboundAuroraLoginPacket implements IServerboundPacket {
         this.version = buffer.readVersion();
         this.loginType = LoginType.MANAGER.byMask(buffer.readInt());
         this.username = buffer.readString();
-        this.tokenOrPassword = buffer.readString();
+        this.loginData = loginType == null ? ILoginData.NONE : switch (loginType) {
+        case PASSWORD -> {
+            String password = buffer.readString();
+            yield new ILoginData.Password(password);
+        }
+        case TRANSFER_TOKEN -> {
+            int originChannel = buffer.readInt();
+            String token = buffer.readString();
+            yield new ILoginData.Transfer(originChannel, token);
+        }
+        default -> {
+            yield ILoginData.NONE;
+        }
+        };
     }
-    
+
     @Override
     public boolean encrypted() {
         return true;
     }
-    
+
     @Override
     public boolean requiresLogIn() {
         return false;

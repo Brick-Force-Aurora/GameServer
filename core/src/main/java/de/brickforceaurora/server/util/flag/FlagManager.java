@@ -58,7 +58,7 @@ public final class FlagManager<F> {
                 return flag;
             }
         }
-        throw new IllegalArgumentException("No flag found for mask: 0x" + Integer.toHexString(mask));
+        return null;
     }
 
     public int maxMask() {

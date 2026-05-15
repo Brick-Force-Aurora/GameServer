@@ -12,8 +12,9 @@ public final class ProtocolExtension {
     public static final int CLIENTBOUND_AURORA_HANDSHAKE_CHALLENGE = 1005;
     public static final int SERVERBOUND_AURORA_HANDSHAKE_COMPLETE = 1006;
     public static final int CLIENTBOUND_AURORA_REQUEST_LOGIN = 1007;
-    public static final int CLIENTBOUND_AURORA_LOGGED_IN = 1008;
-    public static final int SERVERBOUND_AURORA_LOGIN = 1009;
+    public static final int SERVERBOUND_AURORA_LOGIN = 1008;
+    public static final int CLIENTBOUND_AURORA_LOGIN_DETAILS = 1009;
+    public static final int CLIENTBOUND_AURORA_LOGGED_IN = 1010;
 
     public static final ClientboundAuroraHeartbeatPacket PACKET_HEARTBEAT = new ClientboundAuroraHeartbeatPacket();
     public static final ClientboundAuroraLoggedInPacket PACKET_LOGGED_IN = new ClientboundAuroraLoggedInPacket();

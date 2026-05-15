@@ -6,7 +6,7 @@ import de.brickforceaurora.server.net.protocol.IServerboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
 import de.brickforceaurora.server.net.protocol.ProtocolExtension;
 
-public class ServerAuroraHeartbeatPacket implements IServerboundPacket {
+public class ServerboundAuroraHeartbeatPacket implements IServerboundPacket {
 
     @Override
     public int packetId() {
