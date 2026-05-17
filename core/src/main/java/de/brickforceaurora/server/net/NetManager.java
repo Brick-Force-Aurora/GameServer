@@ -95,7 +95,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
     }
 
     public int nextClientId() {
-        nextClientId.compareAndSet(Short.MAX_VALUE, 0);
+        nextClientId.compareAndSet(65545, 0);
         return nextClientId.getAndIncrement();
     }
 
