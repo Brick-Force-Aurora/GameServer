@@ -31,7 +31,9 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
 
     private static final long TIMEOUT_TIME = TimeUnit.SECONDS.toNanos(5);
 
-    private final AtomicInteger nextClientId = new AtomicInteger(0);
+    // Client id 0 is considered to be a login fail
+    // Therefore we start at 1
+    private final AtomicInteger nextClientId = new AtomicInteger(1);
 
     private final NioEventLoopGroup mainGroup = new NioEventLoopGroup(1);
     private final NioEventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -95,7 +97,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
     }
 
     public int nextClientId() {
-        nextClientId.compareAndSet(65545, 0);
+        nextClientId.compareAndSet(65545, 1);
         return nextClientId.getAndIncrement();
     }
 

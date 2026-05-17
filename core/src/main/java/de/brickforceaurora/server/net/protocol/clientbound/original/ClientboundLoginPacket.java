@@ -5,25 +5,25 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundLoginPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
+	private int clientId;
+	private int channelId;
 
-	public final ClientboundLoginPacket val(int val) {
-		this.val = val;
+	public final ClientboundLoginPacket clientId(int clientId) {
+		this.clientId = clientId;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int clientId() {
+		return this.clientId;
 	}
 
-	public final ClientboundLoginPacket val2(int val2) {
-		this.val2 = val2;
+	public final ClientboundLoginPacket channelId(int channelId) {
+		this.channelId = channelId;
 		return this;
 	}
 
-	public final int val2() {
-		return this.val2;
+	public final int channelId() {
+		return this.channelId;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public final class ClientboundLoginPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeInt(this.val2);
+		buf.writeInt(this.clientId);
+		buf.writeInt(this.channelId);
 	}
 }

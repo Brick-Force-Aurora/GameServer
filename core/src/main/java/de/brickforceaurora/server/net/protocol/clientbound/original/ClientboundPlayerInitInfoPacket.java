@@ -4,6 +4,9 @@ import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundPlayerInitInfoPacket implements IClientboundPacket {
+    
+    public static final byte TOS_ACCEPTED = 0b1;
+    public static final byte TUTORIALS_DONE = 0b11;
 
 	private int xp;
 	private byte tutorialed;

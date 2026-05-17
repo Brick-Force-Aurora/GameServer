@@ -116,11 +116,20 @@ public final class BFClient extends Attributable {
     }
 
     public void send(final IClientboundPacket packet) {
-        connection.writeAndFlush(packet);
+        connection.eventLoop().execute(() -> connection.writeAndFlush(packet));
+    }
+
+    public void send(final IClientboundPacket... packets) {
+        connection.eventLoop().execute(() -> {
+            for (IClientboundPacket packet : packets) {
+                connection.write(packet);
+            }
+            connection.flush();
+        });
     }
 
     public void disconnect(String message) {
-        connection.writeAndFlush(new ClientboundAuroraDisconnectPacket().message(message)).addListener(ChannelFutureListener.CLOSE);
+        connection.eventLoop().execute(() -> connection.writeAndFlush(new ClientboundAuroraDisconnectPacket().message(message)).addListener(ChannelFutureListener.CLOSE));
     }
 
     @Override
