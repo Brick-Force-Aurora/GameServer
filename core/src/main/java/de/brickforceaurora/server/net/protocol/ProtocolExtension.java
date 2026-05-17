@@ -6,7 +6,7 @@ public final class ProtocolExtension {
 
     public static final int SERVERBOUND_AURORA_HEARTBEAT = 1000;
     public static final int CLIENTBOUND_AURORA_HEARTBEAT = 1001;
-    public static final int SERVERBOUND_AURORA_DISCONNECT = 1002;
+    // TODO: 1002 is free right now, maybe move or use it for something idk
     public static final int CLIENTBOUND_AURORA_DISCONNECT = 1003;
     public static final int SERVERBOUND_AURORA_HANDSHAKE_INITIALIZE = 1004;
     public static final int CLIENTBOUND_AURORA_HANDSHAKE_CHALLENGE = 1005;
