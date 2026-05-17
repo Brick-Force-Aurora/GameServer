@@ -17,7 +17,10 @@ public final class BrickForceServer<S extends ISnowFrameApp<S> & IBrickForceServ
     private final ISimpleLogger logger;
     private final NetManager<S> netManager;
 
-    public BrickForceServer(final SnowFrame<S> frame) {
+    private final IBrickForceServer server;
+
+    public BrickForceServer(final SnowFrame<S> frame, final IBrickForceServer server) {
+        this.server = server;
         this.logger = frame.logger();
         this.netManager = new NetManager<>(frame);
         frame.invoker().addExtra(this);
@@ -35,6 +38,20 @@ public final class BrickForceServer<S extends ISnowFrameApp<S> & IBrickForceServ
     @Override
     protected void tick(long delta) {
         netManager.tick(delta);
+    }
+
+    public void open() throws InterruptedException {
+        if (!isAlive()) {
+            start();
+        }
+        netManager.open(server.port());
+    }
+
+    public void close() throws Exception {
+        if (isAlive()) {
+            stop();
+        }
+        netManager.close();
     }
 
     public NetManager<S> netManager() {

@@ -52,12 +52,11 @@ public class LoginServerApp implements ISnowFrameApp<LoginServerApp>, IBrickForc
             frame.resourceManager().register("data", Paths.get("data"));
         });
         lifecycle.startupChain().register("load", Stage.MAIN, frame -> {
-            server = new BrickForceServer<>(frame);
+            server = new BrickForceServer<>(frame, this);
             loginHandler = new DevLoginHandler(server.netManager());
         });
         lifecycle.startupChain().register("ready", Stage.MAIN, _ -> {
-            server.start();
-            server.netManager().open();
+            server.open();
         });
     }
 
@@ -69,6 +68,11 @@ public class LoginServerApp implements ISnowFrameApp<LoginServerApp>, IBrickForc
     @Override
     public ILoginHandler loginHandler() {
         return loginHandler;
+    }
+    
+    @Override
+    public int port() {
+        return 18890;
     }
 
 }

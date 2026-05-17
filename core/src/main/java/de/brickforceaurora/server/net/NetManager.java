@@ -58,6 +58,10 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
         this.signalManager = frame.module(SignalModule.class).signalManager();
         registerListenerExtensions();
     }
+    
+    public boolean isOpen() {
+        return serverChannel != null && serverChannel.isOpen();
+    }
 
     /*
      * Heartbeat related
@@ -184,14 +188,14 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
      * Server logic related
      */
 
-    public void open() throws InterruptedException {
+    final void open(int port) throws InterruptedException {
         if (serverChannel != null) {
             return;
         }
         bootstrap.group(mainGroup, workerGroup).channel(NioServerSocketChannel.class).childOption(NioChannelOption.SO_KEEPALIVE, false)
             .childOption(NioChannelOption.TCP_NODELAY, true).childHandler(new BFChannelInit(this));
-        serverChannel = bootstrap.bind(18890).sync().channel();
-        logger.info("Listening on 0.0.0.0:18890");
+        serverChannel = bootstrap.bind(port).sync().channel();
+        logger.info("Listening on 0.0.0.0:{0}", port);
         signalManager.call(new NetSignal.ServerStarted(this));
     }
 
