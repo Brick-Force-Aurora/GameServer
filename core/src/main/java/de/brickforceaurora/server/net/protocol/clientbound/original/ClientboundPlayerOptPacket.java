@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundPlayerOptPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
-	private int val3;
+	private int qjModeMask;
+	private int qjOfficialMask;
+	private int qjCommonMask;
 
-	public final ClientboundPlayerOptPacket val(int val) {
-		this.val = val;
+	public final ClientboundPlayerOptPacket qjModeMask(int qjModeMask) {
+		this.qjModeMask = qjModeMask;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int qjModeMask() {
+		return this.qjModeMask;
 	}
 
-	public final ClientboundPlayerOptPacket val2(int val2) {
-		this.val2 = val2;
+	public final ClientboundPlayerOptPacket qjOfficialMask(int qjOfficialMask) {
+		this.qjOfficialMask = qjOfficialMask;
 		return this;
 	}
 
-	public final int val2() {
-		return this.val2;
+	public final int qjOfficialMask() {
+		return this.qjOfficialMask;
 	}
 
-	public final ClientboundPlayerOptPacket val3(int val3) {
-		this.val3 = val3;
+	public final ClientboundPlayerOptPacket qjCommonMask(int qjCommonMask) {
+		this.qjCommonMask = qjCommonMask;
 		return this;
 	}
 
-	public final int val3() {
-		return this.val3;
+	public final int qjCommonMask() {
+		return this.qjCommonMask;
 	}
 
 	@Override
@@ -43,8 +43,8 @@ public final class ClientboundPlayerOptPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeInt(this.val2);
-		buf.writeInt(this.val3);
+		buf.writeInt(this.qjModeMask);
+		buf.writeInt(this.qjOfficialMask);
+		buf.writeInt(this.qjCommonMask);
 	}
 }
