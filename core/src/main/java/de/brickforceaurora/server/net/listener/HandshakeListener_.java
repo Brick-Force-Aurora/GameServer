@@ -1,7 +1,5 @@
 package de.brickforceaurora.server.net.listener;
 
-import java.util.concurrent.TimeUnit;
-
 import de.brickforceaurora.server.net.INetListener;
 import de.brickforceaurora.server.net.NetContext;
 import de.brickforceaurora.server.net.NetSignal;
@@ -22,9 +20,6 @@ import me.lauriichan.snowframe.extension.Extension;
 @Extension
 public class HandshakeListener_ implements INetListener {
 
-    public static final String ATTR_REQUEST_LOGIN_TIME = "login.requested_time";
-    public static final long LOGIN_TIMEOUT_TIME = TimeUnit.MINUTES.toNanos(60);
-
     @PacketHandler
     public void onHandshake(final NetContext<ServerboundAuroraHandshakeInitializePacket> context) {
         context.manager().keepClientAlive(context.client());
@@ -41,7 +36,7 @@ public class HandshakeListener_ implements INetListener {
             return;
         }
         context.manager().keepClientAlive(context.client());
-        context.client().attrSet(ATTR_REQUEST_LOGIN_TIME, context.manager().netTime());
+        context.client().attrSet(ILoginHandler.ATTR_REQUEST_LOGIN_TIME, context.manager().netTime());
         context.client().send(
             new ClientboundAuroraRequestLoginPacket().supportedTypes(context.manager().snowFrame().app().loginHandler().supportedTypes()));
     }
@@ -77,11 +72,11 @@ public class HandshakeListener_ implements INetListener {
             }
             context.client().send(new ClientboundAuroraLoginDetailsPacket());
             // Reset login time for the users sake
-            context.client().attrSet(ATTR_REQUEST_LOGIN_TIME, context.manager().netTime());
+            context.client().attrSet(ILoginHandler.ATTR_REQUEST_LOGIN_TIME, context.manager().netTime());
         }
         default -> {
             // So we don't prevent keep alive anymore
-            context.client().attrUnset(ATTR_REQUEST_LOGIN_TIME);
+            context.client().attrUnset(ILoginHandler.ATTR_REQUEST_LOGIN_TIME);
             handler.login(context.client(), context.packet().version(), context.packet().loginType(), context.packet().username(),
                 context.packet().loginData());
             if (!context.client().isLoggedIn()) {

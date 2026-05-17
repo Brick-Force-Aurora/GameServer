@@ -82,7 +82,9 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
                 client.netTime = netTime;
                 continue;
             }
-            if (TimeMath.calculateDifference(netTime, client.netTime) > TIMEOUT_TIME) {
+            long diff = TimeMath.calculateDifference(netTime, client.netTime);
+            logger.debug("Time: " + TimeUnit.NANOSECONDS.toMillis(diff));
+            if (diff > TIMEOUT_TIME) {
                 logger.debug("Client timedout: {0}", client);
                 // We first remove the client from the clientList
                 clientDisconnected(client);
