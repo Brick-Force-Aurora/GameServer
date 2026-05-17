@@ -1,14 +1,11 @@
-package de.brickforceaurora.server.login.net;
+package de.brickforceaurora.server.net.login;
 
 import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.NetManager;
-import de.brickforceaurora.server.net.login.ILoginData;
-import de.brickforceaurora.server.net.login.ILoginHandler;
-import de.brickforceaurora.server.net.login.LoginType;
 import de.brickforceaurora.server.util.flag.IFlags;
 import me.lauriichan.snowframe.util.Version;
 
-public class DevLoginHandler implements ILoginHandler {
+public final class DevLoginHandler implements ILoginHandler {
 
     private final NetManager<?> netManager;
     // We don't support anything (= DEBUG login)

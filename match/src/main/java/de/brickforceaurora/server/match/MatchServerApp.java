@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import de.brickforceaurora.server.IBrickForceServer;
 import de.brickforceaurora.server.net.BrickForceServer;
+import de.brickforceaurora.server.net.login.DevLoginHandler;
 import de.brickforceaurora.server.net.login.ILoginHandler;
 import de.brickforceaurora.server.util.AnsiSysOutLogger;
 import me.lauriichan.laylib.logger.ISimpleLogger;
@@ -43,6 +44,7 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
     }
 
     private BrickForceServer<MatchServerApp> server;
+    private ILoginHandler loginHandler;
 
     @Override
     public void registerLifecycle(Lifecycle<MatchServerApp> lifecycle) {
@@ -50,11 +52,11 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
             frame.resourceManager().register("data", Paths.get("data"));
         });
         lifecycle.startupChain().register("load", Stage.MAIN, frame -> {
-            server = new BrickForceServer<>(frame);
+            server = new BrickForceServer<>(frame, this);
+            loginHandler = new DevLoginHandler(server.netManager());
         });
         lifecycle.startupChain().register("ready", Stage.MAIN, _ -> {
-            server.start();
-            server.netManager().open();
+            server.open();
         });
     }
 
@@ -65,7 +67,7 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
 
     @Override
     public ILoginHandler loginHandler() {
-        return null;
+        return loginHandler;
     }
 
 }
