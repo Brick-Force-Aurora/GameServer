@@ -2,38 +2,42 @@ package de.brickforceaurora.server.net.protocol.clientbound.original;
 
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
+import de.brickforceaurora.server.net.protocol.data.CommonOption;
+import de.brickforceaurora.server.net.protocol.data.GameMode;
+import de.brickforceaurora.server.net.protocol.data.QuickPlayOption;
+import de.brickforceaurora.server.util.flag.IFlags;
 
 public final class ClientboundPlayerOptPacket implements IClientboundPacket {
 
-	private int qjModeMask;
-	private int qjOfficialMask;
-	private int qjCommonMask;
+	private IFlags<GameMode> modeOptions;
+    private QuickPlayOption quickPlayOption;
+	private IFlags<CommonOption> commonOptions;
 
-	public final ClientboundPlayerOptPacket qjModeMask(int qjModeMask) {
-		this.qjModeMask = qjModeMask;
+	public final ClientboundPlayerOptPacket modeOptions(IFlags<GameMode> modeOptions) {
+		this.modeOptions = modeOptions;
 		return this;
 	}
 
-	public final int qjModeMask() {
-		return this.qjModeMask;
+	public final IFlags<GameMode> modeOptions() {
+		return this.modeOptions;
 	}
 
-	public final ClientboundPlayerOptPacket qjOfficialMask(int qjOfficialMask) {
-		this.qjOfficialMask = qjOfficialMask;
+	public final ClientboundPlayerOptPacket quickPlayOption(QuickPlayOption quickPlayOption) {
+		this.quickPlayOption = quickPlayOption;
 		return this;
 	}
 
-	public final int qjOfficialMask() {
-		return this.qjOfficialMask;
+	public final QuickPlayOption quickPlayOption() {
+		return this.quickPlayOption;
 	}
 
-	public final ClientboundPlayerOptPacket qjCommonMask(int qjCommonMask) {
-		this.qjCommonMask = qjCommonMask;
+	public final ClientboundPlayerOptPacket commonOptions(IFlags<CommonOption> commonOptions) {
+		this.commonOptions = commonOptions;
 		return this;
 	}
 
-	public final int qjCommonMask() {
-		return this.qjCommonMask;
+	public final IFlags<CommonOption> commonOptions() {
+		return this.commonOptions;
 	}
 
 	@Override
@@ -43,8 +47,8 @@ public final class ClientboundPlayerOptPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.qjModeMask);
-		buf.writeInt(this.qjOfficialMask);
-		buf.writeInt(this.qjCommonMask);
+		buf.writeInt(modeOptions.value());
+		buf.writeInt(quickPlayOption.id());
+		buf.writeInt(commonOptions.value());
 	}
 }

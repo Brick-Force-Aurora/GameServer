@@ -27,7 +27,7 @@ public final class ClientboundChannelPacket implements IClientboundPacket {
 		buf.writeInt(this.channels.length);
 		for (ChannelInfo channel: channels){
 			buf.writeInt(channel.id());
-			buf.writeInt(channel.mode());
+			buf.writeInt(channel.mode().id());
 			buf.writeString(channel.name());
 			buf.writeString(channel.ip());
 			buf.writeInt(channel.port());

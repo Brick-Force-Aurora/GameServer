@@ -3,7 +3,7 @@ package de.brickforceaurora.server.net.protocol.data;
 import de.brickforceaurora.server.util.flag.FlagManager;
 import de.brickforceaurora.server.util.flag.IFlag;
 
-public enum CommonOpt implements IFlag {
+public enum CommonOption implements IFlag {
 
     DONOT_NEWBIE_CHANNEL_MSG(0x1),
     DONOT_BUNGEE_GUIDE(0x2),
@@ -21,11 +21,11 @@ public enum CommonOpt implements IFlag {
     DONOT_DEFENSE_GUIDE(0x2000),
     DONOT_ESCAPE_GUIDE(0x4000);
 
-    public static final FlagManager<CommonOpt> MANAGER = FlagManager.ofEnum(CommonOpt.class);
+    public static final FlagManager<CommonOption> MANAGER = FlagManager.ofEnum(CommonOption.class);
 
     private final int mask;
 
-    private CommonOpt(int mask) {
+    private CommonOption(int mask) {
         this.mask = mask;
     }
 

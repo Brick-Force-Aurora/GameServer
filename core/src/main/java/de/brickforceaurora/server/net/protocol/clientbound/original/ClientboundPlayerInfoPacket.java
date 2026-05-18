@@ -46,7 +46,7 @@ public final class ClientboundPlayerInfoPacket implements IClientboundPacket {
 		return this.xp;
 	}
 
-	public final ClientboundPlayerInfoPacket forcePoints(int val3) {
+	public final ClientboundPlayerInfoPacket forcePoints(int forcePoints) {
 		this.forcePoints = forcePoints;
 		return this;
 	}

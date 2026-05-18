@@ -2,16 +2,16 @@ package de.brickforceaurora.server.net.protocol.clientbound.original;
 
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
+import de.brickforceaurora.server.net.protocol.data.CountryFilter;
+import de.brickforceaurora.server.net.protocol.data.Tutorial;
+import de.brickforceaurora.server.util.flag.IFlags;
 
 public final class ClientboundPlayerInitInfoPacket implements IClientboundPacket {
-    
-    public static final byte TOS_ACCEPTED = 0b1;
-    public static final byte TUTORIALS_DONE = 0b11;
 
 	private int xp;
-	private byte tutorialed;
-	private int countryFilter;
-	private byte tos;
+	private IFlags<Tutorial> tutorials;
+	private CountryFilter countryFilter;
+	private boolean tosAccepted;
 	private int extraSlots;
 	private int rank;
 	private int firstLoginFp;
@@ -25,31 +25,31 @@ public final class ClientboundPlayerInitInfoPacket implements IClientboundPacket
 		return this.xp;
 	}
 
-	public final ClientboundPlayerInitInfoPacket tutorialed(byte tutorialed) {
-		this.tutorialed = tutorialed;
+	public final ClientboundPlayerInitInfoPacket tutorials(IFlags<Tutorial> tutorials) {
+		this.tutorials = tutorials;
 		return this;
 	}
 
-	public final byte tutorialed() {
-		return this.tutorialed;
+	public final IFlags<Tutorial> tutorials() {
+		return this.tutorials;
 	}
 
-	public final ClientboundPlayerInitInfoPacket countryFilter(int countryFilter) {
+	public final ClientboundPlayerInitInfoPacket countryFilter(CountryFilter countryFilter) {
 		this.countryFilter = countryFilter;
 		return this;
 	}
 
-	public final int countryFilter() {
+	public final CountryFilter countryFilter() {
 		return this.countryFilter;
 	}
 
-	public final ClientboundPlayerInitInfoPacket tos(byte tos) {
-		this.tos = tos;
+	public final ClientboundPlayerInitInfoPacket tosAccepted(boolean tosAccepted) {
+		this.tosAccepted = tosAccepted;
 		return this;
 	}
 
-	public final byte tos() {
-		return this.tos;
+	public final boolean tosAccepted() {
+		return this.tosAccepted;
 	}
 
 	public final ClientboundPlayerInitInfoPacket extraSlots(int extraSlots) {
@@ -87,9 +87,9 @@ public final class ClientboundPlayerInitInfoPacket implements IClientboundPacket
 	@Override
 	public final void write(PacketBuf buf) {
 		buf.writeInt(this.xp);
-		buf.writeByte(this.tutorialed);
-		buf.writeInt(this.countryFilter);
-		buf.writeByte(this.tos);
+		buf.writeByte(this.tutorials.value());
+		buf.writeInt(this.countryFilter.id());
+		buf.writeByte(this.tosAccepted ? 1 : 0);
 		buf.writeInt(this.extraSlots);
 		buf.writeInt(this.rank);
 		buf.writeInt(this.firstLoginFp);

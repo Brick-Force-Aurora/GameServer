@@ -1,25 +1,29 @@
 package de.brickforceaurora.server.net.protocol.data;
 
-import de.brickforceaurora.server.util.flag.FlagManager;
-import de.brickforceaurora.server.util.flag.IFlag;
-
-public enum ChannelMode implements IFlag {
+public enum ChannelMode {
 
     NEWBIE(1),
     BATTLE(2),
     MAPEDIT(3),
     CLAN(4);
 
-    public static final FlagManager<ChannelMode> MANAGER = FlagManager.ofEnum(ChannelMode.class);
+    public static final ChannelMode[] VALUES = ChannelMode.values();
 
-    private final int mask;
-
-    private ChannelMode(int mask) {
-        this.mask = mask;
+    public static ChannelMode byId(int id) {
+        if (id < 1 || id > 4) {
+            return null;
+        }
+        return VALUES[id - 1];
     }
 
-    @Override
-    public int mask() {
-        return mask;
+    private final int id;
+
+    private ChannelMode(int id) {
+        this.id = id;
     }
+
+    public int id() {
+        return id;
+    }
+
 }
