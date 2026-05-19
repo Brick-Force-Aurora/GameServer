@@ -12,10 +12,10 @@ public enum RoomStatus {
     public static final RoomStatus[] VALUES = RoomStatus.values();
 
     public static RoomStatus byId(int id) {
-        if (id < 1 || id > 4) {
+        if (id < -1 || id > 4) {
             return null;
         }
-        return VALUES[id - 1];
+        return VALUES[id + 1];
     }
 
     private final int id;

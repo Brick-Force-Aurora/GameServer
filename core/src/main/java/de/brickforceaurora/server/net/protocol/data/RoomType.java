@@ -12,16 +12,15 @@ public enum RoomType {
     BND(6),
     BUNGEE(7),
     ESCAPE(8),
-    ZOMBIE(9),
-    NUM_TYPE(10);
+    ZOMBIE(9);
 
     public static final RoomType[] VALUES = RoomType.values();
 
     public static RoomType byId(int id) {
-        if (id < 1 || id > 4) {
+        if (id < -1 || id > 4) {
             return null;
         }
-        return VALUES[id - 1];
+        return VALUES[id + 1];
     }
 
     private final int id;
