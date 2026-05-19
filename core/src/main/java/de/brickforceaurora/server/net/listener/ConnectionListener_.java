@@ -21,8 +21,8 @@ public class ConnectionListener_ implements INetListener {
             return;
         }
         if (client.attrHas(ILoginHandler.ATTR_REQUEST_LOGIN_TIME)) {
-            long loginTime = client.attr(ILoginHandler.ATTR_REQUEST_LOGIN_TIME, long.class);
-            if (TimeMath.calculateDifference(context.manager().netTime(), loginTime) > ILoginHandler.LOGIN_TIMEOUT_TIME) {
+            Long loginTime = client.attr(ILoginHandler.ATTR_REQUEST_LOGIN_TIME, Long.class);
+            if (loginTime != null && TimeMath.calculateDifference(context.manager().netTime(), loginTime) > ILoginHandler.LOGIN_TIMEOUT_TIME) {
                 // Don't allow any keep alive anymore :)
                 return;
             }
