@@ -2,7 +2,6 @@ package de.brickforceaurora.server.net.protocol.data;
 
 public enum RoomType {
 
-    NONE(-1),
     MAP_EDITOR(0),
     TEAM_MATCH(1),
     INDIVIDUAL(2),
@@ -17,10 +16,10 @@ public enum RoomType {
     public static final RoomType[] VALUES = RoomType.values();
 
     public static RoomType byId(int id) {
-        if (id < -1 || id > 4) {
+        if (id < 0 || id >= VALUES.length) {
             return null;
         }
-        return VALUES[id + 1];
+        return VALUES[id];
     }
 
     private final int id;

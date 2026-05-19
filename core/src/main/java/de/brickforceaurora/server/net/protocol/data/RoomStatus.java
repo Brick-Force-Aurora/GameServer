@@ -2,7 +2,6 @@ package de.brickforceaurora.server.net.protocol.data;
 
 public enum RoomStatus {
 
-    NONE(-1),
     WAITING(0),
     PENDING(1),
     PLAYING(2),
@@ -12,10 +11,10 @@ public enum RoomStatus {
     public static final RoomStatus[] VALUES = RoomStatus.values();
 
     public static RoomStatus byId(int id) {
-        if (id < -1 || id > 4) {
+        if (id < 0 || id >= VALUES.length) {
             return null;
         }
-        return VALUES[id + 1];
+        return VALUES[id];
     }
 
     private final int id;
