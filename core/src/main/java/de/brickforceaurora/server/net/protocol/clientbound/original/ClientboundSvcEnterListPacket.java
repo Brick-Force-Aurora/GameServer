@@ -2,58 +2,19 @@ package de.brickforceaurora.server.net.protocol.clientbound.original;
 
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
+import de.brickforceaurora.server.net.protocol.data.ClientInfo;
 
 public final class ClientboundSvcEnterListPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
-	private String val3;
-	private int val4;
-	private int val5;
+	private ClientInfo[] clients;
 
-	public final ClientboundSvcEnterListPacket val(int val) {
-		this.val = val;
+	public final ClientboundSvcEnterListPacket clients(ClientInfo[] clients) {
+		this.clients = clients;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
-	}
-
-	public final ClientboundSvcEnterListPacket val2(int val2) {
-		this.val2 = val2;
-		return this;
-	}
-
-	public final int val2() {
-		return this.val2;
-	}
-
-	public final ClientboundSvcEnterListPacket val3(String val3) {
-		this.val3 = val3;
-		return this;
-	}
-
-	public final String val3() {
-		return this.val3;
-	}
-
-	public final ClientboundSvcEnterListPacket val4(int val4) {
-		this.val4 = val4;
-		return this;
-	}
-
-	public final int val4() {
-		return this.val4;
-	}
-
-	public final ClientboundSvcEnterListPacket val5(int val5) {
-		this.val5 = val5;
-		return this;
-	}
-
-	public final int val5() {
-		return this.val5;
+	public final ClientInfo[] clients() {
+		return this.clients;
 	}
 
 	@Override
@@ -63,10 +24,12 @@ public final class ClientboundSvcEnterListPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeInt(this.val2);
-		buf.writeString(this.val3);
-		buf.writeInt(this.val4);
-		buf.writeInt(this.val5);
+		buf.writeInt(this.clients.length);
+		for (ClientInfo client : this.clients){
+			buf.writeInt(client.seq());
+			buf.writeString(client.name());
+			buf.writeInt(client.xp());
+			buf.writeInt(client.rank());
+		}
 	}
 }

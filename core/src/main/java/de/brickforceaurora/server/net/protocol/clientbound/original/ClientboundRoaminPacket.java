@@ -5,15 +5,15 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundRoaminPacket implements IClientboundPacket {
 
-	private int val;
+	private int targetChannelId; //Target ChannelID
 
-	public final ClientboundRoaminPacket val(int val) {
-		this.val = val;
+	public final ClientboundRoaminPacket targetChannelId(int targetChannelId) {
+		this.targetChannelId = targetChannelId;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int targetChannelId() {
+		return this.targetChannelId;
 	}
 
 	@Override
@@ -23,6 +23,6 @@ public final class ClientboundRoaminPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
+		buf.writeInt(this.targetChannelId);
 	}
 }
