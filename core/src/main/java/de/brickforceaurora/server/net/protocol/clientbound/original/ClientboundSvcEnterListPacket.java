@@ -2,18 +2,18 @@ package de.brickforceaurora.server.net.protocol.clientbound.original;
 
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
-import de.brickforceaurora.server.net.protocol.data.ClientInfo;
+import de.brickforceaurora.server.net.protocol.data.api.IClientInfo;
 
 public final class ClientboundSvcEnterListPacket implements IClientboundPacket {
 
-	private ClientInfo[] clients;
+	private IClientInfo[] clients;
 
-	public final ClientboundSvcEnterListPacket clients(ClientInfo[] clients) {
+	public final ClientboundSvcEnterListPacket clients(IClientInfo[] clients) {
 		this.clients = clients;
 		return this;
 	}
 
-	public final ClientInfo[] clients() {
+	public final IClientInfo[] clients() {
 		return this.clients;
 	}
 
@@ -24,12 +24,6 @@ public final class ClientboundSvcEnterListPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.clients.length);
-		for (ClientInfo client : this.clients){
-			buf.writeInt(client.seq());
-			buf.writeString(client.name());
-			buf.writeInt(client.xp());
-			buf.writeInt(client.rank());
-		}
+	    buf.writeArray(clients, IClientInfo::toBuffer);
 	}
 }

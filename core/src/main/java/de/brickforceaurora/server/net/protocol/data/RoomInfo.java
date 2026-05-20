@@ -1,7 +1,9 @@
 package de.brickforceaurora.server.net.protocol.data;
 
-public record RoomInfo(int id, RoomType type, String title, boolean locked, RoomStatus status, int currentPlayerCount, int maxPlayerCount,
-    int mapId, String mapAlias, int goal, int timeLimit, int weaponOption, int ping, int score1, int score2, int countryFilter,
-    boolean isBreakInto, boolean isDropItem, boolean isWanted, int squad, int squadCounter) {
+import de.brickforceaurora.server.net.protocol.data.api.IRoomInfo;
+
+public record RoomInfo(int id, RoomType type, String title, boolean passwordLocked, RoomStatus status, int players, int maxPlayers,
+    int mapId, String mapAlias, int goal, int timeLimit, int weaponOption, int ping, int blueScore, int redScore, CountryFilter countryFilter,
+    boolean allowsLateJoining, boolean weaponDropEnabled, boolean wantedEnabled, int squad, int squadCounter) implements IRoomInfo {
 
 }

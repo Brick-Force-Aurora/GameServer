@@ -4,6 +4,9 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.IntFunction;
 
 import javax.imageio.ImageIO;
 
@@ -138,6 +141,18 @@ public final class PacketBuf implements AutoCloseable {
         }
         return values;
     }
+    
+    public <T> T[] readArray(IntFunction<T[]> arrayCreator, Function<PacketBuf, T> valueReader) {
+        final int length = buffer.readIntLE();
+        if (length <= 0) {
+            return arrayCreator.apply(0);
+        }
+        T[] values = arrayCreator.apply(length);
+        for (int i = 0; i < length; i++) {
+            values[i] = valueReader.apply(this);
+        }
+        return values;
+    }
 
     /*
      * Writing
@@ -234,6 +249,17 @@ public final class PacketBuf implements AutoCloseable {
         buffer.writeIntLE(values.length);
         for (int value : values) {
             buffer.writeIntLE(value);
+        }
+    }
+    
+    public <T> void writeArray(T[] values, BiConsumer<PacketBuf, T> valueWriter) {
+        if (values == null || values.length == 0) {
+            buffer.writeIntLE(0);
+            return;
+        }
+        buffer.writeIntLE(values.length);
+        for (T value : values) {
+            valueWriter.accept(this, value);
         }
     }
     

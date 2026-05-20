@@ -2,18 +2,18 @@ package de.brickforceaurora.server.net.protocol.clientbound.original;
 
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
-import de.brickforceaurora.server.net.protocol.data.ChannelInfo;
+import de.brickforceaurora.server.net.protocol.data.api.IChannelInfo;
 
 public final class ClientboundChannelPacket implements IClientboundPacket {
 
-	private ChannelInfo[] channels;
+	private IChannelInfo[] channels;
 
-	public final ClientboundChannelPacket channels(ChannelInfo[] channels) {
+	public final ClientboundChannelPacket channels(IChannelInfo[] channels) {
 		this.channels = channels;
 		return this;
 	}
 
-	public final ChannelInfo[] channels() {
+	public final IChannelInfo[] channels() {
 		return this.channels;
 	}
 
@@ -24,21 +24,6 @@ public final class ClientboundChannelPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.channels.length);
-		for (ChannelInfo channel: channels){
-			buf.writeInt(channel.id());
-			buf.writeInt(channel.mode().id());
-			buf.writeString(channel.name());
-			buf.writeString(channel.ip());
-			buf.writeInt(channel.port());
-			buf.writeInt(channel.userCount());
-			buf.writeInt(channel.maxUserCount());
-			buf.writeInt(channel.country());
-			buf.writeByte(channel.minLvRank());
-			buf.writeByte(channel.maxLvRank());
-			buf.writeShort(channel.xpBonus()); //Unsigned Short
-			buf.writeShort(channel.fpBonus()); //Unsigned Short
-			buf.writeInt(channel.limitStarRate());
-		}
+	    buf.writeArray(channels, IChannelInfo::toBuffer);
 	}
 }

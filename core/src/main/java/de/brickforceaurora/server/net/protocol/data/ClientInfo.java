@@ -1,3 +1,5 @@
 package de.brickforceaurora.server.net.protocol.data;
 
-public record ClientInfo(int seq, String name, int xp, int rank) {}
+import de.brickforceaurora.server.net.protocol.data.api.IClientInfo;
+
+public record ClientInfo(int id, String name, int xp, int rank) implements IClientInfo {}
