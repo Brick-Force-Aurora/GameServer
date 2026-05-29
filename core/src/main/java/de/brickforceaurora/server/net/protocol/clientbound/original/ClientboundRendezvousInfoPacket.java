@@ -5,35 +5,25 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundRendezvousInfoPacket implements IClientboundPacket {
 
-	private int Unnamed0;
-	private String val2;
-	private int val3;
+	private String ip;
+	private int port;
 
-	public final ClientboundRendezvousInfoPacket Unnamed0(int Unnamed0) {
-		this.Unnamed0 = Unnamed0;
+	public final ClientboundRendezvousInfoPacket ip(String ip) {
+		this.ip = ip;
 		return this;
 	}
 
-	public final int Unnamed0() {
-		return this.Unnamed0;
+	public final String ip() {
+		return this.ip;
 	}
 
-	public final ClientboundRendezvousInfoPacket val2(String val2) {
-		this.val2 = val2;
+	public final ClientboundRendezvousInfoPacket port(int port) {
+		this.port = port;
 		return this;
 	}
 
-	public final String val2() {
-		return this.val2;
-	}
-
-	public final ClientboundRendezvousInfoPacket val3(int val3) {
-		this.val3 = val3;
-		return this;
-	}
-
-	public final int val3() {
-		return this.val3;
+	public final int port() {
+		return this.port;
 	}
 
 	@Override
@@ -43,8 +33,8 @@ public final class ClientboundRendezvousInfoPacket implements IClientboundPacket
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.Unnamed0);
-		buf.writeString(this.val2);
-		buf.writeInt(this.val3);
+		buf.writeInt(0); //unused
+		buf.writeString(this.ip);
+		buf.writeInt(this.port);
 	}
 }

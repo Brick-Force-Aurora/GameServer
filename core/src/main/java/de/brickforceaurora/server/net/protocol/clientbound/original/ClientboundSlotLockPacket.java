@@ -5,25 +5,25 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundSlotLockPacket implements IClientboundPacket {
 
-	private byte val;
-	private byte val2;
+	private byte index;
+	private boolean slotLocked;
 
-	public final ClientboundSlotLockPacket val(byte val) {
-		this.val = val;
+	public final ClientboundSlotLockPacket index(byte index) {
+		this.index = index;
 		return this;
 	}
 
-	public final byte val() {
-		return this.val;
+	public final byte index() {
+		return this.index;
 	}
 
-	public final ClientboundSlotLockPacket val2(byte val2) {
-		this.val2 = val2;
+	public final ClientboundSlotLockPacket slotLocked(boolean slotLocked) {
+		this.slotLocked = slotLocked;
 		return this;
 	}
 
-	public final byte val2() {
-		return this.val2;
+	public final boolean slotLocked() {
+		return this.slotLocked;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public final class ClientboundSlotLockPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeByte(this.val);
-		buf.writeByte(this.val2);
+		buf.writeByte(this.index);
+		buf.writeBoolean(this.slotLocked); //byte?
 	}
 }

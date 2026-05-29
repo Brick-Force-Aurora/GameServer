@@ -5,25 +5,25 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundCopyrightPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
+	private int ownerClientId;
+	private int userMapInfoSlot;
 
-	public final ClientboundCopyrightPacket val(int val) {
-		this.val = val;
+	public final ClientboundCopyrightPacket ownerClientId(int ownerClientId) {
+		this.ownerClientId = ownerClientId;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int ownerClientId() {
+		return this.ownerClientId;
 	}
 
-	public final ClientboundCopyrightPacket val2(int val2) {
-		this.val2 = val2;
+	public final ClientboundCopyrightPacket userMapInfoSlot(int userMapInfoSlot) {
+		this.userMapInfoSlot = userMapInfoSlot;
 		return this;
 	}
 
-	public final int val2() {
-		return this.val2;
+	public final int userMapInfoSlot() {
+		return this.userMapInfoSlot;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public final class ClientboundCopyrightPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeInt(this.val2);
+		buf.writeInt(this.ownerClientId);
+		buf.writeInt(this.userMapInfoSlot);
 	}
 }

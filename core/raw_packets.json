@@ -5,6 +5,11 @@
         "values": []
     },
     {
+        "name": "ServerboundCreateRoom",
+        "id": 7,
+        "values": []
+    },
+    {
         "name": "ServerboundGetCannon",
         "id": 158,
         "values": [
