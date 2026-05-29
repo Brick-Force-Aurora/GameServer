@@ -36,10 +36,9 @@ public class RoomListener_ implements INetListener {
     public void onRoomConfig(final NetContext<ServerboundRoomConfigPacket> context) {
         Room room = context.client().attr(Room.ATTR_ROOM, Room.class);
         if (room == null) {
-            // NO ROOM?????
+            // TODO: NO ROOM?????
             return;
         }
-        
         if (room.type() != context.packet().type()) {
             GameMode<?> mode = gameModeManager.modeByType(context.packet().type());
             if (mode == null) {
@@ -53,6 +52,7 @@ public class RoomListener_ implements INetListener {
 
     @PacketHandler
     public void onRoomCreate(final NetContext<ServerboundCreateRoomPacket> context) {
+        // TODO: Check if client is in room before creating a new room
         GameMode<?> mode = gameModeManager.modeByType(context.packet().type());
         if (mode == null) {
             // TODO: SMTH???
