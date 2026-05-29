@@ -16,9 +16,10 @@ import me.lauriichan.maven.sourcemod.api.ISourceTransformer;
 
 public final class GameModeNetListenerTransformer implements ISourceTransformer {
 
-    private static final String NET_HANDLER_CONTAINER_TYPE = "de.brickforceaurora.server.net.NetHandlerContainer";
-    private static final String INET_LISTENER_TYPE = "de.brickforceaurora.server.net.INetListener";
-    private static final String NET_HANDLER_TYPE = "de.brickforceaurora.server.net.NetHandler";
+    private static final String NET_HANDLER_CONTAINER_TYPE = "de.brickforceaurora.server.match.gamemode.GameNetHandlerContainer";
+    private static final String INET_LISTENER_TYPE = "de.brickforceaurora.server.match.gamemode.IGameNetListener";
+    private static final String NET_HANDLER_TYPE = "de.brickforceaurora.server.match.gamemode.GameNetHandler";
+    private static final String ROOM_TYPE = "de.brickforceaurora.server.match.room.Room";
     private static final String NET_CONTEXT_TYPE = "de.brickforceaurora.server.net.NetContext";
 
     @Override
@@ -32,12 +33,17 @@ public final class GameModeNetListenerTransformer implements ISourceTransformer 
     @Override
     public void transform(final JavaSource<?> source) {
         final JavaClassSource clazz = (JavaClassSource) source;
-
+        
+        String gameDataType = clazz.getInterfaces().stream().filter(intf -> intf.startsWith(INET_LISTENER_TYPE)).findFirst().orElseThrow();
+        gameDataType = gameDataType.substring(INET_LISTENER_TYPE.length() + 1);
+        gameDataType = gameDataType.substring(0, gameDataType.length() - 1);
+        
         StringBuilder containerBuilder = new StringBuilder("""
+            @SuppressWarnings("unchecked")
             @Override
-            public NetHandlerContainer newContainer() {
-                return new NetHandlerContainer(this, new GameNetHandler<>[] {
-            """);
+            public GameNetHandlerContainer<%1$s> newContainer() {
+                return new GameNetHandlerContainer<%1$s>(this, new GameNetHandler[] {
+            """.formatted(gameDataType));
         int amount = 0;
         for (final MethodSource<JavaClassSource> method : clazz.getMethods()) {
             if (!method.hasAnnotation(PacketHandler.class)
@@ -45,10 +51,20 @@ public final class GameModeNetListenerTransformer implements ISourceTransformer 
                 continue;
             }
             final List<ParameterSource<JavaClassSource>> params = method.getParameters();
-            if (params.size() != 1) {
+            if (params.size() != 3) {
                 continue;
             }
-            final Type<JavaClassSource> paramType = params.get(0).getType();
+            Type<JavaClassSource> paramType = params.get(0).getType();
+            if (!paramType.isType(ROOM_TYPE)) {
+                continue;
+            }
+            paramType = params.get(1).getType();
+            if (!paramType.isType(gameDataType)) {
+                System.out.println(paramType.getName());
+                System.out.println(gameDataType);
+                continue;
+            }
+            paramType = params.get(2).getType();
             if (!paramType.isType(NET_CONTEXT_TYPE) || !paramType.isParameterized()) {
                 continue;
             }
@@ -56,7 +72,7 @@ public final class GameModeNetListenerTransformer implements ISourceTransformer 
             if (amount++ != 0) {
                 containerBuilder.append(",");
             }
-            containerBuilder.append("\n\t\tnew NetHandler<>(").append(packetType.getQualifiedName()).append(".class, this::")
+            containerBuilder.append("\n\t\tnew GameNetHandler<").append(gameDataType).append(", ").append(packetType.getQualifiedName()).append(">(").append(packetType.getQualifiedName()).append(".class, this::")
                 .append(method.getName()).append(')');
         }
         if (amount == 0) {

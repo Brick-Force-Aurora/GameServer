@@ -142,13 +142,11 @@
 								</transformer>
 								<transformer>
 									<className>
+										de.brickforceaurora.maven.server.match.GameModeNetListenerTransformer</className>
+								</transformer>
+								<transformer>
+									<className>
 										de.brickforceaurora.maven.server.PacketListenerTransformer</className>
-									<properties>
-										<property>
-											<name>test</name>
-											<value>true</value>
-										</property>
-									</properties>
 								</transformer>
 							</transformers>
 							<includes>
