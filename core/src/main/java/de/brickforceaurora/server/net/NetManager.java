@@ -215,6 +215,8 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
         serverChannel.close().awaitUninterruptibly();
         mainGroup.close();
         workerGroup.close();
+        
+        signalManager.call(new NetSignal.ServerStopped(this));
     }
 
     void clientConnected(final BFClient client) {

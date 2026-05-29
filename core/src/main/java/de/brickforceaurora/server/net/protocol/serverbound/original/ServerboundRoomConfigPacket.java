@@ -2,6 +2,7 @@ package de.brickforceaurora.server.net.protocol.serverbound.original;
 
 import de.brickforceaurora.server.net.protocol.IServerboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
+import de.brickforceaurora.server.net.protocol.data.RoomType;
 
 public final class ServerboundRoomConfigPacket implements IServerboundPacket {
 
@@ -15,7 +16,7 @@ public final class ServerboundRoomConfigPacket implements IServerboundPacket {
 	private int itemPickup;
 	private String whereAlias;
 	private String pswd;
-	private int type;
+	private RoomType type;
 
 	public final ServerboundRoomConfigPacket killCount(int killCount) {
 		this.killCount = killCount;
@@ -107,12 +108,12 @@ public final class ServerboundRoomConfigPacket implements IServerboundPacket {
 		return this.pswd;
 	}
 
-	public final ServerboundRoomConfigPacket type(int type) {
+	public final ServerboundRoomConfigPacket type(RoomType type) {
 		this.type = type;
 		return this;
 	}
 
-	public final int type() {
+	public final RoomType type() {
 		return this.type;
 	}
 
@@ -133,6 +134,6 @@ public final class ServerboundRoomConfigPacket implements IServerboundPacket {
 		this.itemPickup = buf.readInt();
 		this.whereAlias = buf.readString();
 		this.pswd = buf.readString();
-		this.type = buf.readInt();
+		this.type = RoomType.byId(buf.readInt());
 	}
 }

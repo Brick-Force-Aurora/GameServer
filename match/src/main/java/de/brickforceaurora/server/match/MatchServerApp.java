@@ -4,6 +4,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 import de.brickforceaurora.server.IBrickForceServer;
+import de.brickforceaurora.server.match.gamemode.GameModeManager;
 import de.brickforceaurora.server.match.room.RoomManager;
 import de.brickforceaurora.server.net.BrickForceServer;
 import de.brickforceaurora.server.net.login.DevLoginHandler;
@@ -13,6 +14,7 @@ import me.lauriichan.laylib.logger.ISimpleLogger;
 import me.lauriichan.snowframe.ISnowFrameApp;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.lifecycle.Lifecycle;
+import me.lauriichan.snowframe.lifecycle.LifecycleBuilder;
 import me.lauriichan.snowframe.lifecycle.LifecyclePhase.Stage;
 
 public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForceServer {
@@ -44,20 +46,31 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
         return snowFrame.logger();
     }
 
+    private RoomManager roomManager;
+    private GameModeManager gameModeManager;
+
     private BrickForceServer<MatchServerApp> server;
     private ILoginHandler loginHandler;
-    private RoomManager roomManager;
+
+    @Override
+    public void setupLifecycle(LifecycleBuilder<MatchServerApp> builder) {
+        builder.startupChain().newPhase("server-setup", true).newPhase("server-start", true);
+    }
 
     @Override
     public void registerLifecycle(Lifecycle<MatchServerApp> lifecycle) {
         lifecycle.startupChain().register("load", Stage.PRE, frame -> {
             frame.resourceManager().register("data", Paths.get("data"));
-        }).register("load", Stage.MAIN, _ -> {
+        }).register("ready", Stage.MAIN, frame -> {
+            gameModeManager = new GameModeManager(frame);
+        });
+        lifecycle.startupChain().register("server-setup", Stage.MAIN, _ -> {
             roomManager = new RoomManager();
-        }).register("ready", Stage.PRE, frame -> {
+        });
+        lifecycle.startupChain().register("server-start", Stage.PRE, frame -> {
             server = new BrickForceServer<>(frame, this);
             loginHandler = new DevLoginHandler(server.netManager());
-        }).register("ready", Stage.MAIN, _ -> {
+        }).register("server-start", Stage.MAIN, _ -> {
             server.open();
         });
     }
@@ -74,5 +87,9 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
 
     public RoomManager roomManager() {
         return roomManager;
+    }
+
+    public GameModeManager gameModeManager() {
+        return gameModeManager;
     }
 }

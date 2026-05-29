@@ -1,5 +1,7 @@
 package de.brickforceaurora.server.match.room;
 
+import de.brickforceaurora.server.match.gamemode.GameData;
+import de.brickforceaurora.server.match.gamemode.GameMode;
 import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.protocol.data.CountryFilter;
 import de.brickforceaurora.server.net.protocol.data.RoomStatus;
@@ -11,18 +13,39 @@ import it.unimi.dsi.fastutil.objects.ObjectLists;
 
 public final class Room implements IRoomInfo {
     
+    public static final String ATTR_ROOM = "MatchRoom";
+
     private final int id;
-    private volatile RoomType type;
     private volatile String title;
     private volatile String password;
     private volatile RoomStatus status;
-    
+
     private final ObjectList<BFClient> clients = ObjectLists.synchronize(new ObjectArrayList<>());
-    
+
     private volatile int maxPlayers = 16;
-    
+
+    private volatile GameMode<?> mode;
+    private volatile GameData gameData;
+
     public Room(int id) {
         this.id = id;
+    }
+
+    public GameMode<?> mode() {
+        return mode;
+    }
+
+    public Room mode(GameMode<?> mode) {
+        if (this.mode == mode) {
+            return this;
+        }
+        this.mode = mode;
+        this.gameData = mode.createGameDataFor(this);
+        return this;
+    }
+
+    public GameData gameData() {
+        return gameData;
     }
 
     @Override
@@ -32,7 +55,7 @@ public final class Room implements IRoomInfo {
 
     @Override
     public RoomType type() {
-        return type;
+        return mode.roomType();
     }
 
     @Override
@@ -40,14 +63,29 @@ public final class Room implements IRoomInfo {
         return title;
     }
 
+    public Room title(String title) {
+        this.title = title;
+        return this;
+    }
+
     @Override
     public boolean passwordLocked() {
         return password != null;
     }
 
+    public Room password(String password) {
+        this.password = password;
+        return this;
+    }
+
     @Override
     public RoomStatus status() {
         return status;
+    }
+
+    public Room status(RoomStatus status) {
+        this.status = status;
+        return this;
     }
 
     @Override
@@ -58,6 +96,11 @@ public final class Room implements IRoomInfo {
     @Override
     public int maxPlayers() {
         return maxPlayers;
+    }
+
+    public Room maxPlayers(int maxPlayers) {
+        this.maxPlayers = maxPlayers;
+        return this;
     }
 
     @Override
@@ -142,40 +185,6 @@ public final class Room implements IRoomInfo {
     public int squadCounter() {
         // TODO: What is this?
         return 0;
-    }
-
-    // SETTERS
-
-    public Room type(RoomType type) {
-        this.type = type;
-        return this;
-    }
-
-    public Room title(String title) {
-        this.title = title;
-        return this;
-    }
-
-    public Room password(String password) {
-        this.password = password;
-        return this;
-    }
-
-    public Room passwordLocked(boolean locked) {
-        if (!locked) {
-            this.password = null;
-        }
-        return this;
-    }
-
-    public Room status(RoomStatus status) {
-        this.status = status;
-        return this;
-    }
-
-    public Room maxPlayers(int maxPlayers) {
-        this.maxPlayers = maxPlayers;
-        return this;
     }
 
 }

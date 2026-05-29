@@ -2,24 +2,25 @@ package de.brickforceaurora.server.net.protocol.serverbound.original;
 
 import de.brickforceaurora.server.net.protocol.IServerboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
+import de.brickforceaurora.server.net.protocol.data.RoomType;
 
 public final class ServerboundCreateRoomPacket implements IServerboundPacket {
 
-    private int type;
+    private RoomType type;
     private String title;
     private boolean isLocked;
     private String password;
     private int maxPlayers;
     private int[] parameters;
     private String alias;
-    private int master;
+    private int roomOwnerId;
 
-    public final ServerboundCreateRoomPacket type(int type) {
+    public final ServerboundCreateRoomPacket type(RoomType type) {
         this.type = type;
         return this;
     }
 
-    public final int type() {
+    public final RoomType type() {
         return this.type;
     }
 
@@ -77,13 +78,13 @@ public final class ServerboundCreateRoomPacket implements IServerboundPacket {
         return this.alias;
     }
 
-    public final ServerboundCreateRoomPacket master(int master) {
-        this.master = master;
+    public final ServerboundCreateRoomPacket roomOwnerId(int roomOwnerId) {
+        this.roomOwnerId = roomOwnerId;
         return this;
     }
 
-    public final int master() {
-        return this.master;
+    public final int roomOwnerId() {
+        return this.roomOwnerId;
     }
 
     @Override
@@ -93,16 +94,16 @@ public final class ServerboundCreateRoomPacket implements IServerboundPacket {
 
     @Override
     public final void read(PacketBuf buf) {
-        this.type = buf.readInt();
+        this.type = RoomType.byId(buf.readInt());
         this.title = buf.readString();
         this.isLocked = buf.readBoolean();
         this.password = buf.readString();
         this.maxPlayers = buf.readInt();
-        for (int i = 0; i < 8; i++){
+        for (int i = 0; i < 8; i++) {
             this.parameters[i] = buf.readInt();
         }
         this.alias = buf.readString();
-        this.master = buf.readInt();
+        this.roomOwnerId = buf.readInt();
     }
 
 }
