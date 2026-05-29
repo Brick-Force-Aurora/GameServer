@@ -4,6 +4,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 import de.brickforceaurora.server.IBrickForceServer;
+import de.brickforceaurora.server.match.room.RoomManager;
 import de.brickforceaurora.server.net.BrickForceServer;
 import de.brickforceaurora.server.net.login.DevLoginHandler;
 import de.brickforceaurora.server.net.login.ILoginHandler;
@@ -45,17 +46,18 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
 
     private BrickForceServer<MatchServerApp> server;
     private ILoginHandler loginHandler;
+    private RoomManager roomManager;
 
     @Override
     public void registerLifecycle(Lifecycle<MatchServerApp> lifecycle) {
         lifecycle.startupChain().register("load", Stage.PRE, frame -> {
             frame.resourceManager().register("data", Paths.get("data"));
-        });
-        lifecycle.startupChain().register("load", Stage.MAIN, frame -> {
+        }).register("load", Stage.MAIN, _ -> {
+            roomManager = new RoomManager();
+        }).register("ready", Stage.PRE, frame -> {
             server = new BrickForceServer<>(frame, this);
             loginHandler = new DevLoginHandler(server.netManager());
-        });
-        lifecycle.startupChain().register("ready", Stage.MAIN, _ -> {
+        }).register("ready", Stage.MAIN, _ -> {
             server.open();
         });
     }
@@ -70,4 +72,7 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
         return loginHandler;
     }
 
+    public RoomManager roomManager() {
+        return roomManager;
+    }
 }

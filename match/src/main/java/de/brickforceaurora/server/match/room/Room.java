@@ -144,4 +144,38 @@ public final class Room implements IRoomInfo {
         return 0;
     }
 
+    // SETTERS
+
+    public Room type(RoomType type) {
+        this.type = type;
+        return this;
+    }
+
+    public Room title(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public Room password(String password) {
+        this.password = password;
+        return this;
+    }
+
+    public Room passwordLocked(boolean locked) {
+        if (!locked) {
+            this.password = null;
+        }
+        return this;
+    }
+
+    public Room status(RoomStatus status) {
+        this.status = status;
+        return this;
+    }
+
+    public Room maxPlayers(int maxPlayers) {
+        this.maxPlayers = maxPlayers;
+        return this;
+    }
+
 }
