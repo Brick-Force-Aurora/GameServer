@@ -8,6 +8,7 @@ import de.brickforceaurora.server.match.room.RoomManager;
 import de.brickforceaurora.server.net.INetListener;
 import de.brickforceaurora.server.net.NetContext;
 import de.brickforceaurora.server.net.PacketHandler;
+import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraNotificationPacket;
 import de.brickforceaurora.server.net.protocol.clientbound.original.*;
 import de.brickforceaurora.server.net.protocol.data.RoomInfo;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundCreateRoomPacket;
@@ -42,7 +43,8 @@ public class RoomListener_ implements INetListener {
         if (room.type() != context.packet().type()) {
             GameMode<?> mode = gameModeManager.modeByType(context.packet().type());
             if (mode == null) {
-                // TODO: SMTH???
+                context.client().send(new ClientboundAuroraNotificationPacket()
+                    .message("The game mode '%s' is not yet supported".formatted(context.packet().type().modeName())));
                 return;
             }
             room.mode(mode);
@@ -52,13 +54,19 @@ public class RoomListener_ implements INetListener {
 
     @PacketHandler
     public void onRoomCreate(final NetContext<ServerboundCreateRoomPacket> context) {
-        // TODO: Check if client is in room before creating a new room
-        GameMode<?> mode = gameModeManager.modeByType(context.packet().type());
-        if (mode == null) {
-            // TODO: SMTH???
+        Room room = context.client().attr(Room.ATTR_ROOM, Room.class);
+        if (room != null) {
+            context.client()
+                .send(new ClientboundAuroraNotificationPacket().message("Please leave your room first before creating a new one."));
             return;
         }
-        Room room = roomManager.newRoom();
+        GameMode<?> mode = gameModeManager.modeByType(context.packet().type());
+        if (mode == null) {
+            context.client().send(new ClientboundAuroraNotificationPacket()
+                .message("The game mode '%s' is not yet supported".formatted(context.packet().type().modeName())));
+            return;
+        }
+        room = roomManager.newRoom();
         room.mode(mode);
         context.client().attrSet(Room.ATTR_ROOM, room);
         mode.handleRoomCreation(room, context);
