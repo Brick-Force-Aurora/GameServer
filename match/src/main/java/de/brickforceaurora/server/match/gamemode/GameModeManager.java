@@ -1,9 +1,14 @@
 package de.brickforceaurora.server.match.gamemode;
 
 import de.brickforceaurora.server.match.MatchServerApp;
+import de.brickforceaurora.server.match.room.Room;
 import de.brickforceaurora.server.net.INetListener;
+import de.brickforceaurora.server.net.NetContext;
+import de.brickforceaurora.server.net.NetHandler;
 import de.brickforceaurora.server.net.NetHandlerContainer;
 import de.brickforceaurora.server.net.protocol.data.RoomType;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectCollection;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.util.Enum2ObjectMap;
@@ -38,12 +43,34 @@ public class GameModeManager {
         private final NetHandlerContainer container;
 
         public GameNetListener(ObjectCollection<GameMode<?>> modes) {
-            this.container = new NetHandlerContainer(this, null);
+            ObjectArrayList<NetHandler<?>> handlers = new ObjectArrayList<>();
+            IntArrayList packetIds = new IntArrayList();
+            for (GameMode<?> mode : modes) {
+                for (GameNetHandlerContainer<?> container : mode.netHandlers()) {
+                    container.handlers().forEach(handler -> {
+                        if (packetIds.contains(handler.packetId())) {
+                            return;
+                        }
+                        packetIds.add(handler.packetId());
+                        handlers.add(new NetHandler<>(handler.packetId(), this::handlePacket));
+                    });
+                }
+            }
+            this.container = new NetHandlerContainer(this, handlers.toArray(NetHandler[]::new));
         }
 
         @Override
         public NetHandlerContainer newContainer() {
             return container;
+        }
+
+        private void handlePacket(NetContext<?> context) {
+            Room room = context.client().attr(Room.ATTR_ROOM, Room.class);
+            if (room == null) {
+                // WHAT???
+                return;
+            }
+            room.mode().handlePacket(room, context);
         }
 
     }

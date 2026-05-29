@@ -54,6 +54,10 @@ public abstract class GameMode<D extends GameData> implements IExtension {
     public final RoomType roomType() {
         return roomType;
     }
+    
+    final ObjectList<GameNetHandlerContainer<D>> netHandlers() {
+        return netHandlers;
+    }
 
     public final void handlePacket(Room room, NetContext<?> context) {
         GameData rawData = room.gameData();
