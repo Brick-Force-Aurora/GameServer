@@ -37,7 +37,7 @@ public final class BFClientboundPacketEncoder extends MessageToByteEncoder<IClie
             try {
                 msg.write(packetBuf);
             } catch (RuntimeException exp) {
-                logger.error("Failed to serialize {1} ({2}) to client {0}", client, msg.packetName(), msg.packetId());
+                logger.error("Failed to serialize {1} ({2}) to client {0}", exp, client, msg.packetName(), msg.packetId());
                 ctx.writeAndFlush(new ClientboundAuroraDisconnectPacket().message("Server: Failed to serialize packet"))
                     .addListener(ChannelFutureListener.CLOSE);
                 return;
