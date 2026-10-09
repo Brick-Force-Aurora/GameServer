@@ -13,8 +13,6 @@ public final class ServerboundCreateRoomPacket implements IServerboundPacket {
     private int maxPlayers;
     private int[] parameters;
     private String alias;
-    private int roomOwnerId;
-
     public final ServerboundCreateRoomPacket type(RoomType type) {
         this.type = type;
         return this;
@@ -78,15 +76,6 @@ public final class ServerboundCreateRoomPacket implements IServerboundPacket {
         return this.alias;
     }
 
-    public final ServerboundCreateRoomPacket roomOwnerId(int roomOwnerId) {
-        this.roomOwnerId = roomOwnerId;
-        return this;
-    }
-
-    public final int roomOwnerId() {
-        return this.roomOwnerId;
-    }
-
     @Override
     public int packetId() {
         return 7;
@@ -99,11 +88,11 @@ public final class ServerboundCreateRoomPacket implements IServerboundPacket {
         this.isLocked = buf.readBoolean();
         this.password = buf.readString();
         this.maxPlayers = buf.readInt();
+        this.parameters = new int[8];
         for (int i = 0; i < 8; i++) {
             this.parameters[i] = buf.readInt();
         }
         this.alias = buf.readString();
-        this.roomOwnerId = buf.readInt();
     }
 
 }

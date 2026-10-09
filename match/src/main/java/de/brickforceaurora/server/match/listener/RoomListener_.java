@@ -11,6 +11,7 @@ import de.brickforceaurora.server.net.PacketHandler;
 import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraNotificationPacket;
 import de.brickforceaurora.server.net.protocol.clientbound.original.*;
 import de.brickforceaurora.server.net.protocol.data.RoomInfo;
+import de.brickforceaurora.server.net.protocol.data.RoomStatus;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundCreateRoomPacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundRoomConfigPacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundRoomListPacket;
@@ -68,6 +69,9 @@ public class RoomListener_ implements INetListener {
         }
         room = roomManager.newRoom();
         room.mode(mode);
+        room.status(RoomStatus.WAITING);
+        room.title(context.packet().title());
+        room.maxPlayers(context.packet().maxPlayers());
         context.client().attrSet(Room.ATTR_ROOM, room);
         mode.handleRoomCreation(room, context);
     }

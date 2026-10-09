@@ -5,25 +5,15 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundAddBanByNicknameFailPacket implements IClientboundPacket {
 
-	private int Unnamed0;
-	private String val2;
+	private String nickName;
 
-	public final ClientboundAddBanByNicknameFailPacket Unnamed0(int Unnamed0) {
-		this.Unnamed0 = Unnamed0;
+	public final ClientboundAddBanByNicknameFailPacket nickName(String nickName) {
+		this.nickName = nickName;
 		return this;
 	}
 
-	public final int Unnamed0() {
-		return this.Unnamed0;
-	}
-
-	public final ClientboundAddBanByNicknameFailPacket val2(String val2) {
-		this.val2 = val2;
-		return this;
-	}
-
-	public final String val2() {
-		return this.val2;
+	public final String nickName() {
+		return this.nickName;
 	}
 
 	@Override
@@ -33,7 +23,7 @@ public final class ClientboundAddBanByNicknameFailPacket implements IClientbound
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.Unnamed0);
-		buf.writeString(this.val2);
+		buf.writeInt(0); //unused
+		buf.writeString(this.nickName);
 	}
 }

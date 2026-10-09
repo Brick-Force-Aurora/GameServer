@@ -76,5 +76,4 @@ public interface IRoomInfo {
         buf.writeInt(info.squad());
         buf.writeInt(info.squadCounter());
     }
-
 }

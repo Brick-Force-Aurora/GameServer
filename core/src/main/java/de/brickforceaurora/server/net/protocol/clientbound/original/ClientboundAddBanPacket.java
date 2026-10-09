@@ -5,25 +5,25 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundAddBanPacket implements IClientboundPacket {
 
-	private int val;
-	private String val2;
+	private int playerId;
+	private String nickName;
 
-	public final ClientboundAddBanPacket val(int val) {
-		this.val = val;
+	public final ClientboundAddBanPacket playerId(int playerId) {
+		this.playerId = playerId;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int playerId() {
+		return this.playerId;
 	}
 
-	public final ClientboundAddBanPacket val2(String val2) {
-		this.val2 = val2;
+	public final ClientboundAddBanPacket nickName(String nickName) {
+		this.nickName = nickName;
 		return this;
 	}
 
-	public final String val2() {
-		return this.val2;
+	public final String nickName() {
+		return this.nickName;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public final class ClientboundAddBanPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeString(this.val2);
+		buf.writeInt(this.playerId);
+		buf.writeString(this.nickName);
 	}
 }

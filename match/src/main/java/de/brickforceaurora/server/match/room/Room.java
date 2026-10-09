@@ -187,4 +187,43 @@ public final class Room implements IRoomInfo {
         return 0;
     }
 
+    public boolean[] getSlotLocksByMaxPlayers() {
+        boolean is8SlotLayout = (type() == RoomType.BUNGEE || type() == RoomType.MISSION);
+        int totalSlots = is8SlotLayout ? 8 : 16;
+
+        boolean[] slotLocks = new boolean[totalSlots];
+        boolean isTeamMode = !(type() == RoomType.INDIVIDUAL || type() == RoomType.ZOMBIE);
+
+        // SPECIAL CASE: Deathmatch / Zombie → lock bottom-up
+        if (!isTeamMode) {
+            for (int i = totalSlots - 1; i >= maxPlayers(); i--) {
+                slotLocks[i] = true;
+            }
+            return slotLocks;
+        }
+
+        // TEAM MODE (8-slot or 16-slot)
+        int redIndex = is8SlotLayout ? 3 : 7;
+        int blueIndex = is8SlotLayout ? 7 : 15;
+
+        // Normal team-mode locking (alternating)
+        for (int i = totalSlots - 1; i >= maxPlayers(); i--) {
+            boolean odd = (i % 2 != 0);
+
+            if (odd) { // RED slot
+                if (redIndex >= 0) {
+                    slotLocks[redIndex] = true;
+                }
+                redIndex--;
+            } else { // BLUE slot
+                if (blueIndex >= 0) {
+                    slotLocks[blueIndex] = true;
+                }
+                blueIndex--;
+            }
+        }
+
+        return slotLocks;
+    }
+
 }

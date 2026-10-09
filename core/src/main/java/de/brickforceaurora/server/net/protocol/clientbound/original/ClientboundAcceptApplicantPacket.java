@@ -5,45 +5,44 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundAcceptApplicantPacket implements IClientboundPacket {
 
-	private int val;
-	private int Unnamed0;
-	private boolean val3;
-	private String val4;
+	private int resultCode;
+	private boolean accept;
+	private String nickName;
 
-	public final ClientboundAcceptApplicantPacket val(int val) {
-		this.val = val;
+	/*
+	 * -11 = Too Many Clanmembers
+	 * -3 = Already Member
+	 * -7 = Failed to find applicant
+	 * -1 = no auth
+	 */
+	public final ClientboundAcceptApplicantPacket resultCode(int resultCode) {
+		if (resultCode != 0 && resultCode != -11 && resultCode != -3 && resultCode != -7 && resultCode != -1){
+			throw new IllegalArgumentException("ResultCode must be 0, -11, -3, -7 or -1");
+		}
+		this.resultCode = resultCode;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int resultCode() {
+		return this.resultCode;
 	}
 
-	public final ClientboundAcceptApplicantPacket Unnamed0(int Unnamed0) {
-		this.Unnamed0 = Unnamed0;
+	public final ClientboundAcceptApplicantPacket accept(boolean accept) {
+		this.accept = accept;
 		return this;
 	}
 
-	public final int Unnamed0() {
-		return this.Unnamed0;
+	public final boolean accept() {
+		return this.accept;
 	}
 
-	public final ClientboundAcceptApplicantPacket val3(boolean val3) {
-		this.val3 = val3;
+	public final ClientboundAcceptApplicantPacket nickName(String nickName) {
+		this.nickName = nickName;
 		return this;
 	}
 
-	public final boolean val3() {
-		return this.val3;
-	}
-
-	public final ClientboundAcceptApplicantPacket val4(String val4) {
-		this.val4 = val4;
-		return this;
-	}
-
-	public final String val4() {
-		return this.val4;
+	public final String nickName() {
+		return this.nickName;
 	}
 
 	@Override
@@ -53,9 +52,9 @@ public final class ClientboundAcceptApplicantPacket implements IClientboundPacke
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeInt(this.Unnamed0);
-		buf.writeBoolean(this.val3);
-		buf.writeString(this.val4);
+		buf.writeInt(this.resultCode);
+		buf.writeInt(0); // unused
+		buf.writeBoolean(this.accept); //True if Aplicant accepted, False if rejected
+		buf.writeString(this.nickName);
 	}
 }

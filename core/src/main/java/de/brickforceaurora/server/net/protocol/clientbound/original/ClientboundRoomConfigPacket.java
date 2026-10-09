@@ -2,142 +2,143 @@ package de.brickforceaurora.server.net.protocol.clientbound.original;
 
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
+import de.brickforceaurora.server.net.protocol.data.RoomType;
 
 public final class ClientboundRoomConfigPacket implements IClientboundPacket {
 
-	private int val;
-	private String val2;
-	private int val3;
-	private int val4;
-	private int val5;
-	private boolean val6;
-	private boolean val7;
-	private boolean val8;
-	private String val9;
-	private int val10;
-	private int val11;
-	private boolean val12;
-	private boolean val13;
+	private int mapId;
+	private String mapAlias;
+	private int weaponOption;
+	private int timeLimit;
+	private int killCount;
+	private boolean canJoinMidGame;
+	private boolean autoBalance;
+	private boolean allowBuildGun;
+	private String password;
+	private int commented;
+	private RoomType roomType;
+	private boolean drop;
+	private boolean wanted;
 
-	public final ClientboundRoomConfigPacket val(int val) {
-		this.val = val;
+	public final ClientboundRoomConfigPacket mapId(int mapId) {
+		this.mapId = mapId;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int mapId() {
+		return this.mapId;
 	}
 
-	public final ClientboundRoomConfigPacket val2(String val2) {
-		this.val2 = val2;
+	public final ClientboundRoomConfigPacket mapAlias(String mapAlias) {
+		this.mapAlias = mapAlias;
 		return this;
 	}
 
-	public final String val2() {
-		return this.val2;
+	public final String mapAlias() {
+		return this.mapAlias;
 	}
 
-	public final ClientboundRoomConfigPacket val3(int val3) {
-		this.val3 = val3;
+	public final ClientboundRoomConfigPacket weaponOption(int weaponOption) {
+		this.weaponOption = weaponOption;
 		return this;
 	}
 
-	public final int val3() {
-		return this.val3;
+	public final int weaponOption() {
+		return this.weaponOption;
 	}
 
-	public final ClientboundRoomConfigPacket val4(int val4) {
-		this.val4 = val4;
+	public final ClientboundRoomConfigPacket timeLimit(int timeLimit) {
+		this.timeLimit = timeLimit;
 		return this;
 	}
 
-	public final int val4() {
-		return this.val4;
+	public final int timeLimit() {
+		return this.timeLimit;
 	}
 
-	public final ClientboundRoomConfigPacket val5(int val5) {
-		this.val5 = val5;
+	public final ClientboundRoomConfigPacket killCount(int killCount) {
+		this.killCount = killCount;
 		return this;
 	}
 
-	public final int val5() {
-		return this.val5;
+	public final int killCount() {
+		return this.killCount;
 	}
 
-	public final ClientboundRoomConfigPacket val6(boolean val6) {
-		this.val6 = val6;
+	public final ClientboundRoomConfigPacket canJoinMidGame(boolean canJoinMidGame) {
+		this.canJoinMidGame = canJoinMidGame;
 		return this;
 	}
 
-	public final boolean val6() {
-		return this.val6;
+	public final boolean canJoinMidGame() {
+		return this.canJoinMidGame;
 	}
 
-	public final ClientboundRoomConfigPacket val7(boolean val7) {
-		this.val7 = val7;
+	public final ClientboundRoomConfigPacket autoBalance(boolean autoBalance) {
+		this.autoBalance = autoBalance;
 		return this;
 	}
 
-	public final boolean val7() {
-		return this.val7;
+	public final boolean autoBalance() {
+		return this.autoBalance;
 	}
 
-	public final ClientboundRoomConfigPacket val8(boolean val8) {
-		this.val8 = val8;
+	public final ClientboundRoomConfigPacket allowBuildGun(boolean allowBuildGun) {
+		this.allowBuildGun = allowBuildGun;
 		return this;
 	}
 
-	public final boolean val8() {
-		return this.val8;
+	public final boolean allowBuildGun() {
+		return this.allowBuildGun;
 	}
 
-	public final ClientboundRoomConfigPacket val9(String val9) {
-		this.val9 = val9;
+	public final ClientboundRoomConfigPacket password(String password) {
+		this.password = password;
 		return this;
 	}
 
-	public final String val9() {
-		return this.val9;
+	public final String password() {
+		return this.password;
 	}
 
-	public final ClientboundRoomConfigPacket val10(int val10) {
-		if (val10 > 255L || val10 < 0L) {
+	public final ClientboundRoomConfigPacket commented(int commented) {
+		if (commented > 255L || commented < 0L) {
 			throw new IllegalArgumentException(
-					"Value " + val10 + " is out of bounds of allowed number range of 0 - 255");
+					"Value " + commented + " is out of bounds of allowed number range of 0 - 255");
 		}
-		this.val10 = val10;
+		this.commented = commented;
 		return this;
 	}
 
-	public final int val10() {
-		return this.val10;
+	public final int commented() {
+		return this.commented;
 	}
 
-	public final ClientboundRoomConfigPacket val11(int val11) {
-		this.val11 = val11;
+	public final ClientboundRoomConfigPacket roomType(RoomType roomType) {
+		this.roomType = roomType;
 		return this;
 	}
 
-	public final int val11() {
-		return this.val11;
+	public final RoomType roomType() {
+		return this.roomType;
 	}
 
-	public final ClientboundRoomConfigPacket val12(boolean val12) {
-		this.val12 = val12;
+	public final ClientboundRoomConfigPacket drop(boolean drop) {
+		this.drop = drop;
 		return this;
 	}
 
-	public final boolean val12() {
-		return this.val12;
+	public final boolean drop() {
+		return this.drop;
 	}
 
-	public final ClientboundRoomConfigPacket val13(boolean val13) {
-		this.val13 = val13;
+	public final ClientboundRoomConfigPacket wanted(boolean wanted) {
+		this.wanted = wanted;
 		return this;
 	}
 
-	public final boolean val13() {
-		return this.val13;
+	public final boolean wanted() {
+		return this.wanted;
 	}
 
 	@Override
@@ -147,18 +148,18 @@ public final class ClientboundRoomConfigPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeString(this.val2);
-		buf.writeInt(this.val3);
-		buf.writeInt(this.val4);
-		buf.writeInt(this.val5);
-		buf.writeBoolean(this.val6);
-		buf.writeBoolean(this.val7);
-		buf.writeBoolean(this.val8);
-		buf.writeString(this.val9);
-		buf.writeByte(this.val10);
-		buf.writeInt(this.val11);
-		buf.writeBoolean(this.val12);
-		buf.writeBoolean(this.val13);
+		buf.writeInt(this.mapId);
+		buf.writeString(this.mapAlias);
+		buf.writeInt(this.weaponOption);
+		buf.writeInt(this.timeLimit);
+		buf.writeInt(this.killCount);
+		buf.writeBoolean(this.canJoinMidGame);
+		buf.writeBoolean(this.autoBalance);
+		buf.writeBoolean(this.allowBuildGun);
+		buf.writeString(this.password);
+		buf.writeByte(this.commented);
+		buf.writeInt(this.roomType.id());
+		buf.writeBoolean(this.drop);
+		buf.writeBoolean(this.wanted);
 	}
 }

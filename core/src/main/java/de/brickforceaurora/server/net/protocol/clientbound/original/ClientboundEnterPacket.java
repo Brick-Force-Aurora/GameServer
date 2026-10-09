@@ -3,156 +3,174 @@ package de.brickforceaurora.server.net.protocol.clientbound.original;
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class ClientboundEnterPacket implements IClientboundPacket {
 
-	private int val;
-	private String val2;
-	private String val3;
-	private int val4;
-	private String val5;
-	private int val6;
-	private int val7;
-	final String UnknownValue0 = "array[i]";
-	private int val8;
-	private int val9;
-	private int val10;
-	private String val11;
-	private int val12;
-	private int val13;
-	private int val14;
-	final String UnknownValue1 = "val7";
-	final String UnknownValue2 = "array2[j]";
-	final String UnknownValue3 = "val7";
-	final String UnknownValue4 = "array3[k]";
+	private int id;
+	private String nickname;
+	private String localIp;
+	private int localPort;
+	private String remoteIp;
+	private int remotePort;
+	private List<String> equipment = new ArrayList<>();
+	private int status;
+	private int xp;
+	private int clanId;
+	private String clanName;
+	private int clanMark;
+	private int rank;
+	private int playerFlag; // byte (0-255)
+	private List<String> weaponChanges = new ArrayList<>();
+	private List<String> dropItems = new ArrayList<>();
 
-	public final ClientboundEnterPacket val(int val) {
-		this.val = val;
+	public int id() {
+		return this.id;
+	}
+
+	public ClientboundEnterPacket id(int id) {
+		this.id = id;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public String nickname() {
+		return this.nickname;
 	}
 
-	public final ClientboundEnterPacket val2(String val2) {
-		this.val2 = val2;
+	public ClientboundEnterPacket nickname(String nickname) {
+		this.nickname = nickname;
 		return this;
 	}
 
-	public final String val2() {
-		return this.val2;
+	public String localIp() {
+		return this.localIp;
 	}
 
-	public final ClientboundEnterPacket val3(String val3) {
-		this.val3 = val3;
+	public ClientboundEnterPacket localIp(String localIp) {
+		this.localIp = localIp;
 		return this;
 	}
 
-	public final String val3() {
-		return this.val3;
+	public int localPort() {
+		return this.localPort;
 	}
 
-	public final ClientboundEnterPacket val4(int val4) {
-		this.val4 = val4;
+	public ClientboundEnterPacket localPort(int localPort) {
+		this.localPort = localPort;
 		return this;
 	}
 
-	public final int val4() {
-		return this.val4;
+	public String remoteIp() {
+		return this.remoteIp;
 	}
 
-	public final ClientboundEnterPacket val5(String val5) {
-		this.val5 = val5;
+	public ClientboundEnterPacket remoteIp(String remoteIp) {
+		this.remoteIp = remoteIp;
 		return this;
 	}
 
-	public final String val5() {
-		return this.val5;
+	public int remotePort() {
+		return this.remotePort;
 	}
 
-	public final ClientboundEnterPacket val6(int val6) {
-		this.val6 = val6;
+	public ClientboundEnterPacket remotePort(int remotePort) {
+		this.remotePort = remotePort;
 		return this;
 	}
 
-	public final int val6() {
-		return this.val6;
+	public List<String> equipment() {
+		return this.equipment;
 	}
 
-	public final ClientboundEnterPacket val7(int val7) {
-		this.val7 = val7;
+	public ClientboundEnterPacket equipment(List<String> equipment) {
+		this.equipment = equipment != null ? equipment : new ArrayList<>();
 		return this;
 	}
 
-	public final int val7() {
-		return this.val7;
+	public int status() {
+		return this.status;
 	}
 
-	public final ClientboundEnterPacket val8(int val8) {
-		this.val8 = val8;
+	public ClientboundEnterPacket status(int status) {
+		this.status = status;
 		return this;
 	}
 
-	public final int val8() {
-		return this.val8;
+	public int xp() {
+		return this.xp;
 	}
 
-	public final ClientboundEnterPacket val9(int val9) {
-		this.val9 = val9;
+	public ClientboundEnterPacket xp(int xp) {
+		this.xp = xp;
 		return this;
 	}
 
-	public final int val9() {
-		return this.val9;
+	public int clanId() {
+		return this.clanId;
 	}
 
-	public final ClientboundEnterPacket val10(int val10) {
-		this.val10 = val10;
+	public ClientboundEnterPacket clanId(int clanId) {
+		this.clanId = clanId;
 		return this;
 	}
 
-	public final int val10() {
-		return this.val10;
+	public String clanName() {
+		return this.clanName;
 	}
 
-	public final ClientboundEnterPacket val11(String val11) {
-		this.val11 = val11;
+	public ClientboundEnterPacket clanName(String clanName) {
+		this.clanName = clanName;
 		return this;
 	}
 
-	public final String val11() {
-		return this.val11;
+	public int clanMark() {
+		return this.clanMark;
 	}
 
-	public final ClientboundEnterPacket val12(int val12) {
-		this.val12 = val12;
+	public ClientboundEnterPacket clanMark(int clanMark) {
+		this.clanMark = clanMark;
 		return this;
 	}
 
-	public final int val12() {
-		return this.val12;
+	public int rank() {
+		return this.rank;
 	}
 
-	public final ClientboundEnterPacket val13(int val13) {
-		this.val13 = val13;
+	public ClientboundEnterPacket rank(int rank) {
+		this.rank = rank;
 		return this;
 	}
 
-	public final int val13() {
-		return this.val13;
+	public int playerFlag() {
+		return this.playerFlag;
 	}
 
-	public final ClientboundEnterPacket val14(int val14) {
-		if (val14 > 255L || val14 < 0L) {
+	public ClientboundEnterPacket playerFlag(int playerFlag) {
+		if (playerFlag < 0 || playerFlag > 255) {
 			throw new IllegalArgumentException(
-					"Value " + val14 + " is out of bounds of allowed number range of 0 - 255");
+					"Value " + playerFlag + " is out of bounds of allowed number range of 0 - 255");
 		}
-		this.val14 = val14;
+		this.playerFlag = playerFlag;
 		return this;
 	}
 
-	public final int val14() {
-		return this.val14;
+	public List<String> weaponChanges() {
+		return this.weaponChanges;
+	}
+
+	public ClientboundEnterPacket weaponChanges(List<String> weaponChanges) {
+		this.weaponChanges = weaponChanges != null ? weaponChanges : new ArrayList<>();
+		return this;
+	}
+
+	public List<String> dropItems() {
+		return this.dropItems;
+	}
+
+	public ClientboundEnterPacket dropItems(List<String> dropItems) {
+		this.dropItems = dropItems != null ? dropItems : new ArrayList<>();
+		return this;
 	}
 
 	@Override
@@ -161,20 +179,35 @@ public final class ClientboundEnterPacket implements IClientboundPacket {
 	}
 
 	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeString(this.val2);
-		buf.writeString(this.val3);
-		buf.writeInt(this.val4);
-		buf.writeString(this.val5);
-		buf.writeInt(this.val6);
-		buf.writeInt(this.val7);
-		buf.writeInt(this.val8);
-		buf.writeInt(this.val9);
-		buf.writeInt(this.val10);
-		buf.writeString(this.val11);
-		buf.writeInt(this.val12);
-		buf.writeInt(this.val13);
-		buf.writeByte(this.val14);
+	public void write(PacketBuf buf) {
+		buf.writeInt(this.id);
+		buf.writeString(this.nickname);
+		buf.writeString(this.localIp);
+		buf.writeInt(this.localPort);
+		buf.writeString(this.remoteIp);
+		buf.writeInt(this.remotePort);
+
+		buf.writeInt(this.equipment.size());
+		for (String item : this.equipment) {
+			buf.writeString(item);
+		}
+
+		buf.writeInt(this.status);
+		buf.writeInt(this.xp);
+		buf.writeInt(this.clanId);
+		buf.writeString(this.clanName);
+		buf.writeInt(this.clanMark);
+		buf.writeInt(this.rank);
+		buf.writeByte(this.playerFlag);
+
+		buf.writeInt(this.weaponChanges.size());
+		for (String weapon : this.weaponChanges) {
+			buf.writeString(weapon);
+		}
+
+		buf.writeInt(this.dropItems.size());
+		for (String item : this.dropItems) {
+			buf.writeString(item);
+		}
 	}
 }

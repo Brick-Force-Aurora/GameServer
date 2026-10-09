@@ -5,15 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundAcceptDailyMissionPacket implements IClientboundPacket {
 
-	private int val;
+	private int resultCode;
 
-	public final ClientboundAcceptDailyMissionPacket val(int val) {
-		this.val = val;
+	/*
+	 * 0 = Success
+	 * -1 = Error Once per Day
+	 * -2 = Error Already Accepted
+	 * other numbers = Error Unkown
+	 */
+	public final ClientboundAcceptDailyMissionPacket resultCode(int resultCode) {
+		if (resultCode > 0 || resultCode < -2) {
+			throw new IllegalArgumentException("ResultCode must be 0, -1 or -2");
+		}
+		this.resultCode = resultCode;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int resultCode() {
+		return this.resultCode;
 	}
 
 	@Override
@@ -23,6 +32,6 @@ public final class ClientboundAcceptDailyMissionPacket implements IClientboundPa
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
+		buf.writeInt(this.resultCode);
 	}
 }
