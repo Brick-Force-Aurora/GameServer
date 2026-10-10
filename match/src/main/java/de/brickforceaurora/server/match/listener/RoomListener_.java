@@ -13,6 +13,7 @@ import de.brickforceaurora.server.net.protocol.clientbound.original.*;
 import de.brickforceaurora.server.net.protocol.data.RoomInfo;
 import de.brickforceaurora.server.net.protocol.data.RoomStatus;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundCreateRoomPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundLeavePacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundRoomConfigPacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundRoomListPacket;
 import me.lauriichan.snowframe.SnowFrame;
@@ -74,5 +75,22 @@ public class RoomListener_ implements INetListener {
         room.maxPlayers(context.packet().maxPlayers());
         context.client().attrSet(Room.ATTR_ROOM, room);
         mode.handleRoomCreation(room, context);
+    }
+
+    @PacketHandler
+    public void onLeaveRoom(final NetContext<ServerboundLeavePacket> context) {
+        Room room = context.client().attr(Room.ATTR_ROOM, Room.class);
+        if (room != null) {
+            context.client()
+                    .send(new ClientboundAuroraNotificationPacket().message("Please leave your room first before creating a new one."));
+            return;
+        }
+        GameMode<?> mode = gameModeManager.modeByType(room.type());
+        if (mode == null) {
+            context.client().send(new ClientboundAuroraNotificationPacket()
+                    .message("The game mode '%s' is not yet supported".formatted(room.type().modeName())));
+            return;
+        }
+        mode.handleLeaveRoom(room, context);
     }
 }

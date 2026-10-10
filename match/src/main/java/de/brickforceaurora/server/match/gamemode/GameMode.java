@@ -4,6 +4,7 @@ import de.brickforceaurora.server.match.room.Room;
 import de.brickforceaurora.server.net.NetContext;
 import de.brickforceaurora.server.net.protocol.data.RoomType;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundCreateRoomPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundLeavePacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundRoomConfigPacket;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
@@ -76,5 +77,7 @@ public abstract class GameMode<D extends GameData> implements IExtension {
     public abstract void handleRoomCreation(final Room room, final NetContext<ServerboundCreateRoomPacket> context);
     
     public abstract void handleRoomUpdate(final Room room, final NetContext<ServerboundRoomConfigPacket> context);
+
+    public abstract void handleLeaveRoom(final Room room, final NetContext<ServerboundLeavePacket> context);
     
 }

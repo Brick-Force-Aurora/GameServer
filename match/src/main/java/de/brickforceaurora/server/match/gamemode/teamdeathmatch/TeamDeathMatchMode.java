@@ -5,8 +5,12 @@ import de.brickforceaurora.server.match.gamemode.TeamGameMode;
 import de.brickforceaurora.server.match.room.Room;
 import de.brickforceaurora.server.net.NetContext;
 import de.brickforceaurora.server.net.protocol.clientbound.original.*;
+import de.brickforceaurora.server.net.protocol.data.ClientStatus;
+import de.brickforceaurora.server.net.protocol.data.RoomStatus;
 import de.brickforceaurora.server.net.protocol.data.RoomType;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundCreateRoomPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundLeavePacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundResumeRoomPacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundRoomConfigPacket;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.extension.Extension;
@@ -61,8 +65,10 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
         //TODO: Hardcoded info needs to change
         context.client().send(new ClientboundEnterPacket().id(context.client().id()).nickname(context.client().name()).localIp(context.client().ip())
                 .localPort(context.client().port()).remoteIp("127.0.0.1").remotePort(18890)
-                .equipment(List.of("wau", "wax", "wba", "wap", "aac", "aad", "s07")).status(1).xp(9400000).clanId(0).clanName("Clan").clanMark(0).rank(65).playerFlag(0)
-                .weaponChanges(List.of()).dropItems(List.of()));
+                .equipment(List.of("wau", "wax", "wba", "wap", "aac", "aad", "s07")).status(1).xp(9400000).clanId(0).clanName("Clan")
+                .clanMark(0).rank(65).playerFlag(0).weaponChanges(List.of()).dropItems(List.of()));
+        context.client().send(new ClientboundSlotInfoPacket().id(context.client().id()).slot((byte)0).status(ClientStatus.WAITING.id()).kill(0)
+                .kill(0).death(0).assist(0).score(0).mission(0));
         //if (pkt.type() == RoomType.MAP_EDITOR) {
             //context.client().send(new ClientboundCopyrightPacket().ownerClientId(pkt.roomOwnerId()));
         //}
@@ -76,7 +82,34 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
         //if bungee cache map
         //if bnd unpack timer and set times and repeat values, cache map as well, so init specifics
         context.client().send(new ClientboundRoomConfigPacket());
-        context.client().send(new ClientboundUpdateRoomPacket());
+        context.client().send(new ClientboundUpdateRoomPacket().roomInfo(room));
+    }
+
+    @Override
+    public void handleTeamChange(Room room, NetContext<ServerboundResumeRoomPacket> context){
+        room.status(RoomStatus.byId(context.packet().nextStatus()));
+        context.client().send(new ClientboundUpdateRoomPacket().roomInfo(room));
+    }
+
+    @Override
+    public void handleLeaveRoom(Room room, NetContext<ServerboundLeavePacket> context){
+        context.client().send(new ClientboundLeavePacket().clientId(context.client().id()));
+        context.client().send(new ClientboundSetStatusPacket().clientId(context.client().id()).status(ClientStatus.WAITING.id()));
+        //if build mode different cleanup
+
+        if (room.players() <= 0)
+        {
+            context.client().send(new ClientboundDelRoomPacket().roomId(room.id()));
+            //msgRef.client.channel.RemoveMatch(matchData);
+            return;
+        }
+
+        //if owner leaves room, give owner to next player
+        //if (context.client().id() == owner)
+        //{
+        //    int owner = clientList[0].seq;
+        //    context.client().send(new ClientboundMasterPacket().ownerClientId(owner));
+        //}
     }
 
 }

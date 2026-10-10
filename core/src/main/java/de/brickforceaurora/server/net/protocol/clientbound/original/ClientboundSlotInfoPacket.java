@@ -5,85 +5,85 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundSlotInfoPacket implements IClientboundPacket {
 
-	private int val;
-	private byte val2;
-	private int val3;
-	private int val4;
-	private int val5;
-	private int val6;
-	private int val7;
-	private int val8;
+	private int id;
+	private byte slot;
+	private int status;
+	private int kill;
+	private int death;
+	private int assist;
+	private int score;
+	private int mission;
 
-	public final ClientboundSlotInfoPacket val(int val) {
-		this.val = val;
+	public int id() {
+		return this.id;
+	}
+
+	public ClientboundSlotInfoPacket id(int id) {
+		this.id = id;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public byte slot() {
+		return this.slot;
 	}
 
-	public final ClientboundSlotInfoPacket val2(byte val2) {
-		this.val2 = val2;
+	public ClientboundSlotInfoPacket slot(byte slot) {
+		this.slot = slot;
 		return this;
 	}
 
-	public final byte val2() {
-		return this.val2;
+	public int status() {
+		return this.status;
 	}
 
-	public final ClientboundSlotInfoPacket val3(int val3) {
-		this.val3 = val3;
+	public ClientboundSlotInfoPacket status(int status) {
+		this.status = status;
 		return this;
 	}
 
-	public final int val3() {
-		return this.val3;
+	public int kill() {
+		return this.kill;
 	}
 
-	public final ClientboundSlotInfoPacket val4(int val4) {
-		this.val4 = val4;
+	public ClientboundSlotInfoPacket kill(int kill) {
+		this.kill = kill;
 		return this;
 	}
 
-	public final int val4() {
-		return this.val4;
+	public int death() {
+		return this.death;
 	}
 
-	public final ClientboundSlotInfoPacket val5(int val5) {
-		this.val5 = val5;
+	public ClientboundSlotInfoPacket death(int death) {
+		this.death = death;
 		return this;
 	}
 
-	public final int val5() {
-		return this.val5;
+	public int assist() {
+		return this.assist;
 	}
 
-	public final ClientboundSlotInfoPacket val6(int val6) {
-		this.val6 = val6;
+	public ClientboundSlotInfoPacket assist(int assist) {
+		this.assist = assist;
 		return this;
 	}
 
-	public final int val6() {
-		return this.val6;
+	public int score() {
+		return this.score;
 	}
 
-	public final ClientboundSlotInfoPacket val7(int val7) {
-		this.val7 = val7;
+	public ClientboundSlotInfoPacket score(int score) {
+		this.score = score;
 		return this;
 	}
 
-	public final int val7() {
-		return this.val7;
+	public int mission() {
+		return this.mission;
 	}
 
-	public final ClientboundSlotInfoPacket val8(int val8) {
-		this.val8 = val8;
+	public ClientboundSlotInfoPacket mission(int mission) {
+		this.mission = mission;
 		return this;
-	}
-
-	public final int val8() {
-		return this.val8;
 	}
 
 	@Override
@@ -92,14 +92,14 @@ public final class ClientboundSlotInfoPacket implements IClientboundPacket {
 	}
 
 	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeByte(this.val2);
-		buf.writeInt(this.val3);
-		buf.writeInt(this.val4);
-		buf.writeInt(this.val5);
-		buf.writeInt(this.val6);
-		buf.writeInt(this.val7);
-		buf.writeInt(this.val8);
+	public void write(PacketBuf buf) {
+		buf.writeInt(this.id);
+		buf.writeByte(this.slot);
+		buf.writeInt(this.status);
+		buf.writeInt(this.kill);
+		buf.writeInt(this.death);
+		buf.writeInt(this.assist);
+		buf.writeInt(this.score);
+		buf.writeInt(this.mission);
 	}
 }
