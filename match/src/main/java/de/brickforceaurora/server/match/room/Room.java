@@ -3,6 +3,7 @@ package de.brickforceaurora.server.match.room;
 import de.brickforceaurora.server.match.gamemode.GameData;
 import de.brickforceaurora.server.match.gamemode.GameMode;
 import de.brickforceaurora.server.net.BFClient;
+import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.data.CountryFilter;
 import de.brickforceaurora.server.net.protocol.data.RoomStatus;
 import de.brickforceaurora.server.net.protocol.data.RoomType;
@@ -12,7 +13,7 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
 
 public final class Room implements IRoomInfo {
-    
+
     public static final String ATTR_ROOM = "MatchRoom";
 
     private final int id;
@@ -234,12 +235,10 @@ public final class Room implements IRoomInfo {
             return false;
         }
 
-        synchronized (clients) {
-            if (clients.size() >= maxPlayers || clients.contains(client)) {
-                return false;
-            }
-            clients.add(client);
+        if (clients.size() >= maxPlayers || clients.contains(client)) {
+            return false;
         }
+        clients.add(client);
 
         client.attrSet(ATTR_ROOM, this);
         return true;
@@ -250,11 +249,25 @@ public final class Room implements IRoomInfo {
             return false;
         }
 
+        Room room = client.attr(ATTR_ROOM, Room.class);
+        if (room == this) {
+            client.attrUnset(ATTR_ROOM);
+
+        }
+
         boolean removed = clients.remove(client);
         if (removed) {
             client.attrUnset(ATTR_ROOM);
         }
         return removed;
+    }
+
+    public void broadcast(BFClient exclusive, IClientboundPacket... packets) {
+        clients.stream().filter(cl -> cl != exclusive).forEach(client -> client.send(packets));
+    }
+
+    public void broadcast(IClientboundPacket... packets) {
+        clients.forEach(client -> client.send(packets));
     }
 
     public ObjectList<BFClient> clients() {
