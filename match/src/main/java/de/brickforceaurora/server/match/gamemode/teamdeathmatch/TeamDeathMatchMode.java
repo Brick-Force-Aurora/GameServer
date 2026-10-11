@@ -3,7 +3,9 @@ package de.brickforceaurora.server.match.gamemode.teamdeathmatch;
 import de.brickforceaurora.server.match.gamemode.GameData;
 import de.brickforceaurora.server.match.gamemode.TeamGameMode;
 import de.brickforceaurora.server.match.room.Room;
+import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.NetContext;
+import de.brickforceaurora.server.net.NetManager;
 import de.brickforceaurora.server.net.protocol.clientbound.original.*;
 import de.brickforceaurora.server.net.protocol.data.ClientStatus;
 import de.brickforceaurora.server.net.protocol.data.RoomType;
@@ -69,6 +71,12 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
             //context.client().send(new ClientboundCopyrightPacket().ownerClientId(pkt.roomOwnerId()));
         //}
 
+    }
+
+    @Override
+    public void handleRoomJoin(NetManager<?> netManager, Room room, BFClient client) {
+        // TODO Auto-generated method stub
+        
     }
 
     @Override

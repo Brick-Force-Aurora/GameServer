@@ -2,11 +2,12 @@ package de.brickforceaurora.server.net.protocol.clientbound.original;
 
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
+import de.brickforceaurora.server.net.protocol.data.ClientStatus;
 
 public final class ClientboundSetStatusPacket implements IClientboundPacket {
 
 	private int clientId;
-	private int status;
+	private ClientStatus status;
 
 	public final ClientboundSetStatusPacket clientId(int clientId) {
 		this.clientId = clientId;
@@ -17,12 +18,12 @@ public final class ClientboundSetStatusPacket implements IClientboundPacket {
 		return this.clientId;
 	}
 
-	public final ClientboundSetStatusPacket status(int status) {
+	public final ClientboundSetStatusPacket status(ClientStatus status) {
 		this.status = status;
 		return this;
 	}
 
-	public final int status() {
+	public final ClientStatus status() {
 		return this.status;
 	}
 
@@ -34,6 +35,6 @@ public final class ClientboundSetStatusPacket implements IClientboundPacket {
 	@Override
 	public final void write(PacketBuf buf) {
 		buf.writeInt(this.clientId);
-		buf.writeInt(this.status);
+		buf.writeInt(this.status.id());
 	}
 }

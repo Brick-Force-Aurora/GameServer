@@ -19,6 +19,24 @@
             }
         ]
     },
+	{
+	    "name": "ServerboundJoin",
+	    "id": 28,
+	    "values": [
+	        {
+	            "name": "roomId",
+	            "type": "int"
+	        },
+			{
+			    "name": "password",
+			    "type": "string"
+			},
+			{
+			    "name": "wasInvited",
+			    "type": "bool"
+			}
+	    ]
+	},
     {
         "name": "ClientboundEmptyCannon",
         "id": 161,

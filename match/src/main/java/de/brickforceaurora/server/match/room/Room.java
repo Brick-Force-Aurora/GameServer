@@ -70,14 +70,18 @@ public final class Room implements IRoomInfo {
         return this;
     }
 
-    @Override
-    public boolean passwordLocked() {
-        return password != null;
+    public String password() {
+        return password;
     }
 
     public Room password(String password) {
         this.password = password;
         return this;
+    }
+
+    @Override
+    public boolean passwordLocked() {
+        return password != null;
     }
 
     @Override
@@ -228,38 +232,6 @@ public final class Room implements IRoomInfo {
         }
 
         return slotLocks;
-    }
-
-    public boolean addClient(BFClient client) {
-        if (client == null) {
-            return false;
-        }
-
-        if (clients.size() >= maxPlayers || clients.contains(client)) {
-            return false;
-        }
-        clients.add(client);
-
-        client.attrSet(ATTR_ROOM, this);
-        return true;
-    }
-
-    public boolean removeClient(BFClient client) {
-        if (client == null) {
-            return false;
-        }
-
-        Room room = client.attr(ATTR_ROOM, Room.class);
-        if (room == this) {
-            client.attrUnset(ATTR_ROOM);
-
-        }
-
-        boolean removed = clients.remove(client);
-        if (removed) {
-            client.attrUnset(ATTR_ROOM);
-        }
-        return removed;
     }
 
     public void broadcast(BFClient exclusive, IClientboundPacket... packets) {
