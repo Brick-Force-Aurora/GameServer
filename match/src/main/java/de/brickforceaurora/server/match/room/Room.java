@@ -19,6 +19,7 @@ public final class Room implements IRoomInfo {
     private volatile String title;
     private volatile String password;
     private volatile RoomStatus status;
+    private volatile int masterId;
 
     private final ObjectList<BFClient> clients = ObjectLists.synchronize(new ObjectArrayList<>());
 
@@ -103,34 +104,39 @@ public final class Room implements IRoomInfo {
         return this;
     }
 
+    public int masterId() {
+        return masterId;
+    }
+
+    public Room masterId(int masterId) {
+        this.masterId = masterId;
+        return this;
+    }
+
     @Override
     public int mapId() {
-        // TODO: Map
-        return 0;
+        return gameData().mapId();
     }
 
     @Override
     public String mapAlias() {
-        // TODO: Map
-        return null;
+        return gameData().mapAlias();
     }
 
     @Override
     public int goal() {
-        // TODO: Goal
-        return 0;
+        return gameData().goal();
     }
 
     @Override
     public int timeLimit() {
-        // TODO: Time limit
-        return 0;
+        return gameData().timeLimit();
     }
 
     @Override
     public int weaponOption() {
         // TODO: Weapon Options - ENUM possible?
-        return 0;
+        return gameData().weaponOption();
     }
 
     @Override
@@ -159,20 +165,17 @@ public final class Room implements IRoomInfo {
 
     @Override
     public boolean allowsLateJoining() {
-        // TODO: Late joining
-        return false;
+        return gameData().canJoinMidGame();
     }
 
     @Override
     public boolean weaponDropEnabled() {
-        // TODO: Weapon drops
-        return false;
+        return gameData().drop();
     }
 
     @Override
     public boolean wantedEnabled() {
-        // TODO: Wanted sub gamemode
-        return false;
+        return gameData().wanted();
     }
 
     @Override
@@ -224,6 +227,38 @@ public final class Room implements IRoomInfo {
         }
 
         return slotLocks;
+    }
+
+    public boolean addClient(BFClient client) {
+        if (client == null) {
+            return false;
+        }
+
+        synchronized (clients) {
+            if (clients.size() >= maxPlayers || clients.contains(client)) {
+                return false;
+            }
+            clients.add(client);
+        }
+
+        client.attrSet(ATTR_ROOM, this);
+        return true;
+    }
+
+    public boolean removeClient(BFClient client) {
+        if (client == null) {
+            return false;
+        }
+
+        boolean removed = clients.remove(client);
+        if (removed) {
+            client.attrUnset(ATTR_ROOM);
+        }
+        return removed;
+    }
+
+    public ObjectList<BFClient> clients() {
+        return clients;
     }
 
 }

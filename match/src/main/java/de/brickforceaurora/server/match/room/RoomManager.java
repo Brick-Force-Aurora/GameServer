@@ -16,6 +16,22 @@ public final class RoomManager {
         return room;
     }
 
+    public boolean deleteRoom(Room room) {
+        if (room == null) {
+            return false;
+        }
+        return deleteRoomById(room.id());
+    }
+
+    public boolean deleteRoomById(int id) {
+        Room removed = rooms.remove(id);
+        if (removed != null) {
+            freeIds.enqueue(id);
+            return true;
+        }
+        return false;
+    }
+
     private final int newRoomId() {
         if (freeIds.isEmpty()) {
             return rooms.size();

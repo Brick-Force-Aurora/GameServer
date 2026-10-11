@@ -77,7 +77,5 @@ public abstract class GameMode<D extends GameData> implements IExtension {
     public abstract void handleRoomCreation(final Room room, final NetContext<ServerboundCreateRoomPacket> context);
     
     public abstract void handleRoomUpdate(final Room room, final NetContext<ServerboundRoomConfigPacket> context);
-
-    public abstract void handleLeaveRoom(final Room room, final NetContext<ServerboundLeavePacket> context);
     
 }
