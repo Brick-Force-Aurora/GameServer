@@ -92,12 +92,12 @@ public class RoomListener_ implements INetListener {
 
         room.removeClient(client);
 
-        client.send(new ClientboundLeavePacket().clientId(client.id()));
-        client.send(new ClientboundSetStatusPacket().clientId(client.id()).status(ClientStatus.WAITING.id()));
+        room.broadcast(new ClientboundLeavePacket().clientId(client.id()));
+        room.broadcast(new ClientboundSetStatusPacket().clientId(client.id()).status(ClientStatus.WAITING.id()));
 
         if (room.players() <= 0) {
             roomManager.deleteRoom(room);
-            client.send(new ClientboundDelRoomPacket().roomId(room.id()));
+            context.manager().broadcast(new ClientboundDelRoomPacket().roomId(room.id()));
             return;
         }
 
@@ -105,7 +105,7 @@ public class RoomListener_ implements INetListener {
             BFClient newMaster = room.clients().getFirst();
             room.masterId(newMaster.id());
 
-            client.send(new ClientboundMasterPacket().ownerClientId(newMaster.id()));
+            room.broadcast(new ClientboundMasterPacket().ownerClientId(newMaster.id()));
         }
     }
 
@@ -126,7 +126,7 @@ public class RoomListener_ implements INetListener {
             return;
         }
         room.masterId(newMasterId);
-        client.send(new ClientboundMasterPacket().ownerClientId(newMasterId));
+        room.broadcast(new ClientboundMasterPacket().ownerClientId(newMasterId));
     }
 
     @PacketHandler
