@@ -43,40 +43,37 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
         gameData.wanted(pkt.parameters()[6] >= 1);
         gameData.drop(pkt.parameters()[7] >= 1);
         gameData.mapAlias(pkt.alias());
-        context.client().send(new ClientboundRendezvousInfoPacket().ip(context.client().ip()).port(context.client().port()));
-        room.broadcast(new ClientboundMasterPacket().ownerClientId(context.client().id()));
+        context.manager().broadcast(new ClientboundCreateRoomPacket().roomInfo(room));
+        context.manager().broadcast(new ClientboundAddRoomPacket().roomInfo(room));
+    }
+
+    @Override
+    public void handleRoomJoin(NetManager<?> netManager, Room room, BFClient client) {
         //TODO: Hardcoded info needs to change
-        context.client().send(new ClientboundRoomConfigPacket().mapId(gameData.mapId()).mapAlias(gameData.mapAlias()).
+        TDMData gameData = (TDMData) room.gameData();
+        client.send(new ClientboundRoomConfigPacket().mapId(gameData.mapId()).mapAlias(gameData.mapAlias()).
                 weaponOption(gameData.weaponOption()).timeLimit(gameData.timeLimit()).killCount(0).canJoinMidGame(gameData.canJoinMidGame()).
                 autoBalance(gameData.autoBalance()).allowBuildGun(false).password("").commented(0).roomType(roomType()).drop(gameData.drop()).wanted(gameData.wanted()));
 
         boolean[] slotLocks = room.getSlotLocksByMaxPlayers();
         for (int i = 0; i < slotLocks.length; i++) {
-            context.client().send(
+            client.send(
                     new ClientboundSlotLockPacket()
                             .index((byte) i)
                             .slotLocked(slotLocks[i])
             );
         }
-        context.manager().broadcast(new ClientboundAddRoomPacket().roomInfo(room));
-        context.client().send(new ClientboundCreateRoomPacket().roomInfo(room));
+        client.send(new ClientboundRendezvousInfoPacket().ip(client.ip()).port(client.port()));
+        client.send(new ClientboundMasterPacket().ownerClientId(client.id()));
         //TODO: Hardcoded info needs to change
-        room.broadcast(context.client(), new ClientboundEnterPacket().id(context.client().id()).nickname(context.client().name()).localIp(context.client().ip())
-                .localPort(context.client().port()).remoteIp(context.client().ip()).remotePort(context.client().port())
+        room.broadcast(new ClientboundEnterPacket().id(client.id()).nickname(client.name()).localIp(client.ip())
+                .localPort(client.port()).remoteIp(client.ip()).remotePort(client.port())
                 .equipment(List.of("wau", "wax", "wba", "wap", "aac", "aad", "s07")).status(1).xp(9400000).clanId(0).clanName("Clan")
                 .clanMark(0).rank(65).playerFlag(1).weaponChanges(List.of()).dropItems(List.of()));
-        room.broadcast(new ClientboundSlotInfoPacket().id(context.client().id()).slot((byte)0).status(ClientStatus.WAITING.id()).kill(0)
-                .kill(0).death(0).assist(0).score(0).mission(0));
-        //if (pkt.type() == RoomType.MAP_EDITOR) {
-            //context.client().send(new ClientboundCopyrightPacket().ownerClientId(pkt.roomOwnerId()));
-        //}
-
-    }
-
-    @Override
-    public void handleRoomJoin(NetManager<?> netManager, Room room, BFClient client) {
-        // TODO Auto-generated method stub
-        
+        ClientboundSlotInfoPacket slot = new ClientboundSlotInfoPacket().id(client.id()).slot((byte)0).status(ClientStatus.WAITING.id()).kill(0)
+                .kill(0).death(0).assist(0).score(0).mission(0);
+        room.broadcast(slot);
+        client.send(slot);
     }
 
     @Override
