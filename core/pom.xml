@@ -16,8 +16,16 @@
 		<project.sourceDir>${project.build.directory}/project-sources</project.sourceDir>
 		<pktgen.enabled>false</pktgen.enabled>
 	</properties>
-	
-	<!-- Common build parameters -->
+    <dependencies>
+        <dependency>
+            <groupId>de.brickforceaurora.server</groupId>
+            <artifactId>database</artifactId>
+            <version>0.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+    <!-- Common build parameters -->
 	<build>
 		<plugins>
 			<!-- Add generated sources to compilation source -->

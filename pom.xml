@@ -10,7 +10,8 @@
 		<module>core</module>
 		<module>login</module>
 		<module>match</module>
-	</modules>
+        <module>database</module>
+    </modules>
 
 	<properties>
 		<java.version>25</java.version>

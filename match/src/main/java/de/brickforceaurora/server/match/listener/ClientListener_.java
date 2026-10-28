@@ -1,11 +1,24 @@
 package de.brickforceaurora.server.match.listener;
 
+import de.brickforceaurora.server.database.Database;
+import de.brickforceaurora.server.database.DatabaseException;
+import de.brickforceaurora.server.database.LoginRepository;
+import de.brickforceaurora.server.database.UserRepository;
+import de.brickforceaurora.server.database.model.InventoryItem;
+import de.brickforceaurora.server.database.model.UserAccount;
+import de.brickforceaurora.server.database.model.UserProfile;
+import de.brickforceaurora.server.database.model.UserStats;
+import de.brickforceaurora.server.match.MatchServerApp;
 import de.brickforceaurora.server.net.BFClient;
+import de.brickforceaurora.server.net.NetContext;
 import de.brickforceaurora.server.net.NetSignal;
+import de.brickforceaurora.server.net.PacketHandler;
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.clientbound.original.*;
 import de.brickforceaurora.server.net.protocol.data.*;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundIAgreeTosPacket;
 import de.brickforceaurora.server.util.flag.IFlags;
+import me.lauriichan.laylib.logger.ISimpleLogger;
 import me.lauriichan.snowframe.extension.Extension;
 import me.lauriichan.snowframe.signal.ISignalHandler;
 import me.lauriichan.snowframe.signal.SignalContext;
@@ -13,9 +26,14 @@ import me.lauriichan.snowframe.signal.SignalHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static de.brickforceaurora.server.match.MatchServerApp.database;
 
 @Extension
 public class ClientListener_ implements ISignalHandler {
+
+    public static final String ATTR_ACCOUNT_ID = "AccountId";
 
     private static final IFlags<GameMode> NO_GAMEMODES = GameMode.MANAGER.newImmutable(0);
     private static final IFlags<CommonOption> DEFAULT_COMMON_OPTIONS = CommonOption.MANAGER.newMutable().setAll(true, new CommonOption[] {
@@ -37,44 +55,88 @@ public class ClientListener_ implements ISignalHandler {
     @SignalHandler
     public void onLogin(SignalContext<NetSignal.ClientLoggedIn> context) {
         BFClient client = context.signal().client();
+        ISimpleLogger logger = MatchServerApp.logger();
+
+        UserProfile profile;
+        UserStats stats;
+        List<InventoryItem> inventory;
+        try {
+            Database database = database();
+            UserRepository users = new UserRepository(database);
+            //TODO: Only debug logins exist right now, this finds the account or creates it
+            Optional<UserAccount> account = new LoginRepository(database).loginDebug(client.name());
+            if (account.isEmpty()) {
+                logger.warning("No account for '{0}' ({1}): Account is protected by a password or OAuth identity", client.name(),
+                        client.ip());
+                client.disconnect("Account is not available");
+                return;
+            }
+            int accountId = account.get().id();
+            client.attrSet(ATTR_ACCOUNT_ID, accountId);
+            profile = users.loadProfile(accountId).orElseThrow();
+            stats = users.loadStats(accountId).orElseThrow();
+            inventory = users.loadInventory(accountId);
+            logger.info("Loaded account '{0}' (id {1}): xp {2}, rank {3}, {4} item(s)", client.name(), accountId, profile.xp(),
+                    profile.rank(), inventory.size());
+        } catch (DatabaseException exception) {
+            logger.error("Failed to load account of '{0}' ({1})", exception, client.name(), client.ip());
+            client.disconnect("Server Error: Couldn't load account");
+            return;
+        }
+
+        // The nickname is only set once the character was created, until then the login name is used
+        String nickname = profile.hasCharacter() ? profile.nickname() : client.name();
+        CountryFilter countryFilter = CountryFilter.byId(profile.countryFilter());
+        List<ClientboundItemListPacket.ItemEntry> items = new ArrayList<>(inventory.size());
+        for (InventoryItem item : inventory) {
+            ItemUsage usage = ItemUsage.byId(item.usage());
+            items.add(new ClientboundItemListPacket.ItemEntry(item.id(), item.code(), usage == null ? ItemUsage.NOT_USING : usage,
+                    item.remain(), (byte) item.premium(), item.durability()));
+        }
+
         //TODO: Hardcoded info needs to change
         client.send(new IClientboundPacket[] {
-            new ClientboundChannelPacket().channels(new ChannelInfo[] {
-                new ChannelInfo(1, ChannelMode.BATTLE, "Play", "127.0.0.1", 18890, 1, 16, 1, 0, 66, 0, 0, 0)
-            }),
-            new ClientboundCurChannelPacket().curChannelId(1),
-            new ClientboundPlayerInitInfoPacket().xp(9400000).tutorials(TUTORIALS_DONE).tosAccepted(true).extraSlots(9).firstLoginFp(0)
-                .countryFilter(CountryFilter.NONE).rank(65),
-            new ClientboundPlayerOptPacket().modeOptions(NO_GAMEMODES).quickPlayOption(QuickPlayOption.ALL_MAPS)
-                .commonOptions(DEFAULT_COMMON_OPTIONS),
-            new ClientboundPlayerInfoPacket().nickname(client.name()).xp(9400000).forcePoints(100000000).brickPoints(0).tokens(100000000)
-                .coins(100000000).starDust(0).gm(0).clanLv(0).clanMark(0).clanSeq(0).clanName("Clan").assault(0).heavy(0).handGun(0)
-                .sniper(0).melee(0).special(0).subMachine(0).apsType(6).apsLevel(5).rank(65),
-            new ClientboundLoginPacket().clientId(client.id()).channelId(1),
-            new ClientboundItemListPacket().items(List.of(
-                    new ClientboundItemListPacket.ItemEntry(0, "wau", ItemUsage.EQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(1, "wax", ItemUsage.EQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(2, "wba", ItemUsage.EQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(3, "wap", ItemUsage.EQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(4, "aac", ItemUsage.EQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(5, "aad", ItemUsage.EQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(6, "s07", ItemUsage.EQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(7, "sb7", ItemUsage.UNEQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(8, "sb8", ItemUsage.UNEQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(9, "sb9", ItemUsage.UNEQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(10, "sc0", ItemUsage.UNEQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(11, "sc1", ItemUsage.UNEQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(12, "sc3", ItemUsage.UNEQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(13, "sc4", ItemUsage.UNEQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(14, "s34", ItemUsage.UNEQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(15, "s43", ItemUsage.UNEQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(16, "s78", ItemUsage.UNEQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(17, "s79", ItemUsage.UNEQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(18, "s22", ItemUsage.UNEQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(19, "s06", ItemUsage.UNEQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(20, "s05", ItemUsage.UNEQUIP, -1, (byte) 0, 1000),
-                    new ClientboundItemListPacket.ItemEntry(21, "s27", ItemUsage.UNEQUIP, -1, (byte) 0, 1000)))
+                new ClientboundChannelPacket().channels(new ChannelInfo[] {
+                        new ChannelInfo(1, ChannelMode.BATTLE, "Play", "127.0.0.1", 18890, 1, 16, 1, 0, 66, 0, 0, 0)
+                }),
+                new ClientboundCurChannelPacket().curChannelId(1),
+                new ClientboundPlayerInitInfoPacket().xp(profile.xp()).tutorials(Tutorial.MANAGER.newImmutable(profile.tutorials()))
+                        .tosAccepted(profile.tosAccepted()).extraSlots(profile.extraSlots()).firstLoginFp(profile.firstLoginFp())
+                        .countryFilter(countryFilter == null ? CountryFilter.NONE : countryFilter).rank(profile.rank()),
+                new ClientboundPlayerOptPacket().modeOptions(NO_GAMEMODES).quickPlayOption(QuickPlayOption.ALL_MAPS)
+                        .commonOptions(DEFAULT_COMMON_OPTIONS),
+                new ClientboundPlayerInfoPacket().nickname(nickname).xp(profile.xp()).forcePoints(profile.point())
+                        .brickPoints(profile.brick()).tokens(profile.cash()).coins(profile.freeCoin()).starDust(profile.starDust()).gm(0)
+                        .clanLv(-1).clanMark(-1).clanSeq(-1).clanName("").assault(stats.assault()).heavy(stats.heavy())
+                        .handGun(stats.handGun()).sniper(stats.sniper()).melee(stats.melee()).special(stats.special())
+                        .subMachine(stats.subMachine()).apsType(6).apsLevel(5).rank(profile.rank()),
+                new ClientboundLoginPacket().clientId(client.id()).channelId(1),
+                new ClientboundItemListPacket().items(items)
         });
+    }
+
+    @PacketHandler
+    public void onIAgreeTos(final NetContext<ServerboundIAgreeTosPacket> context) {
+        BFClient client = context.client();
+        ISimpleLogger logger = MatchServerApp.logger();
+
+        Integer accountId = client.attr(ClientListener_.ATTR_ACCOUNT_ID, Integer.class);
+        if (accountId == null) {
+            logger.warning("'{0}' ({1}) agreed to the TOS without being logged in", client.name(), client.ip());
+            return;
+        }
+        try {
+            if (!new UserRepository(database()).acceptTos(accountId)) {
+                logger.warning("Couldn't save TOS agreement of '{0}': Account {1} has no profile", client.name(), accountId);
+                return;
+            }
+        } catch (DatabaseException exception) {
+            logger.error("Failed to save TOS agreement of '{0}' ({1})", exception, client.name(), client.ip());
+            client.disconnect("Server Error: Couldn't save TOS agreement");
+            return;
+        }
+        logger.info("'{0}' (id {1}) agreed to the TOS", client.name(), accountId);
+        client.send(new ClientboundIAgreeTosPacket());
     }
 
 }

@@ -1,9 +1,13 @@
 package de.brickforceaurora.server.match;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
 import de.brickforceaurora.server.IBrickForceServer;
+import de.brickforceaurora.server.database.Database;
+import de.brickforceaurora.server.database.LoginRepository;
+import de.brickforceaurora.server.database.UserRepository;
 import de.brickforceaurora.server.match.gamemode.GameModeManager;
 import de.brickforceaurora.server.match.room.RoomManager;
 import de.brickforceaurora.server.net.BrickForceServer;
@@ -46,6 +50,12 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
         return snowFrame.logger();
     }
 
+    public static Database database() {
+        return snowFrame.app().database;
+    }
+
+    private Database database;
+
     private RoomManager roomManager;
     private GameModeManager gameModeManager;
 
@@ -69,7 +79,10 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
         });
         lifecycle.startupChain().register("server-start", Stage.PRE, frame -> {
             server = new BrickForceServer<>(frame, this);
-            loginHandler = new DevLoginHandler(server.netManager());
+            Path databaseFile = Paths.get("data", "users.db");
+            database = new Database(databaseFile);
+            frame.logger().info("User database ready at {0}", databaseFile.toAbsolutePath());
+            loginHandler = new DevLoginHandler(server.netManager(), new UserRepository(database), new LoginRepository(database));
         }).register("server-start", Stage.MAIN, _ -> {
             server.open();
         });
