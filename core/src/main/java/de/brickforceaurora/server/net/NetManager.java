@@ -15,9 +15,13 @@ import de.brickforceaurora.server.util.RateLimiter;
 import de.brickforceaurora.server.util.TimeMath;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.MultiThreadIoEventLoopGroup;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollIoHandler;
+import io.netty.channel.nio.NioIoHandler;
+import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.nio.NioChannelOption;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
@@ -35,8 +39,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
     // Therefore we start at 1
     private final AtomicInteger nextClientId = new AtomicInteger(1);
 
-    private final NioEventLoopGroup mainGroup = new NioEventLoopGroup(1);
-    private final NioEventLoopGroup workerGroup = new NioEventLoopGroup();
+    private final MultiThreadIoEventLoopGroup group = new MultiThreadIoEventLoopGroup(Epoll.isAvailable() ? EpollIoHandler.newFactory() : NioIoHandler.newFactory());
 
     private final ServerBootstrap bootstrap = new ServerBootstrap();
     private volatile Channel serverChannel;
@@ -194,8 +197,8 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
         if (serverChannel != null) {
             return;
         }
-        bootstrap.group(mainGroup, workerGroup).channel(NioServerSocketChannel.class).childOption(NioChannelOption.SO_KEEPALIVE, false)
-            .childOption(NioChannelOption.TCP_NODELAY, true).childHandler(new BFChannelInit(this));
+        bootstrap.group(group).channel(ServerSocketChannel.class).childOption(NioChannelOption.SO_KEEPALIVE, false)
+            .childOption(ChannelOption.TCP_NODELAY, true).childHandler(new BFChannelInit(this));
         serverChannel = bootstrap.bind(port).sync().channel();
         logger.info("Listening on 0.0.0.0:{0}", port);
         signalManager.call(new NetSignal.ServerStarted(this));
@@ -213,8 +216,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
         }
 
         serverChannel.close().awaitUninterruptibly();
-        mainGroup.close();
-        workerGroup.close();
+        group.close();
         
         signalManager.call(new NetSignal.ServerStopped(this));
     }
