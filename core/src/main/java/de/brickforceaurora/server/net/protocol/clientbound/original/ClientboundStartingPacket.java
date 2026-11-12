@@ -5,15 +5,15 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundStartingPacket implements IClientboundPacket {
 
-	private int val;
+	private int remain;
 
-	public final ClientboundStartingPacket val(int val) {
-		this.val = val;
+	public final ClientboundStartingPacket remain(int remain) {
+		this.remain = remain;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int remain() {
+		return this.remain;
 	}
 
 	@Override
@@ -23,6 +23,6 @@ public final class ClientboundStartingPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
+		buf.writeInt(this.remain);
 	}
 }

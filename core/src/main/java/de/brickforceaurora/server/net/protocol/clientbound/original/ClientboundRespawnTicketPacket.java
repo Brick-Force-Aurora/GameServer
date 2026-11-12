@@ -5,15 +5,15 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundRespawnTicketPacket implements IClientboundPacket {
 
-	private int val;
+	private int ticket;
 
-	public final ClientboundRespawnTicketPacket val(int val) {
-		this.val = val;
+	public final ClientboundRespawnTicketPacket ticket(int ticket) {
+		this.ticket = ticket;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int ticket() {
+		return this.ticket;
 	}
 
 	@Override
@@ -23,6 +23,6 @@ public final class ClientboundRespawnTicketPacket implements IClientboundPacket 
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
+		buf.writeInt(this.ticket);
 	}
 }

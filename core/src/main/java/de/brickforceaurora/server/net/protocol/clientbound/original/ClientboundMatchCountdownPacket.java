@@ -5,15 +5,15 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundMatchCountdownPacket implements IClientboundPacket {
 
-	private int val;
+	private int count;
 
-	public final ClientboundMatchCountdownPacket val(int val) {
-		this.val = val;
+	public final ClientboundMatchCountdownPacket count(int count) {
+		this.count = count;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int count() {
+		return this.count;
 	}
 
 	@Override
@@ -23,6 +23,6 @@ public final class ClientboundMatchCountdownPacket implements IClientboundPacket
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
+		buf.writeInt(this.count);
 	}
 }
