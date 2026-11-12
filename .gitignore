@@ -27,7 +27,7 @@ dependency-reduced-pom.xml
 .idea/**/*
 
 ### Eclipse ###
-/.settings/
+.settings/
 .apt_generated
 .classpath
 .factorypath
