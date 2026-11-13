@@ -17,11 +17,12 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.MultiThreadIoEventLoopGroup;
+import io.netty.channel.ServerChannel;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollIoHandler;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioIoHandler;
-import io.netty.channel.socket.ServerSocketChannel;
-import io.netty.channel.socket.nio.NioChannelOption;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
@@ -197,7 +198,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
         if (serverChannel != null) {
             return;
         }
-        bootstrap.group(group).channel(ServerSocketChannel.class).childOption(NioChannelOption.SO_KEEPALIVE, false)
+        bootstrap.group(group).channel(Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class).childOption(ChannelOption.SO_KEEPALIVE, false)
             .childOption(ChannelOption.TCP_NODELAY, true).childHandler(new BFChannelInit(this));
         serverChannel = bootstrap.bind(port).sync().channel();
         logger.info("Listening on 0.0.0.0:{0}", port);
