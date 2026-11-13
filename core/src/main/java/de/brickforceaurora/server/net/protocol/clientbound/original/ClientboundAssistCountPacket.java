@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundAssistCountPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
-	private int val3;
+	private int clientId;
+	private int assist;
+	private int score;
 
-	public final ClientboundAssistCountPacket val(int val) {
-		this.val = val;
+	public final ClientboundAssistCountPacket clientId(int clientId) {
+		this.clientId = clientId;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int clientId() {
+		return this.clientId;
 	}
 
-	public final ClientboundAssistCountPacket val2(int val2) {
-		this.val2 = val2;
+	public final ClientboundAssistCountPacket assist(int assist) {
+		this.assist = assist;
 		return this;
 	}
 
-	public final int val2() {
-		return this.val2;
+	public final int assist() {
+		return this.assist;
 	}
 
-	public final ClientboundAssistCountPacket val3(int val3) {
-		this.val3 = val3;
+	public final ClientboundAssistCountPacket score(int score) {
+		this.score = score;
 		return this;
 	}
 
-	public final int val3() {
-		return this.val3;
+	public final int score() {
+		return this.score;
 	}
 
 	@Override
@@ -43,8 +43,8 @@ public final class ClientboundAssistCountPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeInt(this.val2);
-		buf.writeInt(this.val3);
+		buf.writeInt(this.clientId);
+		buf.writeInt(this.assist);
+		buf.writeInt(this.score);
 	}
 }
