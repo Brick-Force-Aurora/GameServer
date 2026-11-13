@@ -27,7 +27,7 @@ public final class RendezvousServer implements AutoCloseable {
     public static final String PORT_PROPERTY = "bfa.rendezvous.port";
     public static final String HOST_PROPERTY = "bfa.rendezvous.host";
 
-    public static final int DEFAULT_PORT = 18891;
+    public static final int DEFAULT_PORT = 18890;
 
     public static final String ATTR_OBSERVED = "rendezvous.observed";
     public static final String ATTR_REPORTED = "rendezvous.reported";
