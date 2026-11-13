@@ -2,11 +2,14 @@ package de.brickforceaurora.server.match.gamemode.teamdeathmatch;
 
 import de.brickforceaurora.server.match.gamemode.GameData;
 import de.brickforceaurora.server.match.gamemode.TeamGameMode;
+import de.brickforceaurora.server.match.MatchServerApp;
+import de.brickforceaurora.server.match.room.PeerEndpoints;
 import de.brickforceaurora.server.match.room.Room;
 import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.NetContext;
 import de.brickforceaurora.server.net.NetManager;
 import de.brickforceaurora.server.net.protocol.clientbound.original.*;
+import de.brickforceaurora.server.net.rendezvous.RendezvousServer;
 import de.brickforceaurora.server.net.protocol.data.ClientStatus;
 import de.brickforceaurora.server.net.protocol.data.RoomType;
 import de.brickforceaurora.server.net.protocol.serverbound.original.*;
@@ -63,17 +66,33 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
                             .slotLocked(slotLocks[i])
             );
         }
-        client.send(new ClientboundRendezvousInfoPacket().ip(client.ip()).port(client.port()));
-        client.send(new ClientboundMasterPacket().ownerClientId(client.id()));
-        //TODO: Hardcoded info needs to change
-        room.broadcast(new ClientboundEnterPacket().id(client.id()).nickname(client.name()).localIp(client.ip())
-                .localPort(client.port()).remoteIp(client.ip()).remotePort(client.port())
-                .equipment(List.of("wau", "wax", "wba", "wap", "aac", "aad", "s07")).status(1).xp(9400000).clanId(0).clanName("Clan")
-                .clanMark(0).rank(65).playerFlag(1).weaponChanges(List.of()).dropItems(List.of()));
-        ClientboundSlotInfoPacket slot = new ClientboundSlotInfoPacket().id(client.id()).slot((byte)0).status(ClientStatus.WAITING.id()).kill(0)
-                .kill(0).death(0).assist(0).score(0).mission(0);
+        RendezvousServer rendezvous = MatchServerApp.app().rendezvous();
+        client.send(new ClientboundRendezvousInfoPacket().ip(rendezvous.infoHost(client)).port(rendezvous.infoPort(client)));
+        rendezvous.pushPong(client);
+        client.send(new ClientboundMasterPacket().ownerClientId(room.masterId()));
+
+        for (BFClient member : room.clients().toArray(new BFClient[0])) {
+            client.send(enterPacket(member), slotInfoPacket(member));
+        }
+        room.broadcast(enterPacket(client));
+        ClientboundSlotInfoPacket slot = slotInfoPacket(client);
         room.broadcast(slot);
         client.send(slot);
+    }
+
+    private static ClientboundEnterPacket enterPacket(BFClient client) {
+        PeerEndpoints endpoints = PeerEndpoints.of(client);
+        //TODO: Hardcoded info needs to change
+        return new ClientboundEnterPacket().id(client.id()).nickname(client.name()).localIp(endpoints.localIp())
+                .localPort(endpoints.localPort()).remoteIp(endpoints.remoteIp()).remotePort(endpoints.remotePort())
+                .equipment(List.of("wau", "wax", "wba", "wap", "aac", "aad", "s07")).status(1).xp(9400000).clanId(0).clanName("Clan")
+                .clanMark(0).rank(65).playerFlag(0).weaponChanges(List.of()).dropItems(List.of());
+    }
+
+    private static ClientboundSlotInfoPacket slotInfoPacket(BFClient client) {
+        Integer slot = client.attr(Room.ATTR_SLOT, Integer.class);
+        return new ClientboundSlotInfoPacket().id(client.id()).slot(slot == null ? (byte) 0 : slot.byteValue())
+                .status(ClientStatus.WAITING.id()).kill(0).death(0).assist(0).score(0).mission(0);
     }
 
     @Override

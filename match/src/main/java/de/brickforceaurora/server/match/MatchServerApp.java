@@ -10,9 +10,11 @@ import de.brickforceaurora.server.database.LoginRepository;
 import de.brickforceaurora.server.database.UserRepository;
 import de.brickforceaurora.server.match.gamemode.GameModeManager;
 import de.brickforceaurora.server.match.room.RoomManager;
+import de.brickforceaurora.server.match.room.RoomPeers;
 import de.brickforceaurora.server.net.BrickForceServer;
 import de.brickforceaurora.server.net.login.DevLoginHandler;
 import de.brickforceaurora.server.net.login.ILoginHandler;
+import de.brickforceaurora.server.net.rendezvous.RendezvousServer;
 import de.brickforceaurora.server.util.AnsiSysOutLogger;
 import me.lauriichan.laylib.logger.ISimpleLogger;
 import me.lauriichan.snowframe.ISnowFrameApp;
@@ -60,6 +62,7 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
     private GameModeManager gameModeManager;
 
     private BrickForceServer<MatchServerApp> server;
+    private RendezvousServer rendezvous;
     private ILoginHandler loginHandler;
 
     @Override
@@ -85,6 +88,9 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
             loginHandler = new DevLoginHandler(server.netManager(), new UserRepository(database), new LoginRepository(database));
         }).register("server-start", Stage.MAIN, _ -> {
             server.open();
+            rendezvous = new RendezvousServer(server.netManager());
+            rendezvous.directory(new RoomPeers());
+            rendezvous.open();
         });
     }
 
@@ -96,6 +102,10 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
     @Override
     public ILoginHandler loginHandler() {
         return loginHandler;
+    }
+
+    public RendezvousServer rendezvous() {
+        return rendezvous;
     }
 
     public RoomManager roomManager() {

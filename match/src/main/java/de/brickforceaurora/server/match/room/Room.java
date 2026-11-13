@@ -15,6 +15,7 @@ import it.unimi.dsi.fastutil.objects.ObjectLists;
 public final class Room implements IRoomInfo {
 
     public static final String ATTR_ROOM = "MatchRoom";
+    public static final String ATTR_SLOT = "MatchSlot";
 
     private final int id;
     private volatile String title;
@@ -232,6 +233,23 @@ public final class Room implements IRoomInfo {
         }
 
         return slotLocks;
+    }
+
+    public int freeSlot() {
+        boolean[] locks = getSlotLocksByMaxPlayers();
+        boolean[] used = new boolean[locks.length];
+        for (BFClient client : clients.toArray(new BFClient[0])) {
+            Integer slot = client.attr(ATTR_SLOT, Integer.class);
+            if (slot != null && slot >= 0 && slot < used.length) {
+                used[slot] = true;
+            }
+        }
+        for (int slot = 0; slot < locks.length; slot++) {
+            if (!locks[slot] && !used[slot]) {
+                return slot;
+            }
+        }
+        return -1;
     }
 
     public void broadcast(BFClient exclusive, IClientboundPacket... packets) {

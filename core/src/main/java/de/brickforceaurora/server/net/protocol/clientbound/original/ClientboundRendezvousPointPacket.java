@@ -5,55 +5,55 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundRendezvousPointPacket implements IClientboundPacket {
 
-	private int val;
-	private String val2;
-	private int val3;
-	private String val4;
-	private int val5;
+	private int clientId;
+	private String localIp;
+	private int localPort;
+	private String remoteIp;
+	private int remotePort;
 
-	public final ClientboundRendezvousPointPacket val(int val) {
-		this.val = val;
+	public final ClientboundRendezvousPointPacket clientId(int clientId) {
+		this.clientId = clientId;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int clientId() {
+		return this.clientId;
 	}
 
-	public final ClientboundRendezvousPointPacket val2(String val2) {
-		this.val2 = val2;
+	public final ClientboundRendezvousPointPacket localIp(String localIp) {
+		this.localIp = localIp;
 		return this;
 	}
 
-	public final String val2() {
-		return this.val2;
+	public final String localIp() {
+		return this.localIp;
 	}
 
-	public final ClientboundRendezvousPointPacket val3(int val3) {
-		this.val3 = val3;
+	public final ClientboundRendezvousPointPacket localPort(int localPort) {
+		this.localPort = localPort;
 		return this;
 	}
 
-	public final int val3() {
-		return this.val3;
+	public final int localPort() {
+		return this.localPort;
 	}
 
-	public final ClientboundRendezvousPointPacket val4(String val4) {
-		this.val4 = val4;
+	public final ClientboundRendezvousPointPacket remoteIp(String remoteIp) {
+		this.remoteIp = remoteIp;
 		return this;
 	}
 
-	public final String val4() {
-		return this.val4;
+	public final String remoteIp() {
+		return this.remoteIp;
 	}
 
-	public final ClientboundRendezvousPointPacket val5(int val5) {
-		this.val5 = val5;
+	public final ClientboundRendezvousPointPacket remotePort(int remotePort) {
+		this.remotePort = remotePort;
 		return this;
 	}
 
-	public final int val5() {
-		return this.val5;
+	public final int remotePort() {
+		return this.remotePort;
 	}
 
 	@Override
@@ -63,10 +63,10 @@ public final class ClientboundRendezvousPointPacket implements IClientboundPacke
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeString(this.val2);
-		buf.writeInt(this.val3);
-		buf.writeString(this.val4);
-		buf.writeInt(this.val5);
+		buf.writeInt(this.clientId);
+		buf.writeString(this.localIp);
+		buf.writeInt(this.localPort);
+		buf.writeString(this.remoteIp);
+		buf.writeInt(this.remotePort);
 	}
 }

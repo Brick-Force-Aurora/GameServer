@@ -49,6 +49,14 @@ public final class RoomManager {
             return false;
         }
         
+        // The slot is how the clients address each other
+        int slot = room.freeSlot();
+        if (slot < 0) {
+            // Room is full
+            return false;
+        }
+        client.attrSet(Room.ATTR_SLOT, slot);
+
         // Set current room first
         client.attrSet(Room.ATTR_ROOM, room);
         
@@ -73,6 +81,7 @@ public final class RoomManager {
     private void leaveRoomInternal(BFClient client, Room room) {
         // Leave first then send packets
         room.clients().remove(client);
+        client.attrUnset(Room.ATTR_SLOT);
 
         if (room.players() == 0) {
             deleteRoom(room);
