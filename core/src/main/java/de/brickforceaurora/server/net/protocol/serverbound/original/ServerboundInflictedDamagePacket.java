@@ -2,13 +2,20 @@ package de.brickforceaurora.server.net.protocol.serverbound.original;
 
 import de.brickforceaurora.server.net.protocol.IServerboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
+import de.brickforceaurora.server.net.protocol.data.DamageEntry;
 
 public final class ServerboundInflictedDamagePacket implements IServerboundPacket {
 
-	final String UnknownValue0 = "0";
-	final String UnknownValue1 = "inflictedDamage.Count";
-	final String UnknownValue2 = "item.Key";
-	final String UnknownValue3 = "item.Value";
+	private DamageEntry[] damage = new DamageEntry[0];
+
+	public final ServerboundInflictedDamagePacket damage(DamageEntry[] damage) {
+		this.damage = damage;
+		return this;
+	}
+
+	public final DamageEntry[] damage() {
+		return this.damage;
+	}
 
 	@Override
 	public int packetId() {
@@ -17,5 +24,6 @@ public final class ServerboundInflictedDamagePacket implements IServerboundPacke
 
 	@Override
 	public final void read(PacketBuf buf) {
+		this.damage = buf.readArray(DamageEntry[]::new, DamageEntry::fromBuffer);
 	}
 }
