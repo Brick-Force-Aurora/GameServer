@@ -5,25 +5,25 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundChgDoorStatusPacket implements IClientboundPacket {
 
-	private int val;
-	private byte val2;
+	private int door;
+	private byte status;
 
-	public final ClientboundChgDoorStatusPacket val(int val) {
-		this.val = val;
+	public final ClientboundChgDoorStatusPacket door(int door) {
+		this.door = door;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int door() {
+		return this.door;
 	}
 
-	public final ClientboundChgDoorStatusPacket val2(byte val2) {
-		this.val2 = val2;
+	public final ClientboundChgDoorStatusPacket status(byte status) {
+		this.status = status;
 		return this;
 	}
 
-	public final byte val2() {
-		return this.val2;
+	public final byte status() {
+		return this.status;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public final class ClientboundChgDoorStatusPacket implements IClientboundPacket 
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeByte(this.val2);
+		buf.writeInt(this.door);
+		buf.writeByte(this.status);
 	}
 }

@@ -5,65 +5,65 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundKillLogPacket implements IClientboundPacket {
 
-	private byte val;
-	private int val2;
-	private byte val3;
-	private int val4;
-	private int val5;
-	private int val6;
+	private byte killerType;
+	private int killer;
+	private byte victimType;
+	private int victim;
+	private int weaponBy;
+	private int hitpart;
 
-	public final ClientboundKillLogPacket val(byte val) {
-		this.val = val;
+	public final ClientboundKillLogPacket killerType(byte killerType) {
+		this.killerType = killerType;
 		return this;
 	}
 
-	public final byte val() {
-		return this.val;
+	public final byte killerType() {
+		return this.killerType;
 	}
 
-	public final ClientboundKillLogPacket val2(int val2) {
-		this.val2 = val2;
+	public final ClientboundKillLogPacket killer(int killer) {
+		this.killer = killer;
 		return this;
 	}
 
-	public final int val2() {
-		return this.val2;
+	public final int killer() {
+		return this.killer;
 	}
 
-	public final ClientboundKillLogPacket val3(byte val3) {
-		this.val3 = val3;
+	public final ClientboundKillLogPacket victimType(byte victimType) {
+		this.victimType = victimType;
 		return this;
 	}
 
-	public final byte val3() {
-		return this.val3;
+	public final byte victimType() {
+		return this.victimType;
 	}
 
-	public final ClientboundKillLogPacket val4(int val4) {
-		this.val4 = val4;
+	public final ClientboundKillLogPacket victim(int victim) {
+		this.victim = victim;
 		return this;
 	}
 
-	public final int val4() {
-		return this.val4;
+	public final int victim() {
+		return this.victim;
 	}
 
-	public final ClientboundKillLogPacket val5(int val5) {
-		this.val5 = val5;
+	public final ClientboundKillLogPacket weaponBy(int weaponBy) {
+		this.weaponBy = weaponBy;
 		return this;
 	}
 
-	public final int val5() {
-		return this.val5;
+	public final int weaponBy() {
+		return this.weaponBy;
 	}
 
-	public final ClientboundKillLogPacket val6(int val6) {
-		this.val6 = val6;
+	public final ClientboundKillLogPacket hitpart(int hitpart) {
+		this.hitpart = hitpart;
 		return this;
 	}
 
-	public final int val6() {
-		return this.val6;
+	public final int hitpart() {
+		return this.hitpart;
 	}
 
 	@Override
@@ -73,11 +73,11 @@ public final class ClientboundKillLogPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeByte(this.val);
-		buf.writeInt(this.val2);
-		buf.writeByte(this.val3);
-		buf.writeInt(this.val4);
-		buf.writeInt(this.val5);
-		buf.writeInt(this.val6);
+		buf.writeByte(this.killerType);
+		buf.writeInt(this.killer);
+		buf.writeByte(this.victimType);
+		buf.writeInt(this.victim);
+		buf.writeInt(this.weaponBy);
+		buf.writeInt(this.hitpart);
 	}
 }

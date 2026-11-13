@@ -5,25 +5,25 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundPickupDroppedItemPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
+	private int clientId;
+	private int itemSeq;
 
-	public final ClientboundPickupDroppedItemPacket val(int val) {
-		this.val = val;
+	public final ClientboundPickupDroppedItemPacket clientId(int clientId) {
+		this.clientId = clientId;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int clientId() {
+		return this.clientId;
 	}
 
-	public final ClientboundPickupDroppedItemPacket val2(int val2) {
-		this.val2 = val2;
+	public final ClientboundPickupDroppedItemPacket itemSeq(int itemSeq) {
+		this.itemSeq = itemSeq;
 		return this;
 	}
 
-	public final int val2() {
-		return this.val2;
+	public final int itemSeq() {
+		return this.itemSeq;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public final class ClientboundPickupDroppedItemPacket implements IClientboundPac
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeInt(this.val2);
+		buf.writeInt(this.clientId);
+		buf.writeInt(this.itemSeq);
 	}
 }

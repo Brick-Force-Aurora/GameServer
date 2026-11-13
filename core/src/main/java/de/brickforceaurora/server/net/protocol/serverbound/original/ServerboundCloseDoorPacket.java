@@ -5,15 +5,15 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundCloseDoorPacket implements IServerboundPacket {
 
-	private int clientId;
+	private int door;
 
-	public final ServerboundCloseDoorPacket clientId(int clientId) {
-		this.clientId = clientId;
+	public final ServerboundCloseDoorPacket door(int door) {
+		this.door = door;
 		return this;
 	}
 
-	public final int clientId() {
-		return this.clientId;
+	public final int door() {
+		return this.door;
 	}
 
 	@Override
@@ -23,6 +23,6 @@ public final class ServerboundCloseDoorPacket implements IServerboundPacket {
 
 	@Override
 	public final void read(PacketBuf buf) {
-		this.clientId = buf.readInt();
+		this.door = buf.readInt();
 	}
 }

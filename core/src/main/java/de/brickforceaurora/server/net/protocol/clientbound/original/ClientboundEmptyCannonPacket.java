@@ -5,15 +5,15 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundEmptyCannonPacket implements IClientboundPacket {
 
-	private int val;
+	private int cannon;
 
-	public final ClientboundEmptyCannonPacket val(int val) {
-		this.val = val;
+	public final ClientboundEmptyCannonPacket cannon(int cannon) {
+		this.cannon = cannon;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int cannon() {
+		return this.cannon;
 	}
 
 	@Override
@@ -23,6 +23,6 @@ public final class ClientboundEmptyCannonPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
+		buf.writeInt(this.cannon);
 	}
 }

@@ -5,16 +5,16 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundGadgetActionPacket implements IServerboundPacket {
 
-	private int clientId;
+	private int gadget;
 	private int action;
 
-	public final ServerboundGadgetActionPacket clientId(int clientId) {
-		this.clientId = clientId;
+	public final ServerboundGadgetActionPacket gadget(int gadget) {
+		this.gadget = gadget;
 		return this;
 	}
 
-	public final int clientId() {
-		return this.clientId;
+	public final int gadget() {
+		return this.gadget;
 	}
 
 	public final ServerboundGadgetActionPacket action(int action) {
@@ -33,7 +33,7 @@ public final class ServerboundGadgetActionPacket implements IServerboundPacket {
 
 	@Override
 	public final void read(PacketBuf buf) {
-		this.clientId = buf.readInt();
+		this.gadget = buf.readInt();
 		this.action = buf.readInt();
 	}
 }

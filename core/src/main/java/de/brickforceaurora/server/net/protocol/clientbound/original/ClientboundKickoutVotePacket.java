@@ -5,15 +5,15 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundKickoutVotePacket implements IClientboundPacket {
 
-	private int val;
+	private int result;
 
-	public final ClientboundKickoutVotePacket val(int val) {
-		this.val = val;
+	public final ClientboundKickoutVotePacket result(int result) {
+		this.result = result;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int result() {
+		return this.result;
 	}
 
 	@Override
@@ -23,6 +23,6 @@ public final class ClientboundKickoutVotePacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
+		buf.writeInt(this.result);
 	}
 }

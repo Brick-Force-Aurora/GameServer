@@ -5,25 +5,25 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundCacheBrickDonePacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
+	private int mapIndex;
+	private int skyboxIndex;
 
-	public final ClientboundCacheBrickDonePacket val(int val) {
-		this.val = val;
+	public final ClientboundCacheBrickDonePacket mapIndex(int mapIndex) {
+		this.mapIndex = mapIndex;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int mapIndex() {
+		return this.mapIndex;
 	}
 
-	public final ClientboundCacheBrickDonePacket val2(int val2) {
-		this.val2 = val2;
+	public final ClientboundCacheBrickDonePacket skyboxIndex(int skyboxIndex) {
+		this.skyboxIndex = skyboxIndex;
 		return this;
 	}
 
-	public final int val2() {
-		return this.val2;
+	public final int skyboxIndex() {
+		return this.skyboxIndex;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public final class ClientboundCacheBrickDonePacket implements IClientboundPacket
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeInt(this.val2);
+		buf.writeInt(this.mapIndex);
+		buf.writeInt(this.skyboxIndex);
 	}
 }

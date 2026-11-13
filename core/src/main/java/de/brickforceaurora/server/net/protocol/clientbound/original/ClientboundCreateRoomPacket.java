@@ -32,7 +32,7 @@ public final class ClientboundCreateRoomPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(roomType == null ? -1 : 0);
+		buf.writeInt(roomType == null ? -1 : roomType.id());
 		buf.writeInt(id);
 		buf.writeString(title);
 	}

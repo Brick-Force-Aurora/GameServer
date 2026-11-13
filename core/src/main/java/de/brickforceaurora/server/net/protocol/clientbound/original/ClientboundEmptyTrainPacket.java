@@ -5,15 +5,15 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundEmptyTrainPacket implements IClientboundPacket {
 
-	private int val;
+	private int train;
 
-	public final ClientboundEmptyTrainPacket val(int val) {
-		this.val = val;
+	public final ClientboundEmptyTrainPacket train(int train) {
+		this.train = train;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int train() {
+		return this.train;
 	}
 
 	@Override
@@ -23,6 +23,6 @@ public final class ClientboundEmptyTrainPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
+		buf.writeInt(this.train);
 	}
 }

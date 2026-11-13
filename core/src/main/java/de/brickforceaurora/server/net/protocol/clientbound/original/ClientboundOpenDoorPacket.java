@@ -5,15 +5,15 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundOpenDoorPacket implements IClientboundPacket {
 
-	private int val;
+	private int door;
 
-	public final ClientboundOpenDoorPacket val(int val) {
-		this.val = val;
+	public final ClientboundOpenDoorPacket door(int door) {
+		this.door = door;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int door() {
+		return this.door;
 	}
 
 	@Override
@@ -23,6 +23,6 @@ public final class ClientboundOpenDoorPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
+		buf.writeInt(this.door);
 	}
 }

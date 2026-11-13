@@ -5,15 +5,15 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundDestroyBrickPacket implements IClientboundPacket {
 
-	private int val;
+	private int brick;
 
-	public final ClientboundDestroyBrickPacket val(int val) {
-		this.val = val;
+	public final ClientboundDestroyBrickPacket brick(int brick) {
+		this.brick = brick;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int brick() {
+		return this.brick;
 	}
 
 	@Override
@@ -23,6 +23,6 @@ public final class ClientboundDestroyBrickPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
+		buf.writeInt(this.brick);
 	}
 }

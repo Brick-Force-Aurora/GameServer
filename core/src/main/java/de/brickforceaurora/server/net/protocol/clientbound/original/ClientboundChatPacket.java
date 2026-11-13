@@ -5,59 +5,55 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundChatPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
-	private String val3;
-	private String val4;
-	private boolean val5;
+	private int clientId;
+	private byte chatType;
+	private String nickname;
+	private String text;
+	private boolean gameMaster;
 
-	public final ClientboundChatPacket val(int val) {
-		this.val = val;
+	public final ClientboundChatPacket clientId(int clientId) {
+		this.clientId = clientId;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int clientId() {
+		return this.clientId;
 	}
 
-	public final ClientboundChatPacket val2(int val2) {
-		if (val2 > 255L || val2 < 0L) {
-			throw new IllegalArgumentException(
-					"Value " + val2 + " is out of bounds of allowed number range of 0 - 255");
-		}
-		this.val2 = val2;
+	public final ClientboundChatPacket chatType(byte chatType) {
+		this.chatType = chatType;
 		return this;
 	}
 
-	public final int val2() {
-		return this.val2;
+	public final byte chatType() {
+		return this.chatType;
 	}
 
-	public final ClientboundChatPacket val3(String val3) {
-		this.val3 = val3;
+	public final ClientboundChatPacket nickname(String nickname) {
+		this.nickname = nickname;
 		return this;
 	}
 
-	public final String val3() {
-		return this.val3;
+	public final String nickname() {
+		return this.nickname;
 	}
 
-	public final ClientboundChatPacket val4(String val4) {
-		this.val4 = val4;
+	public final ClientboundChatPacket text(String text) {
+		this.text = text;
 		return this;
 	}
 
-	public final String val4() {
-		return this.val4;
+	public final String text() {
+		return this.text;
 	}
 
-	public final ClientboundChatPacket val5(boolean val5) {
-		this.val5 = val5;
+	public final ClientboundChatPacket gameMaster(boolean gameMaster) {
+		this.gameMaster = gameMaster;
 		return this;
 	}
 
-	public final boolean val5() {
-		return this.val5;
+	public final boolean gameMaster() {
+		return this.gameMaster;
 	}
 
 	@Override
@@ -67,10 +63,10 @@ public final class ClientboundChatPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeByte(this.val2);
-		buf.writeString(this.val3);
-		buf.writeString(this.val4);
-		buf.writeBoolean(this.val5);
+		buf.writeInt(this.clientId);
+		buf.writeByte(this.chatType);
+		buf.writeString(this.nickname);
+		buf.writeString(this.text);
+		buf.writeBoolean(this.gameMaster);
 	}
 }

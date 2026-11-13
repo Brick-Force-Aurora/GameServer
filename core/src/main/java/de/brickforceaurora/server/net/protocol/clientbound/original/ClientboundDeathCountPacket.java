@@ -5,25 +5,25 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundDeathCountPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
+	private int clientId;
+	private int death;
 
-	public final ClientboundDeathCountPacket val(int val) {
-		this.val = val;
+	public final ClientboundDeathCountPacket clientId(int clientId) {
+		this.clientId = clientId;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int clientId() {
+		return this.clientId;
 	}
 
-	public final ClientboundDeathCountPacket val2(int val2) {
-		this.val2 = val2;
+	public final ClientboundDeathCountPacket death(int death) {
+		this.death = death;
 		return this;
 	}
 
-	public final int val2() {
-		return this.val2;
+	public final int death() {
+		return this.death;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public final class ClientboundDeathCountPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeInt(this.val2);
+		buf.writeInt(this.clientId);
+		buf.writeInt(this.death);
 	}
 }

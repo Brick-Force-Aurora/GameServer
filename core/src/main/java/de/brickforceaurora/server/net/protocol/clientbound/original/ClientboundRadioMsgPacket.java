@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundRadioMsgPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
-	private int val3;
+	private int clientId;
+	private int category;
+	private int message;
 
-	public final ClientboundRadioMsgPacket val(int val) {
-		this.val = val;
+	public final ClientboundRadioMsgPacket clientId(int clientId) {
+		this.clientId = clientId;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int clientId() {
+		return this.clientId;
 	}
 
-	public final ClientboundRadioMsgPacket val2(int val2) {
-		this.val2 = val2;
+	public final ClientboundRadioMsgPacket category(int category) {
+		this.category = category;
 		return this;
 	}
 
-	public final int val2() {
-		return this.val2;
+	public final int category() {
+		return this.category;
 	}
 
-	public final ClientboundRadioMsgPacket val3(int val3) {
-		this.val3 = val3;
+	public final ClientboundRadioMsgPacket message(int message) {
+		this.message = message;
 		return this;
 	}
 
-	public final int val3() {
-		return this.val3;
+	public final int message() {
+		return this.message;
 	}
 
 	@Override
@@ -43,8 +43,8 @@ public final class ClientboundRadioMsgPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeInt(this.val2);
-		buf.writeInt(this.val3);
+		buf.writeInt(this.clientId);
+		buf.writeInt(this.category);
+		buf.writeInt(this.message);
 	}
 }

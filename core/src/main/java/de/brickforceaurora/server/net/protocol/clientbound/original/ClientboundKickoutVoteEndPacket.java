@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundKickoutVoteEndPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
-	private String val3;
+	private int result;
+	private int target;
+	private String targetNickname;
 
-	public final ClientboundKickoutVoteEndPacket val(int val) {
-		this.val = val;
+	public final ClientboundKickoutVoteEndPacket result(int result) {
+		this.result = result;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int result() {
+		return this.result;
 	}
 
-	public final ClientboundKickoutVoteEndPacket val2(int val2) {
-		this.val2 = val2;
+	public final ClientboundKickoutVoteEndPacket target(int target) {
+		this.target = target;
 		return this;
 	}
 
-	public final int val2() {
-		return this.val2;
+	public final int target() {
+		return this.target;
 	}
 
-	public final ClientboundKickoutVoteEndPacket val3(String val3) {
-		this.val3 = val3;
+	public final ClientboundKickoutVoteEndPacket targetNickname(String targetNickname) {
+		this.targetNickname = targetNickname;
 		return this;
 	}
 
-	public final String val3() {
-		return this.val3;
+	public final String targetNickname() {
+		return this.targetNickname;
 	}
 
 	@Override
@@ -43,8 +43,8 @@ public final class ClientboundKickoutVoteEndPacket implements IClientboundPacket
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeInt(this.val2);
-		buf.writeString(this.val3);
+		buf.writeInt(this.result);
+		buf.writeInt(this.target);
+		buf.writeString(this.targetNickname);
 	}
 }

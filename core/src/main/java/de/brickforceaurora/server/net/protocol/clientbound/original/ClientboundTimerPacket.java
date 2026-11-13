@@ -5,25 +5,25 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundTimerPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
+	private int remainTime;
+	private int playTime;
 
-	public final ClientboundTimerPacket val(int val) {
-		this.val = val;
+	public final ClientboundTimerPacket remainTime(int remainTime) {
+		this.remainTime = remainTime;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int remainTime() {
+		return this.remainTime;
 	}
 
-	public final ClientboundTimerPacket val2(int val2) {
-		this.val2 = val2;
+	public final ClientboundTimerPacket playTime(int playTime) {
+		this.playTime = playTime;
 		return this;
 	}
 
-	public final int val2() {
-		return this.val2;
+	public final int playTime() {
+		return this.playTime;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public final class ClientboundTimerPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeInt(this.val2);
+		buf.writeInt(this.remainTime);
+		buf.writeInt(this.playTime);
 	}
 }
