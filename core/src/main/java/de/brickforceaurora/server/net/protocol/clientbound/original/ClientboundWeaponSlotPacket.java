@@ -5,25 +5,25 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundWeaponSlotPacket implements IClientboundPacket {
 
-	private int val;
-	private long val2;
+	private int slot;
+	private long item;
 
-	public final ClientboundWeaponSlotPacket val(int val) {
-		this.val = val;
+	public final ClientboundWeaponSlotPacket slot(int slot) {
+		this.slot = slot;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int slot() {
+		return this.slot;
 	}
 
-	public final ClientboundWeaponSlotPacket val2(long val2) {
-		this.val2 = val2;
+	public final ClientboundWeaponSlotPacket item(long item) {
+		this.item = item;
 		return this;
 	}
 
-	public final long val2() {
-		return this.val2;
+	public final long item() {
+		return this.item;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public final class ClientboundWeaponSlotPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeLong(this.val2);
+		buf.writeInt(this.slot);
+		buf.writeLong(this.item);
 	}
 }

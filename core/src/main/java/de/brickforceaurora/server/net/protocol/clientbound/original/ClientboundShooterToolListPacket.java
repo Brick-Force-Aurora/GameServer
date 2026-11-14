@@ -2,38 +2,19 @@ package de.brickforceaurora.server.net.protocol.clientbound.original;
 
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
+import de.brickforceaurora.server.net.protocol.data.ToolSlot;
 
 public final class ClientboundShooterToolListPacket implements IClientboundPacket {
 
-	private int val;
-	private byte val2;
-	private long val3;
+	private ToolSlot[] slots = new ToolSlot[0];
 
-	public final ClientboundShooterToolListPacket val(int val) {
-		this.val = val;
+	public final ClientboundShooterToolListPacket slots(ToolSlot[] slots) {
+		this.slots = slots;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
-	}
-
-	public final ClientboundShooterToolListPacket val2(byte val2) {
-		this.val2 = val2;
-		return this;
-	}
-
-	public final byte val2() {
-		return this.val2;
-	}
-
-	public final ClientboundShooterToolListPacket val3(long val3) {
-		this.val3 = val3;
-		return this;
-	}
-
-	public final long val3() {
-		return this.val3;
+	public final ToolSlot[] slots() {
+		return this.slots;
 	}
 
 	@Override
@@ -43,8 +24,10 @@ public final class ClientboundShooterToolListPacket implements IClientboundPacke
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeByte(this.val2);
-		buf.writeLong(this.val3);
+		buf.writeInt(this.slots.length);
+		for (ToolSlot entry : this.slots) {
+			buf.writeByte(entry.slot());
+			buf.writeLong(entry.item());
+		}
 	}
 }

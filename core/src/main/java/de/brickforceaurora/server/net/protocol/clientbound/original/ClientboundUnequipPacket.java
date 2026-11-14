@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundUnequipPacket implements IClientboundPacket {
 
-	private int val;
-	private long val2;
-	private String val3;
+	private int clientId;
+	private long item;
+	private String code;
 
-	public final ClientboundUnequipPacket val(int val) {
-		this.val = val;
+	public final ClientboundUnequipPacket clientId(int clientId) {
+		this.clientId = clientId;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int clientId() {
+		return this.clientId;
 	}
 
-	public final ClientboundUnequipPacket val2(long val2) {
-		this.val2 = val2;
+	public final ClientboundUnequipPacket item(long item) {
+		this.item = item;
 		return this;
 	}
 
-	public final long val2() {
-		return this.val2;
+	public final long item() {
+		return this.item;
 	}
 
-	public final ClientboundUnequipPacket val3(String val3) {
-		this.val3 = val3;
+	public final ClientboundUnequipPacket code(String code) {
+		this.code = code;
 		return this;
 	}
 
-	public final String val3() {
-		return this.val3;
+	public final String code() {
+		return this.code;
 	}
 
 	@Override
@@ -43,8 +43,8 @@ public final class ClientboundUnequipPacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeLong(this.val2);
-		buf.writeString(this.val3);
+		buf.writeInt(this.clientId);
+		buf.writeLong(this.item);
+		buf.writeString(this.code);
 	}
 }
