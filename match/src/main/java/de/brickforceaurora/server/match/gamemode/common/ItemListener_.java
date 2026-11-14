@@ -45,7 +45,7 @@ public class ItemListener_ implements IGameNetListener<MatchGameData> {
         if (item == null) {
             return;
         }
-        room.broadcast(dropPacket(item));
+        room.broadcast(new ClientboundDropItemPacket().item(item));
     }
 
     @PacketHandler
@@ -93,10 +93,6 @@ public class ItemListener_ implements IGameNetListener<MatchGameData> {
         } catch (DatabaseException exception) {
             context.manager().logger().error("Couldn't use the consumable of {0}", exception, client);
         }
-    }
-
-    public static ClientboundDropItemPacket dropPacket(DroppedItem item) {
-        return new ClientboundDropItemPacket().item(item);
     }
 
 }

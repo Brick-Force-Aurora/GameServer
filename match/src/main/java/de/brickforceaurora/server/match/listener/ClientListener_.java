@@ -9,6 +9,7 @@ import de.brickforceaurora.server.database.model.UserAccount;
 import de.brickforceaurora.server.database.model.UserProfile;
 import de.brickforceaurora.server.database.model.UserStats;
 import de.brickforceaurora.server.match.MatchServerApp;
+import de.brickforceaurora.server.match.item.Inventories;
 import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.NetContext;
 import de.brickforceaurora.server.net.NetSignal;
@@ -113,6 +114,7 @@ public class ClientListener_ implements ISignalHandler {
                 new ClientboundLoginPacket().clientId(client.id()).channelId(1),
                 new ClientboundItemListPacket().items(items)
         });
+        client.send(Inventories.slotPackets(inventory));
     }
 
     @PacketHandler

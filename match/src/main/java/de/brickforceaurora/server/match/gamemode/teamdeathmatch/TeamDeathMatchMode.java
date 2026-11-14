@@ -9,6 +9,7 @@ import de.brickforceaurora.server.match.gamemode.PlayerStats;
 import de.brickforceaurora.server.match.gamemode.TeamGameData;
 import de.brickforceaurora.server.match.gamemode.TeamGameMode;
 import de.brickforceaurora.server.match.listener.ClientListener_;
+import de.brickforceaurora.server.match.item.Inventories;
 import de.brickforceaurora.server.match.MatchServerApp;
 import de.brickforceaurora.server.net.protocol.data.ResultUnit;
 import de.brickforceaurora.server.net.protocol.data.RoomStatus;
@@ -91,12 +92,13 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
     }
 
     private static ClientboundEnterPacket enterPacket(BFClient client) {
-        PeerEndpoints endpoints = PeerEndpoints.of(client);
+        // hide real ip address
+        PeerEndpoints endpoints = PeerEndpoints.HIDDEN;
         //TODO: Hardcoded info needs to change
         return new ClientboundEnterPacket().id(client.id()).nickname(client.name()).localIp(endpoints.localIp())
                 .localPort(endpoints.localPort()).remoteIp(endpoints.remoteIp()).remotePort(endpoints.remotePort())
-                .equipment(List.of("wau", "wax", "wba", "wap", "aac", "aad", "s07")).status(1).xp(9400000).clanId(0).clanName("Clan")
-                .clanMark(0).rank(65).playerFlag(0).weaponChanges(List.of()).dropItems(List.of());
+                .equipment(Inventories.equipment(client)).status(1).xp(9400000).clanId(0).clanName("Clan")
+                .clanMark(0).rank(65).playerFlag(1).weaponChanges(List.of()).dropItems(List.of());
     }
 
     private static ClientboundSlotInfoPacket slotInfoPacket(BFClient client) {

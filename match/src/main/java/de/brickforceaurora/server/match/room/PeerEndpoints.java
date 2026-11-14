@@ -13,6 +13,8 @@ public record PeerEndpoints(String localIp, int localPort, String remoteIp, int 
 
     public static final String ATTR_ENDPOINTS = "PeerEndpoints";
 
+    public static final PeerEndpoints HIDDEN = new PeerEndpoints("0.0.0.0", 0, "0.0.0.0", 0);
+
     private static final Pattern IPV4 = Pattern.compile("\\d{1,3}(\\.\\d{1,3}){3}");
 
     public static PeerEndpoints of(final BFClient client) {

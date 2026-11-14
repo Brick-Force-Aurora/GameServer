@@ -8,7 +8,6 @@ import de.brickforceaurora.server.database.UserRepository;
 import de.brickforceaurora.server.database.model.UserProfile;
 import de.brickforceaurora.server.match.MatchServerApp;
 import de.brickforceaurora.server.match.gamemode.GameTarget;
-import de.brickforceaurora.server.match.gamemode.common.ItemListener_;
 import de.brickforceaurora.server.match.gamemode.IGameNetListener;
 import de.brickforceaurora.server.match.gamemode.PlayerStats;
 import de.brickforceaurora.server.match.gamemode.TeamGameData;
@@ -116,7 +115,7 @@ public class RoomListener_ implements IGameNetListener<TDMData> {
             state.add(new ClientboundAssistCountPacket().clientId(stats.clientId()).assist(stats.assist()).score(stats.score()));
         }
         data.destroyedBricks().forEach(brick -> state.add(new ClientboundDestroyedBrickPacket().brick(brick)));
-        data.drops().forEach(item -> state.add(ItemListener_.dropPacket(item)));
+        data.drops().forEach(item -> state.add(new ClientboundDropItemPacket().item(item)));
         data.doors().forEach(door -> state.add(new ClientboundChgDoorStatusPacket().door(door.id()).status((byte) (door.open() ? 1 : 0))));
         data.cannons().forEach(cannon -> state.add(new ClientboundGetCannonPacket().shooter(cannon.clientId()).cannon(cannon.object())));
         data.trains().forEach(train -> state.add(new ClientboundGetTrainPacket().shooter(train.clientId()).train(train.object())));
