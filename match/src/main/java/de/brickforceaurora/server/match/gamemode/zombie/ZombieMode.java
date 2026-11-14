@@ -40,7 +40,13 @@ public class ZombieMode extends GameMode<ZombieData> {
     @Override
     public void handleRoomUpdate(Room room, NetContext<ServerboundRoomConfigPacket> context) {
         // TODO Auto-generated method stub
-        
+
+    }
+
+    @Override
+    public void handleRoomLeave(Room room, BFClient client) {
+        // TODO Auto-generated method stub
+
     }
 
 }
