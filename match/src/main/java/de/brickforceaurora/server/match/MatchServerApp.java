@@ -12,7 +12,7 @@ import de.brickforceaurora.server.match.gamemode.GameModeManager;
 import de.brickforceaurora.server.match.room.RoomManager;
 import de.brickforceaurora.server.match.room.RoomPeers;
 import de.brickforceaurora.server.net.BrickForceServer;
-import de.brickforceaurora.server.net.login.DevLoginHandler;
+import de.brickforceaurora.server.net.login.ClaimPasswordLoginHandler;
 import de.brickforceaurora.server.net.login.ILoginHandler;
 import de.brickforceaurora.server.net.rendezvous.RendezvousServer;
 import de.brickforceaurora.server.util.AnsiSysOutLogger;
@@ -85,7 +85,7 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
             Path databaseFile = Paths.get("data", "users.db");
             database = new Database(databaseFile);
             frame.logger().info("User database ready at {0}", databaseFile.toAbsolutePath());
-            loginHandler = new DevLoginHandler(server.netManager(), new UserRepository(database), new LoginRepository(database));
+            loginHandler = new ClaimPasswordLoginHandler(server.netManager(), new UserRepository(database), new LoginRepository(database));
         }).register("server-start", Stage.MAIN, _ -> {
             server.open();
             rendezvous = new RendezvousServer(server.netManager());

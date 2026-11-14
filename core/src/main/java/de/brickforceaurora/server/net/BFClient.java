@@ -3,11 +3,11 @@ package de.brickforceaurora.server.net;
 import java.net.InetSocketAddress;
 import java.security.PublicKey;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraDisconnectPacket;
 import de.brickforceaurora.server.util.Encryption;
-import io.netty.channel.ChannelFutureListener;
 import me.lauriichan.snowframe.util.Version;
 import me.lauriichan.snowframe.util.attribute.Attributable;
 
@@ -129,7 +129,14 @@ public final class BFClient extends Attributable {
     }
 
     public void disconnect(String message) {
-        connection.eventLoop().execute(() -> connection.writeAndFlush(new ClientboundAuroraDisconnectPacket().message(message)).addListener(ChannelFutureListener.CLOSE));
+        connection.eventLoop().execute(() -> {
+            connection.writeAndFlush(new ClientboundAuroraDisconnectPacket().message(message));
+            // The client only handles the packet on its main thread but reports a closed socket as "Timed out" right away,
+            // so we give it time to show the message and close the connection itself
+            connection.eventLoop().schedule(() -> {
+                connection.close();
+            }, 1000, TimeUnit.MILLISECONDS);
+        });
     }
 
     @Override

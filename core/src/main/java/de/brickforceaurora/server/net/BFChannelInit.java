@@ -1,12 +1,12 @@
 package de.brickforceaurora.server.net;
 
 import java.net.InetAddress;
+import java.util.concurrent.TimeUnit;
 
 import de.brickforceaurora.server.net.protocol.BFClientboundPacketEncoder;
 import de.brickforceaurora.server.net.protocol.BFServerboundPacketDecoder;
 import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraDisconnectPacket;
 import de.brickforceaurora.server.util.RateLimiter;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -28,7 +28,11 @@ final class BFChannelInit extends ChannelInitializer<SocketChannel> {
         if (!rateLimiter.acquire(channel.remoteAddress().getAddress())) {
             // We add this outbound encoder to send the disconnect packet
             pipeline.addLast(new BFClientboundPacketEncoder(netManager.logger(), null));
-            channel.writeAndFlush(new ClientboundAuroraDisconnectPacket().message("Rate limited, try again later")).addListener(ChannelFutureListener.CLOSE);
+            channel.writeAndFlush(new ClientboundAuroraDisconnectPacket().message("Rate limited, try again later"));
+            // Closing right away would make the client show "Timed out" instead of the message (see BFClient#disconnect)
+            channel.eventLoop().schedule(() -> {
+                channel.close();
+            }, 1000, TimeUnit.MILLISECONDS);
             return;
         }
         final BFClient client = new BFClient(channel);

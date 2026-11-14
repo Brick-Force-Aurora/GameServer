@@ -2,7 +2,6 @@ package de.brickforceaurora.server.match.listener;
 
 import de.brickforceaurora.server.database.Database;
 import de.brickforceaurora.server.database.DatabaseException;
-import de.brickforceaurora.server.database.LoginRepository;
 import de.brickforceaurora.server.database.UserRepository;
 import de.brickforceaurora.server.database.model.InventoryItem;
 import de.brickforceaurora.server.database.model.UserAccount;
@@ -64,11 +63,10 @@ public class ClientListener_ implements ISignalHandler {
         try {
             Database database = database();
             UserRepository users = new UserRepository(database);
-            //TODO: Only debug logins exist right now, this finds the account or creates it
-            Optional<UserAccount> account = new LoginRepository(database).loginDebug(client.name());
+            // The login handler already authenticated the client and created the account if needed
+            Optional<UserAccount> account = users.findAccount(client.name());
             if (account.isEmpty()) {
-                logger.warning("No account for '{0}' ({1}): Account is protected by a password or OAuth identity", client.name(),
-                        client.ip());
+                logger.warning("No account for '{0}' ({1})", client.name(), client.ip());
                 client.disconnect("Account is not available");
                 return;
             }

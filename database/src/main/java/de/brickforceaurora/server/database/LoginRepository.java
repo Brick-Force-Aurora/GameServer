@@ -14,10 +14,6 @@ public final class LoginRepository {
 
     public static final Duration DEFAULT_TRANSFER_TTL = Duration.ofSeconds(30);
 
-    private static final class DummyHash {
-        static final String VALUE = PasswordHasher.hash("dummy");
-    }
-
     private final Database database;
 
     public LoginRepository(Database database) {
@@ -40,15 +36,25 @@ public final class LoginRepository {
         });
     }
 
-    public Optional<UserAccount> loginPassword(String username, String password) {
+    //The first password that is used for a name claims it: Unknown names create a new account and accounts without any credentials get the password assigned.
+    public Optional<UserAccount> loginClaim(String username, String password) {
         return database.write(connection -> {
-            Optional<UserAccount> account = UserRepository.queryAccount(connection, "username = ?", username);
-            String stored = account.isPresent() ? passwordHash(connection, account.get().id()) : null;
-            boolean valid = PasswordHasher.verify(password, stored == null ? DummyHash.VALUE : stored);
-            if (!valid || stored == null || account.isEmpty()) {
+            Optional<UserAccount> existing = UserRepository.queryAccount(connection, "username = ?", username);
+            if (existing.isEmpty()) {
+                return Optional.of(touch(connection,
+                    UserRepository.insertAccount(connection, username, PasswordHasher.hash(password), System.currentTimeMillis())));
+            }
+            UserAccount account = existing.get();
+            String stored = passwordHash(connection, account.id());
+            if (stored != null) {
+                return PasswordHasher.verify(password, stored) ? Optional.of(touch(connection, account)) : Optional.<UserAccount>empty();
+            }
+            if (hasCredentials(connection, account.id())) {
                 return Optional.<UserAccount>empty();
             }
-            return Optional.of(touch(connection, account.get()));
+            UserRepository.execute(connection, "UPDATE account SET password_hash = ? WHERE id = ?", PasswordHasher.hash(password),
+                account.id());
+            return Optional.of(touch(connection, account));
         });
     }
 
