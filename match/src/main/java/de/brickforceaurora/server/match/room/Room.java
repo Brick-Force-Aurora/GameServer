@@ -275,6 +275,10 @@ public final class Room implements IRoomInfo {
     }
 
     public int freeSlot() {
+        return freeSlot(0, Integer.MAX_VALUE);
+    }
+
+    public int freeSlot(final int from, final int to) {
         boolean[] locks = getSlotLocksByMaxPlayers();
         boolean[] used = new boolean[locks.length];
         for (BFClient client : clients.toArray(new BFClient[0])) {
@@ -283,12 +287,20 @@ public final class Room implements IRoomInfo {
                 used[slot] = true;
             }
         }
-        for (int slot = 0; slot < locks.length; slot++) {
+        for (int slot = Math.max(from, 0); slot < locks.length && slot < to; slot++) {
             if (!locks[slot] && !used[slot]) {
                 return slot;
             }
         }
         return -1;
+    }
+
+    public synchronized boolean moveToSlot(final BFClient client, final int slot) {
+        if (slot < 0 || freeSlot(slot, slot + 1) != slot) {
+            return false;
+        }
+        client.attrSet(ATTR_SLOT, slot);
+        return true;
     }
 
     public void broadcast(BFClient exclusive, IClientboundPacket... packets) {

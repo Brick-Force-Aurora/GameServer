@@ -122,11 +122,13 @@ public class RoomListener_ implements INetListener {
         BFClient client = context.client();
         Room room = client.attr(Room.ATTR_ROOM, Room.class);
         if (room == null) {
+            // The client waits for an answer
+            client.send(new ClientboundTeamChangeFailPacket().reason(0));
             return;
         }
 
         if (!(room.mode() instanceof TeamGameMode<?> teamMode)) {
-            client.send(new ClientboundAuroraNotificationPacket().message("Team change is not supported in this game mode."));
+            client.send(new ClientboundTeamChangeFailPacket().reason(0));
             return;
         }
 

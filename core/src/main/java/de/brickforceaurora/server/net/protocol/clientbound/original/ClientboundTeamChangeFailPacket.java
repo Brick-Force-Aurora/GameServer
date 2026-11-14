@@ -5,15 +5,15 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundTeamChangeFailPacket implements IClientboundPacket {
 
-	private int Unnamed0;
+	private int reason;
 
-	public final ClientboundTeamChangeFailPacket Unnamed0(int Unnamed0) {
-		this.Unnamed0 = Unnamed0;
+	public final ClientboundTeamChangeFailPacket reason(int reason) {
+		this.reason = reason;
 		return this;
 	}
 
-	public final int Unnamed0() {
-		return this.Unnamed0;
+	public final int reason() {
+		return this.reason;
 	}
 
 	@Override
@@ -23,6 +23,6 @@ public final class ClientboundTeamChangeFailPacket implements IClientboundPacket
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.Unnamed0);
+		buf.writeInt(this.reason);
 	}
 }

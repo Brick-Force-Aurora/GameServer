@@ -6,6 +6,7 @@ import de.brickforceaurora.server.database.model.UserProfile;
 import de.brickforceaurora.server.database.model.UserStats;
 import de.brickforceaurora.server.match.gamemode.GameData;
 import de.brickforceaurora.server.match.gamemode.PlayerStats;
+import de.brickforceaurora.server.match.gamemode.TeamGameData;
 import de.brickforceaurora.server.match.gamemode.TeamGameMode;
 import de.brickforceaurora.server.match.listener.ClientListener_;
 import de.brickforceaurora.server.match.MatchServerApp;
@@ -117,7 +118,23 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
 
     @Override
     public void handleTeamChange(Room room, NetContext<ServerboundTeamChangePacket> context) {
-
+        BFClient client = context.client();
+        ServerboundTeamChangePacket packet = context.packet();
+        Integer current = client.attr(Room.ATTR_SLOT, Integer.class);
+        ClientStatus status = client.attr(Room.ATTR_STATUS, ClientStatus.class);
+        // The client waits for an answer, so there always has to be one
+        if (current == null || room.status() != RoomStatus.WAITING || (client.id() != room.masterId() && status == ClientStatus.READY)) {
+            client.send(new ClientboundTeamChangeFailPacket().reason(0));
+            return;
+        }
+        int target = packet.clickSlot() ? packet.slotNum()
+            : TeamGameData.isRed(current) ? room.freeSlot(TeamGameData.FIRST_BLUE_SLOT, Integer.MAX_VALUE)
+                : room.freeSlot(0, TeamGameData.FIRST_BLUE_SLOT);
+        if (target == current || !room.moveToSlot(client, target)) {
+            client.send(new ClientboundTeamChangeFailPacket().reason(0));
+            return;
+        }
+        room.broadcast(new ClientboundTeamChangePacket().clientId(client.id()).previousSlot(current).slot(target));
     }
 
     @Override

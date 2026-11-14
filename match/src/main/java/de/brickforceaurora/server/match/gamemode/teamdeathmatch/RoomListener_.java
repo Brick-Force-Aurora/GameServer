@@ -285,11 +285,10 @@ public class RoomListener_ implements IGameNetListener<TDMData> {
     }
 
     @PacketHandler
-    public void onSetStatus(final NetContext<ServerboundSetStatusPacket> context) {
+    public void onSetStatus(final Room room, final TDMData data, final NetContext<ServerboundSetStatusPacket> context) {
         BFClient client = context.client();
-        Room room = client.attr(Room.ATTR_ROOM, Room.class);
         ClientStatus status = ClientStatus.byId(context.packet().status());
-        if (room == null || room.status() != RoomStatus.WAITING || (status != ClientStatus.WAITING
+        if (room.status() != RoomStatus.WAITING || (status != ClientStatus.WAITING
                 && status != ClientStatus.READY && status != ClientStatus.SHOP && status != ClientStatus.INVENTORY)) {
             return;
         }
@@ -298,10 +297,9 @@ public class RoomListener_ implements IGameNetListener<TDMData> {
     }
 
     @PacketHandler
-    public void onSlotLock(final NetContext<ServerboundSlotLockPacket> context) {
+    public void onSlotLock(final Room room, final TDMData data, final NetContext<ServerboundSlotLockPacket> context) {
         BFClient client = context.client();
-        Room room = client.attr(Room.ATTR_ROOM, Room.class);
-        if (room == null || client.id() != room.masterId() || room.status() != RoomStatus.WAITING) {
+        if (client.id() != room.masterId() || room.status() != RoomStatus.WAITING) {
             return;
         }
         int slot = context.packet().slot();
@@ -313,10 +311,9 @@ public class RoomListener_ implements IGameNetListener<TDMData> {
     }
 
     @PacketHandler
-    public void onKick(final NetContext<ServerboundKickPacket> context) {
+    public void onKick(final Room room, final TDMData data, final NetContext<ServerboundKickPacket> context) {
         BFClient client = context.client();
-        Room room = client.attr(Room.ATTR_ROOM, Room.class);
-        if (room == null || client.id() != room.masterId()) {
+        if (client.id() != room.masterId()) {
             return;
         }
         BFClient target = room.clientById(context.packet().clientId());
@@ -328,55 +325,45 @@ public class RoomListener_ implements IGameNetListener<TDMData> {
     }
 
     @PacketHandler
-    public void onMakeRoomNull(final NetContext<ServerboundMakeRoomNullPacket> context) {
+    public void onMakeRoomNull(final Room room, final TDMData data, final NetContext<ServerboundMakeRoomNullPacket> context) {
         MatchServerApp.app().roomManager().leaveRoom(context.client());
     }
 
     @PacketHandler
-    public void onChat(final NetContext<ServerboundChatPacket> context) {
-        BFClient client = context.client();
+    public void onChat(final Room room, final TDMData data, final NetContext<ServerboundChatPacket> context) {
         String text = cleanText(context.packet().text());
         if (text == null) {
             return;
         }
-        ClientboundChatPacket packet = chatPacket(client, (byte)0, text);
-        Room room = client.attr(Room.ATTR_ROOM, Room.class);
-        if (room != null) {
-            room.broadcast(packet);
-            return;
-        }
-        context.manager().broadcast(other -> other.isLoggedIn() && !other.attrHas(Room.ATTR_ROOM), packet);
+        room.broadcast(chatPacket(context.client(), (byte)0, text));
     }
 
     @PacketHandler
-    public void onTeamChat(final NetContext<ServerboundTeamChatPacket> context) {
+    public void onTeamChat(final Room room, final TDMData data, final NetContext<ServerboundTeamChatPacket> context) {
         BFClient client = context.client();
-        Room room = client.attr(Room.ATTR_ROOM, Room.class);
         String text = cleanText(context.packet().text());
-        if (room == null || text == null) {
+        if (text == null) {
             return;
         }
         sendToTeam(room, client, chatPacket(client, (byte)4, text));
     }
 
     @PacketHandler
-    public void onRadio(final NetContext<ServerboundRadioMsgPacket> context) {
+    public void onRadio(final Room room, final TDMData data, final NetContext<ServerboundRadioMsgPacket> context) {
         BFClient client = context.client();
-        Room room = client.attr(Room.ATTR_ROOM, Room.class);
         int category = context.packet().category();
         int message = context.packet().msg();
-        if (room == null || category < 0 || category > 1000 || message < 0 || message > 1000) {
+        if (category < 0 || category > 1000 || message < 0 || message > 1000) {
             return;
         }
         sendToTeam(room, client, new ClientboundRadioMsgPacket().clientId(client.id()).category(category).message(message));
     }
 
     @PacketHandler
-    public void onLevelupEvent(final NetContext<ServerboundLevelupEventPacket> context) {
+    public void onLevelupEvent(final Room room, final TDMData data, final NetContext<ServerboundLevelupEventPacket> context) {
         BFClient client = context.client();
-        Room room = client.attr(Room.ATTR_ROOM, Room.class);
         Integer accountId = client.attr(ClientListener_.ATTR_ACCOUNT_ID, Integer.class);
-        if (room == null || accountId == null) {
+        if (accountId == null) {
             return;
         }
         int xp = 0;

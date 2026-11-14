@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundTeamChangePacket implements IClientboundPacket {
 
-	private int val;
-	private int Unnamed0;
-	private int val3;
+	private int clientId;
+	private int previousSlot;
+	private int slot;
 
-	public final ClientboundTeamChangePacket val(int val) {
-		this.val = val;
+	public final ClientboundTeamChangePacket clientId(int clientId) {
+		this.clientId = clientId;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int clientId() {
+		return this.clientId;
 	}
 
-	public final ClientboundTeamChangePacket Unnamed0(int Unnamed0) {
-		this.Unnamed0 = Unnamed0;
+	public final ClientboundTeamChangePacket previousSlot(int previousSlot) {
+		this.previousSlot = previousSlot;
 		return this;
 	}
 
-	public final int Unnamed0() {
-		return this.Unnamed0;
+	public final int previousSlot() {
+		return this.previousSlot;
 	}
 
-	public final ClientboundTeamChangePacket val3(int val3) {
-		this.val3 = val3;
+	public final ClientboundTeamChangePacket slot(int slot) {
+		this.slot = slot;
 		return this;
 	}
 
-	public final int val3() {
-		return this.val3;
+	public final int slot() {
+		return this.slot;
 	}
 
 	@Override
@@ -43,8 +43,8 @@ public final class ClientboundTeamChangePacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeInt(this.Unnamed0);
-		buf.writeInt(this.val3);
+		buf.writeInt(this.clientId);
+		buf.writeInt(this.previousSlot);
+		buf.writeInt(this.slot);
 	}
 }
