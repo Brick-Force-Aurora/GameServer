@@ -7,8 +7,23 @@ public abstract class TeamGameData extends MatchGameData {
     private int redTickets;
     private int blueTickets;
 
+    private int redScore;
+    private int blueScore;
+
+    public static boolean isRed(final int slot) {
+        return slot < FIRST_BLUE_SLOT;
+    }
+
     @Override
     public abstract boolean autoBalance();
+
+    @Override
+    public synchronized void resetMatch() {
+        super.resetMatch();
+        resetTickets();
+        redScore = 0;
+        blueScore = 0;
+    }
 
     public synchronized void resetTickets() {
         redTickets = 0;
@@ -16,6 +31,25 @@ public abstract class TeamGameData extends MatchGameData {
     }
 
     public synchronized int nextTicket(int slot) {
-        return slot < FIRST_BLUE_SLOT ? redTickets++ : blueTickets++;
+        return isRed(slot) ? redTickets++ : blueTickets++;
     }
+
+    @Override
+    public synchronized int redScore() {
+        return redScore;
+    }
+
+    @Override
+    public synchronized int blueScore() {
+        return blueScore;
+    }
+
+    public synchronized void addScore(final boolean red) {
+        if (red) {
+            redScore++;
+        } else {
+            blueScore++;
+        }
+    }
+
 }

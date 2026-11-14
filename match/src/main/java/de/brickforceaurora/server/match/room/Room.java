@@ -16,6 +16,9 @@ public final class Room implements IRoomInfo {
 
     public static final String ATTR_ROOM = "MatchRoom";
     public static final String ATTR_SLOT = "MatchSlot";
+    public static final String ATTR_STATUS = "MatchStatus";
+
+    private final boolean[] manualSlotLocks = new boolean[16];
 
     private final int id;
     private volatile String title;
@@ -153,14 +156,12 @@ public final class Room implements IRoomInfo {
 
     @Override
     public int blueScore() {
-        // TODO: First team score
-        return 0;
+        return gameData().blueScore();
     }
 
     @Override
     public int redScore() {
-        // TODO: Second team score
-        return 0;
+        return gameData().redScore();
     }
 
     @Override
@@ -196,7 +197,45 @@ public final class Room implements IRoomInfo {
         return 0;
     }
 
+    public boolean lockSlot(final int slot, final boolean locked) {
+        if (slot < 0 || slot >= manualSlotLocks.length) {
+            return false;
+        }
+        if (locked && slotUsed(slot)) {
+            return false;
+        }
+        manualSlotLocks[slot] = locked;
+        return true;
+    }
+
+    public boolean slotUsed(final int slot) {
+        for (BFClient client : clients.toArray(new BFClient[0])) {
+            Integer used = client.attr(ATTR_SLOT, Integer.class);
+            if (used != null && used == slot) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public BFClient clientById(final int clientId) {
+        for (BFClient client : clients.toArray(new BFClient[0])) {
+            if (client.id() == clientId) {
+                return client;
+            }
+        }
+        return null;
+    }
+
     public boolean[] getSlotLocksByMaxPlayers() {
+        boolean[] slotLocks = layoutSlotLocks();
+        for (int slot = 0; slot < slotLocks.length && slot < manualSlotLocks.length; slot++) {
+            slotLocks[slot] |= manualSlotLocks[slot];
+        }
+        return slotLocks;
+    }
+
+    private boolean[] layoutSlotLocks() {
         boolean is8SlotLayout = (type() == RoomType.BUNGEE || type() == RoomType.MISSION);
         int totalSlots = is8SlotLayout ? 8 : 16;
 
