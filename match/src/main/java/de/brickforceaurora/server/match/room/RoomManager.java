@@ -8,6 +8,7 @@ import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundD
 import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundLeavePacket;
 import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundMasterPacket;
 import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundSetStatusPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundUpdateRoomPacket;
 import de.brickforceaurora.server.net.protocol.data.ClientStatus;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -33,6 +34,12 @@ public final class RoomManager {
 
     public Room roomById(int roomId) {
         return rooms.get(roomId);
+    }
+
+    public void updateRoom(Room room) {
+        if (netManager != null) {
+            netManager.broadcast(new ClientboundUpdateRoomPacket().roomInfo(room));
+        }
     }
 
     public boolean enterRoom(BFClient client, Room room) {
@@ -87,6 +94,8 @@ public final class RoomManager {
             deleteRoom(room);
             return;
         }
+
+        room.mode().handleRoomLeave(room, client);
 
         int clientId = client.id();
         room.broadcast(new IClientboundPacket[] {

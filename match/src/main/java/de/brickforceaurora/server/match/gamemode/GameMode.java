@@ -80,5 +80,7 @@ public abstract class GameMode<D extends GameData> implements IExtension {
     public abstract void handleRoomJoin(final NetManager<?> netManager, final Room room, final BFClient client);
     
     public abstract void handleRoomUpdate(final Room room, final NetContext<ServerboundRoomConfigPacket> context);
-    
+
+    public abstract void handleRoomLeave(final Room room, final BFClient client);
+
 }

@@ -1,8 +1,17 @@
 package de.brickforceaurora.server.match.gamemode.teamdeathmatch;
 
+import de.brickforceaurora.server.database.DatabaseException;
+import de.brickforceaurora.server.database.UserRepository;
+import de.brickforceaurora.server.database.model.UserProfile;
+import de.brickforceaurora.server.database.model.UserStats;
 import de.brickforceaurora.server.match.gamemode.GameData;
+import de.brickforceaurora.server.match.gamemode.PlayerStats;
 import de.brickforceaurora.server.match.gamemode.TeamGameMode;
+import de.brickforceaurora.server.match.listener.ClientListener_;
 import de.brickforceaurora.server.match.MatchServerApp;
+import de.brickforceaurora.server.net.protocol.data.ResultUnit;
+import de.brickforceaurora.server.net.protocol.data.RoomStatus;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import de.brickforceaurora.server.match.room.PeerEndpoints;
 import de.brickforceaurora.server.match.room.Room;
 import de.brickforceaurora.server.net.BFClient;
@@ -16,6 +25,7 @@ import de.brickforceaurora.server.net.protocol.serverbound.original.*;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.extension.Extension;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Extension
@@ -91,8 +101,9 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
 
     private static ClientboundSlotInfoPacket slotInfoPacket(BFClient client) {
         Integer slot = client.attr(Room.ATTR_SLOT, Integer.class);
+        ClientStatus status = client.attr(Room.ATTR_STATUS, ClientStatus.class);
         return new ClientboundSlotInfoPacket().id(client.id()).slot(slot == null ? (byte) 0 : slot.byteValue())
-                .status(ClientStatus.WAITING.id()).kill(0).death(0).assist(0).score(0).mission(0);
+                .status((status == null ? ClientStatus.WAITING : status).id()).kill(0).death(0).assist(0).score(0).mission(0);
     }
 
     @Override
@@ -108,6 +119,92 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
     @Override
     public void handleTeamChange(Room room, NetContext<ServerboundTeamChangePacket> context) {
 
+    }
+
+    @Override
+    public void handleRoomLeave(Room room, BFClient client) {
+        if (!(room.gameData() instanceof TDMData data)) {
+            return;
+        }
+        // The cannons and trains of the player are free again
+        data.releaseCannons(client.id()).forEach(cannon -> room.broadcast(new ClientboundEmptyCannonPacket().cannon(cannon)));
+        data.releaseTrains(client.id()).forEach(train -> room.broadcast(new ClientboundEmptyTrainPacket().train(train)));
+        if (room.status() != RoomStatus.MATCH_END) {
+            return;
+        }
+        // The player can't confirm the result screen anymore
+        if (data.resultDone(client.id())) {
+            resultsConfirmed(room);
+        }
+    }
+
+    public void resultsConfirmed(Room room) {
+        room.status(RoomStatus.WAITING);
+        MatchServerApp.app().roomManager().updateRoom(room);
+    }
+
+    public void endMatch(NetManager<?> manager, Room room, TDMData data) {
+        if (!data.finishMatch()) {
+            return;
+        }
+        int redScore = data.redScore();
+        int blueScore = data.blueScore();
+        byte endCode = (byte) Integer.compare(redScore, blueScore);
+
+        UserRepository users = new UserRepository(MatchServerApp.database());
+        List<ResultUnit> results = new ArrayList<>();
+        IntArrayList present = new IntArrayList();
+        int redKill = 0, redDeath = 0, blueKill = 0, blueDeath = 0;
+        for (PlayerStats stats : data.allStats()) {
+            BFClient member = room.clientById(stats.clientId());
+            if (member == null) {
+                // Left the room during the match
+                continue;
+            }
+            present.add(member.id());
+            int result = endCode == 0 ? 0 : (endCode > 0) == stats.red() ? 1 : -1;
+            int xp = TdmScoring.xp(stats, result);
+            int points = TdmScoring.points(stats, result);
+            int prevXp = save(manager, users, member, stats, xp, points);
+            results.add(new ResultUnit(stats.red(), stats.clientId(), stats.nickname(), stats.kill(), stats.death(), stats.assist(),
+                stats.score(), points, xp, 0, prevXp, prevXp + xp, 0L));
+            if (stats.red()) {
+                redKill += stats.kill();
+                redDeath += stats.death();
+            } else {
+                blueKill += stats.kill();
+                blueDeath += stats.death();
+            }
+        }
+        data.pendingResults(present);
+        room.status(RoomStatus.MATCH_END);
+        room.broadcast(new ClientboundTeamMatchEndPacket().endCode(endCode).redKill(redKill).redDeath(redDeath).blueKill(blueKill)
+            .blueDeath(blueDeath).results(results.toArray(ResultUnit[]::new)));
+        manager.broadcast(new ClientboundUpdateRoomPacket().roomInfo(room));
+        manager.logger().info("Room {0} ({1}) ended: red {2}, blue {3}", room.id(), room.title(), redScore, blueScore);
+    }
+
+    private int save(NetManager<?> manager, UserRepository users, BFClient client, PlayerStats stats, int xp, int points) {
+        Integer accountId = client.attr(ClientListener_.ATTR_ACCOUNT_ID, Integer.class);
+        if (accountId == null) {
+            return 0;
+        }
+        try {
+            UserProfile profile = users.loadProfile(accountId).orElse(null);
+            if (profile == null) {
+                return 0;
+            }
+            users.saveProfile(new UserProfile(profile.accountId(), profile.nickname(), profile.xp() + xp, profile.rank(),
+                profile.tutorials(), profile.countryFilter(), profile.tosAccepted(), profile.extraSlots(), profile.firstLoginFp(),
+                profile.point() + points, profile.brick(), profile.cash(), profile.freeCoin(), profile.starDust()));
+            users.loadStats(accountId).ifPresent(total -> users.saveStats(new UserStats(total.accountId(), total.kill() + stats.kill(),
+                total.death() + stats.death(), total.assist() + stats.assist(), total.mission(), total.score() + stats.score(),
+                total.heavy(), total.assault(), total.sniper(), total.subMachine(), total.handGun(), total.melee(), total.special())));
+            return profile.xp();
+        } catch (DatabaseException exception) {
+            manager.logger().error("Couldn't save the result of {0}", exception, client);
+            return 0;
+        }
     }
 
 }
