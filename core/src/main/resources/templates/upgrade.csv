@@ -1,0 +1,12 @@
+u01,UPGRADE_WT01,icon_upgradeWeapon_low,upgrade,0,weapon,-1,0,3,CMT_UPGRADE_WT01,100
+u02,UPGRADE_WT02,icon_upgradeWeapon_middle,upgrade,1,weapon,-1,0,6,CMT_UPGRADE_WT02,100
+u03,UPGRADE_WT03,icon_upgradeWeapon_high,upgrade,2,weapon,-1,0,10,CMT_UPGRADE_WT03,100
+u04,UPGRADE_WT04,icon_upgradeWeapon_superlative3,upgrade,-1,weapon,-1,0,10,CMT_UPGRADE_WT04,100
+u05,UPGRADE_CT01,icon_upgradeArmor_low,upgrade,0,cloth,-1,0,3,CMT_UPGRADE_CT01,100
+u06,UPGRADE_CT02,icon_upgradeArmor_middle,upgrade,1,cloth,-1,0,6,CMT_UPGRADE_CT02,100
+u07,UPGRADE_CT03,icon_upgradeArmor_high,upgrade,2,cloth,-1,0,10,CMT_UPGRADE_CT03,100
+u08,UPGRADE_CT04,icon_upgradeArmor_superlative3,upgrade,-1,cloth,-1,0,10,CMT_UPGRADE_CT04,100
+u09,UPGRADE_WT05,icon_upgradeWeapon_superlative1,upgrade,-1,weapon,-1,0,3,CMT_UPGRADE_WT05,100
+u10,UPGRADE_WT06,icon_upgradeWeapon_superlative2,upgrade,-1,weapon,-1,0,6,CMT_UPGRADE_WT06,100
+u11,UPGRADE_CT05,icon_upgradeArmor_superlative1,upgrade,-1,cloth,-1,0,3,CMT_UPGRADE_CT05,100
+u12,UPGRADE_CT06,icon_upgradeArmor_superlative2,upgrade,-1,cloth,-1,0,6,CMT_UPGRADE_CT06,100

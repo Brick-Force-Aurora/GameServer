@@ -1,0 +1,18 @@
+c01,MRBOX,icon_box_head,character,TRUE,m_,box_,CMT_MRBOX,c_character_up,FALSE,,1,man-Material #283,none,none,none,100
+c02,MRFREQUENCY,icon_elec_head,character,TRUE,m_,elec_,CMT_MRFREQUENCY,c_character_up,FALSE,,1,,none,none,none,100
+c03,MROVEN,icon_range_head,character,TRUE,m_,range_,CMT_MROVEN,c_character_up,FALSE,,1,,none,none,none,100
+c04,MRSIGNAL,icon_signal_head,character,TRUE,m_,signal_,CMT_MRSIGNAL,c_character_up,FALSE,,1,,none,none,none,100
+c05,MR,icon_man_head,character,TRUE,m_,man_,CMT_MR,c_character_up,FALSE,,1,,none,none,none,100
+c06,MS,icon_woman_head,character,TRUE,w_,woman_,CMT_MS,c_character_up,FALSE,,1,,none,none,none,100
+c07,MASKMAN,icon_anony_head,character,TRUE,m_,anony_,CMT_MASKMAN,c_character_up,FALSE,,1,,none,none,none,100
+c08,ALIENWARE,icon_alienware_head,character,TRUE,m_,alienware_,CMT_ALIENWARE,c_character_up,FALSE,,1,,SET_ALIENWARE,none,none,100
+c09,ROBOT,icon_bot_head,character,TRUE,m_,bot_,CMT_ROBOT,c_character_up,FALSE,,2,,SET_BOT,none,none,100
+c10,ENISON,icon_enison_head,character,TRUE,m_,enison_,CMT_ENISON,c_character_up,FALSE,,2,,SET_ENISON,none,none,100
+c11,ET,icon_et_head,character,TRUE,m_,et_,CMT_ET,c_character_up,FALSE,,2,man_et_head,SET_ET,none,none,100
+c12,MOSSBON,icon_moss_head,character,TRUE,m_,moss_,CMT_MOSSBON,c_character_up,FALSE,,2,,SET_MOSSBON,none,none,100
+c13,EVENT20_GAMESTAR_HEAD,icon_e20_gamestar_head,character,TRUE,m_,et_,CMT_EVENT20_GAMESTAR_HEAD,c_character_up,FALSE,,90000,man_gamestar_head,none,none,none,100
+c14,CAVEMAN,icon_Caveman,character,TRUE,m_,caveman_,CMT_CAVEMAN,c_character_up,FALSE,,70000,man-Material #521,SET_CAVEMAN,none,none,100
+c15,CAVEMAN_2,icon_Caveman2,character,TRUE,m_,caveman_,CMT_CAVEMAN_2,c_character_up,FALSE,,70000,Caveman2,SET_CAVEMAN,none,none,100
+c16,W_INDEPENDENCE_FIGHTER,icon_W_e02_pejuang,character,TRUE,m_,box_,CMT_W_INDEPENDENCE_FIGHTER,c_character_up,FALSE,,90000,W_e02_head,SET_WAVE_INDEPENDENCE,none,none,100
+c17,YANGDDING,YD_head,character,TRUE,w_,YD_,CMT_YANGDDING,c_character_up,FALSE,,90000,YD_head,none,none,none,100
+c18,ALIENWARE,icon_alienware_head01,character,TRUE,m_,alienware_,CMT_ALIENWARE,c_character_up,FALSE,,1,alienware_head01,SET_ALIENWARE,none,none,100
