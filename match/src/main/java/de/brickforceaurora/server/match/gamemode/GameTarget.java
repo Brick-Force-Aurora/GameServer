@@ -10,6 +10,8 @@ import java.lang.annotation.Target;
 @Target(TYPE)
 public @interface GameTarget {
 
-    Class<? extends GameMode<?>> value();
+    Class<? extends GameMode> value();
+
+    Class<? extends GameData> data() default GameData.class;
 
 }

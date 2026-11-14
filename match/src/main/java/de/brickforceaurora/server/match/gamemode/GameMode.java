@@ -34,7 +34,8 @@ public abstract class GameMode<D extends GameData> implements IExtension {
         Class<?> gameModeClass = getClass();
         for (Class<? extends IGameNetListener> listenerClass : snowFrame.extension(IGameNetListener.class, false).extensionClasses()) {
             GameTarget target = listenerClass.getDeclaredAnnotation(GameTarget.class);
-            if (target == null || target.value() == null || !gameModeClass.isAssignableFrom(target.value())) {
+            if (target == null || target.value() == null || !target.value().isAssignableFrom(gameModeClass)
+                || !target.data().isAssignableFrom(dataType)) {
                 continue;
             }
             IGameNetListener listener;
