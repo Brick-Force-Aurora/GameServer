@@ -11,7 +11,6 @@ import de.brickforceaurora.server.match.listener.ClientListener_;
 import de.brickforceaurora.server.match.MatchServerApp;
 import de.brickforceaurora.server.net.protocol.data.ResultUnit;
 import de.brickforceaurora.server.net.protocol.data.RoomStatus;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import de.brickforceaurora.server.match.room.PeerEndpoints;
 import de.brickforceaurora.server.match.room.Room;
 import de.brickforceaurora.server.net.BFClient;
@@ -127,8 +126,12 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
             return;
         }
         // The cannons and trains of the player are free again
-        data.releaseCannons(client.id()).forEach(cannon -> room.broadcast(new ClientboundEmptyCannonPacket().cannon(cannon)));
-        data.releaseTrains(client.id()).forEach(train -> room.broadcast(new ClientboundEmptyTrainPacket().train(train)));
+        for (int cannon : data.releaseCannons(client.id())) {
+            room.broadcast(new ClientboundEmptyCannonPacket().cannon(cannon));
+        }
+        for (int train : data.releaseTrains(client.id())) {
+            room.broadcast(new ClientboundEmptyTrainPacket().train(train));
+        }
         if (room.status() != RoomStatus.MATCH_END) {
             return;
         }
@@ -153,7 +156,7 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
 
         UserRepository users = new UserRepository(MatchServerApp.database());
         List<ResultUnit> results = new ArrayList<>();
-        IntArrayList present = new IntArrayList();
+        List<Integer> present = new ArrayList<>();
         int redKill = 0, redDeath = 0, blueKill = 0, blueDeath = 0;
         for (PlayerStats stats : data.allStats()) {
             BFClient member = room.clientById(stats.clientId());
