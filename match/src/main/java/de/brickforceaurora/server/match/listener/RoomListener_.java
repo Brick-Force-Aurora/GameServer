@@ -63,8 +63,7 @@ public class RoomListener_ implements INetListener {
         }
         GameMode<?> mode = gameModeManager.modeByType(context.packet().type());
         if (mode == null) {
-            context.client().send(new ClientboundAuroraNotificationPacket()
-                .message("The game mode '%s' is not yet supported".formatted(context.packet().type().modeName())));
+            context.client().send(new ClientboundCreateRoomPacket().failure("The game mode '%s' is not yet supported".formatted(context.packet().type().modeName())));
             return;
         }
         room = roomManager.newRoom();
