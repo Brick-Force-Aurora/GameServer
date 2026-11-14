@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundPlayerWeaponChangePacket implements IClientboundPacket {
 
-	private int val;
-	private String val2;
-	private String val3;
+	private int clientId;
+	private String prev;
+	private String next;
 
-	public final ClientboundPlayerWeaponChangePacket val(int val) {
-		this.val = val;
+	public final ClientboundPlayerWeaponChangePacket clientId(int clientId) {
+		this.clientId = clientId;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int clientId() {
+		return this.clientId;
 	}
 
-	public final ClientboundPlayerWeaponChangePacket val2(String val2) {
-		this.val2 = val2;
+	public final ClientboundPlayerWeaponChangePacket prev(String prev) {
+		this.prev = prev;
 		return this;
 	}
 
-	public final String val2() {
-		return this.val2;
+	public final String prev() {
+		return this.prev;
 	}
 
-	public final ClientboundPlayerWeaponChangePacket val3(String val3) {
-		this.val3 = val3;
+	public final ClientboundPlayerWeaponChangePacket next(String next) {
+		this.next = next;
 		return this;
 	}
 
-	public final String val3() {
-		return this.val3;
+	public final String next() {
+		return this.next;
 	}
 
 	@Override
@@ -43,8 +43,8 @@ public final class ClientboundPlayerWeaponChangePacket implements IClientboundPa
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeString(this.val2);
-		buf.writeString(this.val3);
+		buf.writeInt(this.clientId);
+		buf.writeString(this.prev);
+		buf.writeString(this.next);
 	}
 }

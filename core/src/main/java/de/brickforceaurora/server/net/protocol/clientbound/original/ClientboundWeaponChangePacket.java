@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundWeaponChangePacket implements IClientboundPacket {
 
-	private int val;
-	private int Unnamed0;
-	private long val3;
+	private int result;
+	private int cost;
+	private long item;
 
-	public final ClientboundWeaponChangePacket val(int val) {
-		this.val = val;
+	public final ClientboundWeaponChangePacket result(int result) {
+		this.result = result;
 		return this;
 	}
 
-	public final int val() {
-		return this.val;
+	public final int result() {
+		return this.result;
 	}
 
-	public final ClientboundWeaponChangePacket Unnamed0(int Unnamed0) {
-		this.Unnamed0 = Unnamed0;
+	public final ClientboundWeaponChangePacket cost(int cost) {
+		this.cost = cost;
 		return this;
 	}
 
-	public final int Unnamed0() {
-		return this.Unnamed0;
+	public final int cost() {
+		return this.cost;
 	}
 
-	public final ClientboundWeaponChangePacket val3(long val3) {
-		this.val3 = val3;
+	public final ClientboundWeaponChangePacket item(long item) {
+		this.item = item;
 		return this;
 	}
 
-	public final long val3() {
-		return this.val3;
+	public final long item() {
+		return this.item;
 	}
 
 	@Override
@@ -43,8 +43,8 @@ public final class ClientboundWeaponChangePacket implements IClientboundPacket {
 
 	@Override
 	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeInt(this.Unnamed0);
-		buf.writeLong(this.val3);
+		buf.writeInt(this.result);
+		buf.writeInt(this.cost);
+		buf.writeLong(this.item);
 	}
 }

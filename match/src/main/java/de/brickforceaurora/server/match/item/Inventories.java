@@ -57,6 +57,16 @@ public final class Inventories {
         return codes;
     }
 
+    public static boolean hasPremium(final List<InventoryItem> items) {
+        for (InventoryItem item : items) {
+            if (ItemTable.grantsPremium(item.code()) && item.remain() != 0 && item.usage() >= ItemUsage.UNEQUIP.id()
+                && item.usage() <= ItemUsage.EQUIP.id()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean isWeapon(final InventoryItem item) {
         ItemEntry entry = ItemTable.of(item.code());
         return entry != null && entry.weapon();

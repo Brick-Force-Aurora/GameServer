@@ -65,9 +65,7 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
     public void handleRoomJoin(NetManager<?> netManager, Room room, BFClient client) {
         //TODO: Hardcoded info needs to change
         TDMData gameData = (TDMData) room.gameData();
-        client.send(new ClientboundRoomConfigPacket().mapId(gameData.mapId()).mapAlias(gameData.mapAlias()).
-                weaponOption(gameData.weaponOption()).timeLimit(gameData.timeLimit()).killCount(0).canJoinMidGame(gameData.canJoinMidGame()).
-                autoBalance(gameData.autoBalance()).allowBuildGun(false).password("").commented(0).roomType(roomType()).drop(gameData.drop()).wanted(gameData.wanted()));
+        client.send(configPacket(room, gameData, client));
 
         boolean[] slotLocks = room.getSlotLocksByMaxPlayers();
         for (int i = 0; i < slotLocks.length; i++) {
@@ -110,12 +108,34 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
 
     @Override
     public void handleRoomUpdate(Room room, NetContext<ServerboundRoomConfigPacket> context) {
+        ServerboundRoomConfigPacket packet = context.packet();
+        if (context.client().id() != room.masterId() || room.status() != RoomStatus.WAITING || !(room.gameData() instanceof TDMData data)) {
+            return;
+        }
+        data.goal(packet.killCount());
+        data.timeLimit(packet.timeLimit());
+        data.weaponOption(packet.weaponOption());
+        data.mapId(packet.nWhere());
+        data.canJoinMidGame(packet.breakInto() >= 1);
+        data.autoBalance(packet.teamBalance() >= 1);
+        data.wanted(packet.useBuildGun() >= 1);
+        data.drop(packet.itemPickup() >= 1);
+        data.mapAlias(packet.whereAlias());
+        String password = packet.pswd();
+        room.password(password == null || password.isEmpty() ? null : password);
+        for (BFClient member : room.clients().toArray(new BFClient[0])) {
+            member.send(configPacket(room, data, member));
+        }
+        context.manager().broadcast(new ClientboundUpdateRoomPacket().roomInfo(room));
+    }
 
-        //update current room with the provided data
-        //if bungee cache map
-        //if bnd unpack timer and set times and repeat values, cache map as well, so init specifics
-        context.client().send(new ClientboundRoomConfigPacket());
-        context.client().send(new ClientboundUpdateRoomPacket().roomInfo(room));
+    private ClientboundRoomConfigPacket configPacket(Room room, TDMData data, BFClient receiver) {
+        //TODO: Hardcoded info needs to change
+        // Only the master gets the password, for the room config dialog
+        String password = receiver.id() == room.masterId() && room.password() != null ? room.password() : "";
+        return new ClientboundRoomConfigPacket().mapId(data.mapId()).mapAlias(data.mapAlias()).weaponOption(data.weaponOption())
+                .timeLimit(data.timeLimit()).killCount(data.goal()).canJoinMidGame(data.canJoinMidGame()).autoBalance(data.autoBalance())
+                .allowBuildGun(false).password(password).commented(0).roomType(roomType()).drop(data.drop()).wanted(data.wanted());
     }
 
     @Override

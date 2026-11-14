@@ -72,6 +72,8 @@ public class RoomListener_ implements INetListener {
         room.title(context.packet().title());
         room.maxPlayers(context.packet().maxPlayers());
         room.masterId(context.client().id());
+        String password = context.packet().password();
+        room.password(password == null || password.isEmpty() ? null : password);
         mode.handleRoomCreation(room, context);
         roomManager.enterRoom(context.client(), room);
     }

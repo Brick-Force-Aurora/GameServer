@@ -1,6 +1,7 @@
 package de.brickforceaurora.server.match.gamemode.common;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import de.brickforceaurora.server.database.DatabaseException;
@@ -12,6 +13,9 @@ import de.brickforceaurora.server.match.gamemode.GameMode;
 import de.brickforceaurora.server.match.gamemode.GameTarget;
 import de.brickforceaurora.server.match.gamemode.IGameNetListener;
 import de.brickforceaurora.server.match.gamemode.MatchGameData;
+import de.brickforceaurora.server.match.item.Inventories;
+import de.brickforceaurora.server.match.item.ItemEntry;
+import de.brickforceaurora.server.match.item.ItemTable;
 import de.brickforceaurora.server.match.listener.ClientListener_;
 import de.brickforceaurora.server.match.room.Room;
 import de.brickforceaurora.server.net.BFClient;
@@ -21,10 +25,14 @@ import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundD
 import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundDropItemPacket;
 import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundPickupDroppedItemFailPacket;
 import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundPickupDroppedItemPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundPlayerWeaponChangePacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundWeaponChangePacket;
+import de.brickforceaurora.server.net.protocol.data.ItemUsage;
 import de.brickforceaurora.server.net.protocol.data.RoomStatus;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundDropItemPacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundPickupDroppedItemPacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundUseShooterConsumablePacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundWeaponChangePacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundWeaponHeldRatioPacket;
 import me.lauriichan.snowframe.extension.Extension;
 
@@ -93,6 +101,58 @@ public class ItemListener_ implements IGameNetListener<MatchGameData> {
         } catch (DatabaseException exception) {
             context.manager().logger().error("Couldn't use the consumable of {0}", exception, client);
         }
+    }
+
+
+    @PacketHandler
+    public void onWeaponChange(Room room, MatchGameData data, NetContext<ServerboundWeaponChangePacket> context) {
+        BFClient client = context.client();
+        ServerboundWeaponChangePacket packet = context.packet();
+        Integer accountId = client.attr(ClientListener_.ATTR_ACCOUNT_ID, Integer.class);
+        // The client waits for the answer, so there always is one. The result is what the client shows: 0 is fine, -2 is the same weapon
+        int result = -1;
+        ItemEntry previous = ItemTable.of(packet.prev());
+        if (room.status() == RoomStatus.PLAYING && accountId != null && data.stats(client.id()) != null && previous != null
+            && previous.weapon()) {
+            try {
+                List<InventoryItem> items = new UserRepository(MatchServerApp.database()).loadInventory(accountId);
+                InventoryItem item = null;
+                for (InventoryItem entry : items) {
+                    if (entry.id() == packet.seq()) {
+                        item = entry;
+                        break;
+                    }
+                }
+                ItemEntry next = item == null ? null : ItemTable.of(item.code());
+                // The slots from 5 on are only for premium accounts
+                if (packet.slot() >= 5 && !Inventories.hasPremium(items)) {
+                    result = -4;
+                }
+                // The weapon has to be the one in the slot the player asked for and the weapon option of the room has to allow it
+                else if (next != null && next.weapon() && item.toolSlot() == packet.slot() && item.usage() >= ItemUsage.UNEQUIP.id()
+                    && item.usage() <= ItemUsage.EQUIP.id() && changeAllowed(data.weaponOption(), next.category())) {
+                    if (item.code().equals(previous.code())) {
+                        result = -2;
+                    } else {
+                        result = 0;
+                        room.broadcast(new ClientboundPlayerWeaponChangePacket().clientId(client.id()).prev(previous.code())
+                            .next(item.code()));
+                    }
+                }
+            } catch (DatabaseException exception) {
+                context.manager().logger().error("Couldn't change the weapon of {0}", exception, client);
+            }
+        }
+        client.send(new ClientboundWeaponChangePacket().result(result).cost(0).item(packet.seq()));
+    }
+    
+    private static boolean changeAllowed(int weaponOption, int category) {
+        return switch (weaponOption) {
+        case 0 -> true;
+        case 1 -> category == 4 || category == 5;
+        case 2 -> category == 5;
+        default -> false;
+        };
     }
 
 }

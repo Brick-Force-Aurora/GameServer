@@ -50,7 +50,9 @@ public class InventoryListener_ implements INetListener {
                 List<InventoryItem> items = users.loadInventory(accountId);
                 InventoryItem item = find(items, context.packet().seq());
                 ItemEntry entry = item == null ? null : ItemTable.of(item.code());
-                if (entry == null || !entry.wearable() || item.usage() != ItemUsage.UNEQUIP.id()) {
+                // Premium items can only be worn with a premium account
+                if (entry == null || !entry.wearable() || item.usage() != ItemUsage.UNEQUIP.id()
+                    || (item.premium() == 1 && !Inventories.hasPremium(items))) {
                     return;
                 }
                 for (InventoryItem other : items) {
@@ -110,6 +112,10 @@ public class InventoryListener_ implements INetListener {
                 UserRepository users = new UserRepository(MatchServerApp.database());
                 List<InventoryItem> items = users.loadInventory(accountId);
                 InventoryItem item = weapon < 0 ? null : find(items, weapon);
+                // The slots from 5 on are only for premium accounts
+                if (weapon >= 0 && slot >= 5 && !Inventories.hasPremium(items)) {
+                    return;
+                }
                 if (weapon >= 0 && (item == null || !Inventories.isWeapon(item) || item.usage() < ItemUsage.UNEQUIP.id()
                     || item.usage() > ItemUsage.EQUIP.id())) {
                     return;
