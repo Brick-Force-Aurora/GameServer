@@ -57,7 +57,7 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
         gameData.wanted(pkt.parameters()[6] >= 1);
         gameData.drop(pkt.parameters()[7] >= 1);
         gameData.mapAlias(pkt.alias());
-        context.manager().broadcast(new ClientboundCreateRoomPacket().roomInfo(room));
+        context.client().send(new ClientboundCreateRoomPacket().roomInfo(room));
         context.manager().broadcast(new ClientboundAddRoomPacket().roomInfo(room));
     }
 

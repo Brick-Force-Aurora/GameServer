@@ -1,5 +1,6 @@
 package de.brickforceaurora.server.match;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -22,6 +23,7 @@ import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.lifecycle.Lifecycle;
 import me.lauriichan.snowframe.lifecycle.LifecycleBuilder;
 import me.lauriichan.snowframe.lifecycle.LifecyclePhase.Stage;
+import me.lauriichan.snowframe.util.logger.FileLogger;
 
 public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForceServer {
 
@@ -33,7 +35,7 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
         }
 
         // TODO: Do actual command line parsing
-        final ISimpleLogger logger = AnsiSysOutLogger.INSTANCE;
+        final FileLogger logger = new FileLogger(new File("logs"), AnsiSysOutLogger.INSTANCE);
         logger.setDebug(Arrays.stream(args).anyMatch(str -> "--debug".equalsIgnoreCase(str)));
         logger.setTracking(Arrays.stream(args).anyMatch(str -> "--trace".equalsIgnoreCase(str)));
 

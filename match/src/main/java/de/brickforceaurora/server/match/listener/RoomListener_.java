@@ -12,7 +12,6 @@ import de.brickforceaurora.server.net.NetContext;
 import de.brickforceaurora.server.net.PacketHandler;
 import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraNotificationPacket;
 import de.brickforceaurora.server.net.protocol.clientbound.original.*;
-import de.brickforceaurora.server.net.protocol.data.RoomInfo;
 import de.brickforceaurora.server.net.protocol.data.RoomStatus;
 import de.brickforceaurora.server.net.protocol.serverbound.original.*;
 import me.lauriichan.snowframe.SnowFrame;
@@ -31,7 +30,7 @@ public class RoomListener_ implements INetListener {
 
     @PacketHandler
     public void onRoomList(final NetContext<ServerboundRoomListPacket> context) {
-        context.client().send(new ClientboundRoomListPacket().rooms(new RoomInfo[] {}));
+        context.client().send(new ClientboundRoomListPacket().rooms(roomManager.roomInfos()));
     }
 
     @PacketHandler

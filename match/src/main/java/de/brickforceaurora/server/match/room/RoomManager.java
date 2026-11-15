@@ -1,5 +1,7 @@
 package de.brickforceaurora.server.match.room;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import de.brickforceaurora.server.match.gamemode.GameMode;
 import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.NetManager;
@@ -10,25 +12,35 @@ import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundM
 import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundSetStatusPacket;
 import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundUpdateRoomPacket;
 import de.brickforceaurora.server.net.protocol.data.ClientStatus;
+import de.brickforceaurora.server.net.protocol.data.api.IRoomInfo;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntArrayFIFOQueue;
 import it.unimi.dsi.fastutil.ints.IntPriorityQueue;
 
 public final class RoomManager {
+    
+    private static final IRoomInfo[] EMPTY_ROOM_INFOS = new IRoomInfo[0];
 
     private final Int2ObjectMap<Room> rooms = new Int2ObjectArrayMap<>();
     private final IntPriorityQueue freeIds = new IntArrayFIFOQueue();
+    
+    private final AtomicReference<IRoomInfo[]> roomInfos = new AtomicReference<>(EMPTY_ROOM_INFOS);
 
     private NetManager<?> netManager;
 
     void setNetManager(NetManager<?> netManager) {
         this.netManager = netManager;
     }
+    
+    public IRoomInfo[] roomInfos() {
+        return roomInfos.get();
+    }
 
     public Room newRoom() {
         Room room = new Room(newRoomId());
         rooms.put(room.id(), room);
+        roomInfos.set(rooms.values().toArray(IRoomInfo[]::new));
         return room;
     }
 
@@ -120,6 +132,7 @@ public final class RoomManager {
     public boolean deleteRoomById(int id) {
         Room removed = rooms.remove(id);
         if (removed != null) {
+            roomInfos.set(rooms.values().toArray(IRoomInfo[]::new));
             freeIds.enqueue(id);
             if (netManager != null) {
                 netManager.broadcast(new ClientboundDelRoomPacket().roomId(id));

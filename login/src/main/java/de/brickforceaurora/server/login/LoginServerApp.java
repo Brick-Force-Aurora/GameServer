@@ -1,5 +1,6 @@
 package de.brickforceaurora.server.login;
 
+import java.io.File;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
@@ -13,6 +14,7 @@ import me.lauriichan.snowframe.ISnowFrameApp;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.lifecycle.Lifecycle;
 import me.lauriichan.snowframe.lifecycle.LifecyclePhase.Stage;
+import me.lauriichan.snowframe.util.logger.FileLogger;
 
 public class LoginServerApp implements ISnowFrameApp<LoginServerApp>, IBrickForceServer {
 
@@ -24,7 +26,7 @@ public class LoginServerApp implements ISnowFrameApp<LoginServerApp>, IBrickForc
         }
 
         // TODO: Do actual command line parsing
-        final ISimpleLogger logger = AnsiSysOutLogger.INSTANCE;
+        final FileLogger logger = new FileLogger(new File("logs"), AnsiSysOutLogger.INSTANCE);
         logger.setDebug(Arrays.stream(args).anyMatch(str -> "--debug".equalsIgnoreCase(str)));
         logger.setTracking(Arrays.stream(args).anyMatch(str -> "--trace".equalsIgnoreCase(str)));
 
