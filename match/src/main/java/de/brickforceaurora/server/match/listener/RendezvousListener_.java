@@ -1,6 +1,5 @@
 package de.brickforceaurora.server.match.listener;
 
-import de.brickforceaurora.server.match.MatchServerApp;
 import de.brickforceaurora.server.match.room.PeerEndpoints;
 import de.brickforceaurora.server.match.room.Room;
 import de.brickforceaurora.server.net.BFClient;
@@ -24,7 +23,7 @@ public class RendezvousListener_ implements INetListener {
             packet.remotePort());
         client.attrSet(PeerEndpoints.ATTR_ENDPOINTS, endpoints);
         client.attrSet(RendezvousManager.ATTR_REPORTED, true);
-        MatchServerApp.logger().debug("Endpoints of '{0}': local {1}:{2}, remote {3}:{4}", client.name(), endpoints.localIp(),
+        context.manager().logger().debug("Endpoints of '{0}': local {1}:{2}, remote {3}:{4}", client.name(), endpoints.localIp(),
             endpoints.localPort(), endpoints.remoteIp(), endpoints.remotePort());
 
         // update endpoints

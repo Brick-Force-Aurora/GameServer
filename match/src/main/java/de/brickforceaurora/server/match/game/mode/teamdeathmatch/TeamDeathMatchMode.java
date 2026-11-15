@@ -5,7 +5,7 @@ import de.brickforceaurora.server.database.DatabaseException;
 import de.brickforceaurora.server.database.UserRepository;
 import de.brickforceaurora.server.database.model.UserProfile;
 import de.brickforceaurora.server.database.model.UserStats;
-import de.brickforceaurora.server.match.listener.ClientListener_;
+import de.brickforceaurora.server.match.listener.ClientListener;
 import de.brickforceaurora.server.match.item.Inventories;
 import de.brickforceaurora.server.match.MatchServerApp;
 import de.brickforceaurora.server.match.game.GameData;
@@ -16,6 +16,7 @@ import de.brickforceaurora.server.net.protocol.data.ResultUnit;
 import de.brickforceaurora.server.net.protocol.data.RoomStatus;
 import de.brickforceaurora.server.match.room.PeerEndpoints;
 import de.brickforceaurora.server.match.room.Room;
+import de.brickforceaurora.server.match.room.RoomManager;
 import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.NetContext;
 import de.brickforceaurora.server.net.NetManager;
@@ -31,9 +32,12 @@ import java.util.List;
 
 @Extension
 public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
+    
+    private final RoomManager roomManager;
 
-    public TeamDeathMatchMode(final SnowFrame<?> snowFrame) {
+    public TeamDeathMatchMode(final SnowFrame<?> snowFrame, final RoomManager roomManager) {
         super(snowFrame, TDMData.class, RoomType.TEAM_MATCH);
+        this.roomManager = roomManager;
     }
 
     @Override
@@ -179,7 +183,7 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
 
     public void resultsConfirmed(Room room) {
         room.status(RoomStatus.WAITING);
-        MatchServerApp.app().roomManager().updateRoom(room);
+        roomManager.updateRoom(room);
     }
 
     public void endMatch(NetManager<?> manager, Room room, TDMData data) {
@@ -224,7 +228,7 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
     }
 
     private int save(NetManager<?> manager, UserRepository users, BFClient client, PlayerStats stats, int xp, int points) {
-        Integer accountId = client.attr(ClientListener_.ATTR_ACCOUNT_ID, Integer.class);
+        Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
         if (accountId == null) {
             return 0;
         }
