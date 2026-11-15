@@ -1,7 +1,7 @@
 package de.brickforceaurora.server.match.room;
 
-import de.brickforceaurora.server.match.gamemode.GameData;
-import de.brickforceaurora.server.match.gamemode.GameMode;
+import de.brickforceaurora.server.match.game.GameData;
+import de.brickforceaurora.server.match.game.GameMode;
 import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.data.CountryFilter;

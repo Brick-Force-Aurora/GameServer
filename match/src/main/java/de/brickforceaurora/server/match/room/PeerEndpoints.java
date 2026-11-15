@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 import java.util.regex.Pattern;
 
 import de.brickforceaurora.server.net.BFClient;
-import de.brickforceaurora.server.net.rendezvous.RendezvousServer;
+import de.brickforceaurora.server.net.rendezvous.RendezvousManager;
 
 
 public record PeerEndpoints(String localIp, int localPort, String remoteIp, int remotePort) {
@@ -32,7 +32,7 @@ public record PeerEndpoints(String localIp, int localPort, String remoteIp, int 
 
         String validRemoteIp = fallback.remoteIp;
         int validRemotePort = fallback.remotePort;
-        final InetSocketAddress observed = RendezvousServer.observed(client).orElse(null);
+        final InetSocketAddress observed = RendezvousManager.observed(client).orElse(null);
         if (observed != null) {
             // What we saw is always more trustworthy than what the client claims
             validRemoteIp = observed.getAddress().getHostAddress();

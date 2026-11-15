@@ -2,17 +2,13 @@ package de.brickforceaurora.server.net.protocol.serverbound.original;
 
 import de.brickforceaurora.server.net.protocol.IServerboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
+import de.brickforceaurora.server.net.protocol.data.ClientStatus;
 
 public final class ServerboundSetStatusPacket implements IServerboundPacket {
 
-	private int status;
+	private ClientStatus status;
 
-	public final ServerboundSetStatusPacket status(int status) {
-		this.status = status;
-		return this;
-	}
-
-	public final int status() {
+	public final ClientStatus status() {
 		return this.status;
 	}
 
@@ -23,6 +19,6 @@ public final class ServerboundSetStatusPacket implements IServerboundPacket {
 
 	@Override
 	public final void read(PacketBuf buf) {
-		this.status = buf.readInt();
+		this.status = ClientStatus.byId(buf.readInt());
 	}
 }

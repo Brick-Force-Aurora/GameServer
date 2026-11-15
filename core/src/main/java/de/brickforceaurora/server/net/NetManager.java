@@ -17,11 +17,8 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.MultiThreadIoEventLoopGroup;
-import io.netty.channel.ServerChannel;
 import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollIoHandler;
 import io.netty.channel.epoll.EpollServerSocketChannel;
-import io.netty.channel.nio.NioIoHandler;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
@@ -40,9 +37,8 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
     // Therefore we start at 1
     private final AtomicInteger nextClientId = new AtomicInteger(1);
 
-    private final MultiThreadIoEventLoopGroup group = new MultiThreadIoEventLoopGroup(Epoll.isAvailable() ? EpollIoHandler.newFactory() : NioIoHandler.newFactory());
-
     private final ServerBootstrap bootstrap = new ServerBootstrap();
+    private final MultiThreadIoEventLoopGroup group;
     private volatile Channel serverChannel;
 
     private final RateLimiter<InetAddress> rateLimiter = new RateLimiter<>();
@@ -58,9 +54,10 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
 
     private volatile long netTime = 0;
 
-    public NetManager(final SnowFrame<S> frame) {
+    public NetManager(final SnowFrame<S> frame, final MultiThreadIoEventLoopGroup group) {
         this.snowFrame = frame;
         this.logger = frame.logger();
+        this.group = group;
         this.signalManager = frame.module(SignalModule.class).signalManager();
         registerListenerExtensions();
     }
@@ -217,7 +214,6 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
         }
 
         serverChannel.close().awaitUninterruptibly();
-        group.close();
         
         signalManager.call(new NetSignal.ServerStopped(this));
     }

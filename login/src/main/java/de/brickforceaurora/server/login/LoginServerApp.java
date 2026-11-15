@@ -61,6 +61,11 @@ public class LoginServerApp implements ISnowFrameApp<LoginServerApp>, IBrickForc
             server.open();
         });
     }
+    
+    @Override
+    public BrickForceServer<?> server() {
+        return server;
+    }
 
     @Override
     public SnowFrame<LoginServerApp> snowFrame() {

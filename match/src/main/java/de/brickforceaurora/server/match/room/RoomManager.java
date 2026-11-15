@@ -2,7 +2,7 @@ package de.brickforceaurora.server.match.room;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import de.brickforceaurora.server.match.gamemode.GameMode;
+import de.brickforceaurora.server.match.game.GameMode;
 import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.NetManager;
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;

@@ -1,0 +1,112 @@
+package de.brickforceaurora.server.match.game.base;
+
+import de.brickforceaurora.server.match.game.GameMode;
+import de.brickforceaurora.server.match.game.GameTarget;
+import de.brickforceaurora.server.match.game.IGameNetListener;
+import de.brickforceaurora.server.match.game.MatchGameData;
+import de.brickforceaurora.server.match.game.TeamGameData;
+import de.brickforceaurora.server.match.room.Room;
+import de.brickforceaurora.server.match.room.RoomManager;
+import de.brickforceaurora.server.net.BFClient;
+import de.brickforceaurora.server.net.NetContext;
+import de.brickforceaurora.server.net.PacketHandler;
+import de.brickforceaurora.server.net.protocol.IClientboundPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundChatPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundKickPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundSetStatusPacket;
+import de.brickforceaurora.server.net.protocol.data.ClientStatus;
+import de.brickforceaurora.server.net.protocol.data.RoomStatus;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundChatPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundKickPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundMakeRoomNullPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundSetStatusPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundTeamChatPacket;
+import me.lauriichan.snowframe.extension.Extension;
+
+@Extension
+@GameTarget(value = GameMode.class, data = MatchGameData.class)
+public class MatchRoomListener_ implements IGameNetListener<MatchGameData> {
+
+    private final RoomManager roomManager;
+
+    public MatchRoomListener_(RoomManager roomManager) {
+        this.roomManager = roomManager;
+    }
+    
+    @PacketHandler
+    public void onMakeRoomNull(final Room room, final MatchGameData data, final NetContext<ServerboundMakeRoomNullPacket> context) {
+        roomManager.leaveRoom(context.client());
+    }
+
+    @PacketHandler
+    public void onSetStatus(final Room room, final MatchGameData data, final NetContext<ServerboundSetStatusPacket> context) {
+        BFClient client = context.client();
+        ClientStatus status = context.packet().status();
+        if (room.status() != RoomStatus.WAITING || status == ClientStatus.P2PING || status == ClientStatus.LOADING) {
+            return;
+        }
+        client.attrSet(Room.ATTR_STATUS, status);
+        room.broadcast(new ClientboundSetStatusPacket().clientId(client.id()).status(status));
+    }
+
+    @PacketHandler
+    public void onKick(final Room room, final MatchGameData data, final NetContext<ServerboundKickPacket> context) {
+        BFClient client = context.client();
+        if (client.id() != room.masterId()) {
+            return;
+        }
+        BFClient target = room.clientById(context.packet().clientId());
+        if (target == null || target == client) {
+            return;
+        }
+        room.broadcast(new ClientboundKickPacket().clientId(target.id()));
+        roomManager.leaveRoom(target);
+    }
+
+    @PacketHandler
+    public void onChat(final Room room, final MatchGameData data, final NetContext<ServerboundChatPacket> context) {
+        String text = cleanText(context.packet().text());
+        if (text == null) {
+            return;
+        }
+        room.broadcast(chatPacket(context.client(), (byte) 0, text));
+    }
+
+    @PacketHandler
+    public void onTeamChat(final Room room, final MatchGameData data, final NetContext<ServerboundTeamChatPacket> context) {
+        BFClient client = context.client();
+        String text = cleanText(context.packet().text());
+        if (text == null) {
+            return;
+        }
+        sendToTeam(room, client, chatPacket(client, (byte)4, text));
+    }
+
+    private static String cleanText(final String text) {
+        if (text == null) {
+            return null;
+        }
+        String clean = text.replaceAll("\\p{Cntrl}", "").replaceAll(" {2,}", " ").trim();
+        return clean.isEmpty() ? null : clean;
+    }
+
+    private static ClientboundChatPacket chatPacket(final BFClient client, final byte type, final String text) {
+        return new ClientboundChatPacket().clientId(client.id()).chatType(type).nickname(client.name()).text(text).gameMaster(false);
+    }
+
+    private static void sendToTeam(final Room room, final BFClient client, final IClientboundPacket packet) {
+        boolean teams = room.gameData() instanceof TeamGameData;
+        boolean red = TeamGameData.isRed(slotOf(client));
+        for (BFClient member : room.clients()) {
+            if (!teams || TeamGameData.isRed(slotOf(member)) == red) {
+                member.send(packet);
+            }
+        }
+    }
+
+    private static int slotOf(BFClient client) {
+        Integer slot = client.attr(Room.ATTR_SLOT, Integer.class);
+        return slot == null ? 0 : slot;
+    }
+
+}

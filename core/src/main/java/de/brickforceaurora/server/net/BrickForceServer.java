@@ -3,6 +3,11 @@ package de.brickforceaurora.server.net;
 import java.util.concurrent.TimeUnit;
 
 import de.brickforceaurora.server.IBrickForceServer;
+import de.brickforceaurora.server.net.rendezvous.RendezvousManager;
+import io.netty.channel.MultiThreadIoEventLoopGroup;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollIoHandler;
+import io.netty.channel.nio.NioIoHandler;
 import me.lauriichan.laylib.logger.ISimpleLogger;
 import me.lauriichan.snowframe.ISnowFrameApp;
 import me.lauriichan.snowframe.SnowFrame;
@@ -14,15 +19,19 @@ public final class BrickForceServer<S extends ISnowFrameApp<S> & IBrickForceServ
 
     private static final float SECOND_IN_NANOS = TimeUnit.SECONDS.toNanos(1);
 
+    private final MultiThreadIoEventLoopGroup group = new MultiThreadIoEventLoopGroup(Epoll.isAvailable() ? EpollIoHandler.newFactory() : NioIoHandler.newFactory());
+
     private final ISimpleLogger logger;
     private final NetManager<S> netManager;
+    private final RendezvousManager<S> rendezvousManager;
 
     private final IBrickForceServer server;
 
     public BrickForceServer(final SnowFrame<S> frame, final IBrickForceServer server) {
         this.server = server;
         this.logger = frame.logger();
-        this.netManager = new NetManager<>(frame);
+        this.netManager = new NetManager<>(frame, group);
+        this.rendezvousManager = new RendezvousManager<>(frame, group);
         frame.invoker().addExtra(this);
 
         // Setup timer
@@ -32,7 +41,7 @@ public final class BrickForceServer<S extends ISnowFrameApp<S> & IBrickForceServ
 
     @Override
     protected Thread createThread(Runnable runnable) {
-        return Thread.ofVirtual().unstarted(runnable);
+        return Thread.ofPlatform().unstarted(runnable);
     }
 
     @Override
@@ -45,13 +54,21 @@ public final class BrickForceServer<S extends ISnowFrameApp<S> & IBrickForceServ
             start();
         }
         netManager.open(server.port());
+        rendezvousManager.open(server.port());
     }
 
     public void close() throws Exception {
         if (isAlive()) {
             stop();
         }
+        rendezvousManager.close();
         netManager.close();
+        
+        group.close();
+    }
+    
+    public RendezvousManager<S> rendezvousManager() {
+        return rendezvousManager;
     }
 
     public NetManager<S> netManager() {

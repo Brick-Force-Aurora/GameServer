@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import de.brickforceaurora.server.IBrickForceServer;
 import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.rendezvous.protocol.P2PHeader;
 import de.brickforceaurora.server.net.rendezvous.protocol.clientbound.ClientboundP2PPongPacket;
@@ -17,13 +18,14 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
+import me.lauriichan.snowframe.ISnowFrameApp;
 
 
-final class RendezvousHandler extends SimpleChannelInboundHandler<ServerboundP2PMessage> {
+final class RendezvousHandler<S extends ISnowFrameApp<S> & IBrickForceServer> extends SimpleChannelInboundHandler<ServerboundP2PMessage> {
 
     private static final int MAX_PENDING_ACKS = 4096;
 
-    private final RendezvousServer server;
+    private final RendezvousManager<S> server;
 
     private final Map<Long, Integer> pendingAcks = new LinkedHashMap<>() {
 
@@ -36,7 +38,7 @@ final class RendezvousHandler extends SimpleChannelInboundHandler<ServerboundP2P
 
     };
 
-    RendezvousHandler(final RendezvousServer server) {
+    RendezvousHandler(final RendezvousManager<S> server) {
         this.server = server;
     }
 
@@ -54,24 +56,23 @@ final class RendezvousHandler extends SimpleChannelInboundHandler<ServerboundP2P
         }
         switch (message.packet()) {
         case final ServerboundP2PStatusPacket status -> onStatus(client, status);
-        case final ClientboundP2PPongPacket _ -> {
-        }
+        case final ClientboundP2PPongPacket _ -> {}
         case null, default -> relay(context, client, message);
         }
     }
 
     private void onPing(final ChannelHandlerContext context, final InetSocketAddress sender, final ServerboundP2PPingPacket ping) {
-        final BFClient client = server.netManager().clientById(ping.clientId()).orElse(null);
+        final BFClient client = server.snowFrame().app().server().netManager().clientById(ping.clientId()).orElse(null);
         // only accept pings from the address of the client
         if (client == null || !sender.getAddress().getHostAddress().equals(client.ip())) {
             return;
         }
         server.register(client, sender);
-        context.writeAndFlush(RendezvousServer.pong(sender, sender.getAddress().getHostAddress(), sender.getPort(), ping.time()));
+        context.writeAndFlush(RendezvousManager.pong(sender, sender.getAddress().getHostAddress(), sender.getPort(), ping.time()));
     }
 
     private void onStatus(final BFClient client, final ServerboundP2PStatusPacket status) {
-        client.attrSet(RendezvousServer.ATTR_RELAYED, Set.copyOf(status.relayedPeers()));
+        client.attrSet(RendezvousManager.ATTR_RELAYED, Set.copyOf(status.relayedPeers()));
     }
 
     private void relay(final ChannelHandlerContext context, final BFClient sender, final ServerboundP2PMessage message) {
@@ -119,7 +120,7 @@ final class RendezvousHandler extends SimpleChannelInboundHandler<ServerboundP2P
     }
 
     private void forward(final ChannelHandlerContext context, final BFClient target, final ByteBuf data) {
-        final InetSocketAddress endpoint = RendezvousServer.observed(target).orElse(null);
+        final InetSocketAddress endpoint = RendezvousManager.observed(target).orElse(null);
         if (endpoint == null) {
             return;
         }
@@ -130,8 +131,9 @@ final class RendezvousHandler extends SimpleChannelInboundHandler<ServerboundP2P
         return ((long) clientId << 16) | (meta & 0xFFFF);
     }
 
+    @SuppressWarnings("unchecked")
     private Set<Integer> relayedPeers(final BFClient client) {
-        final Set<Integer> relayed = client.attr(RendezvousServer.ATTR_RELAYED, Set.class);
+        final Set<Integer> relayed = client.attr(RendezvousManager.ATTR_RELAYED, Set.class);
         return relayed == null ? Set.of() : relayed;
     }
 

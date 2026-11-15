@@ -5,7 +5,7 @@ import java.util.List;
 
 import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.rendezvous.PeerDirectory;
-import de.brickforceaurora.server.net.rendezvous.RendezvousServer;
+import de.brickforceaurora.server.net.rendezvous.RendezvousManager;
 
 
 public final class RoomPeers implements PeerDirectory {

@@ -1,9 +1,9 @@
 package de.brickforceaurora.server.match.listener;
 
 import de.brickforceaurora.server.match.MatchServerApp;
-import de.brickforceaurora.server.match.gamemode.GameMode;
-import de.brickforceaurora.server.match.gamemode.GameModeManager;
-import de.brickforceaurora.server.match.gamemode.TeamGameMode;
+import de.brickforceaurora.server.match.game.GameMode;
+import de.brickforceaurora.server.match.game.GameModeManager;
+import de.brickforceaurora.server.match.game.TeamGameMode;
 import de.brickforceaurora.server.match.room.Room;
 import de.brickforceaurora.server.match.room.RoomManager;
 import de.brickforceaurora.server.net.BFClient;
@@ -81,17 +81,19 @@ public class RoomListener_ implements INetListener {
     public void onJoinRoom(final NetContext<ServerboundJoinPacket> context) {
         Room room = roomManager.roomById(context.packet().roomId());
         if (room == null) {
-            // TODO: Send room unavailable info?
+            context.client().send(new ClientboundJoinPacket().result(ClientboundJoinPacket.JoinResult.CANT_JOIN));
             return;
         }
         if (room.passwordLocked()) {
             String str = context.packet().password();
             if (!str.equals(room.password())) {
-                // TODO: Send invalid password
+                context.client().send(new ClientboundJoinPacket().result(ClientboundJoinPacket.JoinResult.WRONG_PASSWORD));
                 return;
             }
         }
-        roomManager.enterRoom(context.client(), room);
+        if (!roomManager.enterRoom(context.client(), room)) {
+            context.client().send(new ClientboundJoinPacket().result(ClientboundJoinPacket.JoinResult.TOO_MANY_PLAYERS));
+        }
     }
 
     @PacketHandler
