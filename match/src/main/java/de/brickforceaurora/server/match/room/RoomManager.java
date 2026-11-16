@@ -1,6 +1,7 @@
 package de.brickforceaurora.server.match.room;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import de.brickforceaurora.server.match.game.GameMode;
 import de.brickforceaurora.server.net.BFClient;
@@ -19,12 +20,12 @@ import it.unimi.dsi.fastutil.ints.IntArrayFIFOQueue;
 import it.unimi.dsi.fastutil.ints.IntPriorityQueue;
 
 public final class RoomManager {
-    
+
     private static final IRoomInfo[] EMPTY_ROOM_INFOS = new IRoomInfo[0];
 
     private final Int2ObjectMap<Room> rooms = new Int2ObjectArrayMap<>();
     private final IntPriorityQueue freeIds = new IntArrayFIFOQueue();
-    
+
     private final AtomicReference<IRoomInfo[]> roomInfos = new AtomicReference<>(EMPTY_ROOM_INFOS);
 
     private NetManager<?> netManager;
@@ -32,19 +33,29 @@ public final class RoomManager {
     void setNetManager(NetManager<?> netManager) {
         this.netManager = netManager;
     }
-    
+
     public IRoomInfo[] roomInfos() {
         return roomInfos.get();
     }
 
-    public Room newRoom() {
+    public synchronized Room createRoom(BFClient creator, Consumer<Room> setup) {
         Room room = new Room(newRoomId());
+        try {
+            setup.accept(room);
+        } catch (RuntimeException exception) {
+            freeIds.enqueue(room.id());
+            throw exception;
+        }
         rooms.put(room.id(), room);
         roomInfos.set(rooms.values().toArray(IRoomInfo[]::new));
+        if (!enterRoom(creator, room)) {
+            deleteRoom(room);
+            return null;
+        }
         return room;
     }
 
-    public Room roomById(int roomId) {
+    public synchronized Room roomById(int roomId) {
         return rooms.get(roomId);
     }
 
@@ -54,7 +65,7 @@ public final class RoomManager {
         }
     }
 
-    public boolean enterRoom(BFClient client, Room room) {
+    public synchronized boolean enterRoom(BFClient client, Room room) {
         Room currentRoom = client.attrUnset(Room.ATTR_ROOM, Room.class);
         if (currentRoom != null) {
             leaveRoomInternal(client, currentRoom);
@@ -64,30 +75,41 @@ public final class RoomManager {
 
     private boolean enterRoomInternal(BFClient client, Room room) {
         GameMode<?> gameMode = room.mode();
-        if (gameMode == null) {
+        if (gameMode == null || rooms.get(room.id()) != room) {
             return false;
         }
-        
-        // The slot is how the clients address each other
-        int slot = room.freeSlot();
-        if (slot < 0) {
-            // Room is full
-            return false;
+
+        // The slot has to be taken and the client has to join before anyone else can look for a free slot
+        synchronized (room) {
+            // The slot is how the clients address each other
+            int slot = room.freeSlot();
+            if (slot < 0) {
+                // Room is full
+                return false;
+            }
+            client.attrSet(Room.ATTR_SLOT, slot);
+
+            // Set current room first
+            client.attrSet(Room.ATTR_ROOM, room);
+
+            try {
+                gameMode.handleRoomJoin(netManager, room, client);
+            } catch (RuntimeException exception) {
+                client.attrUnset(Room.ATTR_ROOM);
+                client.attrUnset(Room.ATTR_SLOT);
+                throw exception;
+            }
+
+            // Join last and send packets first
+            room.clients().add(client);
         }
-        client.attrSet(Room.ATTR_SLOT, slot);
 
-        // Set current room first
-        client.attrSet(Room.ATTR_ROOM, room);
-        
-        gameMode.handleRoomJoin(netManager, room, client);
-
-        // Join last and send packets first
-        room.clients().add(client);
-        
+        // The room list of the other players shows the player count
+        updateRoom(room);
         return true;
     }
 
-    public boolean leaveRoom(BFClient client) {
+    public synchronized boolean leaveRoom(BFClient client) {
         Room currentRoom = client.attrUnset(Room.ATTR_ROOM, Room.class);
         if (currentRoom == null) {
             // Was not in a room, we don't care
@@ -116,10 +138,20 @@ public final class RoomManager {
         });
 
         if (clientId == room.masterId()) {
-            int newMasterId = room.clients().getFirst().id();
-            room.masterId(newMasterId);
-            room.broadcast(new ClientboundMasterPacket().ownerClientId(newMasterId));
+            changeMaster(room, room.clients().getFirst().id());
         }
+        updateRoom(room);
+    }
+
+    public synchronized boolean changeMaster(Room room, int newMasterId) {
+        if (room.clientById(newMasterId) == null) {
+            return false;
+        }
+        room.masterId(newMasterId);
+        room.broadcast(new ClientboundMasterPacket().ownerClientId(newMasterId));
+        // Everything that depends on the master has to be sent again, like the room password
+        room.mode().handleMasterChange(room);
+        return true;
     }
 
     public boolean deleteRoom(Room room) {
@@ -129,7 +161,7 @@ public final class RoomManager {
         return deleteRoomById(room.id());
     }
 
-    public boolean deleteRoomById(int id) {
+    public synchronized boolean deleteRoomById(int id) {
         Room removed = rooms.remove(id);
         if (removed != null) {
             roomInfos.set(rooms.values().toArray(IRoomInfo[]::new));
@@ -144,7 +176,11 @@ public final class RoomManager {
 
     private final int newRoomId() {
         if (freeIds.isEmpty()) {
-            return rooms.size();
+            int id = rooms.size();
+            while (rooms.containsKey(id)) {
+                id++;
+            }
+            return id;
         }
         return freeIds.dequeueInt();
     }

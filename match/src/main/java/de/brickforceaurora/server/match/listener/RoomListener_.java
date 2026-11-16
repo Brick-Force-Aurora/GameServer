@@ -65,16 +65,16 @@ public class RoomListener_ implements INetListener {
             context.client().send(new ClientboundCreateRoomPacket().failure("The game mode '%s' is not yet supported".formatted(context.packet().type().modeName())));
             return;
         }
-        room = roomManager.newRoom();
-        room.mode(mode);
-        room.status(RoomStatus.WAITING);
-        room.title(context.packet().title());
-        room.maxPlayers(context.packet().maxPlayers());
-        room.masterId(context.client().id());
-        String password = context.packet().password();
-        room.password(password == null || password.isEmpty() ? null : password);
-        mode.handleRoomCreation(room, context);
-        roomManager.enterRoom(context.client(), room);
+        roomManager.createRoom(context.client(), newRoom -> {
+            newRoom.mode(mode);
+            newRoom.status(RoomStatus.WAITING);
+            newRoom.title(context.packet().title());
+            newRoom.maxPlayers(context.packet().maxPlayers());
+            newRoom.masterId(context.client().id());
+            String password = context.packet().password();
+            newRoom.password(password == null || password.isEmpty() ? null : password);
+            mode.handleRoomCreation(newRoom, context);
+        });
     }
 
     @PacketHandler
@@ -111,13 +111,7 @@ public class RoomListener_ implements INetListener {
 
         int newMasterId = context.packet().newMaster();
 
-        boolean newMasterExists = room.clients().stream().anyMatch(c -> c.id() == newMasterId);
-
-        if (!newMasterExists) {
-            return;
-        }
-        room.masterId(newMasterId);
-        room.broadcast(new ClientboundMasterPacket().ownerClientId(newMasterId));
+        roomManager.changeMaster(room, newMasterId);
     }
 
     @PacketHandler
