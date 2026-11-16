@@ -58,8 +58,13 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
         return snowFrame.app().database;
     }
 
+    public static UserRepository users() {
+        return snowFrame.app().users;
+    }
+
     private Database database;
-    
+    private UserRepository users;
+
     private HostConfig config;
 
     private RoomManager roomManager;
@@ -91,9 +96,26 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
         lifecycle.startupChain().register("server-start", Stage.PRE, frame -> {
             server = new BrickForceServer<>(frame, this);
             database = new Database(Paths.get(frame.resource("data://users.db").getPath()));
-            loginHandler = new ClaimPasswordLoginHandler(server.netManager(), new UserRepository(database), new LoginRepository(database));
+            users = new UserRepository(database);
+            loginHandler = new ClaimPasswordLoginHandler(server.netManager(), users, new LoginRepository(database));
         }).register("server-start", Stage.MAIN, _ -> {
             server.open();
+        });
+        lifecycle.shutdownChain().register("shutdown", Stage.PRE, _ -> {
+            if (server == null) {
+                return;
+            }
+            try {
+                server.close();
+                logger().info("Server stopped");
+            } catch (Exception exception) {
+                logger().error("Failed to stop the server", exception);
+            }
+        }).register("shutdown", Stage.POST, _ -> {
+            if (database != null) {
+                database.close();
+                logger().info("Database closed");
+            }
         });
     }
     

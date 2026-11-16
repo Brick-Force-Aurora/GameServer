@@ -46,8 +46,8 @@ public class InventoryListener_ implements INetListener {
         List<IClientboundPacket> packets = new ArrayList<>();
         try {
             synchronized (client) {
-                UserRepository users = new UserRepository(MatchServerApp.database());
-                List<InventoryItem> items = users.loadInventory(accountId);
+                UserRepository users = MatchServerApp.users();
+                List<InventoryItem> items = Inventories.inventory(client);
                 InventoryItem item = find(items, context.packet().seq());
                 ItemEntry entry = item == null ? null : ItemTable.of(item.code());
                 // Premium items can only be worn with a premium account
@@ -66,9 +66,11 @@ public class InventoryListener_ implements INetListener {
                 }
                 users.updateItem(item.withUsage(ItemUsage.EQUIP.id()));
                 packets.add(new ClientboundEquipPacket().clientId(client.id()).item(item.id()).code(item.code()));
+                Inventories.changed(client);
             }
         } catch (DatabaseException exception) {
             context.manager().logger().error("Couldn't equip the item of {0}", exception, client);
+            Inventories.changed(client);
             return;
         }
         sendToRoom(client, packets);
@@ -83,17 +85,19 @@ public class InventoryListener_ implements INetListener {
         }
         try {
             synchronized (client) {
-                UserRepository users = new UserRepository(MatchServerApp.database());
-                InventoryItem item = find(users.loadInventory(accountId), context.packet().seq());
+                UserRepository users = MatchServerApp.users();
+                InventoryItem item = find(Inventories.inventory(client), context.packet().seq());
                 ItemEntry entry = item == null ? null : ItemTable.of(item.code());
                 if (entry == null || !entry.wearable() || !entry.takeoffable() || item.usage() != ItemUsage.EQUIP.id()) {
                     return;
                 }
                 users.updateItem(item.withUsage(ItemUsage.UNEQUIP.id()));
+                Inventories.changed(client);
                 sendToRoom(client, List.of(new ClientboundUnequipPacket().clientId(client.id()).item(item.id()).code(item.code())));
             }
         } catch (DatabaseException exception) {
             context.manager().logger().error("Couldn't take off the item of {0}", exception, client);
+            Inventories.changed(client);
         }
     }
 
@@ -109,8 +113,8 @@ public class InventoryListener_ implements INetListener {
         List<IClientboundPacket> packets = new ArrayList<>();
         try {
             synchronized (client) {
-                UserRepository users = new UserRepository(MatchServerApp.database());
-                List<InventoryItem> items = users.loadInventory(accountId);
+                UserRepository users = MatchServerApp.users();
+                List<InventoryItem> items = Inventories.inventory(client);
                 InventoryItem item = weapon < 0 ? null : find(items, weapon);
                 // The slots from 5 on are only for premium accounts
                 if (weapon >= 0 && slot >= 5 && !Inventories.hasPremium(items)) {
@@ -134,9 +138,11 @@ public class InventoryListener_ implements INetListener {
                     users.updateItem(item.withToolSlot(slot));
                     packets.add(new ClientboundWeaponSlotPacket().slot(slot).item(item.id()));
                 }
+                Inventories.changed(client);
             }
         } catch (DatabaseException exception) {
             context.manager().logger().error("Couldn't set the weapon slot of {0}", exception, client);
+            Inventories.changed(client);
             return;
         }
         client.send(packets.toArray(IClientboundPacket[]::new));
@@ -151,15 +157,17 @@ public class InventoryListener_ implements INetListener {
         }
         try {
             synchronized (client) {
-                UserRepository users = new UserRepository(MatchServerApp.database());
-                for (InventoryItem item : users.loadInventory(accountId)) {
+                UserRepository users = MatchServerApp.users();
+                for (InventoryItem item : Inventories.inventory(client)) {
                     if (item.toolSlot() >= 0 && Inventories.isWeapon(item)) {
                         users.updateItem(item.withToolSlot(-1));
                     }
                 }
+                Inventories.changed(client);
             }
         } catch (DatabaseException exception) {
             context.manager().logger().error("Couldn't clear the weapon slots of {0}", exception, client);
+            Inventories.changed(client);
             return;
         }
         client.send(new ClientboundWeaponSlotListPacket().slots(IntStream.range(0, 10).mapToObj(slot -> new ToolSlot(slot, -1L)).toArray(ToolSlot[]::new)));
@@ -177,8 +185,8 @@ public class InventoryListener_ implements INetListener {
         List<IClientboundPacket> packets = new ArrayList<>();
         try {
             synchronized (client) {
-                UserRepository users = new UserRepository(MatchServerApp.database());
-                List<InventoryItem> items = users.loadInventory(accountId);
+                UserRepository users = MatchServerApp.users();
+                List<InventoryItem> items = Inventories.inventory(client);
                 InventoryItem item = tool < 0 ? null : find(items, tool);
                 if (tool >= 0 && (item == null || !Inventories.isTool(item) || item.usage() == ItemUsage.DELETED.id())) {
                     return;
@@ -197,9 +205,11 @@ public class InventoryListener_ implements INetListener {
                     users.updateItem(item.withToolSlot(slot));
                     packets.add(new ClientboundShooterToolPacket().slot((byte) slot).item(item.id()));
                 }
+                Inventories.changed(client);
             }
         } catch (DatabaseException exception) {
             context.manager().logger().error("Couldn't set the action bar of {0}", exception, client);
+            Inventories.changed(client);
             return;
         }
         client.send(packets.toArray(IClientboundPacket[]::new));
@@ -214,15 +224,17 @@ public class InventoryListener_ implements INetListener {
         }
         try {
             synchronized (client) {
-                UserRepository users = new UserRepository(MatchServerApp.database());
-                for (InventoryItem item : users.loadInventory(accountId)) {
+                UserRepository users = MatchServerApp.users();
+                for (InventoryItem item : Inventories.inventory(client)) {
                     if (item.toolSlot() >= 0 && Inventories.isTool(item)) {
                         users.updateItem(item.withToolSlot(-1));
                     }
                 }
+                Inventories.changed(client);
             }
         } catch (DatabaseException exception) {
             context.manager().logger().error("Couldn't clear the action bar of {0}", exception, client);
+            Inventories.changed(client);
             return;
         }
         client.send(new ClientboundShooterToolListPacket().slots(IntStream.range(0, 5).mapToObj(slot -> new ToolSlot(slot, -1L)).toArray(ToolSlot[]::new)));

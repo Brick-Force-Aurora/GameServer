@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.brickforceaurora.server.database.DatabaseException;
-import de.brickforceaurora.server.database.UserRepository;
 import de.brickforceaurora.server.database.model.InventoryItem;
 import de.brickforceaurora.server.match.MatchServerApp;
 import de.brickforceaurora.server.net.BFClient;
@@ -15,6 +14,8 @@ import de.brickforceaurora.server.net.protocol.data.ItemUsage;
 import de.brickforceaurora.server.net.protocol.data.ToolSlot;
 
 public final class Inventories {
+
+    public static final String ATTR_INVENTORY = "Inventory";
 
     private Inventories() {
         throw new UnsupportedOperationException();
@@ -39,14 +40,29 @@ public final class Inventories {
         };
     }
 
-    public static List<String> equipment(final BFClient client) {
-        Integer accountId = client.attr("AccountId", Integer.class);
-        List<String> codes = new ArrayList<>();
-        if (accountId == null) {
-            return codes;
+    // The inventory is kept at the client, reduces db calls but manually updating the inventory after each change is necessary
+    public static List<InventoryItem> inventory(final BFClient client) {
+        List<InventoryItem> cached = client.attr(ATTR_INVENTORY, List.class);
+        if (cached != null) {
+            return cached;
         }
+        Integer accountId = client.attr("AccountId", Integer.class);
+        if (accountId == null) {
+            return List.of();
+        }
+        List<InventoryItem> items = List.copyOf(MatchServerApp.users().loadInventory(accountId));
+        client.attrSet(ATTR_INVENTORY, items);
+        return items;
+    }
+
+    public static void changed(final BFClient client) {
+        client.attrUnset(ATTR_INVENTORY);
+    }
+
+    public static List<String> equipment(final BFClient client) {
+        List<String> codes = new ArrayList<>();
         try {
-            for (InventoryItem item : new UserRepository(MatchServerApp.database()).loadInventory(accountId)) {
+            for (InventoryItem item : inventory(client)) {
                 if (item.usage() == ItemUsage.EQUIP.id()) {
                     codes.add(item.code());
                 }

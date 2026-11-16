@@ -1,5 +1,6 @@
 package de.brickforceaurora.server.match.listener;
 
+import de.brickforceaurora.server.database.model.UserProfile;
 import de.brickforceaurora.server.net.INetListener;
 import de.brickforceaurora.server.net.NetContext;
 import de.brickforceaurora.server.net.PacketHandler;
@@ -21,7 +22,10 @@ public class ChannelListener_ implements INetListener {
 
     @PacketHandler
     public void onChannelPlayerList(final NetContext<ServerboundChannelPlayerListPacket> context) {
-        context.client().send(new ClientboundSvcEnterListPacket().clients(
-            context.manager().activeClients().map(client -> new ClientInfo(client.id(), client.name(), 0, 0)).toArray(IClientInfo[]::new)));
+        context.client().send(new ClientboundSvcEnterListPacket().clients(context.manager().activeClients().map(client -> {
+            // The profile is set once the account was loaded
+            UserProfile profile = client.attr(ClientListener.ATTR_PROFILE, UserProfile.class);
+            return new ClientInfo(client.id(), client.name(), profile == null ? 0 : profile.xp(), profile == null ? 0 : profile.rank());
+        }).toArray(IClientInfo[]::new)));
     }
 }

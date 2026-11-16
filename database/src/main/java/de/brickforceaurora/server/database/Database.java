@@ -7,8 +7,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
-public final class Database {
+public final class Database implements AutoCloseable {
 
     @FunctionalInterface
     public interface SqlFunction<T> {
@@ -30,7 +32,12 @@ public final class Database {
         return Path.of(DEFAULT_FILE);
     }
 
+    // unused connections are kept for the next access
+    private static final int MAX_IDLE_CONNECTIONS = 8;
+
     private final String url;
+    private final BlockingQueue<Connection> idle = new ArrayBlockingQueue<>(MAX_IDLE_CONNECTIONS);
+    private volatile boolean closed;
 
     public Database(Path file) {
         Path absolute = file.toAbsolutePath();
@@ -66,20 +73,78 @@ public final class Database {
         return connection;
     }
 
+    // If no connection is free a new one is opened
+    private Connection acquire() throws SQLException {
+        Connection connection;
+        while ((connection = idle.poll()) != null) {
+            if (!connection.isClosed()) {
+                return connection;
+            }
+        }
+        return connect();
+    }
+
+    // Connections of failed accesses are closed
+    private void release(Connection connection, boolean healthy) {
+        try {
+            if (healthy && !closed && idle.offer(connection)) {
+                if (closed) {
+                    closeIdle();
+                }
+                return;
+            }
+            connection.close();
+        } catch (SQLException _) {
+            // RIP
+        }
+    }
+
+    private void closeIdle() {
+        Connection connection;
+        while ((connection = idle.poll()) != null) {
+            try {
+                connection.close();
+            } catch (SQLException _) {
+                // RIP
+            }
+        }
+    }
+
+    @Override
+    public void close() {
+        closed = true;
+        closeIdle();
+    }
+
     public <T> T read(SqlFunction<T> function) {
-        try (Connection connection = connect()) {
-            return function.apply(connection);
+        Connection connection = null;
+        boolean healthy = false;
+        try {
+            connection = acquire();
+            T result = function.apply(connection);
+            healthy = true;
+            return result;
         } catch (SQLException exception) {
             throw new DatabaseException("Database query failed", exception);
+        } finally {
+            if (connection != null) {
+                release(connection, healthy);
+            }
         }
     }
 
     public <T> T write(SqlFunction<T> function) {
-        try (Connection connection = connect()) {
+        Connection connection = null;
+        boolean healthy = false;
+        try {
+            connection = acquire();
             connection.setAutoCommit(false);
             try {
                 T result = function.apply(connection);
                 connection.commit();
+                // Back to auto commit so that no transaction stays open while idle
+                connection.setAutoCommit(true);
+                healthy = true;
                 return result;
             } catch (SQLException | RuntimeException exception) {
                 connection.rollback();
@@ -87,6 +152,10 @@ public final class Database {
             }
         } catch (SQLException exception) {
             throw new DatabaseException("Database transaction failed", exception);
+        } finally {
+            if (connection != null) {
+                release(connection, healthy);
+            }
         }
     }
 

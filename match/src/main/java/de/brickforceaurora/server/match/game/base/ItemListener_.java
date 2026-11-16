@@ -85,8 +85,8 @@ public class ItemListener_ implements IGameNetListener<MatchGameData> {
         }
         ServerboundUseShooterConsumablePacket packet = context.packet();
         try {
-            UserRepository users = new UserRepository(MatchServerApp.database());
-            Optional<InventoryItem> found = users.loadInventory(accountId).stream()
+            UserRepository users = MatchServerApp.users();
+            Optional<InventoryItem> found = Inventories.inventory(client).stream()
                 .filter(item -> item.id() == packet.item() && item.code().equals(packet.code())).findFirst();
             if (found.isEmpty()) {
                 return;
@@ -98,8 +98,10 @@ public class ItemListener_ implements IGameNetListener<MatchGameData> {
             } else {
                 users.removeItem(accountId, item.id());
             }
+            Inventories.changed(client);
         } catch (DatabaseException exception) {
             context.manager().logger().error("Couldn't use the consumable of {0}", exception, client);
+            Inventories.changed(client);
         }
     }
 
@@ -115,7 +117,7 @@ public class ItemListener_ implements IGameNetListener<MatchGameData> {
         if (room.status() == RoomStatus.PLAYING && accountId != null && data.stats(client.id()) != null && previous != null
             && previous.weapon()) {
             try {
-                List<InventoryItem> items = new UserRepository(MatchServerApp.database()).loadInventory(accountId);
+                List<InventoryItem> items = Inventories.inventory(client);
                 InventoryItem item = null;
                 for (InventoryItem entry : items) {
                     if (entry.id() == packet.seq()) {

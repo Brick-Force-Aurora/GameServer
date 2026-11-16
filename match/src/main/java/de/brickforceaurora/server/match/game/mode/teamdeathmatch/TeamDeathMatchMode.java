@@ -93,11 +93,12 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
     private static ClientboundEnterPacket enterPacket(BFClient client) {
         // hide real ip address
         PeerEndpoints endpoints = PeerEndpoints.HIDDEN;
-        //TODO: Hardcoded info needs to change
+        UserProfile profile = client.attr(ClientListener.ATTR_PROFILE, UserProfile.class);
+        // TODO Clans, no clan = -1
         return new ClientboundEnterPacket().id(client.id()).nickname(client.name()).localIp(endpoints.localIp())
             .localPort(endpoints.localPort()).remoteIp(endpoints.remoteIp()).remotePort(endpoints.remotePort())
-            .equipment(Inventories.equipment(client)).status(1).xp(9400000).clanId(0).clanName("Clan").clanMark(0).rank(65).playerFlag(1)
-            .weaponChanges(List.of()).dropItems(List.of());
+            .equipment(Inventories.equipment(client)).status(1).xp(profile == null ? 0 : profile.xp()).clanId(-1).clanName("")
+            .clanMark(-1).rank(profile == null ? 0 : profile.rank()).playerFlag(1).weaponChanges(List.of()).dropItems(List.of());
     }
 
     private static ClientboundSlotInfoPacket slotInfoPacket(BFClient client) {
@@ -194,7 +195,7 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
         int blueScore = data.blueScore();
         byte endCode = (byte) Integer.compare(redScore, blueScore);
 
-        UserRepository users = new UserRepository(MatchServerApp.database());
+        UserRepository users = MatchServerApp.users();
         List<ResultUnit> results = new ArrayList<>();
         List<Integer> present = new ArrayList<>();
         int redKill = 0, redDeath = 0, blueKill = 0, blueDeath = 0;
@@ -229,17 +230,16 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
 
     private int save(NetManager<?> manager, UserRepository users, BFClient client, PlayerStats stats, int xp, int points) {
         Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
-        if (accountId == null) {
+        UserProfile profile = client.attr(ClientListener.ATTR_PROFILE, UserProfile.class);
+        if (accountId == null || profile == null) {
             return 0;
         }
         try {
-            UserProfile profile = users.loadProfile(accountId).orElse(null);
-            if (profile == null) {
-                return 0;
-            }
-            users.saveProfile(new UserProfile(profile.accountId(), profile.nickname(), profile.xp() + xp, profile.rank(),
+            UserProfile updated = new UserProfile(profile.accountId(), profile.nickname(), profile.xp() + xp, profile.rank(),
                 profile.tutorials(), profile.countryFilter(), profile.tosAccepted(), profile.extraSlots(), profile.firstLoginFp(),
-                profile.point() + points, profile.brick(), profile.cash(), profile.freeCoin(), profile.starDust()));
+                profile.point() + points, profile.brick(), profile.cash(), profile.freeCoin(), profile.starDust());
+            users.saveProfile(updated);
+            client.attrSet(ClientListener.ATTR_PROFILE, updated);
             users.loadStats(accountId)
                 .ifPresent(total -> users.saveStats(new UserStats(total.accountId(), total.kill() + stats.kill(),
                     total.death() + stats.death(), total.assist() + stats.assist(), total.mission(), total.score() + stats.score(),

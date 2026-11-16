@@ -1,6 +1,5 @@
 package de.brickforceaurora.server.match.listener;
 
-import de.brickforceaurora.server.database.Database;
 import de.brickforceaurora.server.database.DatabaseException;
 import de.brickforceaurora.server.database.UserRepository;
 import de.brickforceaurora.server.database.model.InventoryItem;
@@ -28,12 +27,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static de.brickforceaurora.server.match.MatchServerApp.database;
+import static de.brickforceaurora.server.match.MatchServerApp.users;
 
 @Extension
 public class ClientListener_ implements ISignalHandler {
 
     public static final String ATTR_ACCOUNT_ID = "AccountId";
+    // The profile is loaded once at the login, whoever changes it has to save it and replace this attribute
+    public static final String ATTR_PROFILE = "Profile";
 
     private static final IFlags<GameMode> NO_GAMEMODES = GameMode.MANAGER.newImmutable(0);
     private static final IFlags<CommonOption> DEFAULT_COMMON_OPTIONS = CommonOption.MANAGER.newMutable().setAll(true, new CommonOption[] {
@@ -61,8 +62,7 @@ public class ClientListener_ implements ISignalHandler {
         UserStats stats;
         List<InventoryItem> inventory;
         try {
-            Database database = database();
-            UserRepository users = new UserRepository(database);
+            UserRepository users = users();
             // The login handler already authenticated the client and created the account if needed
             Optional<UserAccount> account = users.findAccount(client.name());
             if (account.isEmpty()) {
@@ -92,6 +92,9 @@ public class ClientListener_ implements ISignalHandler {
             items.add(new ClientboundItemListPacket.ItemEntry(item.id(), item.code(), usage == null ? ItemUsage.NOT_USING : usage,
                     item.remain(), (byte) item.premium(), item.durability()));
         }
+
+        client.attrSet(ATTR_PROFILE, profile);
+        client.attrSet(Inventories.ATTR_INVENTORY, List.copyOf(inventory));
 
         //TODO: Hardcoded info needs to change
         client.send(new IClientboundPacket[] {
@@ -126,10 +129,12 @@ public class ClientListener_ implements ISignalHandler {
             return;
         }
         try {
-            if (!new UserRepository(database()).acceptTos(accountId)) {
+            UserRepository users = users();
+            if (!users.acceptTos(accountId)) {
                 logger.warning("Couldn't save TOS agreement of '{0}': Account {1} has no profile", client.name(), accountId);
                 return;
             }
+            users.loadProfile(accountId).ifPresent(profile -> client.attrSet(ATTR_PROFILE, profile));
         } catch (DatabaseException exception) {
             logger.error("Failed to save TOS agreement of '{0}' ({1})", exception, client.name(), client.ip());
             client.disconnect("Server Error: Couldn't save TOS agreement");

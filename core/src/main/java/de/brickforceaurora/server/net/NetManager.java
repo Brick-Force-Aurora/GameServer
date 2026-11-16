@@ -208,6 +208,14 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
             return;
         }
 
+        BFClient[] loggedIn = activeClients().toArray(BFClient[]::new);
+        for (BFClient client : loggedIn) {
+            client.disconnect("Server is shutting down");
+        }
+        for (BFClient client : loggedIn) {
+            client.connection().closeFuture().awaitUninterruptibly(1500);
+        }
+
         // Disconnect all clients before closing
         for (int i = 0; i < clients.size(); i++) {
             clients.get(i).close();

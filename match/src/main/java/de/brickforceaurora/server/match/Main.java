@@ -2,6 +2,8 @@ package de.brickforceaurora.server.match;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -33,7 +35,7 @@ public final class Main {
     private static Version version = new Version(0, 0, 0);
 
     public static void main(final String[] args) throws Exception {
-        final SnowFrame<MatchServerApp> snowFrame = MatchServerApp.init(args);
+        snowFrame = MatchServerApp.init(args);
 
         // DO UPDATES BEFORE STARTUP CHAIN
         final IDataSource source = snowFrame.resource("META-INF/maven/de.brickforceaurora.server/match/pom.properties");
@@ -50,6 +52,26 @@ public final class Main {
 
         snowFrame.lifecycle().execute(SnowFrame.LIFECYCLE_CHAIN_STARTUP);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown(), "ShutdownHandler"));
+
+        final Thread console = new Thread(Main::listenToConsole, "Console");
+        console.setDaemon(true);
+        console.start();
+    }
+
+    private static void listenToConsole() {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Perodactyl uses /exit for soft shutdown
+                String command = line.trim().toLowerCase();
+                switch (command.startsWith("/") ? command.substring(1) : command) {
+                case "stop", "shutdown", "exit", "quit" -> System.exit(0);
+                default -> {}
+                }
+            }
+        } catch (IOException _) {
+            // No console attached
+        }
     }
     
     public static Version version() {
@@ -64,9 +86,13 @@ public final class Main {
         if (!SHUT_DOWN.compareAndSet(false, true)) {
             return;
         }
-        snowFrame.lifecycle().execute(SnowFrame.LIFECYCLE_CHAIN_SHUTDOWN);
-        if (snowFrame.logger() instanceof FileLogger fileLogger) {
-            fileLogger.close();
+        snowFrame.logger().info("Shutting down...");
+        try {
+            snowFrame.lifecycle().execute(SnowFrame.LIFECYCLE_CHAIN_SHUTDOWN);
+        } finally {
+            if (snowFrame.logger() instanceof FileLogger fileLogger) {
+                fileLogger.close();
+            }
         }
     }
 

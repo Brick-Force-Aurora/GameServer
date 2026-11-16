@@ -3,10 +3,7 @@ package de.brickforceaurora.server.match.game.mode.teamdeathmatch;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.brickforceaurora.server.database.DatabaseException;
-import de.brickforceaurora.server.database.UserRepository;
 import de.brickforceaurora.server.database.model.UserProfile;
-import de.brickforceaurora.server.match.MatchServerApp;
 import de.brickforceaurora.server.match.game.GameTarget;
 import de.brickforceaurora.server.match.game.IGameNetListener;
 import de.brickforceaurora.server.match.game.PlayerStats;
@@ -311,17 +308,11 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
     @PacketHandler
     public void onLevelupEvent(final Room room, final TDMData data, final NetContext<ServerboundLevelupEventPacket> context) {
         BFClient client = context.client();
-        Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
-        if (accountId == null) {
+        UserProfile profile = client.attr(ClientListener.ATTR_PROFILE, UserProfile.class);
+        if (profile == null) {
             return;
         }
-        int xp = 0;
-        try {
-            xp = new UserRepository(MatchServerApp.database()).loadProfile(accountId).map(UserProfile::xp).orElse(0);
-        } catch (DatabaseException exception) {
-            context.manager().logger().error("Couldn't load the xp of {0}", exception, client);
-        }
-        room.broadcast(new ClientboundLevelupEventPacket().eventType((byte)0).clientId(client.id()).xp(xp));
+        room.broadcast(new ClientboundLevelupEventPacket().eventType((byte)0).clientId(client.id()).xp(profile.xp()));
     }
 
     private static void sendToTeam(final Room room, final BFClient client, final IClientboundPacket packet) {
