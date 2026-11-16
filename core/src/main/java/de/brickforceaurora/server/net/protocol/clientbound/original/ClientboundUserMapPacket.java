@@ -6,44 +6,44 @@ import de.brickforceaurora.server.net.protocol.data.UserMap;
 
 public final class ClientboundUserMapPacket implements IClientboundPacket {
 
-	private static final UserMap[] EMPTY = new UserMap[0];
+    private static final UserMap[] EMPTY = {};
 
-	private int page;
-	private UserMap[] maps = EMPTY;
+    private int page;
+    private UserMap[] maps = EMPTY;
 
-	public final ClientboundUserMapPacket page(int page) {
-		this.page = page;
-		return this;
-	}
+    public ClientboundUserMapPacket page(final int page) {
+        this.page = page;
+        return this;
+    }
 
-	public final int page() {
-		return this.page;
-	}
+    public int page() {
+        return this.page;
+    }
 
-	public final ClientboundUserMapPacket maps(UserMap[] maps) {
-		this.maps = (maps == null ? EMPTY : maps);
-		return this;
-	}
+    public ClientboundUserMapPacket maps(final UserMap[] maps) {
+        this.maps = maps == null ? EMPTY : maps;
+        return this;
+    }
 
-	public final UserMap[] maps() {
-		return this.maps;
-	}
+    public UserMap[] maps() {
+        return this.maps;
+    }
 
-	@Override
-	public int packetId() {
-		return 430;
-	}
+    @Override
+    public int packetId() {
+        return 430;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.page);
-		buf.writeInt(this.maps.length);
-		for (UserMap map : maps){
-			buf.writeInt(map.slot());
-			buf.writeString(map.name());
-			buf.writeInt(map.brickCount());
-			buf.writeDateTime(map.lastModified());
-			buf.writeByte(map.premium());
-		}
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.page);
+        buf.writeInt(this.maps.length);
+        for (final UserMap map : maps) {
+            buf.writeInt(map.slot());
+            buf.writeString(map.name());
+            buf.writeInt(map.brickCount());
+            buf.writeDateTime(map.lastModified());
+            buf.writeByte(map.premium());
+        }
+    }
 }

@@ -5,46 +5,46 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundResetUserMapSlotsPacket implements IServerboundPacket {
 
-	private int slot;
-	private long item;
-	private String itemCode;
+    private int slot;
+    private long item;
+    private String itemCode;
 
-	public final ServerboundResetUserMapSlotsPacket slot(int slot) {
-		this.slot = slot;
-		return this;
-	}
+    public ServerboundResetUserMapSlotsPacket slot(final int slot) {
+        this.slot = slot;
+        return this;
+    }
 
-	public final int slot() {
-		return this.slot;
-	}
+    public int slot() {
+        return this.slot;
+    }
 
-	public final ServerboundResetUserMapSlotsPacket item(long item) {
-		this.item = item;
-		return this;
-	}
+    public ServerboundResetUserMapSlotsPacket item(final long item) {
+        this.item = item;
+        return this;
+    }
 
-	public final long item() {
-		return this.item;
-	}
+    public long item() {
+        return this.item;
+    }
 
-	public final ServerboundResetUserMapSlotsPacket itemCode(String itemCode) {
-		this.itemCode = itemCode;
-		return this;
-	}
+    public ServerboundResetUserMapSlotsPacket itemCode(final String itemCode) {
+        this.itemCode = itemCode;
+        return this;
+    }
 
-	public final String itemCode() {
-		return this.itemCode;
-	}
+    public String itemCode() {
+        return this.itemCode;
+    }
 
-	@Override
-	public int packetId() {
-		return 405;
-	}
+    @Override
+    public int packetId() {
+        return 405;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.slot = buf.readInt();
-		this.item = buf.readLong();
-		this.itemCode = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.slot = buf.readInt();
+        this.item = buf.readLong();
+        this.itemCode = buf.readString();
+    }
 }

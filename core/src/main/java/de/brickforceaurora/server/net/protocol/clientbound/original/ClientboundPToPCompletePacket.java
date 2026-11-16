@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundPToPCompletePacket implements IClientboundPacket {
 
-	private int clientId;
+    private int clientId;
 
-	public final ClientboundPToPCompletePacket clientId(int clientId) {
-		this.clientId = clientId;
-		return this;
-	}
+    public ClientboundPToPCompletePacket clientId(final int clientId) {
+        this.clientId = clientId;
+        return this;
+    }
 
-	public final int clientId() {
-		return this.clientId;
-	}
+    public int clientId() {
+        return this.clientId;
+    }
 
-	@Override
-	public int packetId() {
-		return 136;
-	}
+    @Override
+    public int packetId() {
+        return 136;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.clientId);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.clientId);
+    }
 }

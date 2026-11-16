@@ -8,9 +8,9 @@ import me.lauriichan.snowframe.util.Version;
 
 public interface ILoginHandler {
 
-    final String ATTR_REQUEST_LOGIN_TIME = "login.requested_time";
-    final long LOGIN_TIMEOUT_TIME = TimeUnit.MINUTES.toNanos(60);
-    
+    String ATTR_REQUEST_LOGIN_TIME = "login.requested_time";
+    long LOGIN_TIMEOUT_TIME = TimeUnit.MINUTES.toNanos(60);
+
     IFlags<LoginType> supportedTypes();
 
     void login(BFClient client, Version version, LoginType loginType, String userName, ILoginData loginData);

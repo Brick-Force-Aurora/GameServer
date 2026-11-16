@@ -24,7 +24,7 @@ public final class PacketBuf implements AutoCloseable {
         this.buffer = Unpooled.buffer();
     }
 
-    public PacketBuf(byte[] bytes) {
+    public PacketBuf(final byte[] bytes) {
         this.buffer = Unpooled.wrappedBuffer(bytes);
     }
 
@@ -91,41 +91,41 @@ public final class PacketBuf implements AutoCloseable {
         if (length <= 0) {
             return null;
         }
-        byte[] bytes = new byte[length];
+        final byte[] bytes = new byte[length];
         buffer.readBytes(bytes);
         try (FastByteArrayInputStream input = new FastByteArrayInputStream(bytes)) {
             return ImageIO.read(input);
         }
     }
-    
+
     public Version readVersion() {
-        int major = buffer.readIntLE();
-        int minor = buffer.readIntLE();
-        int patch = buffer.readIntLE();
-        int revision = buffer.readIntLE();
+        final int major = buffer.readIntLE();
+        final int minor = buffer.readIntLE();
+        final int patch = buffer.readIntLE();
+        final int revision = buffer.readIntLE();
         return new Version(major, minor, patch, revision);
     }
 
     public LocalDateTime readDateTime() {
-        int year = buffer.readIntLE();
-        byte month = buffer.readByte();
-        byte day = buffer.readByte();
-        byte hour = buffer.readByte();
-        byte minute = buffer.readByte();
-        byte second = buffer.readByte();
+        final int year = buffer.readIntLE();
+        final byte month = buffer.readByte();
+        final byte day = buffer.readByte();
+        final byte hour = buffer.readByte();
+        final byte minute = buffer.readByte();
+        final byte second = buffer.readByte();
         return LocalDateTime.of(year, month, day, hour, minute, second);
     }
-    
+
     public byte[] readByteArray() {
         final int length = buffer.readIntLE();
         if (length <= 0) {
             return new byte[0];
         }
-        byte[] bytes = new byte[length];
+        final byte[] bytes = new byte[length];
         buffer.readBytes(bytes);
         return bytes;
     }
-    
+
     public byte[] readReversedByteArray() {
         return reverse(readByteArray());
     }
@@ -135,19 +135,19 @@ public final class PacketBuf implements AutoCloseable {
         if (length <= 0) {
             return new int[0];
         }
-        int[] values = new int[length];
+        final int[] values = new int[length];
         for (int i = 0; i < length; i++) {
             values[i] = buffer.readIntLE();
         }
         return values;
     }
-    
-    public <T> T[] readArray(IntFunction<T[]> arrayCreator, Function<PacketBuf, T> valueReader) {
+
+    public <T> T[] readArray(final IntFunction<T[]> arrayCreator, final Function<PacketBuf, T> valueReader) {
         final int length = buffer.readIntLE();
         if (length <= 0) {
             return arrayCreator.apply(0);
         }
-        T[] values = arrayCreator.apply(length);
+        final T[] values = arrayCreator.apply(length);
         for (int i = 0; i < length; i++) {
             values[i] = valueReader.apply(this);
         }
@@ -158,47 +158,47 @@ public final class PacketBuf implements AutoCloseable {
      * Writing
      */
 
-    public void writeByte(byte value) {
+    public void writeByte(final byte value) {
         buffer.writeByte(value);
     }
 
-    public void writeByte(int value) {
+    public void writeByte(final int value) {
         buffer.writeByte(value & 0xFF);
     }
 
-    public void writeShort(short value) {
+    public void writeShort(final short value) {
         buffer.writeShortLE(value);
     }
 
-    public void writeShort(int value) {
+    public void writeShort(final int value) {
         buffer.writeShortLE(value & 0xFFFF);
     }
 
-    public void writeInt(int value) {
+    public void writeInt(final int value) {
         buffer.writeIntLE(value);
     }
 
-    public void writeInt(long value) {
+    public void writeInt(final long value) {
         buffer.writeIntLE((int) (value & 0xFFFFFFFF));
     }
 
-    public void writeLong(long value) {
+    public void writeLong(final long value) {
         buffer.writeLongLE(value);
     }
 
-    public void writeFloat(float value) {
+    public void writeFloat(final float value) {
         buffer.writeFloatLE(value);
     }
 
-    public void writeDouble(double value) {
+    public void writeDouble(final double value) {
         buffer.writeDoubleLE(value);
     }
 
-    public void writeBoolean(boolean value) {
+    public void writeBoolean(final boolean value) {
         buffer.writeBoolean(value);
     }
 
-    public void writeString(String value) {
+    public void writeString(final String value) {
         if (value == null || value.isEmpty()) {
             buffer.writeIntLE(0);
             return;
@@ -208,7 +208,7 @@ public final class PacketBuf implements AutoCloseable {
         buffer.writeBytes(bytes);
     }
 
-    public void writeImage(BufferedImage image) throws IOException {
+    public void writeImage(final BufferedImage image) throws IOException {
         if (image == null) {
             buffer.writeIntLE(0);
             return;
@@ -219,7 +219,7 @@ public final class PacketBuf implements AutoCloseable {
         buffer.writeBytes(output.array, 0, output.length);
     }
 
-    public void writeDateTime(LocalDateTime time) {
+    public void writeDateTime(final LocalDateTime time) {
         buffer.writeIntLE(time.getYear());
         buffer.writeByte(time.getMonthValue());
         buffer.writeByte(time.getDayOfMonth());
@@ -228,7 +228,7 @@ public final class PacketBuf implements AutoCloseable {
         buffer.writeByte(time.getSecond());
     }
 
-    public void writeByteArray(byte[] bytes) {
+    public void writeByteArray(final byte[] bytes) {
         if (bytes == null || bytes.length == 0) {
             buffer.writeIntLE(0);
             return;
@@ -237,43 +237,43 @@ public final class PacketBuf implements AutoCloseable {
         buffer.writeBytes(bytes);
     }
 
-    public void writeReversedByteArray(byte[] bytes) {
+    public void writeReversedByteArray(final byte[] bytes) {
         writeByteArray(reverse(bytes));
     }
-    
-    public void writeIntArray(int[] values) {
+
+    public void writeIntArray(final int[] values) {
         if (values == null || values.length == 0) {
             buffer.writeIntLE(0);
             return;
         }
         buffer.writeIntLE(values.length);
-        for (int value : values) {
+        for (final int value : values) {
             buffer.writeIntLE(value);
         }
     }
-    
-    public <T> void writeArray(T[] values, BiConsumer<PacketBuf, T> valueWriter) {
+
+    public <T> void writeArray(final T[] values, final BiConsumer<PacketBuf, T> valueWriter) {
         if (values == null || values.length == 0) {
             buffer.writeIntLE(0);
             return;
         }
         buffer.writeIntLE(values.length);
-        for (T value : values) {
+        for (final T value : values) {
             valueWriter.accept(this, value);
         }
     }
-    
+
     /*
      * Helper
      */
-    
-    private byte[] reverse(byte[] input) {
+
+    private byte[] reverse(final byte[] input) {
         if (input == null || input.length < 2) {
             return input;
         }
-        byte[] output = new byte[input.length];
+        final byte[] output = new byte[input.length];
         for (int i = 0; i < input.length; i++) {
-            output[output.length - 1 - i] = input[i]; 
+            output[output.length - 1 - i] = input[i];
         }
         return output;
     }

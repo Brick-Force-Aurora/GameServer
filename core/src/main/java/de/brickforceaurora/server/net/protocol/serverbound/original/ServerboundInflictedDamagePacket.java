@@ -6,24 +6,24 @@ import de.brickforceaurora.server.net.protocol.data.DamageEntry;
 
 public final class ServerboundInflictedDamagePacket implements IServerboundPacket {
 
-	private DamageEntry[] damage = new DamageEntry[0];
+    private DamageEntry[] damage = {};
 
-	public final ServerboundInflictedDamagePacket damage(DamageEntry[] damage) {
-		this.damage = damage;
-		return this;
-	}
+    public ServerboundInflictedDamagePacket damage(final DamageEntry[] damage) {
+        this.damage = damage;
+        return this;
+    }
 
-	public final DamageEntry[] damage() {
-		return this.damage;
-	}
+    public DamageEntry[] damage() {
+        return this.damage;
+    }
 
-	@Override
-	public int packetId() {
-		return 399;
-	}
+    @Override
+    public int packetId() {
+        return 399;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.damage = buf.readArray(DamageEntry[]::new, DamageEntry::fromBuffer);
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.damage = buf.readArray(DamageEntry[]::new, DamageEntry::fromBuffer);
+    }
 }

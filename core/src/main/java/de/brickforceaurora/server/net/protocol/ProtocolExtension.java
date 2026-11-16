@@ -1,6 +1,7 @@
 package de.brickforceaurora.server.net.protocol;
 
-import de.brickforceaurora.server.net.protocol.clientbound.aurora.*;
+import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraHeartbeatPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraLoggedInPacket;
 
 public final class ProtocolExtension {
 

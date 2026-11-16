@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundRegMapInfoPacket implements IServerboundPacket {
 
-	private int map;
+    private int map;
 
-	public final ServerboundRegMapInfoPacket map(int map) {
-		this.map = map;
-		return this;
-	}
+    public ServerboundRegMapInfoPacket map(final int map) {
+        this.map = map;
+        return this;
+    }
 
-	public final int map() {
-		return this.map;
-	}
+    public int map() {
+        return this.map;
+    }
 
-	@Override
-	public int packetId() {
-		return 337;
-	}
+    @Override
+    public int packetId() {
+        return 337;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.map = buf.readInt();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.map = buf.readInt();
+    }
 }

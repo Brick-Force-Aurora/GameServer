@@ -16,13 +16,13 @@ public final class ServerboundZombieObserverPacket implements IServerboundPacket
         return clientId;
     }
 
-	@Override
-	public int packetId() {
-		return 549;
-	}
+    @Override
+    public int packetId() {
+        return 549;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
+    @Override
+    public void read(final PacketBuf buf) {
         this.clientId = buf.readInt();
-	}
+    }
 }

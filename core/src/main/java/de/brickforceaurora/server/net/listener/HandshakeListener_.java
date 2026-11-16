@@ -47,7 +47,7 @@ public class HandshakeListener_ implements INetListener {
             context.client().disconnect("No successful handshake");
             return;
         }
-        ILoginHandler handler = context.manager().snowFrame().app().loginHandler();
+        final ILoginHandler handler = context.manager().snowFrame().app().loginHandler();
         LoginType loginType = context.packet().loginType();
         if (handler.supportedTypes().value() == 0) {
             // This if is for debug logins, its not a full login type but instead if no login types are considered supported we default back to debug login
@@ -61,11 +61,11 @@ public class HandshakeListener_ implements INetListener {
         }
         switch (loginType) {
         case OAUTH -> {
-            if (!(handler instanceof IOAuthLoginHandler oauthHandler)) {
+            if (!(handler instanceof final IOAuthLoginHandler oauthHandler)) {
                 context.client().disconnect("Server Error: Login handler doesn't support OAuth even tho it claims to support it");
                 return;
             }
-            String verificationUri = oauthHandler.generateOAuthRequest(context.client(), context.packet().version());
+            final String verificationUri = oauthHandler.generateOAuthRequest(context.client(), context.packet().version());
             if (verificationUri == null) {
                 context.client().disconnect("Server Error: Couldn't create OAuth request");
                 return;

@@ -5,12 +5,11 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundAddAmmoPacket implements IClientboundPacket {
 
-	@Override
-	public int packetId() {
-		return 550;
-	}
+    @Override
+    public int packetId() {
+        return 550;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-	}
+    @Override
+    public void write(final PacketBuf buf) {}
 }

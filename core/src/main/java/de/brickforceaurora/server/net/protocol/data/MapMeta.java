@@ -14,7 +14,7 @@ public enum MapMeta implements IFlag {
 
     private final int mask;
 
-    private MapMeta(int mask) {
+    MapMeta(final int mask) {
         this.mask = mask;
     }
 

@@ -19,7 +19,7 @@ public enum GameMode implements IFlag {
 
     private final int mask;
 
-    private GameMode(int mask) {
+    GameMode(final int mask) {
         this.mask = mask;
     }
 

@@ -10,7 +10,7 @@ public enum RoomStatus {
 
     public static final RoomStatus[] VALUES = RoomStatus.values();
 
-    public static RoomStatus byId(int id) {
+    public static RoomStatus byId(final int id) {
         if (id < 0 || id >= VALUES.length) {
             return null;
         }
@@ -19,7 +19,7 @@ public enum RoomStatus {
 
     private final int id;
 
-    private RoomStatus(int id) {
+    RoomStatus(final int id) {
         this.id = id;
     }
 

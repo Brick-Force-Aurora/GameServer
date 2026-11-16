@@ -8,7 +8,7 @@ public enum QuickPlayOption {
 
     public static final QuickPlayOption[] VALUES = QuickPlayOption.values();
 
-    public static QuickPlayOption byId(int id) {
+    public static QuickPlayOption byId(final int id) {
         if (id < 0 || id > 2) {
             return null;
         }
@@ -17,7 +17,7 @@ public enum QuickPlayOption {
 
     private final int id;
 
-    private QuickPlayOption(int id) {
+    QuickPlayOption(final int id) {
         this.id = id;
     }
 

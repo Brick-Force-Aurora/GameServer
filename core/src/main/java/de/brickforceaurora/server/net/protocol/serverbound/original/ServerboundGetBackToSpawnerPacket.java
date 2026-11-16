@@ -5,12 +5,11 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundGetBackToSpawnerPacket implements IServerboundPacket {
 
-	@Override
-	public int packetId() {
-		return 262;
-	}
+    @Override
+    public int packetId() {
+        return 262;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-	}
+    @Override
+    public void read(final PacketBuf buf) {}
 }

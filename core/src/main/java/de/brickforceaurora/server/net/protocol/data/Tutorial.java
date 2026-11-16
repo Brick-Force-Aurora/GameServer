@@ -12,7 +12,7 @@ public enum Tutorial implements IFlag {
 
     private final int mask;
 
-    private Tutorial(int mask) {
+    Tutorial(final int mask) {
         this.mask = mask;
     }
 

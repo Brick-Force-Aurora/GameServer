@@ -10,10 +10,10 @@ import de.brickforceaurora.server.net.protocol.ProtocolExtension;
 import de.brickforceaurora.server.util.Encryption;
 
 public class ServerboundAuroraHandshakeInitializePacket implements IServerboundPacket {
-    
+
     private PublicKey clientKey;
 
-    public final ServerboundAuroraHandshakeInitializePacket clientKey(PublicKey clientKey) {
+    public final ServerboundAuroraHandshakeInitializePacket clientKey(final PublicKey clientKey) {
         this.clientKey = clientKey;
         return this;
     }
@@ -28,22 +28,22 @@ public class ServerboundAuroraHandshakeInitializePacket implements IServerboundP
     }
 
     @Override
-    public void read(PacketBuf buffer) throws IOException {
-        BigInteger modulus = new BigInteger(appendPositiveZero(buffer.readByteArray()));
-        BigInteger exponent = new BigInteger(appendPositiveZero(buffer.readByteArray()));
+    public void read(final PacketBuf buffer) throws IOException {
+        final BigInteger modulus = new BigInteger(appendPositiveZero(buffer.readByteArray()));
+        final BigInteger exponent = new BigInteger(appendPositiveZero(buffer.readByteArray()));
         this.clientKey = Encryption.createPublicKey(modulus, exponent);
     }
-    
-    private byte[] appendPositiveZero(byte[] bytes) {
+
+    private byte[] appendPositiveZero(final byte[] bytes) {
         if (bytes[0] == 0xFF) {
             return bytes;
         }
-        byte[] out = new byte[bytes.length + 1];
+        final byte[] out = new byte[bytes.length + 1];
         out[0] = 0;
         System.arraycopy(bytes, 0, out, 1, bytes.length);
         return out;
     }
-    
+
     @Override
     public boolean requiresLogIn() {
         return false;

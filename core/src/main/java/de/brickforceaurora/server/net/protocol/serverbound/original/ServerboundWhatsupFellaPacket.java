@@ -5,12 +5,11 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundWhatsupFellaPacket implements IServerboundPacket {
 
-	@Override
-	public int packetId() {
-		return 150;
-	}
+    @Override
+    public int packetId() {
+        return 150;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-	}
+    @Override
+    public void read(final PacketBuf buf) {}
 }

@@ -20,7 +20,7 @@ public final class ClaimPasswordLoginHandler implements ILoginHandler {
     private final LoginRepository logins;
     private final IFlags<LoginType> supportedTypes = LoginType.MANAGER.newImmutable(LoginType.PASSWORD.mask());
 
-    public ClaimPasswordLoginHandler(NetManager<?> netManager, UserRepository users, LoginRepository logins) {
+    public ClaimPasswordLoginHandler(final NetManager<?> netManager, final UserRepository users, final LoginRepository logins) {
         this.netManager = netManager;
         this.users = users;
         this.logins = logins;
@@ -32,9 +32,10 @@ public final class ClaimPasswordLoginHandler implements ILoginHandler {
     }
 
     @Override
-    public void login(BFClient client, Version version, LoginType loginType, String userName, ILoginData data) {
-        ISimpleLogger logger = netManager.logger();
-        if (!(data instanceof ILoginData.Password(String password)) || userName == null || userName.isBlank() || password == null
+    public void login(final BFClient client, final Version version, final LoginType loginType, final String userName,
+        final ILoginData data) {
+        final ISimpleLogger logger = netManager.logger();
+        if (!(data instanceof ILoginData.Password(final String password)) || userName == null || userName.isBlank() || password == null
             || password.isEmpty()) {
             // Not initializing the client makes the login fail
             logger.warning("Login refused for '{0}' from {1}: Username or password is missing", userName, client.ip());
@@ -42,25 +43,25 @@ public final class ClaimPasswordLoginHandler implements ILoginHandler {
         }
         try {
             // Only used for the log output, the login itself creates the account if needed
-            boolean existed = users.findAccount(userName).isPresent();
-            Optional<UserAccount> result = logins.loginClaim(userName, password);
+            final boolean existed = users.findAccount(userName).isPresent();
+            final Optional<UserAccount> result = logins.loginClaim(userName, password);
             if (result.isEmpty()) {
                 // Not initializing the client makes the login fail
                 logger.warning("Login refused for '{0}' from {1}: Wrong password or account is protected by an OAuth identity", userName,
                     client.ip());
                 return;
             }
-            UserAccount account = result.get();
+            final UserAccount account = result.get();
             if (!existed) {
                 logger.info("Created new account '{0}' (id {1}) from {2}, the password is now bound to it", account.username(),
                     account.id(), client.ip());
             } else {
-                String character = users.loadProfile(account.id()).map(UserProfile::nickname).map(name -> "character '" + name + "'")
+                final String character = users.loadProfile(account.id()).map(UserProfile::nickname).map(name -> "character '" + name + "'")
                     .orElse("no character yet");
                 logger.info("Login of account '{0}' (id {1}, {2}) from {3}", account.username(), account.id(), character, client.ip());
             }
             client.init(version, account.username(), netManager.nextClientId());
-        } catch (DatabaseException exception) {
+        } catch (final DatabaseException exception) {
             // Not initializing the client makes the login fail
             logger.error("Database error during login of '{0}' from {1}", exception, userName, client.ip());
         }

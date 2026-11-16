@@ -5,46 +5,46 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundUpdateSquadRecordPacket implements IServerboundPacket {
 
-	private int win;
-	private int draw;
-	private int lose;
+    private int win;
+    private int draw;
+    private int lose;
 
-	public final ServerboundUpdateSquadRecordPacket win(int win) {
-		this.win = win;
-		return this;
-	}
+    public ServerboundUpdateSquadRecordPacket win(final int win) {
+        this.win = win;
+        return this;
+    }
 
-	public final int win() {
-		return this.win;
-	}
+    public int win() {
+        return this.win;
+    }
 
-	public final ServerboundUpdateSquadRecordPacket draw(int draw) {
-		this.draw = draw;
-		return this;
-	}
+    public ServerboundUpdateSquadRecordPacket draw(final int draw) {
+        this.draw = draw;
+        return this;
+    }
 
-	public final int draw() {
-		return this.draw;
-	}
+    public int draw() {
+        return this.draw;
+    }
 
-	public final ServerboundUpdateSquadRecordPacket lose(int lose) {
-		this.lose = lose;
-		return this;
-	}
+    public ServerboundUpdateSquadRecordPacket lose(final int lose) {
+        this.lose = lose;
+        return this;
+    }
 
-	public final int lose() {
-		return this.lose;
-	}
+    public int lose() {
+        return this.lose;
+    }
 
-	@Override
-	public int packetId() {
-		return 278;
-	}
+    @Override
+    public int packetId() {
+        return 278;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.win = buf.readInt();
-		this.draw = buf.readInt();
-		this.lose = buf.readInt();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.win = buf.readInt();
+        this.draw = buf.readInt();
+        this.lose = buf.readInt();
+    }
 }

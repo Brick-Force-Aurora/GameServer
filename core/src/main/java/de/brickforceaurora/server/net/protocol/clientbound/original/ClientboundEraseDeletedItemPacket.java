@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundEraseDeletedItemPacket implements IClientboundPacket {
 
-	private long val;
+    private long val;
 
-	public final ClientboundEraseDeletedItemPacket val(long val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundEraseDeletedItemPacket val(final long val) {
+        this.val = val;
+        return this;
+    }
 
-	public final long val() {
-		return this.val;
-	}
+    public long val() {
+        return this.val;
+    }
 
-	@Override
-	public int packetId() {
-		return 312;
-	}
+    @Override
+    public int packetId() {
+        return 312;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeLong(this.val);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeLong(this.val);
+    }
 }

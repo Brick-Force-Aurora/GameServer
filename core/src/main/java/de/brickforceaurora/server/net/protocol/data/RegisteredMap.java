@@ -32,17 +32,17 @@ public record RegisteredMap(int id, String creator, String name, ImmutableFlags<
 
         private Builder() {}
 
-        public final Builder id(int id) {
+        public final Builder id(final int id) {
             this.id = id;
             return this;
         }
 
-        public final Builder creator(String creator) {
+        public final Builder creator(final String creator) {
             this.creator = creator;
             return this;
         }
 
-        public final Builder name(String name) {
+        public final Builder name(final String name) {
             this.name = name;
             return this;
         }
@@ -59,37 +59,37 @@ public record RegisteredMap(int id, String creator, String name, ImmutableFlags<
             return meta;
         }
 
-        public final Builder registrationDate(LocalDateTime registrationDate) {
+        public final Builder registrationDate(final LocalDateTime registrationDate) {
             this.registrationDate = registrationDate;
             return this;
         }
 
-        public final Builder downloadFee(int downloadFee) {
+        public final Builder downloadFee(final int downloadFee) {
             this.downloadFee = downloadFee;
             return this;
         }
 
-        public final Builder release(int release) {
+        public final Builder release(final int release) {
             this.release = release;
             return this;
         }
 
-        public final Builder latestRelease(int latestRelease) {
+        public final Builder latestRelease(final int latestRelease) {
             this.latestRelease = latestRelease;
             return this;
         }
 
-        public final Builder likes(int likes) {
+        public final Builder likes(final int likes) {
             this.likes = likes;
             return this;
         }
 
-        public final Builder dislikes(int dislikes) {
+        public final Builder dislikes(final int dislikes) {
             this.dislikes = dislikes;
             return this;
         }
 
-        public final Builder downloadCount(int downloadCount) {
+        public final Builder downloadCount(final int downloadCount) {
             this.downloadCount = downloadCount;
             return this;
         }
@@ -101,7 +101,7 @@ public record RegisteredMap(int id, String creator, String name, ImmutableFlags<
 
     }
 
-    public void toBuffer(PacketBuf buf) {
+    public void toBuffer(final PacketBuf buf) {
         buf.writeInt(id);
         buf.writeString(creator);
         buf.writeString(name);
@@ -117,34 +117,34 @@ public record RegisteredMap(int id, String creator, String name, ImmutableFlags<
         buf.writeInt(downloadCount);
     }
 
-    public static RegisteredMap fromBuffer(PacketBuf buf) {
-        int id = buf.readInt();
-        String creator = buf.readString();
-        String name = buf.readString();
-        ImmutableFlags<GameMode> mode = GameMode.MANAGER.newImmutable(buf.readUnsignedShort());
-        ImmutableFlags<MapMeta> meta = MapMeta.MANAGER.newImmutable(buf.readByte());
-        ImmutableFlags<MapTag> tags = MapTag.MANAGER.newImmutable(buf.readByte());
-        LocalDateTime registrationDate = buf.readDateTime();
-        int downloadFee = buf.readInt();
-        int release = buf.readInt();
-        int latestRelease = buf.readInt();
-        int likes = buf.readInt();
-        int dislikes = buf.readInt();
-        int downloadCount = buf.readInt();
+    public static RegisteredMap fromBuffer(final PacketBuf buf) {
+        final int id = buf.readInt();
+        final String creator = buf.readString();
+        final String name = buf.readString();
+        final ImmutableFlags<GameMode> mode = GameMode.MANAGER.newImmutable(buf.readUnsignedShort());
+        final ImmutableFlags<MapMeta> meta = MapMeta.MANAGER.newImmutable(buf.readByte());
+        final ImmutableFlags<MapTag> tags = MapTag.MANAGER.newImmutable(buf.readByte());
+        final LocalDateTime registrationDate = buf.readDateTime();
+        final int downloadFee = buf.readInt();
+        final int release = buf.readInt();
+        final int latestRelease = buf.readInt();
+        final int likes = buf.readInt();
+        final int dislikes = buf.readInt();
+        final int downloadCount = buf.readInt();
         return new RegisteredMap(id, creator, name, mode, tags, meta, registrationDate, downloadFee, release, latestRelease, likes,
             dislikes, downloadCount);
     }
 
-    public static Tuple<RegisteredMap, BufferedImage> fromFile(File file) throws IOException {
+    public static Tuple<RegisteredMap, BufferedImage> fromFile(final File file) throws IOException {
         try (PacketBuf buf = new PacketBuf(Files.readAllBytes(file.toPath()))) {
-            int formatVersion = buf.readInt();
-            int id = buf.readInt();
-            String name = buf.readString();
-            String creator = buf.readString();
-            LocalDateTime registrationDate = buf.readDateTime();
-            ImmutableFlags<GameMode> mode = GameMode.MANAGER
+            final int formatVersion = buf.readInt();
+            final int id = buf.readInt();
+            final String name = buf.readString();
+            final String creator = buf.readString();
+            final LocalDateTime registrationDate = buf.readDateTime();
+            final ImmutableFlags<GameMode> mode = GameMode.MANAGER
                 .newImmutable(formatVersion > 2 ? buf.readUnsignedShort() : buf.readUnsignedByte());
-            Flags<MapMeta> meta = MapMeta.MANAGER.newMutable();
+            final Flags<MapMeta> meta = MapMeta.MANAGER.newMutable();
             meta.set(MapMeta.ALLOWS_CLAN_MATCHES, buf.readBoolean());
             meta.set(MapMeta.OFFICIAL, formatVersion >= 2 && buf.readBoolean());
             return Tuple.of(new RegisteredMap(id, creator, name, mode, MapTag.MANAGER.newImmutable(), meta.immutable(), registrationDate, 0,

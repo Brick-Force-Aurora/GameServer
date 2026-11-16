@@ -5,68 +5,68 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundRendezvousPointPacket implements IClientboundPacket {
 
-	private int clientId;
-	private String localIp;
-	private int localPort;
-	private String remoteIp;
-	private int remotePort;
+    private int clientId;
+    private String localIp;
+    private int localPort;
+    private String remoteIp;
+    private int remotePort;
 
-	public final ClientboundRendezvousPointPacket clientId(int clientId) {
-		this.clientId = clientId;
-		return this;
-	}
+    public ClientboundRendezvousPointPacket clientId(final int clientId) {
+        this.clientId = clientId;
+        return this;
+    }
 
-	public final int clientId() {
-		return this.clientId;
-	}
+    public int clientId() {
+        return this.clientId;
+    }
 
-	public final ClientboundRendezvousPointPacket localIp(String localIp) {
-		this.localIp = localIp;
-		return this;
-	}
+    public ClientboundRendezvousPointPacket localIp(final String localIp) {
+        this.localIp = localIp;
+        return this;
+    }
 
-	public final String localIp() {
-		return this.localIp;
-	}
+    public String localIp() {
+        return this.localIp;
+    }
 
-	public final ClientboundRendezvousPointPacket localPort(int localPort) {
-		this.localPort = localPort;
-		return this;
-	}
+    public ClientboundRendezvousPointPacket localPort(final int localPort) {
+        this.localPort = localPort;
+        return this;
+    }
 
-	public final int localPort() {
-		return this.localPort;
-	}
+    public int localPort() {
+        return this.localPort;
+    }
 
-	public final ClientboundRendezvousPointPacket remoteIp(String remoteIp) {
-		this.remoteIp = remoteIp;
-		return this;
-	}
+    public ClientboundRendezvousPointPacket remoteIp(final String remoteIp) {
+        this.remoteIp = remoteIp;
+        return this;
+    }
 
-	public final String remoteIp() {
-		return this.remoteIp;
-	}
+    public String remoteIp() {
+        return this.remoteIp;
+    }
 
-	public final ClientboundRendezvousPointPacket remotePort(int remotePort) {
-		this.remotePort = remotePort;
-		return this;
-	}
+    public ClientboundRendezvousPointPacket remotePort(final int remotePort) {
+        this.remotePort = remotePort;
+        return this;
+    }
 
-	public final int remotePort() {
-		return this.remotePort;
-	}
+    public int remotePort() {
+        return this.remotePort;
+    }
 
-	@Override
-	public int packetId() {
-		return 153;
-	}
+    @Override
+    public int packetId() {
+        return 153;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.clientId);
-		buf.writeString(this.localIp);
-		buf.writeInt(this.localPort);
-		buf.writeString(this.remoteIp);
-		buf.writeInt(this.remotePort);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.clientId);
+        buf.writeString(this.localIp);
+        buf.writeInt(this.localPort);
+        buf.writeString(this.remoteIp);
+        buf.writeInt(this.remotePort);
+    }
 }

@@ -6,82 +6,82 @@ import de.brickforceaurora.server.net.protocol.data.ResultUnit;
 
 public final class ClientboundTeamMatchEndPacket implements IClientboundPacket {
 
-	private byte endCode;
-	private int redKill;
-	private int redDeath;
-	private int blueKill;
-	private int blueDeath;
-	private ResultUnit[] results = new ResultUnit[0];
+    private byte endCode;
+    private int redKill;
+    private int redDeath;
+    private int blueKill;
+    private int blueDeath;
+    private ResultUnit[] results = {};
 
-	public final ClientboundTeamMatchEndPacket endCode(byte endCode) {
-		this.endCode = endCode;
-		return this;
-	}
+    public ClientboundTeamMatchEndPacket endCode(final byte endCode) {
+        this.endCode = endCode;
+        return this;
+    }
 
-	public final byte endCode() {
-		return this.endCode;
-	}
+    public byte endCode() {
+        return this.endCode;
+    }
 
-	public final ClientboundTeamMatchEndPacket redKill(int redKill) {
-		this.redKill = redKill;
-		return this;
-	}
+    public ClientboundTeamMatchEndPacket redKill(final int redKill) {
+        this.redKill = redKill;
+        return this;
+    }
 
-	public final int redKill() {
-		return this.redKill;
-	}
+    public int redKill() {
+        return this.redKill;
+    }
 
-	public final ClientboundTeamMatchEndPacket redDeath(int redDeath) {
-		this.redDeath = redDeath;
-		return this;
-	}
+    public ClientboundTeamMatchEndPacket redDeath(final int redDeath) {
+        this.redDeath = redDeath;
+        return this;
+    }
 
-	public final int redDeath() {
-		return this.redDeath;
-	}
+    public int redDeath() {
+        return this.redDeath;
+    }
 
-	public final ClientboundTeamMatchEndPacket blueKill(int blueKill) {
-		this.blueKill = blueKill;
-		return this;
-	}
+    public ClientboundTeamMatchEndPacket blueKill(final int blueKill) {
+        this.blueKill = blueKill;
+        return this;
+    }
 
-	public final int blueKill() {
-		return this.blueKill;
-	}
+    public int blueKill() {
+        return this.blueKill;
+    }
 
-	public final ClientboundTeamMatchEndPacket blueDeath(int blueDeath) {
-		this.blueDeath = blueDeath;
-		return this;
-	}
+    public ClientboundTeamMatchEndPacket blueDeath(final int blueDeath) {
+        this.blueDeath = blueDeath;
+        return this;
+    }
 
-	public final int blueDeath() {
-		return this.blueDeath;
-	}
+    public int blueDeath() {
+        return this.blueDeath;
+    }
 
-	public final ClientboundTeamMatchEndPacket results(ResultUnit[] results) {
-		this.results = results;
-		return this;
-	}
+    public ClientboundTeamMatchEndPacket results(final ResultUnit[] results) {
+        this.results = results;
+        return this;
+    }
 
-	public final ResultUnit[] results() {
-		return this.results;
-	}
+    public ResultUnit[] results() {
+        return this.results;
+    }
 
-	@Override
-	public int packetId() {
-		return 70;
-	}
+    @Override
+    public int packetId() {
+        return 70;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeByte(this.endCode);
-		buf.writeInt(this.redKill);
-		buf.writeInt(this.redDeath);
-		buf.writeInt(this.blueKill);
-		buf.writeInt(this.blueDeath);
-		buf.writeInt(this.results.length);
-		for (ResultUnit unit : this.results) {
-			unit.toBuffer(buf);
-		}
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeByte(this.endCode);
+        buf.writeInt(this.redKill);
+        buf.writeInt(this.redDeath);
+        buf.writeInt(this.blueKill);
+        buf.writeInt(this.blueDeath);
+        buf.writeInt(this.results.length);
+        for (final ResultUnit unit : this.results) {
+            unit.toBuffer(buf);
+        }
+    }
 }

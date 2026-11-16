@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundAddBanPacket implements IClientboundPacket {
 
-	private int playerId;
-	private String nickName;
+    private int playerId;
+    private String nickName;
 
-	public final ClientboundAddBanPacket playerId(int playerId) {
-		this.playerId = playerId;
-		return this;
-	}
+    public ClientboundAddBanPacket playerId(final int playerId) {
+        this.playerId = playerId;
+        return this;
+    }
 
-	public final int playerId() {
-		return this.playerId;
-	}
+    public int playerId() {
+        return this.playerId;
+    }
 
-	public final ClientboundAddBanPacket nickName(String nickName) {
-		this.nickName = nickName;
-		return this;
-	}
+    public ClientboundAddBanPacket nickName(final String nickName) {
+        this.nickName = nickName;
+        return this;
+    }
 
-	public final String nickName() {
-		return this.nickName;
-	}
+    public String nickName() {
+        return this.nickName;
+    }
 
-	@Override
-	public int packetId() {
-		return 106;
-	}
+    @Override
+    public int packetId() {
+        return 106;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.playerId);
-		buf.writeString(this.nickName);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.playerId);
+        buf.writeString(this.nickName);
+    }
 }

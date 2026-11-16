@@ -5,58 +5,58 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundAutoLoginToNetmarblePacket implements IServerboundPacket {
 
-	final String UnknownValue0 = "CPCookie[i]";
-	private int major;
-	private int minor;
-	private String privateIpAddress;
-	private String macAddress;
+    final String UnknownValue0 = "CPCookie[i]";
+    private int major;
+    private int minor;
+    private String privateIpAddress;
+    private String macAddress;
 
-	public final ServerboundAutoLoginToNetmarblePacket major(int major) {
-		this.major = major;
-		return this;
-	}
+    public ServerboundAutoLoginToNetmarblePacket major(final int major) {
+        this.major = major;
+        return this;
+    }
 
-	public final int major() {
-		return this.major;
-	}
+    public int major() {
+        return this.major;
+    }
 
-	public final ServerboundAutoLoginToNetmarblePacket minor(int minor) {
-		this.minor = minor;
-		return this;
-	}
+    public ServerboundAutoLoginToNetmarblePacket minor(final int minor) {
+        this.minor = minor;
+        return this;
+    }
 
-	public final int minor() {
-		return this.minor;
-	}
+    public int minor() {
+        return this.minor;
+    }
 
-	public final ServerboundAutoLoginToNetmarblePacket privateIpAddress(String privateIpAddress) {
-		this.privateIpAddress = privateIpAddress;
-		return this;
-	}
+    public ServerboundAutoLoginToNetmarblePacket privateIpAddress(final String privateIpAddress) {
+        this.privateIpAddress = privateIpAddress;
+        return this;
+    }
 
-	public final String privateIpAddress() {
-		return this.privateIpAddress;
-	}
+    public String privateIpAddress() {
+        return this.privateIpAddress;
+    }
 
-	public final ServerboundAutoLoginToNetmarblePacket macAddress(String macAddress) {
-		this.macAddress = macAddress;
-		return this;
-	}
+    public ServerboundAutoLoginToNetmarblePacket macAddress(final String macAddress) {
+        this.macAddress = macAddress;
+        return this;
+    }
 
-	public final String macAddress() {
-		return this.macAddress;
-	}
+    public String macAddress() {
+        return this.macAddress;
+    }
 
-	@Override
-	public int packetId() {
-		return 458;
-	}
+    @Override
+    public int packetId() {
+        return 458;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.major = buf.readInt();
-		this.minor = buf.readInt();
-		this.privateIpAddress = buf.readString();
-		this.macAddress = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.major = buf.readInt();
+        this.minor = buf.readInt();
+        this.privateIpAddress = buf.readString();
+        this.macAddress = buf.readString();
+    }
 }

@@ -5,13 +5,13 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundPickupDroppedItemFailPacket implements IClientboundPacket {
 
-	@Override
-	public int packetId() {
-		return 533;
-	}
+    @Override
+    public int packetId() {
+        return 533;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(-1); //unused
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(-1); //unused
+    }
 }

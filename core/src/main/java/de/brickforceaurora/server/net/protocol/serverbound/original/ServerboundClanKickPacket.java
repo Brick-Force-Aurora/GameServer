@@ -5,68 +5,68 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundClanKickPacket implements IServerboundPacket {
 
-	private int clan;
-	private int kick;
-	private String nickname;
-	private String title;
-	private String contents;
+    private int clan;
+    private int kick;
+    private String nickname;
+    private String title;
+    private String contents;
 
-	public final ServerboundClanKickPacket clan(int clan) {
-		this.clan = clan;
-		return this;
-	}
+    public ServerboundClanKickPacket clan(final int clan) {
+        this.clan = clan;
+        return this;
+    }
 
-	public final int clan() {
-		return this.clan;
-	}
+    public int clan() {
+        return this.clan;
+    }
 
-	public final ServerboundClanKickPacket kick(int kick) {
-		this.kick = kick;
-		return this;
-	}
+    public ServerboundClanKickPacket kick(final int kick) {
+        this.kick = kick;
+        return this;
+    }
 
-	public final int kick() {
-		return this.kick;
-	}
+    public int kick() {
+        return this.kick;
+    }
 
-	public final ServerboundClanKickPacket nickname(String nickname) {
-		this.nickname = nickname;
-		return this;
-	}
+    public ServerboundClanKickPacket nickname(final String nickname) {
+        this.nickname = nickname;
+        return this;
+    }
 
-	public final String nickname() {
-		return this.nickname;
-	}
+    public String nickname() {
+        return this.nickname;
+    }
 
-	public final ServerboundClanKickPacket title(String title) {
-		this.title = title;
-		return this;
-	}
+    public ServerboundClanKickPacket title(final String title) {
+        this.title = title;
+        return this;
+    }
 
-	public final String title() {
-		return this.title;
-	}
+    public String title() {
+        return this.title;
+    }
 
-	public final ServerboundClanKickPacket contents(String contents) {
-		this.contents = contents;
-		return this;
-	}
+    public ServerboundClanKickPacket contents(final String contents) {
+        this.contents = contents;
+        return this;
+    }
 
-	public final String contents() {
-		return this.contents;
-	}
+    public String contents() {
+        return this.contents;
+    }
 
-	@Override
-	public int packetId() {
-		return 209;
-	}
+    @Override
+    public int packetId() {
+        return 209;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.clan = buf.readInt();
-		this.kick = buf.readInt();
-		this.nickname = buf.readString();
-		this.title = buf.readString();
-		this.contents = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.clan = buf.readInt();
+        this.kick = buf.readInt();
+        this.nickname = buf.readString();
+        this.title = buf.readString();
+        this.contents = buf.readString();
+    }
 }

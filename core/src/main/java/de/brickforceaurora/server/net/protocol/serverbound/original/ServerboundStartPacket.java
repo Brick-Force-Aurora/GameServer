@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundStartPacket implements IServerboundPacket {
 
-	private int remain;
+    private int remain;
 
-	public final ServerboundStartPacket remain(int remain) {
-		this.remain = remain;
-		return this;
-	}
+    public ServerboundStartPacket remain(final int remain) {
+        this.remain = remain;
+        return this;
+    }
 
-	public final int remain() {
-		return this.remain;
-	}
+    public int remain() {
+        return this.remain;
+    }
 
-	@Override
-	public int packetId() {
-		return 49;
-	}
+    @Override
+    public int packetId() {
+        return 49;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.remain = buf.readInt();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.remain = buf.readInt();
+    }
 }

@@ -33,28 +33,28 @@ public final class Encryption {
         try {
             generator = KeyPairGenerator.getInstance("RSA");
             generator.initialize(1024, SECURE_RANDOM);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             throw new IllegalStateException("Couldn't initialize key gen", e);
         }
-        KeyPair pair = generator.generateKeyPair();
+        final KeyPair pair = generator.generateKeyPair();
         PUBLIC = (RSAPublicKey) pair.getPublic();
         PRIVATE = (RSAPrivateKey) pair.getPrivate();
-        String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        final String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         CHARS = new char[str.length() * 2 + 10];
         System.arraycopy(str.toCharArray(), 0, CHARS, 0, str.length());
         System.arraycopy(str.toLowerCase().toCharArray(), 0, CHARS, str.length(), str.length());
         System.arraycopy("0123456789".toCharArray(), 0, CHARS, str.length() * 2, 10);
     }
 
-    public static String generateSecret(int length) {
-        StringBuilder builder = new StringBuilder();
+    public static String generateSecret(final int length) {
+        final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < length; i++) {
             builder.append(CHARS[SECURE_RANDOM.nextInt(CHARS.length)]);
         }
         return builder.toString();
     }
 
-    public static PublicKey createPublicKey(BigInteger modulus, BigInteger exponent) {
+    public static PublicKey createPublicKey(final BigInteger modulus, final BigInteger exponent) {
         try {
             return KeyFactory.getInstance("RSA").generatePublic(new RSAPublicKeySpec(modulus, exponent));
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
@@ -62,38 +62,40 @@ public final class Encryption {
         }
     }
 
-    public static byte[] encryptString(String string, PublicKey key) {
+    public static byte[] encryptString(final String string, final PublicKey key) {
         try {
             return encrypt(string.getBytes(StandardCharsets.UTF_8), key);
-        } catch (IllegalStateException e) {
+        } catch (final IllegalStateException e) {
             throw new IllegalStateException("Couldn't encrypt string", e.getCause());
         }
     }
 
-    public static String decryptString(byte[] bytes, PrivateKey key) {
+    public static String decryptString(final byte[] bytes, final PrivateKey key) {
         try {
             return new String(decrypt(bytes, key), StandardCharsets.UTF_8);
-        } catch (IllegalStateException e) {
+        } catch (final IllegalStateException e) {
             throw new IllegalStateException("Couldn't decrypt string", e.getCause());
         }
     }
 
-    public static byte[] encrypt(byte[] bytes, PublicKey key) {
+    public static byte[] encrypt(final byte[] bytes, final PublicKey key) {
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            final Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, key);
             return cipher.doFinal(bytes);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException
+            | InvalidKeyException e) {
             throw new IllegalStateException("Couldn't encrypt buffer", e);
         }
     }
 
-    public static byte[] decrypt(byte[] bytes, PrivateKey key) {
+    public static byte[] decrypt(final byte[] bytes, final PrivateKey key) {
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            final Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.DECRYPT_MODE, key);
             return cipher.doFinal(bytes);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException
+            | InvalidKeyException e) {
             throw new IllegalStateException("Couldn't decrypt buffer", e);
         }
     }

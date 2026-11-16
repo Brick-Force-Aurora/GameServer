@@ -26,14 +26,14 @@ public final class ServerboundDownloadThumbnailPacket implements IServerboundPac
         return this.clientId;
     }
 
-	@Override
-	public int packetId() {
-		return 100;
-	}
+    @Override
+    public int packetId() {
+        return 100;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
+    @Override
+    public void read(final PacketBuf buf) {
         this.userMap = buf.readBoolean();
         this.clientId = buf.readInt();
-	}
+    }
 }

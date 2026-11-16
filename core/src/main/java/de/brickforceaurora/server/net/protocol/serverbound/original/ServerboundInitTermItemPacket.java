@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundInitTermItemPacket implements IServerboundPacket {
 
-	private long item;
-	private String code;
+    private long item;
+    private String code;
 
-	public final ServerboundInitTermItemPacket item(long item) {
-		this.item = item;
-		return this;
-	}
+    public ServerboundInitTermItemPacket item(final long item) {
+        this.item = item;
+        return this;
+    }
 
-	public final long item() {
-		return this.item;
-	}
+    public long item() {
+        return this.item;
+    }
 
-	public final ServerboundInitTermItemPacket code(String code) {
-		this.code = code;
-		return this;
-	}
+    public ServerboundInitTermItemPacket code(final String code) {
+        this.code = code;
+        return this;
+    }
 
-	public final String code() {
-		return this.code;
-	}
+    public String code() {
+        return this.code;
+    }
 
-	@Override
-	public int packetId() {
-		return 307;
-	}
+    @Override
+    public int packetId() {
+        return 307;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.item = buf.readLong();
-		this.code = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.item = buf.readLong();
+        this.code = buf.readString();
+    }
 }

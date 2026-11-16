@@ -7,10 +7,10 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 import de.brickforceaurora.server.net.protocol.ProtocolExtension;
 
 public class ServerboundAuroraHandshakeCompletePacket implements IServerboundPacket {
-    
+
     private byte[] encryptedChallenge;
 
-    public final ServerboundAuroraHandshakeCompletePacket encryptedChallenge(byte[] encryptedChallenge) {
+    public final ServerboundAuroraHandshakeCompletePacket encryptedChallenge(final byte[] encryptedChallenge) {
         this.encryptedChallenge = encryptedChallenge;
         return this;
     }
@@ -25,10 +25,10 @@ public class ServerboundAuroraHandshakeCompletePacket implements IServerboundPac
     }
 
     @Override
-    public void read(PacketBuf buffer) throws IOException {
+    public void read(final PacketBuf buffer) throws IOException {
         this.encryptedChallenge = buffer.readByteArray();
     }
-    
+
     @Override
     public boolean requiresLogIn() {
         return false;

@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceLists;
 
 public final class FlagManager<F> {
 
-    public static <F extends Enum<F> & IFlag> FlagManager<F> ofEnum(Class<F> enumType) {
+    public static <F extends Enum<F> & IFlag> FlagManager<F> ofEnum(final Class<F> enumType) {
         return new FlagManager<>(enumType.getEnumConstants(), IFlag::mask);
     }
 
@@ -15,11 +15,11 @@ public final class FlagManager<F> {
     private final int maxMask;
     private final Obj2IntFunc<F> maskGetter;
 
-    public FlagManager(F[] flags, Obj2IntFunc<F> maskGetter) {
+    public FlagManager(final F[] flags, final Obj2IntFunc<F> maskGetter) {
         this.flags = flags;
         this.maskGetter = maskGetter;
         int mask = 0;
-        for (F flag : flags) {
+        for (final F flag : flags) {
             mask |= maskGetter.apply(flag);
         }
         this.maxMask = mask;
@@ -29,7 +29,7 @@ public final class FlagManager<F> {
         return new Flags<>(this);
     }
 
-    public Flags<F> newMutable(int value) {
+    public Flags<F> newMutable(final int value) {
         return new Flags<>(this).value(value);
     }
 
@@ -37,23 +37,23 @@ public final class FlagManager<F> {
         return new ImmutableFlags<>(this, 0);
     }
 
-    public ImmutableFlags<F> newImmutable(int value) {
+    public ImmutableFlags<F> newImmutable(final int value) {
         return new ImmutableFlags<>(this, value);
     }
 
-    public <B> IFlags.Builder<B, F> newBuilder(B builder) {
+    public <B> IFlags.Builder<B, F> newBuilder(final B builder) {
         return new Flags.Builder<>(builder, new Flags<>(this));
     }
 
-    public int mask(F flag) {
+    public int mask(final F flag) {
         if (flag == null) {
             throw new NullPointerException("Flag can't be null");
         }
         return maskGetter.apply(flag);
     }
 
-    public F byMask(int mask) {
-        for (F flag : flags) {
+    public F byMask(final int mask) {
+        for (final F flag : flags) {
             if (maskGetter.apply(flag) == mask) {
                 return flag;
             }
@@ -65,10 +65,10 @@ public final class FlagManager<F> {
         return maxMask;
     }
 
-    public ReferenceList<F> values(int value) {
-        ReferenceArrayList<F> list = new ReferenceArrayList<>(flags.length);
+    public ReferenceList<F> values(final int value) {
+        final ReferenceArrayList<F> list = new ReferenceArrayList<>(flags.length);
         int mask;
-        for (F flag : flags) {
+        for (final F flag : flags) {
             mask = maskGetter.apply(flag);
             if ((value & mask) == mask) {
                 continue;

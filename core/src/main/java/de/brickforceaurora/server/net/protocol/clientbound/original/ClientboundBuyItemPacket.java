@@ -5,68 +5,68 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundBuyItemPacket implements IClientboundPacket {
 
-	private long val;
-	private String val2;
-	private int val3;
-	private byte val4;
-	private int val5;
+    private long val;
+    private String val2;
+    private int val3;
+    private byte val4;
+    private int val5;
 
-	public final ClientboundBuyItemPacket val(long val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundBuyItemPacket val(final long val) {
+        this.val = val;
+        return this;
+    }
 
-	public final long val() {
-		return this.val;
-	}
+    public long val() {
+        return this.val;
+    }
 
-	public final ClientboundBuyItemPacket val2(String val2) {
-		this.val2 = val2;
-		return this;
-	}
+    public ClientboundBuyItemPacket val2(final String val2) {
+        this.val2 = val2;
+        return this;
+    }
 
-	public final String val2() {
-		return this.val2;
-	}
+    public String val2() {
+        return this.val2;
+    }
 
-	public final ClientboundBuyItemPacket val3(int val3) {
-		this.val3 = val3;
-		return this;
-	}
+    public ClientboundBuyItemPacket val3(final int val3) {
+        this.val3 = val3;
+        return this;
+    }
 
-	public final int val3() {
-		return this.val3;
-	}
+    public int val3() {
+        return this.val3;
+    }
 
-	public final ClientboundBuyItemPacket val4(byte val4) {
-		this.val4 = val4;
-		return this;
-	}
+    public ClientboundBuyItemPacket val4(final byte val4) {
+        this.val4 = val4;
+        return this;
+    }
 
-	public final byte val4() {
-		return this.val4;
-	}
+    public byte val4() {
+        return this.val4;
+    }
 
-	public final ClientboundBuyItemPacket val5(int val5) {
-		this.val5 = val5;
-		return this;
-	}
+    public ClientboundBuyItemPacket val5(final int val5) {
+        this.val5 = val5;
+        return this;
+    }
 
-	public final int val5() {
-		return this.val5;
-	}
+    public int val5() {
+        return this.val5;
+    }
 
-	@Override
-	public int packetId() {
-		return 122;
-	}
+    @Override
+    public int packetId() {
+        return 122;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeLong(this.val);
-		buf.writeString(this.val2);
-		buf.writeInt(this.val3);
-		buf.writeByte(this.val4);
-		buf.writeInt(this.val5);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeLong(this.val);
+        buf.writeString(this.val2);
+        buf.writeInt(this.val3);
+        buf.writeByte(this.val4);
+        buf.writeInt(this.val5);
+    }
 }

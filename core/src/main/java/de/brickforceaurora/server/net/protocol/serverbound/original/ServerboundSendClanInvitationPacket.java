@@ -5,57 +5,57 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundSendClanInvitationPacket implements IServerboundPacket {
 
-	private int inviteeSeq;
-	private String invitee;
-	private String title;
-	private String contents;
+    private int inviteeSeq;
+    private String invitee;
+    private String title;
+    private String contents;
 
-	public final ServerboundSendClanInvitationPacket inviteeSeq(int inviteeSeq) {
-		this.inviteeSeq = inviteeSeq;
-		return this;
-	}
+    public ServerboundSendClanInvitationPacket inviteeSeq(final int inviteeSeq) {
+        this.inviteeSeq = inviteeSeq;
+        return this;
+    }
 
-	public final int inviteeSeq() {
-		return this.inviteeSeq;
-	}
+    public int inviteeSeq() {
+        return this.inviteeSeq;
+    }
 
-	public final ServerboundSendClanInvitationPacket invitee(String invitee) {
-		this.invitee = invitee;
-		return this;
-	}
+    public ServerboundSendClanInvitationPacket invitee(final String invitee) {
+        this.invitee = invitee;
+        return this;
+    }
 
-	public final String invitee() {
-		return this.invitee;
-	}
+    public String invitee() {
+        return this.invitee;
+    }
 
-	public final ServerboundSendClanInvitationPacket title(String title) {
-		this.title = title;
-		return this;
-	}
+    public ServerboundSendClanInvitationPacket title(final String title) {
+        this.title = title;
+        return this;
+    }
 
-	public final String title() {
-		return this.title;
-	}
+    public String title() {
+        return this.title;
+    }
 
-	public final ServerboundSendClanInvitationPacket contents(String contents) {
-		this.contents = contents;
-		return this;
-	}
+    public ServerboundSendClanInvitationPacket contents(final String contents) {
+        this.contents = contents;
+        return this;
+    }
 
-	public final String contents() {
-		return this.contents;
-	}
+    public String contents() {
+        return this.contents;
+    }
 
-	@Override
-	public int packetId() {
-		return 193;
-	}
+    @Override
+    public int packetId() {
+        return 193;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.inviteeSeq = buf.readInt();
-		this.invitee = buf.readString();
-		this.title = buf.readString();
-		this.contents = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.inviteeSeq = buf.readInt();
+        this.invitee = buf.readString();
+        this.title = buf.readString();
+        this.contents = buf.readString();
+    }
 }

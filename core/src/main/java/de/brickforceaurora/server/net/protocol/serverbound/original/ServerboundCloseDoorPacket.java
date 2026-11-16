@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundCloseDoorPacket implements IServerboundPacket {
 
-	private int door;
+    private int door;
 
-	public final ServerboundCloseDoorPacket door(int door) {
-		this.door = door;
-		return this;
-	}
+    public ServerboundCloseDoorPacket door(final int door) {
+        this.door = door;
+        return this;
+    }
 
-	public final int door() {
-		return this.door;
-	}
+    public int door() {
+        return this.door;
+    }
 
-	@Override
-	public int packetId() {
-		return 448;
-	}
+    @Override
+    public int packetId() {
+        return 448;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.door = buf.readInt();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.door = buf.readInt();
+    }
 }

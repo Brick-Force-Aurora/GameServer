@@ -14,11 +14,11 @@ public enum LoginType implements IFlag {
     private final int mask;
     private final boolean supportsLoginPacket;
 
-    private LoginType(int mask) {
+    LoginType(final int mask) {
         this(mask, true);
     }
 
-    private LoginType(int mask, boolean supportsLoginPacket) {
+    LoginType(final int mask, final boolean supportsLoginPacket) {
         this.mask = mask;
         this.supportsLoginPacket = supportsLoginPacket;
     }

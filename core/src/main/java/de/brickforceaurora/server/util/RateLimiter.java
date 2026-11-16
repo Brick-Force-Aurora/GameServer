@@ -24,8 +24,8 @@ public final class RateLimiter<K> {
         return windowLength.get();
     }
 
-    public RateLimiter<K> windowLength(long length, TimeUnit unit) {
-        long nanoLength = unit.toNanos(length);
+    public RateLimiter<K> windowLength(final long length, final TimeUnit unit) {
+        final long nanoLength = unit.toNanos(length);
         if (nanoLength <= 0) {
             throw new IllegalArgumentException("Non-positive nano second value");
         }
@@ -37,7 +37,7 @@ public final class RateLimiter<K> {
         return rateLimit.get();
     }
 
-    public RateLimiter<K> rateLimit(int limit) {
+    public RateLimiter<K> rateLimit(final int limit) {
         if (limit <= 0) {
             throw new IllegalArgumentException("Non-positive rate limit value");
         }
@@ -45,18 +45,18 @@ public final class RateLimiter<K> {
         return this;
     }
 
-    public void tick(long delta) {
-        long negativeDelta = -delta;
-        ObjectIterator<Limiter> limiters = limits.values().iterator();
+    public void tick(final long delta) {
+        final long negativeDelta = -delta;
+        final ObjectIterator<Limiter> limiters = limits.values().iterator();
         while (limiters.hasNext()) {
-            Limiter limiter = limiters.next();
+            final Limiter limiter = limiters.next();
             if (limiter.tickets().isEmpty()) {
                 if (limiter.cooldown().addAndGet(negativeDelta) <= 0) {
                     limiters.remove();
                 }
                 continue;
             }
-            ObjectIterator<AtomicLong> tickets = limiter.tickets().iterator();
+            final ObjectIterator<AtomicLong> tickets = limiter.tickets().iterator();
             while (tickets.hasNext()) {
                 if (tickets.next().addAndGet(negativeDelta) <= 0) {
                     tickets.remove();
@@ -65,30 +65,30 @@ public final class RateLimiter<K> {
         }
     }
 
-    private Limiter createLimiter(K _key) {
+    private Limiter createLimiter(final K _key) {
         return new Limiter(new AtomicLong(windowLength.get()), ObjectLists.synchronize(new ObjectArrayList<>()));
     }
 
-    public boolean acquire(K key) {
-        Limiter limiter = limits.computeIfAbsent(key, this::createLimiter);
+    public boolean acquire(final K key) {
+        final Limiter limiter = limits.computeIfAbsent(key, this::createLimiter);
         if (limiter.tickets.size() >= rateLimit.get()) {
             return false;
         }
-        long length = windowLength.get();
+        final long length = windowLength.get();
         limiter.tickets.add(new AtomicLong(length));
         limiter.cooldown().set(length);
         return true;
     }
 
-    public int tickets(K key) {
-        Limiter limiter = limits.get(key);
+    public int tickets(final K key) {
+        final Limiter limiter = limits.get(key);
         if (limiter == null) {
             return 0;
         }
         return limiter.tickets().size();
     }
 
-    public boolean canAcquire(K key) {
+    public boolean canAcquire(final K key) {
         return tickets(key) < rateLimit.get();
     }
 

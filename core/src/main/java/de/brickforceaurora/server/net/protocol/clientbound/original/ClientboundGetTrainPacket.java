@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundGetTrainPacket implements IClientboundPacket {
 
-	private int shooter;
-	private int train;
+    private int shooter;
+    private int train;
 
-	public final ClientboundGetTrainPacket shooter(int shooter) {
-		this.shooter = shooter;
-		return this;
-	}
+    public ClientboundGetTrainPacket shooter(final int shooter) {
+        this.shooter = shooter;
+        return this;
+    }
 
-	public final int shooter() {
-		return this.shooter;
-	}
+    public int shooter() {
+        return this.shooter;
+    }
 
-	public final ClientboundGetTrainPacket train(int train) {
-		this.train = train;
-		return this;
-	}
+    public ClientboundGetTrainPacket train(final int train) {
+        this.train = train;
+        return this;
+    }
 
-	public final int train() {
-		return this.train;
-	}
+    public int train() {
+        return this.train;
+    }
 
-	@Override
-	public int packetId() {
-		return 552;
-	}
+    @Override
+    public int packetId() {
+        return 552;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.shooter);
-		buf.writeInt(this.train);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.shooter);
+        buf.writeInt(this.train);
+    }
 }

@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundBmBlastPacket implements IClientboundPacket {
 
-	private int Unnamed0;
-	private int Unnamed1;
+    private int Unnamed0;
+    private int Unnamed1;
 
-	public final ClientboundBmBlastPacket Unnamed0(int Unnamed0) {
-		this.Unnamed0 = Unnamed0;
-		return this;
-	}
+    public ClientboundBmBlastPacket Unnamed0(final int Unnamed0) {
+        this.Unnamed0 = Unnamed0;
+        return this;
+    }
 
-	public final int Unnamed0() {
-		return this.Unnamed0;
-	}
+    public int Unnamed0() {
+        return this.Unnamed0;
+    }
 
-	public final ClientboundBmBlastPacket Unnamed1(int Unnamed1) {
-		this.Unnamed1 = Unnamed1;
-		return this;
-	}
+    public ClientboundBmBlastPacket Unnamed1(final int Unnamed1) {
+        this.Unnamed1 = Unnamed1;
+        return this;
+    }
 
-	public final int Unnamed1() {
-		return this.Unnamed1;
-	}
+    public int Unnamed1() {
+        return this.Unnamed1;
+    }
 
-	@Override
-	public int packetId() {
-		return 284;
-	}
+    @Override
+    public int packetId() {
+        return 284;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.Unnamed0);
-		buf.writeInt(this.Unnamed1);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.Unnamed0);
+        buf.writeInt(this.Unnamed1);
+    }
 }

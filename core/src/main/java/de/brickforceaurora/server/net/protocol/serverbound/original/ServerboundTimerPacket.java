@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundTimerPacket implements IServerboundPacket {
 
-	private int remainTime;
-	private int playTime;
+    private int remainTime;
+    private int playTime;
 
-	public final ServerboundTimerPacket remainTime(int remainTime) {
-		this.remainTime = remainTime;
-		return this;
-	}
+    public ServerboundTimerPacket remainTime(final int remainTime) {
+        this.remainTime = remainTime;
+        return this;
+    }
 
-	public final int remainTime() {
-		return this.remainTime;
-	}
+    public int remainTime() {
+        return this.remainTime;
+    }
 
-	public final ServerboundTimerPacket playTime(int playTime) {
-		this.playTime = playTime;
-		return this;
-	}
+    public ServerboundTimerPacket playTime(final int playTime) {
+        this.playTime = playTime;
+        return this;
+    }
 
-	public final int playTime() {
-		return this.playTime;
-	}
+    public int playTime() {
+        return this.playTime;
+    }
 
-	@Override
-	public int packetId() {
-		return 65;
-	}
+    @Override
+    public int packetId() {
+        return 65;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.remainTime = buf.readInt();
-		this.playTime = buf.readInt();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.remainTime = buf.readInt();
+        this.playTime = buf.readInt();
+    }
 }

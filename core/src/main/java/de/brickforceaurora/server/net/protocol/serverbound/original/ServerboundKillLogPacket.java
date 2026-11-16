@@ -6,112 +6,112 @@ import de.brickforceaurora.server.net.protocol.data.DamageEntry;
 
 public final class ServerboundKillLogPacket implements IServerboundPacket {
 
-	private byte killerType;
-	private int killer;
-	private byte victimType;
-	private int victim;
-	private int weaponBy;
-	private int slot;
-	private int category;
-	private int hitpart;
-	private DamageEntry[] damageLog = new DamageEntry[0];
+    private byte killerType;
+    private int killer;
+    private byte victimType;
+    private int victim;
+    private int weaponBy;
+    private int slot;
+    private int category;
+    private int hitpart;
+    private DamageEntry[] damageLog = {};
 
-	public final ServerboundKillLogPacket killerType(byte killerType) {
-		this.killerType = killerType;
-		return this;
-	}
+    public ServerboundKillLogPacket killerType(final byte killerType) {
+        this.killerType = killerType;
+        return this;
+    }
 
-	public final byte killerType() {
-		return this.killerType;
-	}
+    public byte killerType() {
+        return this.killerType;
+    }
 
-	public final ServerboundKillLogPacket killer(int killer) {
-		this.killer = killer;
-		return this;
-	}
+    public ServerboundKillLogPacket killer(final int killer) {
+        this.killer = killer;
+        return this;
+    }
 
-	public final int killer() {
-		return this.killer;
-	}
+    public int killer() {
+        return this.killer;
+    }
 
-	public final ServerboundKillLogPacket victimType(byte victimType) {
-		this.victimType = victimType;
-		return this;
-	}
+    public ServerboundKillLogPacket victimType(final byte victimType) {
+        this.victimType = victimType;
+        return this;
+    }
 
-	public final byte victimType() {
-		return this.victimType;
-	}
+    public byte victimType() {
+        return this.victimType;
+    }
 
-	public final ServerboundKillLogPacket victim(int victim) {
-		this.victim = victim;
-		return this;
-	}
+    public ServerboundKillLogPacket victim(final int victim) {
+        this.victim = victim;
+        return this;
+    }
 
-	public final int victim() {
-		return this.victim;
-	}
+    public int victim() {
+        return this.victim;
+    }
 
-	public final ServerboundKillLogPacket weaponBy(int weaponBy) {
-		this.weaponBy = weaponBy;
-		return this;
-	}
+    public ServerboundKillLogPacket weaponBy(final int weaponBy) {
+        this.weaponBy = weaponBy;
+        return this;
+    }
 
-	public final int weaponBy() {
-		return this.weaponBy;
-	}
+    public int weaponBy() {
+        return this.weaponBy;
+    }
 
-	public final ServerboundKillLogPacket slot(int slot) {
-		this.slot = slot;
-		return this;
-	}
+    public ServerboundKillLogPacket slot(final int slot) {
+        this.slot = slot;
+        return this;
+    }
 
-	public final int slot() {
-		return this.slot;
-	}
+    public int slot() {
+        return this.slot;
+    }
 
-	public final ServerboundKillLogPacket category(int category) {
-		this.category = category;
-		return this;
-	}
+    public ServerboundKillLogPacket category(final int category) {
+        this.category = category;
+        return this;
+    }
 
-	public final int category() {
-		return this.category;
-	}
+    public int category() {
+        return this.category;
+    }
 
-	public final ServerboundKillLogPacket hitpart(int hitpart) {
-		this.hitpart = hitpart;
-		return this;
-	}
+    public ServerboundKillLogPacket hitpart(final int hitpart) {
+        this.hitpart = hitpart;
+        return this;
+    }
 
-	public final int hitpart() {
-		return this.hitpart;
-	}
+    public int hitpart() {
+        return this.hitpart;
+    }
 
-	public final ServerboundKillLogPacket damageLog(DamageEntry[] damageLog) {
-		this.damageLog = damageLog;
-		return this;
-	}
+    public ServerboundKillLogPacket damageLog(final DamageEntry[] damageLog) {
+        this.damageLog = damageLog;
+        return this;
+    }
 
-	public final DamageEntry[] damageLog() {
-		return this.damageLog;
-	}
+    public DamageEntry[] damageLog() {
+        return this.damageLog;
+    }
 
-	@Override
-	public int packetId() {
-		return 44;
-	}
+    @Override
+    public int packetId() {
+        return 44;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.killerType = buf.readByte();
-		this.killer = buf.readInt();
-		this.victimType = buf.readByte();
-		this.victim = buf.readInt();
-		this.weaponBy = buf.readInt();
-		this.slot = buf.readInt();
-		this.category = buf.readInt();
-		this.hitpart = buf.readInt();
-		this.damageLog = buf.readArray(DamageEntry[]::new, DamageEntry::fromBuffer);
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.killerType = buf.readByte();
+        this.killer = buf.readInt();
+        this.victimType = buf.readByte();
+        this.victim = buf.readInt();
+        this.weaponBy = buf.readInt();
+        this.slot = buf.readInt();
+        this.category = buf.readInt();
+        this.hitpart = buf.readInt();
+        this.damageLog = buf.readArray(DamageEntry[]::new, DamageEntry::fromBuffer);
+    }
 }

@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundFollowingPacket implements IServerboundPacket {
 
-	private int followeeSeq;
-	private String nickName;
+    private int followeeSeq;
+    private String nickName;
 
-	public final ServerboundFollowingPacket followeeSeq(int followeeSeq) {
-		this.followeeSeq = followeeSeq;
-		return this;
-	}
+    public ServerboundFollowingPacket followeeSeq(final int followeeSeq) {
+        this.followeeSeq = followeeSeq;
+        return this;
+    }
 
-	public final int followeeSeq() {
-		return this.followeeSeq;
-	}
+    public int followeeSeq() {
+        return this.followeeSeq;
+    }
 
-	public final ServerboundFollowingPacket nickName(String nickName) {
-		this.nickName = nickName;
-		return this;
-	}
+    public ServerboundFollowingPacket nickName(final String nickName) {
+        this.nickName = nickName;
+        return this;
+    }
 
-	public final String nickName() {
-		return this.nickName;
-	}
+    public String nickName() {
+        return this.nickName;
+    }
 
-	@Override
-	public int packetId() {
-		return 484;
-	}
+    @Override
+    public int packetId() {
+        return 484;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.followeeSeq = buf.readInt();
-		this.nickName = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.followeeSeq = buf.readInt();
+        this.nickName = buf.readString();
+    }
 }

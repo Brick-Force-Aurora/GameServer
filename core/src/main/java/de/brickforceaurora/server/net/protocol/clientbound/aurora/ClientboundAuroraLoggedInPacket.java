@@ -14,6 +14,6 @@ public class ClientboundAuroraLoggedInPacket implements IClientboundPacket {
     }
 
     @Override
-    public void write(PacketBuf buffer) throws IOException {}
+    public void write(final PacketBuf buffer) throws IOException {}
 
 }

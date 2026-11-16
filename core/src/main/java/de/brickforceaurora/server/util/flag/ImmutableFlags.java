@@ -5,7 +5,7 @@ public final class ImmutableFlags<F> implements IFlags<F> {
     private final FlagManager<F> manager;
     private final int value;
 
-    ImmutableFlags(FlagManager<F> manager, int value) {
+    ImmutableFlags(final FlagManager<F> manager, final int value) {
         this.manager = manager;
         this.value = value;
     }
@@ -16,24 +16,24 @@ public final class ImmutableFlags<F> implements IFlags<F> {
     }
 
     @Override
-    public ImmutableFlags<F> value(int value) {
+    public ImmutableFlags<F> value(final int value) {
         return this;
     }
 
     @Override
     public boolean is(final F flag) {
-        int mask = manager.mask(flag);
+        final int mask = manager.mask(flag);
         return (this.value & mask) == mask;
     }
 
     @Override
-    public ImmutableFlags<F> set(F flag, boolean state) {
+    public ImmutableFlags<F> set(final F flag, final boolean state) {
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ImmutableFlags<F> setAll(boolean state, F... flags) {
+    public ImmutableFlags<F> setAll(final boolean state, final F... flags) {
         return this;
     }
 

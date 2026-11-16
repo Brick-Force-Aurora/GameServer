@@ -37,7 +37,7 @@ final class BFChannelInit extends ChannelInitializer<SocketChannel> {
         }
         final BFClient client = new BFClient(channel);
         client.shouldKeepAlive = true;
-        
+
         // Inbound
         pipeline.addLast(new BFServerboundPacketDecoder(netManager.logger(), client));
         pipeline.addLast(new BFServerboundPacketListener(netManager, client));

@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundDeletedMapPacket implements IClientboundPacket {
 
-	private int val;
+    private int val;
 
-	public final ClientboundDeletedMapPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundDeletedMapPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	@Override
-	public int packetId() {
-		return 343;
-	}
+    @Override
+    public int packetId() {
+        return 343;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.val);
+    }
 }

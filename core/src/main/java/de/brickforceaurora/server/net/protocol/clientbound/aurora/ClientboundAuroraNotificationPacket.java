@@ -10,7 +10,7 @@ public class ClientboundAuroraNotificationPacket implements IClientboundPacket {
 
     private String message;
 
-    public final ClientboundAuroraNotificationPacket message(String message) {
+    public final ClientboundAuroraNotificationPacket message(final String message) {
         this.message = message;
         return this;
     }
@@ -25,7 +25,7 @@ public class ClientboundAuroraNotificationPacket implements IClientboundPacket {
     }
 
     @Override
-    public void write(PacketBuf buffer) throws IOException {
+    public void write(final PacketBuf buffer) throws IOException {
         buffer.writeString(message);
     }
 

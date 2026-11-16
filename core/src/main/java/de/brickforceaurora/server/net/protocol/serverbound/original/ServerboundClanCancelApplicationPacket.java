@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundClanCancelApplicationPacket implements IServerboundPacket {
 
-	private String clanName;
+    private String clanName;
 
-	public final ServerboundClanCancelApplicationPacket clanName(String clanName) {
-		this.clanName = clanName;
-		return this;
-	}
+    public ServerboundClanCancelApplicationPacket clanName(final String clanName) {
+        this.clanName = clanName;
+        return this;
+    }
 
-	public final String clanName() {
-		return this.clanName;
-	}
+    public String clanName() {
+        return this.clanName;
+    }
 
-	@Override
-	public int packetId() {
-		return 557;
-	}
+    @Override
+    public int packetId() {
+        return 557;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.clanName = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.clanName = buf.readString();
+    }
 }

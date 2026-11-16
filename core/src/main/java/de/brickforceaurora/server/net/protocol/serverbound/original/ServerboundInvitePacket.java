@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundInvitePacket implements IServerboundPacket {
 
-	private int inviteeSeq;
-	private String nickName;
+    private int inviteeSeq;
+    private String nickName;
 
-	public final ServerboundInvitePacket inviteeSeq(int inviteeSeq) {
-		this.inviteeSeq = inviteeSeq;
-		return this;
-	}
+    public ServerboundInvitePacket inviteeSeq(final int inviteeSeq) {
+        this.inviteeSeq = inviteeSeq;
+        return this;
+    }
 
-	public final int inviteeSeq() {
-		return this.inviteeSeq;
-	}
+    public int inviteeSeq() {
+        return this.inviteeSeq;
+    }
 
-	public final ServerboundInvitePacket nickName(String nickName) {
-		this.nickName = nickName;
-		return this;
-	}
+    public ServerboundInvitePacket nickName(final String nickName) {
+        this.nickName = nickName;
+        return this;
+    }
 
-	public final String nickName() {
-		return this.nickName;
-	}
+    public String nickName() {
+        return this.nickName;
+    }
 
-	@Override
-	public int packetId() {
-		return 481;
-	}
+    @Override
+    public int packetId() {
+        return 481;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.inviteeSeq = buf.readInt();
-		this.nickName = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.inviteeSeq = buf.readInt();
+        this.nickName = buf.readString();
+    }
 }

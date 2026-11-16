@@ -12,8 +12,8 @@ public enum ClientStatus {
 
     public static final ClientStatus[] VALUES = ClientStatus.values();
 
-    public static ClientStatus byId(int id) {
-        for (ClientStatus status : VALUES) {
+    public static ClientStatus byId(final int id) {
+        for (final ClientStatus status : VALUES) {
             if (status.id == id) {
                 return status;
             }
@@ -23,7 +23,7 @@ public enum ClientStatus {
 
     private final int id;
 
-    private ClientStatus(int id) {
+    ClientStatus(final int id) {
         this.id = id;
     }
 

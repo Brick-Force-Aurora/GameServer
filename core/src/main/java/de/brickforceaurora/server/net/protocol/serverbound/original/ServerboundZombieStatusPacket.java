@@ -5,46 +5,46 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundZombieStatusPacket implements IServerboundPacket {
 
-	private int status;
-	private int time;
-	private int cntDn;
+    private int status;
+    private int time;
+    private int cntDn;
 
-	public final ServerboundZombieStatusPacket status(int status) {
-		this.status = status;
-		return this;
-	}
+    public ServerboundZombieStatusPacket status(final int status) {
+        this.status = status;
+        return this;
+    }
 
-	public final int status() {
-		return this.status;
-	}
+    public int status() {
+        return this.status;
+    }
 
-	public final ServerboundZombieStatusPacket time(int time) {
-		this.time = time;
-		return this;
-	}
+    public ServerboundZombieStatusPacket time(final int time) {
+        this.time = time;
+        return this;
+    }
 
-	public final int time() {
-		return this.time;
-	}
+    public int time() {
+        return this.time;
+    }
 
-	public final ServerboundZombieStatusPacket cntDn(int cntDn) {
-		this.cntDn = cntDn;
-		return this;
-	}
+    public ServerboundZombieStatusPacket cntDn(final int cntDn) {
+        this.cntDn = cntDn;
+        return this;
+    }
 
-	public final int cntDn() {
-		return this.cntDn;
-	}
+    public int cntDn() {
+        return this.cntDn;
+    }
 
-	@Override
-	public int packetId() {
-		return 547;
-	}
+    @Override
+    public int packetId() {
+        return 547;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.status = buf.readInt();
-		this.time = buf.readInt();
-		this.cntDn = buf.readInt();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.status = buf.readInt();
+        this.time = buf.readInt();
+        this.cntDn = buf.readInt();
+    }
 }

@@ -5,57 +5,57 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundWeaponChangePacket implements IServerboundPacket {
 
-	private int slot;
-	private long seq;
-	private String next;
-	private String prev;
+    private int slot;
+    private long seq;
+    private String next;
+    private String prev;
 
-	public final ServerboundWeaponChangePacket slot(int slot) {
-		this.slot = slot;
-		return this;
-	}
+    public ServerboundWeaponChangePacket slot(final int slot) {
+        this.slot = slot;
+        return this;
+    }
 
-	public final int slot() {
-		return this.slot;
-	}
+    public int slot() {
+        return this.slot;
+    }
 
-	public final ServerboundWeaponChangePacket seq(long seq) {
-		this.seq = seq;
-		return this;
-	}
+    public ServerboundWeaponChangePacket seq(final long seq) {
+        this.seq = seq;
+        return this;
+    }
 
-	public final long seq() {
-		return this.seq;
-	}
+    public long seq() {
+        return this.seq;
+    }
 
-	public final ServerboundWeaponChangePacket next(String next) {
-		this.next = next;
-		return this;
-	}
+    public ServerboundWeaponChangePacket next(final String next) {
+        this.next = next;
+        return this;
+    }
 
-	public final String next() {
-		return this.next;
-	}
+    public String next() {
+        return this.next;
+    }
 
-	public final ServerboundWeaponChangePacket prev(String prev) {
-		this.prev = prev;
-		return this;
-	}
+    public ServerboundWeaponChangePacket prev(final String prev) {
+        this.prev = prev;
+        return this;
+    }
 
-	public final String prev() {
-		return this.prev;
-	}
+    public String prev() {
+        return this.prev;
+    }
 
-	@Override
-	public int packetId() {
-		return 414;
-	}
+    @Override
+    public int packetId() {
+        return 414;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.slot = buf.readInt();
-		this.seq = buf.readLong();
-		this.next = buf.readString();
-		this.prev = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.slot = buf.readInt();
+        this.seq = buf.readLong();
+        this.next = buf.readString();
+        this.prev = buf.readString();
+    }
 }

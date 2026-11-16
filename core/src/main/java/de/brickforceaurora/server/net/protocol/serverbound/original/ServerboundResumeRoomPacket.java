@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundResumeRoomPacket implements IServerboundPacket {
 
-	private int nextStatus;
+    private int nextStatus;
 
-	public final ServerboundResumeRoomPacket nextStatus(int nextStatus) {
-		this.nextStatus = nextStatus;
-		return this;
-	}
+    public ServerboundResumeRoomPacket nextStatus(final int nextStatus) {
+        this.nextStatus = nextStatus;
+        return this;
+    }
 
-	public final int nextStatus() {
-		return this.nextStatus;
-	}
+    public int nextStatus() {
+        return this.nextStatus;
+    }
 
-	@Override
-	public int packetId() {
-		return 32;
-	}
+    @Override
+    public int packetId() {
+        return 32;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.nextStatus = buf.readInt();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.nextStatus = buf.readInt();
+    }
 }

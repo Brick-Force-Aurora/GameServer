@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundEmptyCannonPacket implements IServerboundPacket {
 
-	private int cannon;
+    private int cannon;
 
-	public final ServerboundEmptyCannonPacket cannon(int cannon) {
-		this.cannon = cannon;
-		return this;
-	}
+    public ServerboundEmptyCannonPacket cannon(final int cannon) {
+        this.cannon = cannon;
+        return this;
+    }
 
-	public final int cannon() {
-		return this.cannon;
-	}
+    public int cannon() {
+        return this.cannon;
+    }
 
-	@Override
-	public int packetId() {
-		return 160;
-	}
+    @Override
+    public int packetId() {
+        return 160;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.cannon = buf.readInt();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.cannon = buf.readInt();
+    }
 }

@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundDelegateMasterPacket implements IServerboundPacket {
 
-	private int newMaster;
+    private int newMaster;
 
-	public final ServerboundDelegateMasterPacket newMaster(int newMaster) {
-		this.newMaster = newMaster;
-		return this;
-	}
+    public ServerboundDelegateMasterPacket newMaster(final int newMaster) {
+        this.newMaster = newMaster;
+        return this;
+    }
 
-	public final int newMaster() {
-		return this.newMaster;
-	}
+    public int newMaster() {
+        return this.newMaster;
+    }
 
-	@Override
-	public int packetId() {
-		return 389;
-	}
+    @Override
+    public int packetId() {
+        return 389;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.newMaster = buf.readInt();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.newMaster = buf.readInt();
+    }
 }

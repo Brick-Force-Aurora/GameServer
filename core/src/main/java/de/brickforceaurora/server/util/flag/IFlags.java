@@ -39,7 +39,7 @@ public interface IFlags<F> {
         public Flags<F> delegate() {
             return flags;
         }
-        
+
         public ImmutableFlags<F> immutable() {
             return flags.immutable();
         }
@@ -49,24 +49,24 @@ public interface IFlags<F> {
         }
 
     }
-    
+
     int value();
-    
+
     IFlags<F> value(int value);
-    
+
     boolean is(F flag);
-    
+
     IFlags<F> set(F flag, boolean state);
-    
+
     @SuppressWarnings("unchecked")
     IFlags<F> setAll(boolean state, F... flags);
-    
+
     IFlags<F> duplicate();
-    
+
     IFlags<F> immutable();
-    
+
     IFlags<F> mutable();
-    
+
     boolean isMutable();
 
 }

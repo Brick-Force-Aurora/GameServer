@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundChgCountryFilterPacket implements IServerboundPacket {
 
-	private int country;
+    private int country;
 
-	public final ServerboundChgCountryFilterPacket country(int country) {
-		this.country = country;
-		return this;
-	}
+    public ServerboundChgCountryFilterPacket country(final int country) {
+        this.country = country;
+        return this;
+    }
 
-	public final int country() {
-		return this.country;
-	}
+    public int country() {
+        return this.country;
+    }
 
-	@Override
-	public int packetId() {
-		return 348;
-	}
+    @Override
+    public int packetId() {
+        return 348;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.country = buf.readInt();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.country = buf.readInt();
+    }
 }

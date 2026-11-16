@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundShooterToolPacket implements IClientboundPacket {
 
-	private byte slot;
-	private long item;
+    private byte slot;
+    private long item;
 
-	public final ClientboundShooterToolPacket slot(byte slot) {
-		this.slot = slot;
-		return this;
-	}
+    public ClientboundShooterToolPacket slot(final byte slot) {
+        this.slot = slot;
+        return this;
+    }
 
-	public final byte slot() {
-		return this.slot;
-	}
+    public byte slot() {
+        return this.slot;
+    }
 
-	public final ClientboundShooterToolPacket item(long item) {
-		this.item = item;
-		return this;
-	}
+    public ClientboundShooterToolPacket item(final long item) {
+        this.item = item;
+        return this;
+    }
 
-	public final long item() {
-		return this.item;
-	}
+    public long item() {
+        return this.item;
+    }
 
-	@Override
-	public int packetId() {
-		return 332;
-	}
+    @Override
+    public int packetId() {
+        return 332;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeByte(this.slot);
-		buf.writeLong(this.item);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeByte(this.slot);
+        buf.writeLong(this.item);
+    }
 }

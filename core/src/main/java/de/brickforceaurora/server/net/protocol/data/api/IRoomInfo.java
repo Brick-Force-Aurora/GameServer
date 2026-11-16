@@ -6,54 +6,54 @@ import de.brickforceaurora.server.net.protocol.data.RoomStatus;
 import de.brickforceaurora.server.net.protocol.data.RoomType;
 
 public interface IRoomInfo {
-    
+
     int id();
-    
+
     RoomType type();
-    
+
     String title();
-    
+
     boolean passwordLocked();
-    
+
     RoomStatus status();
-    
+
     int players();
-    
+
     int maxPlayers();
-    
+
     int mapId();
-    
+
     String mapAlias();
-    
+
     int goal();
-    
+
     int timeLimit();
-    
+
     // TODO: Enum?
     int weaponOption();
-    
+
     // WHY PING
     int ping();
-    
+
     int blueScore();
-    
+
     int redScore();
-    
+
     CountryFilter countryFilter();
-    
+
     boolean allowsLateJoining();
-    
+
     boolean weaponDropEnabled();
-    
+
     boolean wantedEnabled();
-    
+
     // What is squad?
     int squad();
-    
+
     // What is squad counter?
     int squadCounter();
-    
-    static void toBuffer(PacketBuf buf, IRoomInfo info) {
+
+    static void toBuffer(final PacketBuf buf, final IRoomInfo info) {
         buf.writeInt(info.id());
         buf.writeInt(info.type().id());
         buf.writeString(info.title());

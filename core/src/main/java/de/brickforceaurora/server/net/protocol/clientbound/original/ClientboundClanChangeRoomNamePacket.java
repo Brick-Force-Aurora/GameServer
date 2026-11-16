@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundClanChangeRoomNamePacket implements IClientboundPacket {
 
-	private String val;
+    private String val;
 
-	public final ClientboundClanChangeRoomNamePacket val(String val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundClanChangeRoomNamePacket val(final String val) {
+        this.val = val;
+        return this;
+    }
 
-	public final String val() {
-		return this.val;
-	}
+    public String val() {
+        return this.val;
+    }
 
-	@Override
-	public int packetId() {
-		return 564;
-	}
+    @Override
+    public int packetId() {
+        return 564;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeString(this.val);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeString(this.val);
+    }
 }

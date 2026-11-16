@@ -4,7 +4,7 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public record BrickInfo(int seq, int template, int x, int y, int z, int meshCode, int rotation, BrickScript script) {
 
-    public void toBuffer(PacketBuf buf) {
+    public void toBuffer(final PacketBuf buf) {
         buf.writeInt(seq);
         buf.writeByte(template);
         buf.writeByte(x);

@@ -8,17 +8,17 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundSavePacket implements IServerboundPacket {
 
-	private int slot;
+    private int slot;
     private BufferedImage thumbnail;
 
-	public final ServerboundSavePacket slot(int slot) {
-		this.slot = slot;
-		return this;
-	}
+    public ServerboundSavePacket slot(final int slot) {
+        this.slot = slot;
+        return this;
+    }
 
-	public final int slot() {
-		return this.slot;
-	}
+    public int slot() {
+        return this.slot;
+    }
 
     public ServerboundSavePacket thumbnail(final BufferedImage thumbnail) {
         this.thumbnail = thumbnail;
@@ -29,14 +29,14 @@ public final class ServerboundSavePacket implements IServerboundPacket {
         return this.thumbnail;
     }
 
-	@Override
-	public int packetId() {
-		return 39;
-	}
+    @Override
+    public int packetId() {
+        return 39;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) throws IOException {
-		this.slot = buf.readInt();
-		this.thumbnail = buf.readImage();
-	}
+    @Override
+    public void read(final PacketBuf buf) throws IOException {
+        this.slot = buf.readInt();
+        this.thumbnail = buf.readImage();
+    }
 }

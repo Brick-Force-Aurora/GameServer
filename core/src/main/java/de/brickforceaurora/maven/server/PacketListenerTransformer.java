@@ -41,7 +41,7 @@ public final class PacketListenerTransformer implements ISourceTransformer {
         int amount = 0;
         for (final MethodSource<JavaClassSource> method : clazz.getMethods()) {
             if (!method.hasAnnotation(PacketHandler.class)
-                || (!method.getReturnType().isType(void.class) && !method.getReturnType().isType(Void.class))) {
+                || !method.getReturnType().isType(void.class) && !method.getReturnType().isType(Void.class)) {
                 continue;
             }
             final List<ParameterSource<JavaClassSource>> params = method.getParameters();

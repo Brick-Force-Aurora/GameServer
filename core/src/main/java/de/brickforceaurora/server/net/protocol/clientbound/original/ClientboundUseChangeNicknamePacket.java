@@ -5,46 +5,46 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundUseChangeNicknamePacket implements IClientboundPacket {
 
-	private int val;
-	private String val2;
-	private String Unnamed0;
+    private int val;
+    private String val2;
+    private String Unnamed0;
 
-	public final ClientboundUseChangeNicknamePacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundUseChangeNicknamePacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	public final ClientboundUseChangeNicknamePacket val2(String val2) {
-		this.val2 = val2;
-		return this;
-	}
+    public ClientboundUseChangeNicknamePacket val2(final String val2) {
+        this.val2 = val2;
+        return this;
+    }
 
-	public final String val2() {
-		return this.val2;
-	}
+    public String val2() {
+        return this.val2;
+    }
 
-	public final ClientboundUseChangeNicknamePacket Unnamed0(String Unnamed0) {
-		this.Unnamed0 = Unnamed0;
-		return this;
-	}
+    public ClientboundUseChangeNicknamePacket Unnamed0(final String Unnamed0) {
+        this.Unnamed0 = Unnamed0;
+        return this;
+    }
 
-	public final String Unnamed0() {
-		return this.Unnamed0;
-	}
+    public String Unnamed0() {
+        return this.Unnamed0;
+    }
 
-	@Override
-	public int packetId() {
-		return 502;
-	}
+    @Override
+    public int packetId() {
+        return 502;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeString(this.val2);
-		buf.writeString(this.Unnamed0);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.val);
+        buf.writeString(this.val2);
+        buf.writeString(this.Unnamed0);
+    }
 }

@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundAddBanByNicknamePacket implements IServerboundPacket {
 
-	private String nickname;
+    private String nickname;
 
-	public final ServerboundAddBanByNicknamePacket nickname(String nickname) {
-		this.nickname = nickname;
-		return this;
-	}
+    public ServerboundAddBanByNicknamePacket nickname(final String nickname) {
+        this.nickname = nickname;
+        return this;
+    }
 
-	public final String nickname() {
-		return this.nickname;
-	}
+    public String nickname() {
+        return this.nickname;
+    }
 
-	@Override
-	public int packetId() {
-		return 112;
-	}
+    @Override
+    public int packetId() {
+        return 112;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.nickname = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.nickname = buf.readString();
+    }
 }

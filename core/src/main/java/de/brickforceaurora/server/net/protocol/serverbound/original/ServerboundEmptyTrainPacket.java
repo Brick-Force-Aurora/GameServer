@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundEmptyTrainPacket implements IServerboundPacket {
 
-	private int trainSeq;
+    private int trainSeq;
 
-	public final ServerboundEmptyTrainPacket trainSeq(int trainSeq) {
-		this.trainSeq = trainSeq;
-		return this;
-	}
+    public ServerboundEmptyTrainPacket trainSeq(final int trainSeq) {
+        this.trainSeq = trainSeq;
+        return this;
+    }
 
-	public final int trainSeq() {
-		return this.trainSeq;
-	}
+    public int trainSeq() {
+        return this.trainSeq;
+    }
 
-	@Override
-	public int packetId() {
-		return 553;
-	}
+    @Override
+    public int packetId() {
+        return 553;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.trainSeq = buf.readInt();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.trainSeq = buf.readInt();
+    }
 }

@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundBoughtonceListPacket implements IClientboundPacket {
 
-	private int val;
-	private String val2;
+    private int val;
+    private String val2;
 
-	public final ClientboundBoughtonceListPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundBoughtonceListPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	public final ClientboundBoughtonceListPacket val2(String val2) {
-		this.val2 = val2;
-		return this;
-	}
+    public ClientboundBoughtonceListPacket val2(final String val2) {
+        this.val2 = val2;
+        return this;
+    }
 
-	public final String val2() {
-		return this.val2;
-	}
+    public String val2() {
+        return this.val2;
+    }
 
-	@Override
-	public int packetId() {
-		return 363;
-	}
+    @Override
+    public int packetId() {
+        return 363;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeString(this.val2);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.val);
+        buf.writeString(this.val2);
+    }
 }

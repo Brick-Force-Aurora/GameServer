@@ -9,8 +9,8 @@ public enum ItemUsage {
 
     public static final ItemUsage[] VALUES = ItemUsage.values();
 
-    public static ItemUsage byId(int id) {
-        for (ItemUsage usage : VALUES) {
+    public static ItemUsage byId(final int id) {
+        for (final ItemUsage usage : VALUES) {
             if (usage.id == id) {
                 return usage;
             }
@@ -20,7 +20,7 @@ public enum ItemUsage {
 
     private final int id;
 
-    private ItemUsage(int id) {
+    ItemUsage(final int id) {
         this.id = id;
     }
 

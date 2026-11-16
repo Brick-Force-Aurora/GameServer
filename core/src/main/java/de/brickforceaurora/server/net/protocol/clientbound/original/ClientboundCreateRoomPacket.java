@@ -7,33 +7,33 @@ import de.brickforceaurora.server.net.protocol.data.api.IRoomInfo;
 
 public final class ClientboundCreateRoomPacket implements IClientboundPacket {
 
-	private RoomType roomType;
-	private int id;
-	private String title;
-	
-	public final ClientboundCreateRoomPacket failure(String message) {
-	    this.roomType = null;
-	    this.id = -1;
-	    this.title = message == null ? "" : message;
-	    return this;
-	}
+    private RoomType roomType;
+    private int id;
+    private String title;
 
-	public final ClientboundCreateRoomPacket roomInfo(IRoomInfo roomInfo) {
-	    this.roomType = roomInfo.type();
-	    this.id = roomInfo.id();
-	    this.title = roomInfo.title();
-		return this;
-	}
+    public ClientboundCreateRoomPacket failure(final String message) {
+        this.roomType = null;
+        this.id = -1;
+        this.title = message == null ? "" : message;
+        return this;
+    }
 
-	@Override
-	public int packetId() {
-		return 8;
-	}
+    public ClientboundCreateRoomPacket roomInfo(final IRoomInfo roomInfo) {
+        this.roomType = roomInfo.type();
+        this.id = roomInfo.id();
+        this.title = roomInfo.title();
+        return this;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(roomType == null ? -1 : roomType.id());
-		buf.writeInt(id);
-		buf.writeString(title);
-	}
+    @Override
+    public int packetId() {
+        return 8;
+    }
+
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(roomType == null ? -1 : roomType.id());
+        buf.writeInt(id);
+        buf.writeString(title);
+    }
 }

@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundUseShooterConsumablePacket implements IServerboundPacket {
 
-	private long item;
-	private String code;
+    private long item;
+    private String code;
 
-	public final ServerboundUseShooterConsumablePacket item(long item) {
-		this.item = item;
-		return this;
-	}
+    public ServerboundUseShooterConsumablePacket item(final long item) {
+        this.item = item;
+        return this;
+    }
 
-	public final long item() {
-		return this.item;
-	}
+    public long item() {
+        return this.item;
+    }
 
-	public final ServerboundUseShooterConsumablePacket code(String code) {
-		this.code = code;
-		return this;
-	}
+    public ServerboundUseShooterConsumablePacket code(final String code) {
+        this.code = code;
+        return this;
+    }
 
-	public final String code() {
-		return this.code;
-	}
+    public String code() {
+        return this.code;
+    }
 
-	@Override
-	public int packetId() {
-		return 329;
-	}
+    @Override
+    public int packetId() {
+        return 329;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.item = buf.readLong();
-		this.code = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.item = buf.readLong();
+        this.code = buf.readString();
+    }
 }

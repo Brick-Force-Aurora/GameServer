@@ -5,46 +5,46 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundAccuseMapPacket implements IServerboundPacket {
 
-	private int reason;
-	private int clientId;
-	private String contents;
+    private int reason;
+    private int clientId;
+    private String contents;
 
-	public final ServerboundAccuseMapPacket reason(int reason) {
-		this.reason = reason;
-		return this;
-	}
+    public ServerboundAccuseMapPacket reason(final int reason) {
+        this.reason = reason;
+        return this;
+    }
 
-	public final int reason() {
-		return this.reason;
-	}
+    public int reason() {
+        return this.reason;
+    }
 
-	public final ServerboundAccuseMapPacket clientId(int clientId) {
-		this.clientId = clientId;
-		return this;
-	}
+    public ServerboundAccuseMapPacket clientId(final int clientId) {
+        this.clientId = clientId;
+        return this;
+    }
 
-	public final int clientId() {
-		return this.clientId;
-	}
+    public int clientId() {
+        return this.clientId;
+    }
 
-	public final ServerboundAccuseMapPacket contents(String contents) {
-		this.contents = contents;
-		return this;
-	}
+    public ServerboundAccuseMapPacket contents(final String contents) {
+        this.contents = contents;
+        return this;
+    }
 
-	public final String contents() {
-		return this.contents;
-	}
+    public String contents() {
+        return this.contents;
+    }
 
-	@Override
-	public int packetId() {
-		return 512;
-	}
+    @Override
+    public int packetId() {
+        return 512;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.reason = buf.readInt();
-		this.clientId = buf.readInt();
-		this.contents = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.reason = buf.readInt();
+        this.clientId = buf.readInt();
+        this.contents = buf.readString();
+    }
 }

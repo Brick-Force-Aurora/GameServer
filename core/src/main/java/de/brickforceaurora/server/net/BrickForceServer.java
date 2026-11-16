@@ -19,7 +19,8 @@ public final class BrickForceServer<S extends ISnowFrameApp<S> & IBrickForceServ
 
     private static final float SECOND_IN_NANOS = TimeUnit.SECONDS.toNanos(1);
 
-    private final MultiThreadIoEventLoopGroup group = new MultiThreadIoEventLoopGroup(Epoll.isAvailable() ? EpollIoHandler.newFactory() : NioIoHandler.newFactory());
+    private final MultiThreadIoEventLoopGroup group = new MultiThreadIoEventLoopGroup(
+        Epoll.isAvailable() ? EpollIoHandler.newFactory() : NioIoHandler.newFactory());
 
     private final ISimpleLogger logger;
     private final NetManager<S> netManager;
@@ -40,12 +41,12 @@ public final class BrickForceServer<S extends ISnowFrameApp<S> & IBrickForceServ
     }
 
     @Override
-    protected Thread createThread(Runnable runnable) {
+    protected Thread createThread(final Runnable runnable) {
         return Thread.ofPlatform().unstarted(runnable);
     }
 
     @Override
-    protected void tick(long delta) {
+    protected void tick(final long delta) {
         netManager.tick(delta);
     }
 
@@ -63,10 +64,10 @@ public final class BrickForceServer<S extends ISnowFrameApp<S> & IBrickForceServ
         }
         rendezvousManager.close();
         netManager.close();
-        
+
         group.close();
     }
-    
+
     public RendezvousManager<S> rendezvousManager() {
         return rendezvousManager;
     }

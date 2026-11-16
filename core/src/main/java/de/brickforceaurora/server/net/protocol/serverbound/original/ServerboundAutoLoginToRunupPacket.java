@@ -5,90 +5,90 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundAutoLoginToRunupPacket implements IServerboundPacket {
 
-	private String id;
-	private String serial;
-	private int clientId;
-	private int major;
-	private int minor;
-	private String privateIpAddress;
-	private String macAddress;
+    private String id;
+    private String serial;
+    private int clientId;
+    private int major;
+    private int minor;
+    private String privateIpAddress;
+    private String macAddress;
 
-	public final ServerboundAutoLoginToRunupPacket id(String id) {
-		this.id = id;
-		return this;
-	}
+    public ServerboundAutoLoginToRunupPacket id(final String id) {
+        this.id = id;
+        return this;
+    }
 
-	public final String id() {
-		return this.id;
-	}
+    public String id() {
+        return this.id;
+    }
 
-	public final ServerboundAutoLoginToRunupPacket serial(String serial) {
-		this.serial = serial;
-		return this;
-	}
+    public ServerboundAutoLoginToRunupPacket serial(final String serial) {
+        this.serial = serial;
+        return this;
+    }
 
-	public final String serial() {
-		return this.serial;
-	}
+    public String serial() {
+        return this.serial;
+    }
 
-	public final ServerboundAutoLoginToRunupPacket clientId(int clientId) {
-		this.clientId = clientId;
-		return this;
-	}
+    public ServerboundAutoLoginToRunupPacket clientId(final int clientId) {
+        this.clientId = clientId;
+        return this;
+    }
 
-	public final int clientId() {
-		return this.clientId;
-	}
+    public int clientId() {
+        return this.clientId;
+    }
 
-	public final ServerboundAutoLoginToRunupPacket major(int major) {
-		this.major = major;
-		return this;
-	}
+    public ServerboundAutoLoginToRunupPacket major(final int major) {
+        this.major = major;
+        return this;
+    }
 
-	public final int major() {
-		return this.major;
-	}
+    public int major() {
+        return this.major;
+    }
 
-	public final ServerboundAutoLoginToRunupPacket minor(int minor) {
-		this.minor = minor;
-		return this;
-	}
+    public ServerboundAutoLoginToRunupPacket minor(final int minor) {
+        this.minor = minor;
+        return this;
+    }
 
-	public final int minor() {
-		return this.minor;
-	}
+    public int minor() {
+        return this.minor;
+    }
 
-	public final ServerboundAutoLoginToRunupPacket privateIpAddress(String privateIpAddress) {
-		this.privateIpAddress = privateIpAddress;
-		return this;
-	}
+    public ServerboundAutoLoginToRunupPacket privateIpAddress(final String privateIpAddress) {
+        this.privateIpAddress = privateIpAddress;
+        return this;
+    }
 
-	public final String privateIpAddress() {
-		return this.privateIpAddress;
-	}
+    public String privateIpAddress() {
+        return this.privateIpAddress;
+    }
 
-	public final ServerboundAutoLoginToRunupPacket macAddress(String macAddress) {
-		this.macAddress = macAddress;
-		return this;
-	}
+    public ServerboundAutoLoginToRunupPacket macAddress(final String macAddress) {
+        this.macAddress = macAddress;
+        return this;
+    }
 
-	public final String macAddress() {
-		return this.macAddress;
-	}
+    public String macAddress() {
+        return this.macAddress;
+    }
 
-	@Override
-	public int packetId() {
-		return 409;
-	}
+    @Override
+    public int packetId() {
+        return 409;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.id = buf.readString();
-		this.serial = buf.readString();
-		this.clientId = buf.readInt();
-		this.major = buf.readInt();
-		this.minor = buf.readInt();
-		this.privateIpAddress = buf.readString();
-		this.macAddress = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.id = buf.readString();
+        this.serial = buf.readString();
+        this.clientId = buf.readInt();
+        this.major = buf.readInt();
+        this.minor = buf.readInt();
+        this.privateIpAddress = buf.readString();
+        this.macAddress = buf.readString();
+    }
 }

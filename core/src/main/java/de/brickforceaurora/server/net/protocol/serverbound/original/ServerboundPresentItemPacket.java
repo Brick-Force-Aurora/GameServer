@@ -5,79 +5,79 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundPresentItemPacket implements IServerboundPacket {
 
-	private String code;
-	private int buyHow;
-	private int option;
-	private String receiver;
-	private String title;
-	private String contents;
+    private String code;
+    private int buyHow;
+    private int option;
+    private String receiver;
+    private String title;
+    private String contents;
 
-	public final ServerboundPresentItemPacket code(String code) {
-		this.code = code;
-		return this;
-	}
+    public ServerboundPresentItemPacket code(final String code) {
+        this.code = code;
+        return this;
+    }
 
-	public final String code() {
-		return this.code;
-	}
+    public String code() {
+        return this.code;
+    }
 
-	public final ServerboundPresentItemPacket buyHow(int buyHow) {
-		this.buyHow = buyHow;
-		return this;
-	}
+    public ServerboundPresentItemPacket buyHow(final int buyHow) {
+        this.buyHow = buyHow;
+        return this;
+    }
 
-	public final int buyHow() {
-		return this.buyHow;
-	}
+    public int buyHow() {
+        return this.buyHow;
+    }
 
-	public final ServerboundPresentItemPacket option(int option) {
-		this.option = option;
-		return this;
-	}
+    public ServerboundPresentItemPacket option(final int option) {
+        this.option = option;
+        return this;
+    }
 
-	public final int option() {
-		return this.option;
-	}
+    public int option() {
+        return this.option;
+    }
 
-	public final ServerboundPresentItemPacket receiver(String receiver) {
-		this.receiver = receiver;
-		return this;
-	}
+    public ServerboundPresentItemPacket receiver(final String receiver) {
+        this.receiver = receiver;
+        return this;
+    }
 
-	public final String receiver() {
-		return this.receiver;
-	}
+    public String receiver() {
+        return this.receiver;
+    }
 
-	public final ServerboundPresentItemPacket title(String title) {
-		this.title = title;
-		return this;
-	}
+    public ServerboundPresentItemPacket title(final String title) {
+        this.title = title;
+        return this;
+    }
 
-	public final String title() {
-		return this.title;
-	}
+    public String title() {
+        return this.title;
+    }
 
-	public final ServerboundPresentItemPacket contents(String contents) {
-		this.contents = contents;
-		return this;
-	}
+    public ServerboundPresentItemPacket contents(final String contents) {
+        this.contents = contents;
+        return this;
+    }
 
-	public final String contents() {
-		return this.contents;
-	}
+    public String contents() {
+        return this.contents;
+    }
 
-	@Override
-	public int packetId() {
-		return 128;
-	}
+    @Override
+    public int packetId() {
+        return 128;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.code = buf.readString();
-		this.buyHow = buf.readInt();
-		this.option = buf.readInt();
-		this.receiver = buf.readString();
-		this.title = buf.readString();
-		this.contents = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.code = buf.readString();
+        this.buyHow = buf.readInt();
+        this.option = buf.readInt();
+        this.receiver = buf.readString();
+        this.title = buf.readString();
+        this.contents = buf.readString();
+    }
 }

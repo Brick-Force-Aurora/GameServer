@@ -4,7 +4,7 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public record DroppedItem(int seq, String code, int ammo, int subAmmo, float x, float y, float z) {
 
-    public void toBuffer(PacketBuf buf) {
+    public void toBuffer(final PacketBuf buf) {
         buf.writeInt(seq);
         buf.writeString(code);
         buf.writeInt(ammo);

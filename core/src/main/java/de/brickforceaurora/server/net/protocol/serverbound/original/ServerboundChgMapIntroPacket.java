@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundChgMapIntroPacket implements IServerboundPacket {
 
-	private int clientId;
-	private String intro;
+    private int clientId;
+    private String intro;
 
-	public final ServerboundChgMapIntroPacket clientId(int clientId) {
-		this.clientId = clientId;
-		return this;
-	}
+    public ServerboundChgMapIntroPacket clientId(final int clientId) {
+        this.clientId = clientId;
+        return this;
+    }
 
-	public final int clientId() {
-		return this.clientId;
-	}
+    public int clientId() {
+        return this.clientId;
+    }
 
-	public final ServerboundChgMapIntroPacket intro(String intro) {
-		this.intro = intro;
-		return this;
-	}
+    public ServerboundChgMapIntroPacket intro(final String intro) {
+        this.intro = intro;
+        return this;
+    }
 
-	public final String intro() {
-		return this.intro;
-	}
+    public String intro() {
+        return this.intro;
+    }
 
-	@Override
-	public int packetId() {
-		return 441;
-	}
+    @Override
+    public int packetId() {
+        return 441;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.clientId = buf.readInt();
-		this.intro = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.clientId = buf.readInt();
+        this.intro = buf.readString();
+    }
 }

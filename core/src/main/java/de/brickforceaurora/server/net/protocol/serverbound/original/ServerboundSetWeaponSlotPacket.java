@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundSetWeaponSlotPacket implements IServerboundPacket {
 
-	private int slot;
-	private long weapon;
+    private int slot;
+    private long weapon;
 
-	public final ServerboundSetWeaponSlotPacket slot(int slot) {
-		this.slot = slot;
-		return this;
-	}
+    public ServerboundSetWeaponSlotPacket slot(final int slot) {
+        this.slot = slot;
+        return this;
+    }
 
-	public final int slot() {
-		return this.slot;
-	}
+    public int slot() {
+        return this.slot;
+    }
 
-	public final ServerboundSetWeaponSlotPacket weapon(long weapon) {
-		this.weapon = weapon;
-		return this;
-	}
+    public ServerboundSetWeaponSlotPacket weapon(final long weapon) {
+        this.weapon = weapon;
+        return this;
+    }
 
-	public final long weapon() {
-		return this.weapon;
-	}
+    public long weapon() {
+        return this.weapon;
+    }
 
-	@Override
-	public int packetId() {
-		return 419;
-	}
+    @Override
+    public int packetId() {
+        return 419;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.slot = buf.readInt();
-		this.weapon = buf.readLong();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.slot = buf.readInt();
+        this.weapon = buf.readLong();
+    }
 }

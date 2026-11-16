@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundUnequipPacket implements IServerboundPacket {
 
-	private long seq;
+    private long seq;
 
-	public final ServerboundUnequipPacket seq(long seq) {
-		this.seq = seq;
-		return this;
-	}
+    public ServerboundUnequipPacket seq(final long seq) {
+        this.seq = seq;
+        return this;
+    }
 
-	public final long seq() {
-		return this.seq;
-	}
+    public long seq() {
+        return this.seq;
+    }
 
-	@Override
-	public int packetId() {
-		return 37;
-	}
+    @Override
+    public int packetId() {
+        return 37;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.seq = buf.readLong();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.seq = buf.readLong();
+    }
 }

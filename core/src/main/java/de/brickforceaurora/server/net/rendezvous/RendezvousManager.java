@@ -61,7 +61,7 @@ public final class RendezvousManager<S extends ISnowFrameApp<S> & IBrickForceSer
         this.group = group;
     }
 
-    public final void open(int port) throws InterruptedException {
+    public void open(final int port) throws InterruptedException {
         if (serverChannel != null) {
             return;
         }
@@ -83,7 +83,7 @@ public final class RendezvousManager<S extends ISnowFrameApp<S> & IBrickForceSer
     }
 
     private static boolean isLocal(final BFClient client) {
-        return client.connection().remoteAddress() instanceof InetSocketAddress address && address.getAddress().isLoopbackAddress();
+        return client.connection().remoteAddress() instanceof final InetSocketAddress address && address.getAddress().isLoopbackAddress();
     }
 
     public static Optional<InetSocketAddress> observed(final BFClient client) {
@@ -100,11 +100,11 @@ public final class RendezvousManager<S extends ISnowFrameApp<S> & IBrickForceSer
         schedulePong(client, 2000);
     }
 
-    public final SnowFrame<S> snowFrame() {
+    public SnowFrame<S> snowFrame() {
         return snowFrame;
     }
 
-    public final ISimpleLogger logger() {
+    public ISimpleLogger logger() {
         return logger;
     }
 

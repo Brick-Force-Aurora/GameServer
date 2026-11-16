@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundClanMatchPlayerListPacket implements IServerboundPacket {
 
-	private long clanMatch;
+    private long clanMatch;
 
-	public final ServerboundClanMatchPlayerListPacket clanMatch(long clanMatch) {
-		this.clanMatch = clanMatch;
-		return this;
-	}
+    public ServerboundClanMatchPlayerListPacket clanMatch(final long clanMatch) {
+        this.clanMatch = clanMatch;
+        return this;
+    }
 
-	public final long clanMatch() {
-		return this.clanMatch;
-	}
+    public long clanMatch() {
+        return this.clanMatch;
+    }
 
-	@Override
-	public int packetId() {
-		return 270;
-	}
+    @Override
+    public int packetId() {
+        return 270;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.clanMatch = buf.readLong();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.clanMatch = buf.readLong();
+    }
 }

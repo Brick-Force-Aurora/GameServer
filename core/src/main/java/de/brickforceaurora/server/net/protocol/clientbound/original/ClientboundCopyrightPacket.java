@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundCopyrightPacket implements IClientboundPacket {
 
-	private int ownerClientId;
-	private int userMapInfoSlot;
+    private int ownerClientId;
+    private int userMapInfoSlot;
 
-	public final ClientboundCopyrightPacket ownerClientId(int ownerClientId) {
-		this.ownerClientId = ownerClientId;
-		return this;
-	}
+    public ClientboundCopyrightPacket ownerClientId(final int ownerClientId) {
+        this.ownerClientId = ownerClientId;
+        return this;
+    }
 
-	public final int ownerClientId() {
-		return this.ownerClientId;
-	}
+    public int ownerClientId() {
+        return this.ownerClientId;
+    }
 
-	public final ClientboundCopyrightPacket userMapInfoSlot(int userMapInfoSlot) {
-		this.userMapInfoSlot = userMapInfoSlot;
-		return this;
-	}
+    public ClientboundCopyrightPacket userMapInfoSlot(final int userMapInfoSlot) {
+        this.userMapInfoSlot = userMapInfoSlot;
+        return this;
+    }
 
-	public final int userMapInfoSlot() {
-		return this.userMapInfoSlot;
-	}
+    public int userMapInfoSlot() {
+        return this.userMapInfoSlot;
+    }
 
-	@Override
-	public int packetId() {
-		return 53;
-	}
+    @Override
+    public int packetId() {
+        return 53;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.ownerClientId);
-		buf.writeInt(this.userMapInfoSlot);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.ownerClientId);
+        buf.writeInt(this.userMapInfoSlot);
+    }
 }

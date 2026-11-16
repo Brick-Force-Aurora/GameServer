@@ -6,24 +6,24 @@ import de.brickforceaurora.server.net.protocol.data.api.IChannelInfo;
 
 public final class ClientboundChannelPacket implements IClientboundPacket {
 
-	private IChannelInfo[] channels;
+    private IChannelInfo[] channels;
 
-	public final ClientboundChannelPacket channels(IChannelInfo[] channels) {
-		this.channels = channels;
-		return this;
-	}
+    public ClientboundChannelPacket channels(final IChannelInfo[] channels) {
+        this.channels = channels;
+        return this;
+    }
 
-	public final IChannelInfo[] channels() {
-		return this.channels;
-	}
+    public IChannelInfo[] channels() {
+        return this.channels;
+    }
 
-	@Override
-	public int packetId() {
-		return 141;
-	}
+    @Override
+    public int packetId() {
+        return 141;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-	    buf.writeArray(channels, IChannelInfo::toBuffer);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeArray(channels, IChannelInfo::toBuffer);
+    }
 }

@@ -15,14 +15,15 @@ public class ConnectionListener_ implements INetListener {
 
     @PacketHandler
     public void onHeartbeat(final NetContext<ServerboundAuroraHeartbeatPacket> context) {
-        BFClient client = context.client();
+        final BFClient client = context.client();
         if (!client.wasChallanged()) {
             // Don't allow heartbeat from unchallanged client
             return;
         }
         if (client.attrHas(ILoginHandler.ATTR_REQUEST_LOGIN_TIME)) {
-            Long loginTime = client.attr(ILoginHandler.ATTR_REQUEST_LOGIN_TIME, Long.class);
-            if (loginTime != null && TimeMath.calculateDifference(context.manager().netTime(), loginTime) > ILoginHandler.LOGIN_TIMEOUT_TIME) {
+            final Long loginTime = client.attr(ILoginHandler.ATTR_REQUEST_LOGIN_TIME, Long.class);
+            if (loginTime != null
+                && TimeMath.calculateDifference(context.manager().netTime(), loginTime) > ILoginHandler.LOGIN_TIMEOUT_TIME) {
                 // Don't allow any keep alive anymore :)
                 return;
             }

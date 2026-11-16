@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundStartPacket implements IClientboundPacket {
 
-	private int result;
+    private int result;
 
-	public final ClientboundStartPacket result(int result) {
-		this.result = result;
-		return this;
-	}
+    public ClientboundStartPacket result(final int result) {
+        this.result = result;
+        return this;
+    }
 
-	public final int result() {
-		return this.result;
-	}
+    public int result() {
+        return this.result;
+    }
 
-	@Override
-	public int packetId() {
-		return 50;
-	}
+    @Override
+    public int packetId() {
+        return 50;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.result);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.result);
+    }
 }

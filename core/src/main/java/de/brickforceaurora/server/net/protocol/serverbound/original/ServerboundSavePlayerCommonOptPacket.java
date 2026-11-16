@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundSavePlayerCommonOptPacket implements IServerboundPacket {
 
-	private int commonOpt;
+    private int commonOpt;
 
-	public final ServerboundSavePlayerCommonOptPacket commonOpt(int commonOpt) {
-		this.commonOpt = commonOpt;
-		return this;
-	}
+    public ServerboundSavePlayerCommonOptPacket commonOpt(final int commonOpt) {
+        this.commonOpt = commonOpt;
+        return this;
+    }
 
-	public final int commonOpt() {
-		return this.commonOpt;
-	}
+    public int commonOpt() {
+        return this.commonOpt;
+    }
 
-	@Override
-	public int packetId() {
-		return 460;
-	}
+    @Override
+    public int packetId() {
+        return 460;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.commonOpt = buf.readInt();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.commonOpt = buf.readInt();
+    }
 }

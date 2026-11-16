@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundSlotLockPacket implements IServerboundPacket {
 
-	private byte slot;
-	private byte lck;
+    private byte slot;
+    private byte lck;
 
-	public final ServerboundSlotLockPacket slot(byte slot) {
-		this.slot = slot;
-		return this;
-	}
+    public ServerboundSlotLockPacket slot(final byte slot) {
+        this.slot = slot;
+        return this;
+    }
 
-	public final byte slot() {
-		return this.slot;
-	}
+    public byte slot() {
+        return this.slot;
+    }
 
-	public final ServerboundSlotLockPacket lck(byte lck) {
-		this.lck = lck;
-		return this;
-	}
+    public ServerboundSlotLockPacket lck(final byte lck) {
+        this.lck = lck;
+        return this;
+    }
 
-	public final byte lck() {
-		return this.lck;
-	}
+    public byte lck() {
+        return this.lck;
+    }
 
-	@Override
-	public int packetId() {
-		return 85;
-	}
+    @Override
+    public int packetId() {
+        return 85;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.slot = buf.readByte();
-		this.lck = buf.readByte();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.slot = buf.readByte();
+        this.lck = buf.readByte();
+    }
 }

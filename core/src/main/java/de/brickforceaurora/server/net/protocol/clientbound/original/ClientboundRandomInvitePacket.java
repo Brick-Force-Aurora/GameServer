@@ -5,46 +5,46 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundRandomInvitePacket implements IClientboundPacket {
 
-	private int val;
-	private int Unnamed0;
-	private String val3;
+    private int val;
+    private int Unnamed0;
+    private String val3;
 
-	public final ClientboundRandomInvitePacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundRandomInvitePacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	public final ClientboundRandomInvitePacket Unnamed0(int Unnamed0) {
-		this.Unnamed0 = Unnamed0;
-		return this;
-	}
+    public ClientboundRandomInvitePacket Unnamed0(final int Unnamed0) {
+        this.Unnamed0 = Unnamed0;
+        return this;
+    }
 
-	public final int Unnamed0() {
-		return this.Unnamed0;
-	}
+    public int Unnamed0() {
+        return this.Unnamed0;
+    }
 
-	public final ClientboundRandomInvitePacket val3(String val3) {
-		this.val3 = val3;
-		return this;
-	}
+    public ClientboundRandomInvitePacket val3(final String val3) {
+        this.val3 = val3;
+        return this;
+    }
 
-	public final String val3() {
-		return this.val3;
-	}
+    public String val3() {
+        return this.val3;
+    }
 
-	@Override
-	public int packetId() {
-		return 518;
-	}
+    @Override
+    public int packetId() {
+        return 518;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeInt(this.Unnamed0);
-		buf.writeString(this.val3);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.val);
+        buf.writeInt(this.Unnamed0);
+        buf.writeString(this.val3);
+    }
 }

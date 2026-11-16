@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundDelBanPacket implements IServerboundPacket {
 
-	private int clientId;
+    private int clientId;
 
-	public final ServerboundDelBanPacket clientId(int clientId) {
-		this.clientId = clientId;
-		return this;
-	}
+    public ServerboundDelBanPacket clientId(final int clientId) {
+        this.clientId = clientId;
+        return this;
+    }
 
-	public final int clientId() {
-		return this.clientId;
-	}
+    public int clientId() {
+        return this.clientId;
+    }
 
-	@Override
-	public int packetId() {
-		return 109;
-	}
+    @Override
+    public int packetId() {
+        return 109;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.clientId = buf.readInt();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.clientId = buf.readInt();
+    }
 }

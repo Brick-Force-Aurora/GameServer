@@ -18,19 +18,19 @@ public final class Templates {
                 throw new IllegalArgumentException("Unknown template '" + name + "'");
             }
             return parse(new String(stream.readAllBytes(), StandardCharsets.UTF_8));
-        } catch (IOException exception) {
+        } catch (final IOException exception) {
             throw new IllegalStateException("Couldn't read template '" + name + "'", exception);
         }
     }
 
     static List<String[]> parse(final String text) {
-        List<String[]> rows = new ArrayList<>();
-        List<String> cells = new ArrayList<>();
-        StringBuilder cell = new StringBuilder();
+        final List<String[]> rows = new ArrayList<>();
+        final List<String> cells = new ArrayList<>();
+        final StringBuilder cell = new StringBuilder();
         boolean quoted = false;
-        int length = text.length();
+        final int length = text.length();
         for (int index = 0; index < length; index++) {
-            char character = text.charAt(index);
+            final char character = text.charAt(index);
             if (quoted) {
                 if (character != '"') {
                     cell.append(character);

@@ -101,8 +101,8 @@ public final class ClientboundBmStatusPacket implements IClientboundPacket {
         return 301;
     }
 
-	@Override
-	public final void write(PacketBuf buf) {
+    @Override
+    public void write(final PacketBuf buf) {
         buf.writeBoolean(this.rounding);
         buf.writeInt(this.bombInstaller);
         buf.writeInt(this.blastTarget);
@@ -112,5 +112,5 @@ public final class ClientboundBmStatusPacket implements IClientboundPacket {
         buf.writeFloat(this.normalX);
         buf.writeFloat(this.normalY);
         buf.writeFloat(this.normalZ);
-	}
+    }
 }

@@ -36,11 +36,11 @@ public class PacketGenerator implements ISourceGenerator {
     private static final ObjectOpenHashSet<String> CLIENTBOUND_UNKNOWN = new ObjectOpenHashSet<>(),
         SERVERBOUND_UNKNOWN = new ObjectOpenHashSet<>();
 
-    public PacketGenerator(Properties properties) {
+    public PacketGenerator(final Properties properties) {
         System.out.println(properties.toString());
         // Uncomment this when wanting to know which classes are most definitely broken :)
         // or which types are missing from the conversion (which there shouldn't be any if nothing was changed)
-        
+
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println("Unknown (Clientbound): " + CLIENTBOUND_UNKNOWN.toString());
             System.out.println("Unknown (Serverbound): " + SERVERBOUND_UNKNOWN.toString());
@@ -48,7 +48,7 @@ public class PacketGenerator implements ISourceGenerator {
             System.out.println("Unsupported (Serverbound): " + SERVERBOUND_UNSUPPORTED.toString());
         }));
         CLIENTBOUND_UNSUPPORTED.iterator();
-        
+
     }
 
     @Override

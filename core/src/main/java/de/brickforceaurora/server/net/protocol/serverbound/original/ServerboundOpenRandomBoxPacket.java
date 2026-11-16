@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundOpenRandomBoxPacket implements IServerboundPacket {
 
-	private int randombox;
+    private int randombox;
 
-	public final ServerboundOpenRandomBoxPacket randombox(int randombox) {
-		this.randombox = randombox;
-		return this;
-	}
+    public ServerboundOpenRandomBoxPacket randombox(final int randombox) {
+        this.randombox = randombox;
+        return this;
+    }
 
-	public final int randombox() {
-		return this.randombox;
-	}
+    public int randombox() {
+        return this.randombox;
+    }
 
-	@Override
-	public int packetId() {
-		return 219;
-	}
+    @Override
+    public int packetId() {
+        return 219;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.randombox = buf.readInt();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.randombox = buf.readInt();
+    }
 }

@@ -6,35 +6,35 @@ import de.brickforceaurora.server.net.protocol.data.ClientStatus;
 
 public final class ClientboundSetStatusPacket implements IClientboundPacket {
 
-	private int clientId;
-	private ClientStatus status;
+    private int clientId;
+    private ClientStatus status;
 
-	public final ClientboundSetStatusPacket clientId(int clientId) {
-		this.clientId = clientId;
-		return this;
-	}
+    public ClientboundSetStatusPacket clientId(final int clientId) {
+        this.clientId = clientId;
+        return this;
+    }
 
-	public final int clientId() {
-		return this.clientId;
-	}
+    public int clientId() {
+        return this.clientId;
+    }
 
-	public final ClientboundSetStatusPacket status(ClientStatus status) {
-		this.status = status;
-		return this;
-	}
+    public ClientboundSetStatusPacket status(final ClientStatus status) {
+        this.status = status;
+        return this;
+    }
 
-	public final ClientStatus status() {
-		return this.status;
-	}
+    public ClientStatus status() {
+        return this.status;
+    }
 
-	@Override
-	public int packetId() {
-		return 48;
-	}
+    @Override
+    public int packetId() {
+        return 48;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.clientId);
-		buf.writeInt(this.status.id());
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.clientId);
+        buf.writeInt(this.status.id());
+    }
 }

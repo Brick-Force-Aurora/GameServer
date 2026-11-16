@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundBmUninstallBombPacket implements IServerboundPacket {
 
-	private int bomb;
+    private int bomb;
 
-	public final ServerboundBmUninstallBombPacket bomb(int bomb) {
-		this.bomb = bomb;
-		return this;
-	}
+    public ServerboundBmUninstallBombPacket bomb(final int bomb) {
+        this.bomb = bomb;
+        return this;
+    }
 
-	public final int bomb() {
-		return this.bomb;
-	}
+    public int bomb() {
+        return this.bomb;
+    }
 
-	@Override
-	public int packetId() {
-		return 281;
-	}
+    @Override
+    public int packetId() {
+        return 281;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.bomb = buf.readInt();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.bomb = buf.readInt();
+    }
 }

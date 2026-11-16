@@ -6,42 +6,42 @@ import de.brickforceaurora.server.net.protocol.data.RegisteredMap;
 
 public final class ClientboundAllMapPacket implements IClientboundPacket {
 
-    private static final RegisteredMap[] EMPTY = new RegisteredMap[0];
-    
+    private static final RegisteredMap[] EMPTY = {};
+
     private int page;
     private RegisteredMap[] maps = EMPTY;
 
-	public final ClientboundAllMapPacket page(int page) {
-		this.page = page;
-		return this;
-	}
+    public ClientboundAllMapPacket page(final int page) {
+        this.page = page;
+        return this;
+    }
 
-	public final int page() {
-		return this.page;
-	}
+    public int page() {
+        return this.page;
+    }
 
-	public final ClientboundAllMapPacket maps(RegisteredMap[] maps) {
-		this.maps = (maps == null ? EMPTY : maps);
-		return this;
-	}
+    public ClientboundAllMapPacket maps(final RegisteredMap[] maps) {
+        this.maps = maps == null ? EMPTY : maps;
+        return this;
+    }
 
-	public final RegisteredMap[] maps() {
-		return this.maps;
-	}
+    public RegisteredMap[] maps() {
+        return this.maps;
+    }
 
-	@Override
-	public int packetId() {
-		return 432;
-	}
+    @Override
+    public int packetId() {
+        return 432;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.page);
-		buf.writeInt(this.maps.length);
-		if (this.maps.length != 0) {
-		    for (RegisteredMap map : this.maps) {
-		        map.toBuffer(buf);
-		    }
-		}
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.page);
+        buf.writeInt(this.maps.length);
+        if (this.maps.length != 0) {
+            for (final RegisteredMap map : this.maps) {
+                map.toBuffer(buf);
+            }
+        }
+    }
 }

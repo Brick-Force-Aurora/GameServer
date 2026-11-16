@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundDownloadThumbnailEndPacket implements IClientboundPacket {
 
-	private int val;
+    private int val;
 
-	public final ClientboundDownloadThumbnailEndPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundDownloadThumbnailEndPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	@Override
-	public int packetId() {
-		return 164;
-	}
+    @Override
+    public int packetId() {
+        return 164;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.val);
+    }
 }

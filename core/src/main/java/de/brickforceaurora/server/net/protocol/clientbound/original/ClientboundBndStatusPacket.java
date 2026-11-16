@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundBndStatusPacket implements IClientboundPacket {
 
-	private boolean val;
+    private boolean val;
 
-	public final ClientboundBndStatusPacket val(boolean val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundBndStatusPacket val(final boolean val) {
+        this.val = val;
+        return this;
+    }
 
-	public final boolean val() {
-		return this.val;
-	}
+    public boolean val() {
+        return this.val;
+    }
 
-	@Override
-	public int packetId() {
-		return 506;
-	}
+    @Override
+    public int packetId() {
+        return 506;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeBoolean(this.val);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeBoolean(this.val);
+    }
 }

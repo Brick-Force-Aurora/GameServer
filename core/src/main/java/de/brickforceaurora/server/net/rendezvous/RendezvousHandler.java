@@ -10,8 +10,8 @@ import de.brickforceaurora.server.IBrickForceServer;
 import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.rendezvous.protocol.P2PHeader;
 import de.brickforceaurora.server.net.rendezvous.protocol.clientbound.ClientboundP2PPongPacket;
-import de.brickforceaurora.server.net.rendezvous.protocol.serverbound.ServerboundP2PPingPacket;
 import de.brickforceaurora.server.net.rendezvous.protocol.serverbound.ServerboundP2PMessage;
+import de.brickforceaurora.server.net.rendezvous.protocol.serverbound.ServerboundP2PPingPacket;
 import de.brickforceaurora.server.net.rendezvous.protocol.serverbound.ServerboundP2PReliableAckPacket;
 import de.brickforceaurora.server.net.rendezvous.protocol.serverbound.ServerboundP2PStatusPacket;
 import io.netty.buffer.ByteBuf;
@@ -19,7 +19,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 import me.lauriichan.snowframe.ISnowFrameApp;
-
 
 final class RendezvousHandler<S extends ISnowFrameApp<S> & IBrickForceServer> extends SimpleChannelInboundHandler<ServerboundP2PMessage> {
 
@@ -56,7 +55,8 @@ final class RendezvousHandler<S extends ISnowFrameApp<S> & IBrickForceServer> ex
         }
         switch (message.packet()) {
         case final ServerboundP2PStatusPacket status -> onStatus(client, status);
-        case final ClientboundP2PPongPacket _ -> {}
+        case final ClientboundP2PPongPacket _ -> {
+        }
         case null, default -> relay(context, client, message);
         }
     }
@@ -128,7 +128,7 @@ final class RendezvousHandler<S extends ISnowFrameApp<S> & IBrickForceServer> ex
     }
 
     private long ackKey(final int clientId, final int meta) {
-        return ((long) clientId << 16) | (meta & 0xFFFF);
+        return (long) clientId << 16 | meta & 0xFFFF;
     }
 
     @SuppressWarnings("unchecked")

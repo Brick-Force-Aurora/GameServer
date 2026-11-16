@@ -51,7 +51,8 @@ public final class BFServerboundPacketDecoder extends ByteToMessageDecoder {
             final IServerboundPacket packet = PacketRegistry.newServerPacket(id);
             if (packet == null) {
                 logger.debug("Received unknown from client {0}: {1}", id);
-                ctx.writeAndFlush(new ClientboundAuroraDisconnectPacket().message("Server: Received unknwon packet")).addListener(ChannelFutureListener.CLOSE);
+                ctx.writeAndFlush(new ClientboundAuroraDisconnectPacket().message("Server: Received unknwon packet"))
+                    .addListener(ChannelFutureListener.CLOSE);
                 return;
             }
             logger.debug("Received from client {0}: {1} ({2})", client, packet.packetName(), packet.packetId());
@@ -84,9 +85,9 @@ public final class BFServerboundPacketDecoder extends ByteToMessageDecoder {
             }
         }
     }
-    
+
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
         logger.error("Error in inbound netty pipeline of player '{0}'", cause, client);
         ctx.close();
     }

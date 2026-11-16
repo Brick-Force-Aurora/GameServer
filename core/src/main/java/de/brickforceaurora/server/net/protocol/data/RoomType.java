@@ -15,7 +15,7 @@ public enum RoomType {
 
     public static final RoomType[] VALUES = RoomType.values();
 
-    public static RoomType byId(int id) {
+    public static RoomType byId(final int id) {
         if (id < 0 || id >= VALUES.length) {
             return null;
         }
@@ -24,8 +24,8 @@ public enum RoomType {
 
     private final int id;
     private final String modeName;
-    
-    private RoomType(int id, String modeName) {
+
+    RoomType(final int id, final String modeName) {
         this.id = id;
         this.modeName = modeName;
     }

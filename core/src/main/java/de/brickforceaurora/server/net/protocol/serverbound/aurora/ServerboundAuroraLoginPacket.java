@@ -16,7 +16,7 @@ public class ServerboundAuroraLoginPacket implements IServerboundPacket {
     private String username;
     private ILoginData loginData;
 
-    public final ServerboundAuroraLoginPacket version(Version version) {
+    public final ServerboundAuroraLoginPacket version(final Version version) {
         this.version = version;
         return this;
     }
@@ -25,7 +25,7 @@ public class ServerboundAuroraLoginPacket implements IServerboundPacket {
         return this.version;
     }
 
-    public final ServerboundAuroraLoginPacket loginType(LoginType loginType) {
+    public final ServerboundAuroraLoginPacket loginType(final LoginType loginType) {
         this.loginType = loginType;
         return this;
     }
@@ -34,7 +34,7 @@ public class ServerboundAuroraLoginPacket implements IServerboundPacket {
         return this.loginType;
     }
 
-    public final ServerboundAuroraLoginPacket username(String username) {
+    public final ServerboundAuroraLoginPacket username(final String username) {
         this.username = username;
         return this;
     }
@@ -43,7 +43,7 @@ public class ServerboundAuroraLoginPacket implements IServerboundPacket {
         return this.username;
     }
 
-    public final ServerboundAuroraLoginPacket loginData(ILoginData loginData) {
+    public final ServerboundAuroraLoginPacket loginData(final ILoginData loginData) {
         this.loginData = loginData;
         return this;
     }
@@ -58,18 +58,18 @@ public class ServerboundAuroraLoginPacket implements IServerboundPacket {
     }
 
     @Override
-    public void read(PacketBuf buffer) throws IOException {
+    public void read(final PacketBuf buffer) throws IOException {
         this.version = buffer.readVersion();
         this.loginType = LoginType.MANAGER.byMask(buffer.readInt());
         this.username = buffer.readString();
         this.loginData = loginType == null ? ILoginData.NONE : switch (loginType) {
         case PASSWORD -> {
-            String password = buffer.readString();
+            final String password = buffer.readString();
             yield new ILoginData.Password(password);
         }
         case TRANSFER_TOKEN -> {
-            int originChannel = buffer.readInt();
-            String token = buffer.readString();
+            final int originChannel = buffer.readInt();
+            final String token = buffer.readString();
             yield new ILoginData.Transfer(originChannel, token);
         }
         default -> {

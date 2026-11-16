@@ -6,24 +6,24 @@ import de.brickforceaurora.server.net.protocol.data.WeaponRatio;
 
 public final class ServerboundWeaponHeldRatioPacket implements IServerboundPacket {
 
-	private WeaponRatio[] heldRatio = new WeaponRatio[0];
+    private WeaponRatio[] heldRatio = {};
 
-	public final ServerboundWeaponHeldRatioPacket heldRatio(WeaponRatio[] heldRatio) {
-		this.heldRatio = heldRatio;
-		return this;
-	}
+    public ServerboundWeaponHeldRatioPacket heldRatio(final WeaponRatio[] heldRatio) {
+        this.heldRatio = heldRatio;
+        return this;
+    }
 
-	public final WeaponRatio[] heldRatio() {
-		return this.heldRatio;
-	}
+    public WeaponRatio[] heldRatio() {
+        return this.heldRatio;
+    }
 
-	@Override
-	public int packetId() {
-		return 368;
-	}
+    @Override
+    public int packetId() {
+        return 368;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.heldRatio = buf.readArray(WeaponRatio[]::new, WeaponRatio::fromBuffer);
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.heldRatio = buf.readArray(WeaponRatio[]::new, WeaponRatio::fromBuffer);
+    }
 }

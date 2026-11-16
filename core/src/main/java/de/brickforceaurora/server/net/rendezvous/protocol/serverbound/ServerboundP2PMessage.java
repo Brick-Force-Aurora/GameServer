@@ -4,7 +4,6 @@ import java.net.InetSocketAddress;
 
 import de.brickforceaurora.server.net.protocol.IPacket;
 import de.brickforceaurora.server.net.rendezvous.protocol.P2PHeader;
-import de.brickforceaurora.server.net.rendezvous.protocol.P2PServerboundPacketDecoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.DefaultByteBufHolder;
 

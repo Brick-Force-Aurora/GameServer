@@ -5,256 +5,256 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundPlayerInfoPacket implements IClientboundPacket {
 
-	private String nickname;
-	private int xp;
-	private int forcePoints;
-	private int brickPoints;
-	private int tokens;
-	private int coins;
-	private int starDust;
-	private int apsType;
-	private int apsLevel;
-	private int gm;
-	private int clanSeq;
-	private String clanName;
-	private int clanMark;
-	private int clanLv;
-	private int rank;
-	private int heavy;
-	private int assault;
-	private int sniper;
-	private int subMachine;
-	private int handGun;
-	private int melee;
-	private int special;
+    private String nickname;
+    private int xp;
+    private int forcePoints;
+    private int brickPoints;
+    private int tokens;
+    private int coins;
+    private int starDust;
+    private int apsType;
+    private int apsLevel;
+    private int gm;
+    private int clanSeq;
+    private String clanName;
+    private int clanMark;
+    private int clanLv;
+    private int rank;
+    private int heavy;
+    private int assault;
+    private int sniper;
+    private int subMachine;
+    private int handGun;
+    private int melee;
+    private int special;
 
-	public final ClientboundPlayerInfoPacket nickname(String nickname) {
-		this.nickname = nickname;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket nickname(final String nickname) {
+        this.nickname = nickname;
+        return this;
+    }
 
-	public final String nickname() {
-		return this.nickname;
-	}
+    public String nickname() {
+        return this.nickname;
+    }
 
-	public final ClientboundPlayerInfoPacket xp(int xp) {
-		this.xp = xp;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket xp(final int xp) {
+        this.xp = xp;
+        return this;
+    }
 
-	public final int xp() {
-		return this.xp;
-	}
+    public int xp() {
+        return this.xp;
+    }
 
-	public final ClientboundPlayerInfoPacket forcePoints(int forcePoints) {
-		this.forcePoints = forcePoints;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket forcePoints(final int forcePoints) {
+        this.forcePoints = forcePoints;
+        return this;
+    }
 
-	public final int forcePoints() {
-		return this.forcePoints;
-	}
+    public int forcePoints() {
+        return this.forcePoints;
+    }
 
-	public final ClientboundPlayerInfoPacket brickPoints(int brickPoints) {
-		this.brickPoints = brickPoints;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket brickPoints(final int brickPoints) {
+        this.brickPoints = brickPoints;
+        return this;
+    }
 
-	public final int brickPoints() {
-		return this.brickPoints;
-	}
+    public int brickPoints() {
+        return this.brickPoints;
+    }
 
-	public final ClientboundPlayerInfoPacket tokens(int tokens) {
-		this.tokens = tokens;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket tokens(final int tokens) {
+        this.tokens = tokens;
+        return this;
+    }
 
-	public final int tokens() {
-		return this.tokens;
-	}
+    public int tokens() {
+        return this.tokens;
+    }
 
-	public final ClientboundPlayerInfoPacket coins(int coins) {
-		this.coins = coins;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket coins(final int coins) {
+        this.coins = coins;
+        return this;
+    }
 
-	public final int coins() {
-		return this.coins;
-	}
+    public int coins() {
+        return this.coins;
+    }
 
-	public final ClientboundPlayerInfoPacket starDust(int starDust) {
-		this.starDust = starDust;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket starDust(final int starDust) {
+        this.starDust = starDust;
+        return this;
+    }
 
-	public final int starDust() {
-		return this.starDust;
-	}
+    public int starDust() {
+        return this.starDust;
+    }
 
-	public final ClientboundPlayerInfoPacket apsType(int apsType) {
-		this.apsType = apsType;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket apsType(final int apsType) {
+        this.apsType = apsType;
+        return this;
+    }
 
-	public final int apsType() {
-		return this.apsType;
-	}
+    public int apsType() {
+        return this.apsType;
+    }
 
-	public final ClientboundPlayerInfoPacket apsLevel(int apsLevel) {
-		this.apsLevel = apsLevel;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket apsLevel(final int apsLevel) {
+        this.apsLevel = apsLevel;
+        return this;
+    }
 
-	public final int apsLevel() {
-		return this.apsLevel;
-	}
+    public int apsLevel() {
+        return this.apsLevel;
+    }
 
-	public final ClientboundPlayerInfoPacket gm(int gm) {
-		this.gm = gm;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket gm(final int gm) {
+        this.gm = gm;
+        return this;
+    }
 
-	public final int gm() {
-		return this.gm;
-	}
+    public int gm() {
+        return this.gm;
+    }
 
-	public final ClientboundPlayerInfoPacket clanSeq(int clanSeq) {
-		this.clanSeq = clanSeq;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket clanSeq(final int clanSeq) {
+        this.clanSeq = clanSeq;
+        return this;
+    }
 
-	public final int clanSeq() {
-		return this.clanSeq;
-	}
+    public int clanSeq() {
+        return this.clanSeq;
+    }
 
-	public final ClientboundPlayerInfoPacket clanName(String clanName) {
-		this.clanName = clanName;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket clanName(final String clanName) {
+        this.clanName = clanName;
+        return this;
+    }
 
-	public final String clanName() {
-		return this.clanName;
-	}
+    public String clanName() {
+        return this.clanName;
+    }
 
-	public final ClientboundPlayerInfoPacket clanMark(int clanMark) {
-		this.clanMark = clanMark;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket clanMark(final int clanMark) {
+        this.clanMark = clanMark;
+        return this;
+    }
 
-	public final int clanMark() {
-		return this.clanMark;
-	}
+    public int clanMark() {
+        return this.clanMark;
+    }
 
-	public final ClientboundPlayerInfoPacket clanLv(int clanLv) {
-		this.clanLv = clanLv;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket clanLv(final int clanLv) {
+        this.clanLv = clanLv;
+        return this;
+    }
 
-	public final int clanLv() {
-		return this.clanLv;
-	}
+    public int clanLv() {
+        return this.clanLv;
+    }
 
-	public final ClientboundPlayerInfoPacket rank(int rank) {
-		this.rank = rank;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket rank(final int rank) {
+        this.rank = rank;
+        return this;
+    }
 
-	public final int rank() {
-		return this.rank;
-	}
+    public int rank() {
+        return this.rank;
+    }
 
-	public final ClientboundPlayerInfoPacket heavy(int heavy) {
-		this.heavy = heavy;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket heavy(final int heavy) {
+        this.heavy = heavy;
+        return this;
+    }
 
-	public final int heavy() {
-		return this.heavy;
-	}
+    public int heavy() {
+        return this.heavy;
+    }
 
-	public final ClientboundPlayerInfoPacket assault(int assault) {
-		this.assault = assault;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket assault(final int assault) {
+        this.assault = assault;
+        return this;
+    }
 
-	public final int assault() {
-		return this.assault;
-	}
+    public int assault() {
+        return this.assault;
+    }
 
-	public final ClientboundPlayerInfoPacket sniper(int sniper) {
-		this.sniper = sniper;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket sniper(final int sniper) {
+        this.sniper = sniper;
+        return this;
+    }
 
-	public final int sniper() {
-		return this.sniper;
-	}
+    public int sniper() {
+        return this.sniper;
+    }
 
-	public final ClientboundPlayerInfoPacket subMachine(int subMachine) {
-		this.subMachine = subMachine;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket subMachine(final int subMachine) {
+        this.subMachine = subMachine;
+        return this;
+    }
 
-	public final int subMachine() {
-		return this.subMachine;
-	}
+    public int subMachine() {
+        return this.subMachine;
+    }
 
-	public final ClientboundPlayerInfoPacket handGun(int handGun) {
-		this.handGun = handGun;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket handGun(final int handGun) {
+        this.handGun = handGun;
+        return this;
+    }
 
-	public final int handGun() {
-		return this.handGun;
-	}
+    public int handGun() {
+        return this.handGun;
+    }
 
-	public final ClientboundPlayerInfoPacket melee(int melee) {
-		this.melee = melee;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket melee(final int melee) {
+        this.melee = melee;
+        return this;
+    }
 
-	public final int melee() {
-		return this.melee;
-	}
+    public int melee() {
+        return this.melee;
+    }
 
-	public final ClientboundPlayerInfoPacket special(int special) {
-		this.special = special;
-		return this;
-	}
+    public ClientboundPlayerInfoPacket special(final int special) {
+        this.special = special;
+        return this;
+    }
 
-	public final int special() {
-		return this.special;
-	}
+    public int special() {
+        return this.special;
+    }
 
-	@Override
-	public int packetId() {
-		return 27;
-	}
+    @Override
+    public int packetId() {
+        return 27;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeString(this.nickname);
-		buf.writeInt(this.xp);
-		buf.writeInt(this.forcePoints);
-		buf.writeInt(this.brickPoints);
-		buf.writeInt(this.tokens);
-		buf.writeInt(0); //Needs random unused value here?
-		buf.writeInt(this.coins);
-		buf.writeInt(this.starDust);
-		buf.writeInt(this.apsType);
-		buf.writeInt(this.apsLevel);
-		buf.writeInt(this.gm);
-		buf.writeInt(this.clanSeq);
-		buf.writeString(this.clanName);
-		buf.writeInt(this.clanMark);
-		buf.writeInt(this.clanLv);
-		buf.writeInt(this.rank);
-		buf.writeInt(this.heavy);
-		buf.writeInt(this.assault);
-		buf.writeInt(this.sniper);
-		buf.writeInt(this.subMachine);
-		buf.writeInt(this.handGun);
-		buf.writeInt(this.melee);
-		buf.writeInt(this.special);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeString(this.nickname);
+        buf.writeInt(this.xp);
+        buf.writeInt(this.forcePoints);
+        buf.writeInt(this.brickPoints);
+        buf.writeInt(this.tokens);
+        buf.writeInt(0); //Needs random unused value here?
+        buf.writeInt(this.coins);
+        buf.writeInt(this.starDust);
+        buf.writeInt(this.apsType);
+        buf.writeInt(this.apsLevel);
+        buf.writeInt(this.gm);
+        buf.writeInt(this.clanSeq);
+        buf.writeString(this.clanName);
+        buf.writeInt(this.clanMark);
+        buf.writeInt(this.clanLv);
+        buf.writeInt(this.rank);
+        buf.writeInt(this.heavy);
+        buf.writeInt(this.assault);
+        buf.writeInt(this.sniper);
+        buf.writeInt(this.subMachine);
+        buf.writeInt(this.handGun);
+        buf.writeInt(this.melee);
+        buf.writeInt(this.special);
+    }
 }

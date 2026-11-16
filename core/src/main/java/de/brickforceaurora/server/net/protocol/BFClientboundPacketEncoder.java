@@ -36,13 +36,13 @@ public final class BFClientboundPacketEncoder extends MessageToByteEncoder<IClie
             }
             try {
                 msg.write(packetBuf);
-            } catch (RuntimeException exp) {
+            } catch (final RuntimeException exp) {
                 logger.error("Failed to serialize {1} ({2}) to client {0}", exp, client, msg.packetName(), msg.packetId());
                 ctx.writeAndFlush(new ClientboundAuroraDisconnectPacket().message("Server: Failed to serialize packet"))
                     .addListener(ChannelFutureListener.CLOSE);
                 return;
             }
-            ByteBuf nettyBuf = packetBuf.buffer();
+            final ByteBuf nettyBuf = packetBuf.buffer();
             if (msg.encrypted()) {
                 if (client.encryptionKey() == null) {
                     logger.error("Failed to send encrypted {1} ({2}) to client {0}", client, msg.packetName(), msg.packetId());
@@ -50,7 +50,7 @@ public final class BFClientboundPacketEncoder extends MessageToByteEncoder<IClie
                         .addListener(ChannelFutureListener.CLOSE);
                     return;
                 }
-                byte[] bytes = new byte[nettyBuf.readableBytes()];
+                final byte[] bytes = new byte[nettyBuf.readableBytes()];
                 System.arraycopy(nettyBuf.array(), nettyBuf.arrayOffset(), bytes, 0, bytes.length);
                 body = Encryption.encrypt(bytes, client.encryptionKey());
                 bodyOffset = 0;
@@ -86,7 +86,7 @@ public final class BFClientboundPacketEncoder extends MessageToByteEncoder<IClie
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
         if (client != null) {
             logger.error("Error in outbound netty pipeline of player '{0}'", cause, client);
         }

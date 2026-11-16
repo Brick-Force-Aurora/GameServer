@@ -3,9 +3,9 @@ package de.brickforceaurora.server.net.protocol.data;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public record ResultUnit(boolean red, int clientId, String nickname, int kill, int death, int assist, int score, int point, int xp,
-                         int mission, int prevXp, int nextXp, long buff) {
+    int mission, int prevXp, int nextXp, long buff) {
 
-    public void toBuffer(PacketBuf buf) {
+    public void toBuffer(final PacketBuf buf) {
         buf.writeBoolean(red);
         buf.writeInt(clientId);
         buf.writeString(nickname);

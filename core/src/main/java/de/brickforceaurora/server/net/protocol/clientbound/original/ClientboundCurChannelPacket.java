@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundCurChannelPacket implements IClientboundPacket {
 
-	private int curChannelId;
+    private int curChannelId;
 
-	public final ClientboundCurChannelPacket curChannelId(int curChannelId) {
-		this.curChannelId = curChannelId;
-		return this;
-	}
+    public ClientboundCurChannelPacket curChannelId(final int curChannelId) {
+        this.curChannelId = curChannelId;
+        return this;
+    }
 
-	public final int curChannelId() {
-		return this.curChannelId;
-	}
+    public int curChannelId() {
+        return this.curChannelId;
+    }
 
-	@Override
-	public int packetId() {
-		return 147;
-	}
+    @Override
+    public int packetId() {
+        return 147;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.curChannelId);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.curChannelId);
+    }
 }

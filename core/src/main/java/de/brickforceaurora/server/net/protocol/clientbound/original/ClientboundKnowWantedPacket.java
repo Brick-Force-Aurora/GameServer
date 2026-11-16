@@ -5,27 +5,27 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundKnowWantedPacket implements IClientboundPacket {
 
-	private int[] clientIds;
+    private int[] clientIds;
 
-	public final ClientboundKnowWantedPacket clientIds(int[] clientIds) {
-		this.clientIds = clientIds;
-		return this;
-	}
+    public ClientboundKnowWantedPacket clientIds(final int[] clientIds) {
+        this.clientIds = clientIds;
+        return this;
+    }
 
-	public final int[] clientIds() {
-		return this.clientIds;
-	}
+    public int[] clientIds() {
+        return this.clientIds;
+    }
 
-	@Override
-	public int packetId() {
-		return 543;
-	}
+    @Override
+    public int packetId() {
+        return 543;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.clientIds.length);
-		for (int clientId : this.clientIds) {
-			buf.writeInt(clientId);
-		}
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.clientIds.length);
+        for (final int clientId : this.clientIds) {
+            buf.writeInt(clientId);
+        }
+    }
 }

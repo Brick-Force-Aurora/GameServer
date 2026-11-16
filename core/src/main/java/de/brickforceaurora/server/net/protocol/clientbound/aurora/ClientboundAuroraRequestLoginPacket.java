@@ -9,14 +9,14 @@ import de.brickforceaurora.server.net.protocol.ProtocolExtension;
 import de.brickforceaurora.server.util.flag.IFlags;
 
 public class ClientboundAuroraRequestLoginPacket implements IClientboundPacket {
-    
+
     private IFlags<LoginType> supportedTypes;
 
-    public final ClientboundAuroraRequestLoginPacket supportedTypes(IFlags<LoginType> supportedTypes) {
+    public final ClientboundAuroraRequestLoginPacket supportedTypes(final IFlags<LoginType> supportedTypes) {
         this.supportedTypes = supportedTypes;
         return this;
     }
-    
+
     public final IFlags<LoginType> supportedTypes() {
         return supportedTypes;
     }
@@ -30,7 +30,7 @@ public class ClientboundAuroraRequestLoginPacket implements IClientboundPacket {
     public void write(final PacketBuf buffer) throws IOException {
         buffer.writeInt(supportedTypes.value());
     }
-    
+
     @Override
     public boolean encrypted() {
         return true;

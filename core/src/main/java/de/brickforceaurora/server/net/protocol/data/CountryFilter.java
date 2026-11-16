@@ -34,7 +34,7 @@ public enum CountryFilter {
 
     public static final CountryFilter[] VALUES = CountryFilter.values();
 
-    public static CountryFilter byId(int id) {
+    public static CountryFilter byId(final int id) {
         if (id < -1 || id > 27) {
             return null;
         }
@@ -43,7 +43,7 @@ public enum CountryFilter {
 
     private final int id;
 
-    private CountryFilter(int id) {
+    CountryFilter(final int id) {
         this.id = id;
     }
 

@@ -6,24 +6,24 @@ import de.brickforceaurora.server.net.protocol.data.api.IRoomInfo;
 
 public final class ClientboundAddRoomPacket implements IClientboundPacket {
 
-	private IRoomInfo roomInfo;
+    private IRoomInfo roomInfo;
 
-	public final ClientboundAddRoomPacket roomInfo(IRoomInfo roomInfo) {
-		this.roomInfo = roomInfo;
-		return this;
-	}
+    public ClientboundAddRoomPacket roomInfo(final IRoomInfo roomInfo) {
+        this.roomInfo = roomInfo;
+        return this;
+    }
 
-	public final IRoomInfo roomInfo() {
-		return this.roomInfo;
-	}
+    public IRoomInfo roomInfo() {
+        return this.roomInfo;
+    }
 
-	@Override
-	public int packetId() {
-		return 5;
-	}
+    @Override
+    public int packetId() {
+        return 5;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		IRoomInfo.toBuffer(buf, roomInfo);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        IRoomInfo.toBuffer(buf, roomInfo);
+    }
 }

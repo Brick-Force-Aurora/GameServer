@@ -11,7 +11,7 @@ final class BFClientboundPacketListener extends ChannelOutboundHandlerAdapter {
 
     private final NetManager<?> netManager;
     private final BFClient client;
-    
+
     private volatile boolean disconnecting = false;
 
     public BFClientboundPacketListener(final NetManager<?> netManager, final BFClient client) {
@@ -32,9 +32,9 @@ final class BFClientboundPacketListener extends ChannelOutboundHandlerAdapter {
         }
         ctx.write(msg, promise);
     }
-    
+
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
         if (disconnecting) {
             netManager.logger().error("Error in clientbound listener of player '{0}' while disconnecting", cause, client);
             ctx.close();
@@ -42,7 +42,8 @@ final class BFClientboundPacketListener extends ChannelOutboundHandlerAdapter {
         }
         disconnecting = true;
         netManager.logger().error("Error in clientbound listener of player '{0}'", cause, client);
-        ctx.writeAndFlush(new ClientboundAuroraDisconnectPacket().message("Server: Something went wrong")).addListener(ChannelFutureListener.CLOSE);
+        ctx.writeAndFlush(new ClientboundAuroraDisconnectPacket().message("Server: Something went wrong"))
+            .addListener(ChannelFutureListener.CLOSE);
     }
 
 }

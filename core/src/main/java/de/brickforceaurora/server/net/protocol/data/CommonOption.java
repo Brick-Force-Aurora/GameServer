@@ -25,7 +25,7 @@ public enum CommonOption implements IFlag {
 
     private final int mask;
 
-    private CommonOption(int mask) {
+    CommonOption(final int mask) {
         this.mask = mask;
     }
 

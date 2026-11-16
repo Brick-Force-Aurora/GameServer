@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundWhisperPacket implements IServerboundPacket {
 
-	private String listener;
-	private String text;
+    private String listener;
+    private String text;
 
-	public final ServerboundWhisperPacket listener(String listener) {
-		this.listener = listener;
-		return this;
-	}
+    public ServerboundWhisperPacket listener(final String listener) {
+        this.listener = listener;
+        return this;
+    }
 
-	public final String listener() {
-		return this.listener;
-	}
+    public String listener() {
+        return this.listener;
+    }
 
-	public final ServerboundWhisperPacket text(String text) {
-		this.text = text;
-		return this;
-	}
+    public ServerboundWhisperPacket text(final String text) {
+        this.text = text;
+        return this;
+    }
 
-	public final String text() {
-		return this.text;
-	}
+    public String text() {
+        return this.text;
+    }
 
-	@Override
-	public int packetId() {
-		return 26;
-	}
+    @Override
+    public int packetId() {
+        return 26;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.listener = buf.readString();
-		this.text = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.listener = buf.readString();
+        this.text = buf.readString();
+    }
 }

@@ -47,7 +47,7 @@ public final class BFClient extends Attributable {
         this.port = 6000 + id;
         this.initialized = true;
     }
-    
+
     public void validateChallenge(final String answeredChallenge) {
         if (this.challanged) {
             throw new IllegalStateException("Already challanged");
@@ -55,7 +55,7 @@ public final class BFClient extends Attributable {
         this.challanged = Objects.equals(encryptionChallenge, answeredChallenge);
     }
 
-    public void setupSecret(PublicKey encryptionKey) {
+    public void setupSecret(final PublicKey encryptionKey) {
         if (this.encryptionKey != null) {
             throw new IllegalStateException("Already has encryption key");
         }
@@ -66,11 +66,11 @@ public final class BFClient extends Attributable {
     public PublicKey encryptionKey() {
         return encryptionKey;
     }
-    
+
     public String encryptionChallenge() {
         return encryptionChallenge;
     }
-    
+
     public Version version() {
         return version;
     }
@@ -121,14 +121,14 @@ public final class BFClient extends Attributable {
 
     public void send(final IClientboundPacket... packets) {
         connection.eventLoop().execute(() -> {
-            for (IClientboundPacket packet : packets) {
+            for (final IClientboundPacket packet : packets) {
                 connection.write(packet);
             }
             connection.flush();
         });
     }
 
-    public void disconnect(String message) {
+    public void disconnect(final String message) {
         connection.eventLoop().execute(() -> {
             connection.writeAndFlush(new ClientboundAuroraDisconnectPacket().message(message));
             // The client only handles the packet on its main thread but reports a closed socket as "Timed out" right away,

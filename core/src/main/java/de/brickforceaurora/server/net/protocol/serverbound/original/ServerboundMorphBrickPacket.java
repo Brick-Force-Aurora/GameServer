@@ -5,39 +5,38 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundMorphBrickPacket implements IServerboundPacket {
 
-	private int clientId;
-	private int code;
+    private int clientId;
+    private int code;
 
-	public final ServerboundMorphBrickPacket clientId(int clientId) {
-		this.clientId = clientId;
-		return this;
-	}
+    public ServerboundMorphBrickPacket clientId(final int clientId) {
+        this.clientId = clientId;
+        return this;
+    }
 
-	public final int clientId() {
-		return this.clientId;
-	}
+    public int clientId() {
+        return this.clientId;
+    }
 
-	public final ServerboundMorphBrickPacket code(int code) {
-		if (code > 65535L || code < 0L) {
-			throw new IllegalArgumentException(
-					"Value " + code + " is out of bounds of allowed number range of 0 - 65535");
-		}
-		this.code = code;
-		return this;
-	}
+    public ServerboundMorphBrickPacket code(final int code) {
+        if (code > 65535L || code < 0L) {
+            throw new IllegalArgumentException("Value " + code + " is out of bounds of allowed number range of 0 - 65535");
+        }
+        this.code = code;
+        return this;
+    }
 
-	public final int code() {
-		return this.code;
-	}
+    public int code() {
+        return this.code;
+    }
 
-	@Override
-	public int packetId() {
-		return 33;
-	}
+    @Override
+    public int packetId() {
+        return 33;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.clientId = buf.readInt();
-		this.code = buf.readUnsignedShort();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.clientId = buf.readInt();
+        this.code = buf.readUnsignedShort();
+    }
 }

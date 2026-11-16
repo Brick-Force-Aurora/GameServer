@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundApplyClanPacket implements IServerboundPacket {
 
-	private int clan;
-	private String clanName;
+    private int clan;
+    private String clanName;
 
-	public final ServerboundApplyClanPacket clan(int clan) {
-		this.clan = clan;
-		return this;
-	}
+    public ServerboundApplyClanPacket clan(final int clan) {
+        this.clan = clan;
+        return this;
+    }
 
-	public final int clan() {
-		return this.clan;
-	}
+    public int clan() {
+        return this.clan;
+    }
 
-	public final ServerboundApplyClanPacket clanName(String clanName) {
-		this.clanName = clanName;
-		return this;
-	}
+    public ServerboundApplyClanPacket clanName(final String clanName) {
+        this.clanName = clanName;
+        return this;
+    }
 
-	public final String clanName() {
-		return this.clanName;
-	}
+    public String clanName() {
+        return this.clanName;
+    }
 
-	@Override
-	public int packetId() {
-		return 221;
-	}
+    @Override
+    public int packetId() {
+        return 221;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.clan = buf.readInt();
-		this.clanName = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.clan = buf.readInt();
+        this.clanName = buf.readString();
+    }
 }

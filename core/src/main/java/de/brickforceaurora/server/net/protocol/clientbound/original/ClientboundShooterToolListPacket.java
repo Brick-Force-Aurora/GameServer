@@ -6,28 +6,28 @@ import de.brickforceaurora.server.net.protocol.data.ToolSlot;
 
 public final class ClientboundShooterToolListPacket implements IClientboundPacket {
 
-	private ToolSlot[] slots = new ToolSlot[0];
+    private ToolSlot[] slots = {};
 
-	public final ClientboundShooterToolListPacket slots(ToolSlot[] slots) {
-		this.slots = slots;
-		return this;
-	}
+    public ClientboundShooterToolListPacket slots(final ToolSlot[] slots) {
+        this.slots = slots;
+        return this;
+    }
 
-	public final ToolSlot[] slots() {
-		return this.slots;
-	}
+    public ToolSlot[] slots() {
+        return this.slots;
+    }
 
-	@Override
-	public int packetId() {
-		return 462;
-	}
+    @Override
+    public int packetId() {
+        return 462;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.slots.length);
-		for (ToolSlot entry : this.slots) {
-			buf.writeByte(entry.slot());
-			buf.writeLong(entry.item());
-		}
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.slots.length);
+        for (final ToolSlot entry : this.slots) {
+            buf.writeByte(entry.slot());
+            buf.writeLong(entry.item());
+        }
+    }
 }

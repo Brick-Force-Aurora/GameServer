@@ -9,7 +9,7 @@ public enum ChannelMode {
 
     public static final ChannelMode[] VALUES = ChannelMode.values();
 
-    public static ChannelMode byId(int id) {
+    public static ChannelMode byId(final int id) {
         if (id < 1 || id > 4) {
             return null;
         }
@@ -18,7 +18,7 @@ public enum ChannelMode {
 
     private final int id;
 
-    private ChannelMode(int id) {
+    ChannelMode(final int id) {
         this.id = id;
     }
 

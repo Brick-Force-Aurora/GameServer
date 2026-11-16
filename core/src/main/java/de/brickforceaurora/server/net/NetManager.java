@@ -61,7 +61,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
         this.signalManager = frame.module(SignalModule.class).signalManager();
         registerListenerExtensions();
     }
-    
+
     public boolean isOpen() {
         return serverChannel != null && serverChannel.isOpen();
     }
@@ -191,12 +191,13 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
      * Server logic related
      */
 
-    final void open(int port) throws InterruptedException {
+    void open(final int port) throws InterruptedException {
         if (serverChannel != null) {
             return;
         }
-        bootstrap.group(group).channel(Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class).childOption(ChannelOption.SO_KEEPALIVE, false)
-            .childOption(ChannelOption.TCP_NODELAY, true).childHandler(new BFChannelInit(this));
+        bootstrap.group(group).channel(Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
+            .childOption(ChannelOption.SO_KEEPALIVE, false).childOption(ChannelOption.TCP_NODELAY, true)
+            .childHandler(new BFChannelInit(this));
         serverChannel = bootstrap.bind(port).sync().channel();
         logger.info("Listening on 0.0.0.0:{0}", port);
         signalManager.call(new NetSignal.ServerStarted(this));
@@ -208,11 +209,11 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
             return;
         }
 
-        BFClient[] loggedIn = activeClients().toArray(BFClient[]::new);
-        for (BFClient client : loggedIn) {
+        final BFClient[] loggedIn = activeClients().toArray(BFClient[]::new);
+        for (final BFClient client : loggedIn) {
             client.disconnect("Server is shutting down");
         }
-        for (BFClient client : loggedIn) {
+        for (final BFClient client : loggedIn) {
             client.connection().closeFuture().awaitUninterruptibly(1500);
         }
 
@@ -222,7 +223,7 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
         }
 
         serverChannel.close().awaitUninterruptibly();
-        
+
         signalManager.call(new NetSignal.ServerStopped(this));
     }
 

@@ -11,7 +11,7 @@ public class ClientboundAuroraLoginDetailsPacket implements IClientboundPacket {
 
     private ILoginDetails details;
 
-    public final ClientboundAuroraLoginDetailsPacket details(ILoginDetails details) {
+    public final ClientboundAuroraLoginDetailsPacket details(final ILoginDetails details) {
         this.details = details;
         return this;
     }

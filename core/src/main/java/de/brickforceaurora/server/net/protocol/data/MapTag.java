@@ -9,12 +9,12 @@ public enum MapTag implements IFlag {
     MEDAL(0x4),
     GLORY(0x8),
     ABUSE(0x10);
-    
+
     public static final FlagManager<MapTag> MANAGER = FlagManager.ofEnum(MapTag.class);
 
     private final int mask;
 
-    private MapTag(int mask) {
+    MapTag(final int mask) {
         this.mask = mask;
     }
 

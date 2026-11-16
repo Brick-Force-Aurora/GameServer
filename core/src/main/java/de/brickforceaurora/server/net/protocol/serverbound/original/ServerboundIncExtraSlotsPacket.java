@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundIncExtraSlotsPacket implements IServerboundPacket {
 
-	private long item;
-	private String itemCode;
+    private long item;
+    private String itemCode;
 
-	public final ServerboundIncExtraSlotsPacket item(long item) {
-		this.item = item;
-		return this;
-	}
+    public ServerboundIncExtraSlotsPacket item(final long item) {
+        this.item = item;
+        return this;
+    }
 
-	public final long item() {
-		return this.item;
-	}
+    public long item() {
+        return this.item;
+    }
 
-	public final ServerboundIncExtraSlotsPacket itemCode(String itemCode) {
-		this.itemCode = itemCode;
-		return this;
-	}
+    public ServerboundIncExtraSlotsPacket itemCode(final String itemCode) {
+        this.itemCode = itemCode;
+        return this;
+    }
 
-	public final String itemCode() {
-		return this.itemCode;
-	}
+    public String itemCode() {
+        return this.itemCode;
+    }
 
-	@Override
-	public int packetId() {
-		return 407;
-	}
+    @Override
+    public int packetId() {
+        return 407;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.item = buf.readLong();
-		this.itemCode = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.item = buf.readLong();
+        this.itemCode = buf.readString();
+    }
 }

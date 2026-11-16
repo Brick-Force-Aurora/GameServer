@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundGotCannonPacket implements IClientboundPacket {
 
-	private int shooter;
-	private int cannon;
+    private int shooter;
+    private int cannon;
 
-	public final ClientboundGotCannonPacket shooter(int shooter) {
-		this.shooter = shooter;
-		return this;
-	}
+    public ClientboundGotCannonPacket shooter(final int shooter) {
+        this.shooter = shooter;
+        return this;
+    }
 
-	public final int shooter() {
-		return this.shooter;
-	}
+    public int shooter() {
+        return this.shooter;
+    }
 
-	public final ClientboundGotCannonPacket cannon(int cannon) {
-		this.cannon = cannon;
-		return this;
-	}
+    public ClientboundGotCannonPacket cannon(final int cannon) {
+        this.cannon = cannon;
+        return this;
+    }
 
-	public final int cannon() {
-		return this.cannon;
-	}
+    public int cannon() {
+        return this.cannon;
+    }
 
-	@Override
-	public int packetId() {
-		return 163;
-	}
+    @Override
+    public int packetId() {
+        return 163;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.shooter);
-		buf.writeInt(this.cannon);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.shooter);
+        buf.writeInt(this.cannon);
+    }
 }

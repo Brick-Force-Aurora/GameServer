@@ -13,66 +13,67 @@ public final class ServerboundCreateRoomPacket implements IServerboundPacket {
     private int maxPlayers;
     private int[] parameters;
     private String alias;
-    public final ServerboundCreateRoomPacket type(RoomType type) {
+
+    public ServerboundCreateRoomPacket type(final RoomType type) {
         this.type = type;
         return this;
     }
 
-    public final RoomType type() {
+    public RoomType type() {
         return this.type;
     }
 
-    public final ServerboundCreateRoomPacket title(String title) {
+    public ServerboundCreateRoomPacket title(final String title) {
         this.title = title;
         return this;
     }
 
-    public final String title() {
+    public String title() {
         return this.title;
     }
 
-    public final ServerboundCreateRoomPacket type(boolean isLocked) {
+    public ServerboundCreateRoomPacket type(final boolean isLocked) {
         this.isLocked = isLocked;
         return this;
     }
 
-    public final boolean isLocked() {
+    public boolean isLocked() {
         return this.isLocked;
     }
 
-    public final ServerboundCreateRoomPacket password(String password) {
+    public ServerboundCreateRoomPacket password(final String password) {
         this.password = password;
         return this;
     }
 
-    public final String password() {
+    public String password() {
         return this.password;
     }
 
-    public final ServerboundCreateRoomPacket maxPlayers(int maxPlayers) {
+    public ServerboundCreateRoomPacket maxPlayers(final int maxPlayers) {
         this.maxPlayers = maxPlayers;
         return this;
     }
 
-    public final int maxPlayers() {
+    public int maxPlayers() {
         return this.maxPlayers;
     }
 
-    public final ServerboundCreateRoomPacket parameters(int[] parameters) {
+    public ServerboundCreateRoomPacket parameters(final int[] parameters) {
         this.parameters = parameters;
         return this;
     }
 
-    public final int[] parameters() {
+    public int[] parameters() {
         return this.parameters;
     }
 
-    public final ServerboundCreateRoomPacket alias(String alias) {
+    public ServerboundCreateRoomPacket alias(final String alias) {
         this.alias = alias;
         return this;
     }
 
-    public final String alias() {
+    public String alias() {
         return this.alias;
     }
 
@@ -82,7 +83,7 @@ public final class ServerboundCreateRoomPacket implements IServerboundPacket {
     }
 
     @Override
-    public final void read(PacketBuf buf) {
+    public void read(final PacketBuf buf) {
         this.type = RoomType.byId(buf.readInt());
         this.title = buf.readString();
         this.isLocked = buf.readBoolean();

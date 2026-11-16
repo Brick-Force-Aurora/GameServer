@@ -9,7 +9,7 @@ public final class NetSignal {
     }
 
     public static record ServerStarted(NetManager<?> netManager) implements ISignal {}
-    
+
     public static record ServerStopped(NetManager<?> netManager) implements ISignal {}
 
     public static record ClientConnected(NetManager<?> netManager, BFClient client) implements ISignal {}

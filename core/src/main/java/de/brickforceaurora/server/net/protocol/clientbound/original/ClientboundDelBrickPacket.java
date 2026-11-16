@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundDelBrickPacket implements IClientboundPacket {
 
-	private int val;
-	private int val2;
+    private int val;
+    private int val2;
 
-	public final ClientboundDelBrickPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ClientboundDelBrickPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	public final ClientboundDelBrickPacket val2(int val2) {
-		this.val2 = val2;
-		return this;
-	}
+    public ClientboundDelBrickPacket val2(final int val2) {
+        this.val2 = val2;
+        return this;
+    }
 
-	public final int val2() {
-		return this.val2;
-	}
+    public int val2() {
+        return this.val2;
+    }
 
-	@Override
-	public int packetId() {
-		return 16;
-	}
+    @Override
+    public int packetId() {
+        return 16;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.val);
-		buf.writeInt(this.val2);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.val);
+        buf.writeInt(this.val2);
+    }
 }

@@ -28,14 +28,14 @@ import me.lauriichan.maven.sourcemod.api.source.SourcePackage;
  */
 public class PacketRegistryGenerator implements ISourceGenerator {
 
-    public PacketRegistryGenerator(Properties properties) {
+    public PacketRegistryGenerator(final Properties properties) {
         System.out.println(properties.toString());
     }
 
     @Override
     public void generateSources(final SourcePackage root) {
         final SourcePackage protoRoot = root.getOrCreatePackage("de.brickforceaurora.server.net.protocol");
-        JavaClassSource registry = protoRoot.createClass("PacketRegistry");
+        final JavaClassSource registry = protoRoot.createClass("PacketRegistry");
         registry.addImport(Object2IntMap.class);
         registry.addImport(Object2IntMaps.class);
         registry.addImport(Object2IntArrayMap.class);
@@ -82,19 +82,20 @@ public class PacketRegistryGenerator implements ISourceGenerator {
                 return id;
             }
             """);
-        registry.addMethod("""
-            private static <P extends IPacket> void register(Object2IntArrayMap<Class<? extends IPacket>> packetIdMap, Int2ObjectArrayMap<Supplier<? extends P>> boundPackets, Supplier<? extends P> pktSupplier, Class<? extends IPacket> pktType) {
-                if (packetIdMap.containsKey(pktType)) {
-                    throw new IllegalArgumentException("Packet type '%s' is already registered".formatted(pktType.getName()));
+        registry.addMethod(
+            """
+                private static <P extends IPacket> void register(Object2IntArrayMap<Class<? extends IPacket>> packetIdMap, Int2ObjectArrayMap<Supplier<? extends P>> boundPackets, Supplier<? extends P> pktSupplier, Class<? extends IPacket> pktType) {
+                    if (packetIdMap.containsKey(pktType)) {
+                        throw new IllegalArgumentException("Packet type '%s' is already registered".formatted(pktType.getName()));
+                    }
+                    var packet = pktSupplier.get();
+                    if (packetIdMap.containsValue(packet.packetId())) {
+                        throw new IllegalArgumentException("There is already a packet registered with id '%s'!".formatted(packet.packetId()));
+                    }
+                    packetIdMap.put(pktType, packet.packetId());
+                    boundPackets.put(packet.packetId(), pktSupplier);
                 }
-                var packet = pktSupplier.get();
-                if (packetIdMap.containsValue(packet.packetId())) {
-                    throw new IllegalArgumentException("There is already a packet registered with id '%s'!".formatted(packet.packetId()));
-                }
-                packetIdMap.put(pktType, packet.packetId());
-                boundPackets.put(packet.packetId(), pktSupplier);
-            }
-            """);
+                """);
 
         registerPackets(registry, "Clientbound", protoRoot);
         registerPackets(registry, "Serverbound", protoRoot);
@@ -114,21 +115,23 @@ public class PacketRegistryGenerator implements ISourceGenerator {
             """);
     }
 
-    private void registerPackets(JavaClassSource registry, String name, SourcePackage protoRoot) {
-        StringBuilder builder = new StringBuilder("""
-            private static void register%1$s(Object2IntArrayMap<Class<? extends IPacket>> packetIdMap, Int2ObjectArrayMap<Supplier<? extends I%1$sPacket>> boundPackets) {
+    private void registerPackets(final JavaClassSource registry, final String name, final SourcePackage protoRoot) {
+        final StringBuilder builder = new StringBuilder(
             """
-            .formatted(name));
+                private static void register%1$s(Object2IntArrayMap<Class<? extends IPacket>> packetIdMap, Int2ObjectArrayMap<Supplier<? extends I%1$sPacket>> boundPackets) {
+                """
+                .formatted(name));
         forEachPacket(protoRoot.getDirectPackage(name.toLowerCase()), cls -> {
-            String clsName = cls.getQualifiedName();
-            builder.append("register").append("(packetIdMap, boundPackets, ").append(clsName).append("::new, ").append(clsName).append(".class);");
+            final String clsName = cls.getQualifiedName();
+            builder.append("register").append("(packetIdMap, boundPackets, ").append(clsName).append("::new, ").append(clsName)
+                .append(".class);");
         });
         System.out.println(builder.append('}').toString());
         registry.addMethod(builder.toString());
     }
 
-    private void forEachPacket(SourcePackage rootPkg, Consumer<JavaClassSource> pktConsumer) {
-        ObjectArrayList<SourcePackage> packageQueue = new ObjectArrayList<>();
+    private void forEachPacket(final SourcePackage rootPkg, final Consumer<JavaClassSource> pktConsumer) {
+        final ObjectArrayList<SourcePackage> packageQueue = new ObjectArrayList<>();
         packageQueue.push(rootPkg);
         SourcePackage pkg;
         while (!packageQueue.isEmpty()) {

@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundDelDropItemPacket implements IClientboundPacket {
 
-	private int itemSeq;
+    private int itemSeq;
 
-	public final ClientboundDelDropItemPacket itemSeq(int itemSeq) {
-		this.itemSeq = itemSeq;
-		return this;
-	}
+    public ClientboundDelDropItemPacket itemSeq(final int itemSeq) {
+        this.itemSeq = itemSeq;
+        return this;
+    }
 
-	public final int itemSeq() {
-		return this.itemSeq;
-	}
+    public int itemSeq() {
+        return this.itemSeq;
+    }
 
-	@Override
-	public int packetId() {
-		return 530;
-	}
+    @Override
+    public int packetId() {
+        return 530;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.itemSeq);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.itemSeq);
+    }
 }

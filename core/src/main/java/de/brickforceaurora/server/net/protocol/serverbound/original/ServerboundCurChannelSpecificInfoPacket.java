@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundCurChannelSpecificInfoPacket implements IServerboundPacket {
 
-	private int val;
+    private int val;
 
-	public final ServerboundCurChannelSpecificInfoPacket val(int val) {
-		this.val = val;
-		return this;
-	}
+    public ServerboundCurChannelSpecificInfoPacket val(final int val) {
+        this.val = val;
+        return this;
+    }
 
-	public final int val() {
-		return this.val;
-	}
+    public int val() {
+        return this.val;
+    }
 
-	@Override
-	public int packetId() {
-		return 477;
-	}
+    @Override
+    public int packetId() {
+        return 477;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.val = buf.readInt();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.val = buf.readInt();
+    }
 }

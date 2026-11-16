@@ -5,24 +5,24 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundEscapeActivePlayerPacket implements IServerboundPacket {
 
-	private boolean IsActive;
+    private boolean IsActive;
 
-	public final ServerboundEscapeActivePlayerPacket IsActive(boolean IsActive) {
-		this.IsActive = IsActive;
-		return this;
-	}
+    public ServerboundEscapeActivePlayerPacket IsActive(final boolean IsActive) {
+        this.IsActive = IsActive;
+        return this;
+    }
 
-	public final boolean IsActive() {
-		return this.IsActive;
-	}
+    public boolean IsActive() {
+        return this.IsActive;
+    }
 
-	@Override
-	public int packetId() {
-		return 525;
-	}
+    @Override
+    public int packetId() {
+        return 525;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.IsActive = buf.readBoolean();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.IsActive = buf.readBoolean();
+    }
 }

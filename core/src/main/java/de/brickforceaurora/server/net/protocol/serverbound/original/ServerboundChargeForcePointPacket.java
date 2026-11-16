@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ServerboundChargeForcePointPacket implements IServerboundPacket {
 
-	private long item;
-	private String code;
+    private long item;
+    private String code;
 
-	public final ServerboundChargeForcePointPacket item(long item) {
-		this.item = item;
-		return this;
-	}
+    public ServerboundChargeForcePointPacket item(final long item) {
+        this.item = item;
+        return this;
+    }
 
-	public final long item() {
-		return this.item;
-	}
+    public long item() {
+        return this.item;
+    }
 
-	public final ServerboundChargeForcePointPacket code(String code) {
-		this.code = code;
-		return this;
-	}
+    public ServerboundChargeForcePointPacket code(final String code) {
+        this.code = code;
+        return this;
+    }
 
-	public final String code() {
-		return this.code;
-	}
+    public String code() {
+        return this.code;
+    }
 
-	@Override
-	public int packetId() {
-		return 471;
-	}
+    @Override
+    public int packetId() {
+        return 471;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-		this.item = buf.readLong();
-		this.code = buf.readString();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.item = buf.readLong();
+        this.code = buf.readString();
+    }
 }

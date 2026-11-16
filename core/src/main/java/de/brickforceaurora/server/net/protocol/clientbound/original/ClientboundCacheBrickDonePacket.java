@@ -5,35 +5,35 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundCacheBrickDonePacket implements IClientboundPacket {
 
-	private int mapIndex;
-	private int skyboxIndex;
+    private int mapIndex;
+    private int skyboxIndex;
 
-	public final ClientboundCacheBrickDonePacket mapIndex(int mapIndex) {
-		this.mapIndex = mapIndex;
-		return this;
-	}
+    public ClientboundCacheBrickDonePacket mapIndex(final int mapIndex) {
+        this.mapIndex = mapIndex;
+        return this;
+    }
 
-	public final int mapIndex() {
-		return this.mapIndex;
-	}
+    public int mapIndex() {
+        return this.mapIndex;
+    }
 
-	public final ClientboundCacheBrickDonePacket skyboxIndex(int skyboxIndex) {
-		this.skyboxIndex = skyboxIndex;
-		return this;
-	}
+    public ClientboundCacheBrickDonePacket skyboxIndex(final int skyboxIndex) {
+        this.skyboxIndex = skyboxIndex;
+        return this;
+    }
 
-	public final int skyboxIndex() {
-		return this.skyboxIndex;
-	}
+    public int skyboxIndex() {
+        return this.skyboxIndex;
+    }
 
-	@Override
-	public int packetId() {
-		return 22;
-	}
+    @Override
+    public int packetId() {
+        return 22;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.mapIndex);
-		buf.writeInt(this.skyboxIndex);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.mapIndex);
+        buf.writeInt(this.skyboxIndex);
+    }
 }

@@ -5,7 +5,7 @@ public final class Flags<F> implements IFlags<F> {
     private final FlagManager<F> manager;
     private volatile int value;
 
-    Flags(FlagManager<F> manager) {
+    Flags(final FlagManager<F> manager) {
         this.manager = manager;
     }
 
@@ -16,13 +16,13 @@ public final class Flags<F> implements IFlags<F> {
 
     @Override
     public Flags<F> value(final int value) {
-        this.value = (value & manager.maxMask());
+        this.value = value & manager.maxMask();
         return this;
     }
 
     @Override
     public boolean is(final F flag) {
-        int mask = manager.mask(flag);
+        final int mask = manager.mask(flag);
         return (this.value & mask) == mask;
     }
 
@@ -40,11 +40,11 @@ public final class Flags<F> implements IFlags<F> {
     @SuppressWarnings("unchecked")
     public Flags<F> setAll(final boolean state, final F... flags) {
         if (state) {
-            for (F flag : flags) {
+            for (final F flag : flags) {
                 this.value |= manager.mask(flag);
             }
         } else {
-            for (F flag : flags) {
+            for (final F flag : flags) {
                 this.value &= ~manager.mask(flag);
             }
         }
@@ -53,12 +53,12 @@ public final class Flags<F> implements IFlags<F> {
 
     @Override
     public Flags<F> duplicate() {
-        return new Flags<F>(manager).value(value);
+        return new Flags<>(manager).value(value);
     }
 
     @Override
     public ImmutableFlags<F> immutable() {
-        return new ImmutableFlags<F>(manager, value);
+        return new ImmutableFlags<>(manager, value);
     }
 
     @Override

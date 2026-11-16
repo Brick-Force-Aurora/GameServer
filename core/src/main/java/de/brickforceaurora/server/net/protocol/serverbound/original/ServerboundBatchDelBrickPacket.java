@@ -16,13 +16,13 @@ public final class ServerboundBatchDelBrickPacket implements IServerboundPacket 
         return bricks;
     }
 
-	@Override
-	public int packetId() {
-		return 479;
-	}
+    @Override
+    public int packetId() {
+        return 479;
+    }
 
-	@Override
-	public final void read(PacketBuf buf) {
-	    this.bricks = buf.readIntArray();
-	}
+    @Override
+    public void read(final PacketBuf buf) {
+        this.bricks = buf.readIntArray();
+    }
 }

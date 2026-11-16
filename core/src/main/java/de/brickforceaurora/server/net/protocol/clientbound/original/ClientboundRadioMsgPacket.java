@@ -5,46 +5,46 @@ import de.brickforceaurora.server.net.protocol.PacketBuf;
 
 public final class ClientboundRadioMsgPacket implements IClientboundPacket {
 
-	private int clientId;
-	private int category;
-	private int message;
+    private int clientId;
+    private int category;
+    private int message;
 
-	public final ClientboundRadioMsgPacket clientId(int clientId) {
-		this.clientId = clientId;
-		return this;
-	}
+    public ClientboundRadioMsgPacket clientId(final int clientId) {
+        this.clientId = clientId;
+        return this;
+    }
 
-	public final int clientId() {
-		return this.clientId;
-	}
+    public int clientId() {
+        return this.clientId;
+    }
 
-	public final ClientboundRadioMsgPacket category(int category) {
-		this.category = category;
-		return this;
-	}
+    public ClientboundRadioMsgPacket category(final int category) {
+        this.category = category;
+        return this;
+    }
 
-	public final int category() {
-		return this.category;
-	}
+    public int category() {
+        return this.category;
+    }
 
-	public final ClientboundRadioMsgPacket message(int message) {
-		this.message = message;
-		return this;
-	}
+    public ClientboundRadioMsgPacket message(final int message) {
+        this.message = message;
+        return this;
+    }
 
-	public final int message() {
-		return this.message;
-	}
+    public int message() {
+        return this.message;
+    }
 
-	@Override
-	public int packetId() {
-		return 96;
-	}
+    @Override
+    public int packetId() {
+        return 96;
+    }
 
-	@Override
-	public final void write(PacketBuf buf) {
-		buf.writeInt(this.clientId);
-		buf.writeInt(this.category);
-		buf.writeInt(this.message);
-	}
+    @Override
+    public void write(final PacketBuf buf) {
+        buf.writeInt(this.clientId);
+        buf.writeInt(this.category);
+        buf.writeInt(this.message);
+    }
 }
