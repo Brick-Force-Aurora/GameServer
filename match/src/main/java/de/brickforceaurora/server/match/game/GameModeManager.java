@@ -20,7 +20,7 @@ public class GameModeManager {
 
     public GameModeManager(final SnowFrame<MatchServerApp> frame) {
         frame.extension(GameMode.class, true).callInstances(mode -> {
-            RoomType type = mode.roomType();
+            final RoomType type = mode.roomType();
             if (type == null || modes.containsKey(type)) {
                 frame.logger().error("Invalid or duplicate room type '{0}' for game mode '{1}'", type, mode.getClass().getName());
                 return;
@@ -30,7 +30,7 @@ public class GameModeManager {
         netListener = new GameNetListener(modes.values());
     }
 
-    public GameMode<?> modeByType(RoomType type) {
+    public GameMode<?> modeByType(final RoomType type) {
         return modes.get(type);
     }
 
@@ -42,11 +42,11 @@ public class GameModeManager {
 
         private final NetHandlerContainer container;
 
-        public GameNetListener(ObjectCollection<GameMode<?>> modes) {
-            ObjectArrayList<NetHandler<?>> handlers = new ObjectArrayList<>();
-            IntArrayList packetIds = new IntArrayList();
-            for (GameMode<?> mode : modes) {
-                for (GameNetHandlerContainer<?> container : mode.netHandlers()) {
+        public GameNetListener(final ObjectCollection<GameMode<?>> modes) {
+            final ObjectArrayList<NetHandler<?>> handlers = new ObjectArrayList<>();
+            final IntArrayList packetIds = new IntArrayList();
+            for (final GameMode<?> mode : modes) {
+                for (final GameNetHandlerContainer<?> container : mode.netHandlers()) {
                     container.handlers().forEach(handler -> {
                         if (packetIds.contains(handler.packetId())) {
                             return;
@@ -64,8 +64,8 @@ public class GameModeManager {
             return container;
         }
 
-        private void handlePacket(NetContext<?> context) {
-            Room room = context.client().attr(Room.ATTR_ROOM, Room.class);
+        private void handlePacket(final NetContext<?> context) {
+            final Room room = context.client().attr(Room.ATTR_ROOM, Room.class);
             if (room == null) {
                 // TODO: WHAT???
                 return;

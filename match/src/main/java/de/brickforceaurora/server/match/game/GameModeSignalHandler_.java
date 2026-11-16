@@ -13,7 +13,7 @@ public final class GameModeSignalHandler_ implements ISignalHandler {
 
     private final GameModeManager gameModeManager;
 
-    public GameModeSignalHandler_(SnowFrame<MatchServerApp> frame) {
+    public GameModeSignalHandler_(final SnowFrame<MatchServerApp> frame) {
         gameModeManager = frame.app().gameModeManager();
     }
 

@@ -35,30 +35,36 @@ import me.lauriichan.snowframe.extension.Extension;
 
 @Extension
 public class InventoryListener_ implements INetListener {
+    
+    private final MatchServerApp app;
+    
+    public InventoryListener_(MatchServerApp app) {
+        this.app = app;
+    }
 
     @PacketHandler
     public void onEquip(final NetContext<ServerboundEquipPacket> context) {
-        BFClient client = context.client();
-        Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
+        final BFClient client = context.client();
+        final Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
         if (accountId == null) {
             return;
         }
-        List<IClientboundPacket> packets = new ArrayList<>();
+        final List<IClientboundPacket> packets = new ArrayList<>();
         try {
             synchronized (client) {
-                UserRepository users = MatchServerApp.users();
-                List<InventoryItem> items = Inventories.inventory(client);
-                InventoryItem item = find(items, context.packet().seq());
-                ItemEntry entry = item == null ? null : ItemTable.of(item.code());
+                final UserRepository users = app.userRepository();
+                final List<InventoryItem> items = Inventories.inventory(app.userRepository(), client);
+                final InventoryItem item = find(items, context.packet().seq());
+                final ItemEntry entry = item == null ? null : ItemTable.of(item.code());
                 // Premium items can only be worn with a premium account
                 if (entry == null || !entry.wearable() || item.usage() != ItemUsage.UNEQUIP.id()
-                    || (item.premium() == 1 && !Inventories.hasPremium(items))) {
+                    || item.premium() == 1 && !Inventories.hasPremium(items)) {
                     return;
                 }
-                for (InventoryItem other : items) {
-                    ItemEntry otherEntry = ItemTable.of(other.code());
-                    if (other.id() == item.id() || other.usage() != ItemUsage.EQUIP.id() || otherEntry == null
-                        || !otherEntry.wearable() || !otherEntry.slot().equals(entry.slot())) {
+                for (final InventoryItem other : items) {
+                    final ItemEntry otherEntry = ItemTable.of(other.code());
+                    if (other.id() == item.id() || other.usage() != ItemUsage.EQUIP.id() || otherEntry == null || !otherEntry.wearable()
+                        || !otherEntry.slot().equals(entry.slot())) {
                         continue;
                     }
                     users.updateItem(other.withUsage(ItemUsage.UNEQUIP.id()));
@@ -68,7 +74,7 @@ public class InventoryListener_ implements INetListener {
                 packets.add(new ClientboundEquipPacket().clientId(client.id()).item(item.id()).code(item.code()));
                 Inventories.changed(client);
             }
-        } catch (DatabaseException exception) {
+        } catch (final DatabaseException exception) {
             context.manager().logger().error("Couldn't equip the item of {0}", exception, client);
             Inventories.changed(client);
             return;
@@ -78,16 +84,16 @@ public class InventoryListener_ implements INetListener {
 
     @PacketHandler
     public void onUnequip(final NetContext<ServerboundUnequipPacket> context) {
-        BFClient client = context.client();
-        Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
+        final BFClient client = context.client();
+        final Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
         if (accountId == null) {
             return;
         }
         try {
             synchronized (client) {
-                UserRepository users = MatchServerApp.users();
-                InventoryItem item = find(Inventories.inventory(client), context.packet().seq());
-                ItemEntry entry = item == null ? null : ItemTable.of(item.code());
+                final UserRepository users = app.userRepository();
+                final InventoryItem item = find(Inventories.inventory(app.userRepository(), client), context.packet().seq());
+                final ItemEntry entry = item == null ? null : ItemTable.of(item.code());
                 if (entry == null || !entry.wearable() || !entry.takeoffable() || item.usage() != ItemUsage.EQUIP.id()) {
                     return;
                 }
@@ -95,7 +101,7 @@ public class InventoryListener_ implements INetListener {
                 Inventories.changed(client);
                 sendToRoom(client, List.of(new ClientboundUnequipPacket().clientId(client.id()).item(item.id()).code(item.code())));
             }
-        } catch (DatabaseException exception) {
+        } catch (final DatabaseException exception) {
             context.manager().logger().error("Couldn't take off the item of {0}", exception, client);
             Inventories.changed(client);
         }
@@ -103,19 +109,19 @@ public class InventoryListener_ implements INetListener {
 
     @PacketHandler
     public void onSetWeaponSlot(final NetContext<ServerboundSetWeaponSlotPacket> context) {
-        BFClient client = context.client();
-        Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
-        int slot = context.packet().slot();
-        long weapon = context.packet().weapon();
+        final BFClient client = context.client();
+        final Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
+        final int slot = context.packet().slot();
+        final long weapon = context.packet().weapon();
         if (accountId == null || slot < 0 || slot >= 10) {
             return;
         }
-        List<IClientboundPacket> packets = new ArrayList<>();
+        final List<IClientboundPacket> packets = new ArrayList<>();
         try {
             synchronized (client) {
-                UserRepository users = MatchServerApp.users();
-                List<InventoryItem> items = Inventories.inventory(client);
-                InventoryItem item = weapon < 0 ? null : find(items, weapon);
+                final UserRepository users = app.userRepository();
+                final List<InventoryItem> items = Inventories.inventory(app.userRepository(), client);
+                final InventoryItem item = weapon < 0 ? null : find(items, weapon);
                 // The slots from 5 on are only for premium accounts
                 if (weapon >= 0 && slot >= 5 && !Inventories.hasPremium(items)) {
                     return;
@@ -124,7 +130,7 @@ public class InventoryListener_ implements INetListener {
                     || item.usage() > ItemUsage.EQUIP.id())) {
                     return;
                 }
-                for (InventoryItem other : items) {
+                for (final InventoryItem other : items) {
                     if (other.toolSlot() == slot && Inventories.isWeapon(other) && (item == null || other.id() != item.id())) {
                         users.updateItem(other.withToolSlot(-1));
                     }
@@ -140,7 +146,7 @@ public class InventoryListener_ implements INetListener {
                 }
                 Inventories.changed(client);
             }
-        } catch (DatabaseException exception) {
+        } catch (final DatabaseException exception) {
             context.manager().logger().error("Couldn't set the weapon slot of {0}", exception, client);
             Inventories.changed(client);
             return;
@@ -150,48 +156,49 @@ public class InventoryListener_ implements INetListener {
 
     @PacketHandler
     public void onClearWeaponSlots(final NetContext<ServerboundClearWeaponSlotPacket> context) {
-        BFClient client = context.client();
-        Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
+        final BFClient client = context.client();
+        final Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
         if (accountId == null) {
             return;
         }
         try {
             synchronized (client) {
-                UserRepository users = MatchServerApp.users();
-                for (InventoryItem item : Inventories.inventory(client)) {
+                final UserRepository users = app.userRepository();
+                for (final InventoryItem item : Inventories.inventory(app.userRepository(), client)) {
                     if (item.toolSlot() >= 0 && Inventories.isWeapon(item)) {
                         users.updateItem(item.withToolSlot(-1));
                     }
                 }
                 Inventories.changed(client);
             }
-        } catch (DatabaseException exception) {
+        } catch (final DatabaseException exception) {
             context.manager().logger().error("Couldn't clear the weapon slots of {0}", exception, client);
             Inventories.changed(client);
             return;
         }
-        client.send(new ClientboundWeaponSlotListPacket().slots(IntStream.range(0, 10).mapToObj(slot -> new ToolSlot(slot, -1L)).toArray(ToolSlot[]::new)));
+        client.send(new ClientboundWeaponSlotListPacket()
+            .slots(IntStream.range(0, 10).mapToObj(slot -> new ToolSlot(slot, -1L)).toArray(ToolSlot[]::new)));
     }
 
     @PacketHandler
     public void onSetShooterTool(final NetContext<ServerboundSetShooterToolPacket> context) {
-        BFClient client = context.client();
-        Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
-        int slot = context.packet().slot();
-        long tool = context.packet().tool();
+        final BFClient client = context.client();
+        final Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
+        final int slot = context.packet().slot();
+        final long tool = context.packet().tool();
         if (accountId == null || slot < 0 || slot >= 5) {
             return;
         }
-        List<IClientboundPacket> packets = new ArrayList<>();
+        final List<IClientboundPacket> packets = new ArrayList<>();
         try {
             synchronized (client) {
-                UserRepository users = MatchServerApp.users();
-                List<InventoryItem> items = Inventories.inventory(client);
-                InventoryItem item = tool < 0 ? null : find(items, tool);
+                final UserRepository users = app.userRepository();
+                final List<InventoryItem> items = Inventories.inventory(app.userRepository(), client);
+                final InventoryItem item = tool < 0 ? null : find(items, tool);
                 if (tool >= 0 && (item == null || !Inventories.isTool(item) || item.usage() == ItemUsage.DELETED.id())) {
                     return;
                 }
-                for (InventoryItem other : items) {
+                for (final InventoryItem other : items) {
                     if (other.toolSlot() == slot && Inventories.isTool(other) && (item == null || other.id() != item.id())) {
                         users.updateItem(other.withToolSlot(-1));
                     }
@@ -207,7 +214,7 @@ public class InventoryListener_ implements INetListener {
                 }
                 Inventories.changed(client);
             }
-        } catch (DatabaseException exception) {
+        } catch (final DatabaseException exception) {
             context.manager().logger().error("Couldn't set the action bar of {0}", exception, client);
             Inventories.changed(client);
             return;
@@ -217,31 +224,32 @@ public class InventoryListener_ implements INetListener {
 
     @PacketHandler
     public void onClearShooterTools(final NetContext<ServerboundClearShooterToolsPacket> context) {
-        BFClient client = context.client();
-        Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
+        final BFClient client = context.client();
+        final Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
         if (accountId == null) {
             return;
         }
         try {
             synchronized (client) {
-                UserRepository users = MatchServerApp.users();
-                for (InventoryItem item : Inventories.inventory(client)) {
+                final UserRepository users = app.userRepository();
+                for (final InventoryItem item : Inventories.inventory(app.userRepository(), client)) {
                     if (item.toolSlot() >= 0 && Inventories.isTool(item)) {
                         users.updateItem(item.withToolSlot(-1));
                     }
                 }
                 Inventories.changed(client);
             }
-        } catch (DatabaseException exception) {
+        } catch (final DatabaseException exception) {
             context.manager().logger().error("Couldn't clear the action bar of {0}", exception, client);
             Inventories.changed(client);
             return;
         }
-        client.send(new ClientboundShooterToolListPacket().slots(IntStream.range(0, 5).mapToObj(slot -> new ToolSlot(slot, -1L)).toArray(ToolSlot[]::new)));
+        client.send(new ClientboundShooterToolListPacket()
+            .slots(IntStream.range(0, 5).mapToObj(slot -> new ToolSlot(slot, -1L)).toArray(ToolSlot[]::new)));
     }
 
     private static InventoryItem find(final List<InventoryItem> items, final long id) {
-        for (InventoryItem item : items) {
+        for (final InventoryItem item : items) {
             if (item.id() == id) {
                 return item;
             }
@@ -250,8 +258,8 @@ public class InventoryListener_ implements INetListener {
     }
 
     private static void sendToRoom(final BFClient client, final List<IClientboundPacket> packets) {
-        IClientboundPacket[] array = packets.toArray(IClientboundPacket[]::new);
-        Room room = client.attr(Room.ATTR_ROOM, Room.class);
+        final IClientboundPacket[] array = packets.toArray(IClientboundPacket[]::new);
+        final Room room = client.attr(Room.ATTR_ROOM, Room.class);
         if (room == null) {
             client.send(array);
             return;

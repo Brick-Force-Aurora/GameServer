@@ -11,9 +11,18 @@ import de.brickforceaurora.server.net.INetListener;
 import de.brickforceaurora.server.net.NetContext;
 import de.brickforceaurora.server.net.PacketHandler;
 import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraNotificationPacket;
-import de.brickforceaurora.server.net.protocol.clientbound.original.*;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundCreateRoomPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundJoinPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundRoomListPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundTeamChangeFailPacket;
 import de.brickforceaurora.server.net.protocol.data.RoomStatus;
-import de.brickforceaurora.server.net.protocol.serverbound.original.*;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundCreateRoomPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundDelegateMasterPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundJoinPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundLeavePacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundRoomConfigPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundRoomListPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundTeamChangePacket;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.extension.Extension;
 
@@ -35,13 +44,13 @@ public class RoomListener_ implements INetListener {
 
     @PacketHandler
     public void onRoomConfig(final NetContext<ServerboundRoomConfigPacket> context) {
-        Room room = context.client().attr(Room.ATTR_ROOM, Room.class);
+        final Room room = context.client().attr(Room.ATTR_ROOM, Room.class);
         if (room == null) {
             // TODO: NO ROOM?????
             return;
         }
         if (room.type() != context.packet().type()) {
-            GameMode<?> mode = gameModeManager.modeByType(context.packet().type());
+            final GameMode<?> mode = gameModeManager.modeByType(context.packet().type());
             if (mode == null) {
                 context.client().send(new ClientboundAuroraNotificationPacket()
                     .message("The game mode '%s' is not yet supported".formatted(context.packet().type().modeName())));
@@ -54,15 +63,16 @@ public class RoomListener_ implements INetListener {
 
     @PacketHandler
     public void onRoomCreate(final NetContext<ServerboundCreateRoomPacket> context) {
-        Room room = context.client().attr(Room.ATTR_ROOM, Room.class);
+        final Room room = context.client().attr(Room.ATTR_ROOM, Room.class);
         if (room != null) {
             context.client()
                 .send(new ClientboundAuroraNotificationPacket().message("Please leave your room first before creating a new one."));
             return;
         }
-        GameMode<?> mode = gameModeManager.modeByType(context.packet().type());
+        final GameMode<?> mode = gameModeManager.modeByType(context.packet().type());
         if (mode == null) {
-            context.client().send(new ClientboundCreateRoomPacket().failure("The game mode '%s' is not yet supported".formatted(context.packet().type().modeName())));
+            context.client().send(new ClientboundCreateRoomPacket()
+                .failure("The game mode '%s' is not yet supported".formatted(context.packet().type().modeName())));
             return;
         }
         roomManager.createRoom(context.client(), newRoom -> {
@@ -71,7 +81,7 @@ public class RoomListener_ implements INetListener {
             newRoom.title(context.packet().title());
             newRoom.maxPlayers(context.packet().maxPlayers());
             newRoom.masterId(context.client().id());
-            String password = context.packet().password();
+            final String password = context.packet().password();
             newRoom.password(password == null || password.isEmpty() ? null : password);
             mode.handleRoomCreation(newRoom, context);
         });
@@ -79,13 +89,13 @@ public class RoomListener_ implements INetListener {
 
     @PacketHandler
     public void onJoinRoom(final NetContext<ServerboundJoinPacket> context) {
-        Room room = roomManager.roomById(context.packet().roomId());
+        final Room room = roomManager.roomById(context.packet().roomId());
         if (room == null) {
             context.client().send(new ClientboundJoinPacket().result(ClientboundJoinPacket.JoinResult.CANT_JOIN));
             return;
         }
         if (room.passwordLocked()) {
-            String str = context.packet().password();
+            final String str = context.packet().password();
             if (!str.equals(room.password())) {
                 context.client().send(new ClientboundJoinPacket().result(ClientboundJoinPacket.JoinResult.WRONG_PASSWORD));
                 return;
@@ -103,28 +113,22 @@ public class RoomListener_ implements INetListener {
 
     @PacketHandler
     public void onDelegateMasterRequest(final NetContext<ServerboundDelegateMasterPacket> context) {
-        BFClient client = context.client();
-        Room room = client.attr(Room.ATTR_ROOM, Room.class);
+        final BFClient client = context.client();
+        final Room room = client.attr(Room.ATTR_ROOM, Room.class);
         if (room == null || client.id() != room.masterId()) {
             return;
         }
 
-        int newMasterId = context.packet().newMaster();
+        final int newMasterId = context.packet().newMaster();
 
         roomManager.changeMaster(room, newMasterId);
     }
 
     @PacketHandler
     public void onTeamChange(final NetContext<ServerboundTeamChangePacket> context) {
-        BFClient client = context.client();
-        Room room = client.attr(Room.ATTR_ROOM, Room.class);
-        if (room == null) {
-            // The client waits for an answer
-            client.send(new ClientboundTeamChangeFailPacket().reason(0));
-            return;
-        }
-
-        if (!(room.mode() instanceof TeamGameMode<?> teamMode)) {
+        final BFClient client = context.client();
+        final Room room = client.attr(Room.ATTR_ROOM, Room.class);
+        if ((room == null) || !(room.mode() instanceof final TeamGameMode<?> teamMode)) {
             client.send(new ClientboundTeamChangeFailPacket().reason(0));
             return;
         }

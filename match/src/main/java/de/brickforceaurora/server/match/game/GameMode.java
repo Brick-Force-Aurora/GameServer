@@ -26,14 +26,15 @@ public abstract class GameMode<D extends GameData> implements IExtension {
         "rawtypes",
         "unchecked"
     })
-    public GameMode(SnowFrame<?> snowFrame, final Class<D> dataType, final RoomType roomType) {
+    public GameMode(final SnowFrame<?> snowFrame, final Class<D> dataType, final RoomType roomType) {
         this.dataType = dataType;
         this.roomType = roomType;
 
-        ObjectArrayList<GameNetHandlerContainer<D>> netHandlers = new ObjectArrayList<>();
-        Class<?> gameModeClass = getClass();
-        for (Class<? extends IGameNetListener> listenerClass : snowFrame.extension(IGameNetListener.class, false).extensionClasses()) {
-            GameTarget target = listenerClass.getDeclaredAnnotation(GameTarget.class);
+        final ObjectArrayList<GameNetHandlerContainer<D>> netHandlers = new ObjectArrayList<>();
+        final Class<?> gameModeClass = getClass();
+        for (final Class<? extends IGameNetListener> listenerClass : snowFrame.extension(IGameNetListener.class, false)
+            .extensionClasses()) {
+            final GameTarget target = listenerClass.getDeclaredAnnotation(GameTarget.class);
             if (target == null || target.value() == null || !target.value().isAssignableFrom(gameModeClass)
                 || !target.data().isAssignableFrom(dataType)) {
                 continue;
@@ -41,11 +42,11 @@ public abstract class GameMode<D extends GameData> implements IExtension {
             IGameNetListener listener;
             try {
                 listener = snowFrame.invoker().invoke(listenerClass, this);
-            } catch (Throwable e) {
+            } catch (final Throwable e) {
                 snowFrame.logger().error("Failed to create game mode listener '{0}'", e, listenerClass.getName());
                 continue;
             }
-            netHandlers.add((GameNetHandlerContainer<D>) listener.newContainer());
+            netHandlers.add(listener.newContainer());
         }
         this.netHandlers = ObjectLists.unmodifiable(netHandlers);
     }
@@ -57,29 +58,29 @@ public abstract class GameMode<D extends GameData> implements IExtension {
     public final RoomType roomType() {
         return roomType;
     }
-    
+
     final ObjectList<GameNetHandlerContainer<D>> netHandlers() {
         return netHandlers;
     }
 
-    public final void handlePacket(Room room, NetContext<?> context) {
-        GameData rawData = room.gameData();
+    public final void handlePacket(final Room room, final NetContext<?> context) {
+        final GameData rawData = room.gameData();
         if (!dataType.isInstance(rawData)) {
             // HUH WHAT
             return;
         }
-        D data = dataType.cast(rawData);
-        for (GameNetHandlerContainer<D> netHandler : netHandlers) {
+        final D data = dataType.cast(rawData);
+        for (final GameNetHandlerContainer<D> netHandler : netHandlers) {
             netHandler.handlePacket(room, data, context);
         }
     }
-    
+
     public abstract GameData createGameDataFor(final Room room);
-    
+
     public abstract void handleRoomCreation(final Room room, final NetContext<ServerboundCreateRoomPacket> context);
-    
+
     public abstract void handleRoomJoin(final NetManager<?> netManager, final Room room, final BFClient client);
-    
+
     public abstract void handleRoomUpdate(final Room room, final NetContext<ServerboundRoomConfigPacket> context);
 
     public abstract void handleRoomLeave(final Room room, final BFClient client);

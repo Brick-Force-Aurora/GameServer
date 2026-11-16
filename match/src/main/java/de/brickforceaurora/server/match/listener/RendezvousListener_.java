@@ -16,10 +16,10 @@ public class RendezvousListener_ implements INetListener {
 
     @PacketHandler
     public void onRendezvousPoint(final NetContext<ServerboundRandezvousPointPacket> context) {
-        BFClient client = context.client();
-        ServerboundRandezvousPointPacket packet = context.packet();
+        final BFClient client = context.client();
+        final ServerboundRandezvousPointPacket packet = context.packet();
 
-        PeerEndpoints endpoints = PeerEndpoints.validated(client, packet.localIp(), packet.localPort(), packet.remoteIp(),
+        final PeerEndpoints endpoints = PeerEndpoints.validated(client, packet.localIp(), packet.localPort(), packet.remoteIp(),
             packet.remotePort());
         client.attrSet(PeerEndpoints.ATTR_ENDPOINTS, endpoints);
         client.attrSet(RendezvousManager.ATTR_REPORTED, true);
@@ -27,7 +27,7 @@ public class RendezvousListener_ implements INetListener {
             endpoints.localPort(), endpoints.remoteIp(), endpoints.remotePort());
 
         // update endpoints
-        Room room = client.attr(Room.ATTR_ROOM, Room.class);
+        final Room room = client.attr(Room.ATTR_ROOM, Room.class);
         if (room != null) {
             room.broadcast(client, new ClientboundRendezvousPointPacket().clientId(client.id()).localIp(endpoints.localIp())
                 .localPort(endpoints.localPort()).remoteIp(endpoints.remoteIp()).remotePort(endpoints.remotePort()));

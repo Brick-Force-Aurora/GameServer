@@ -25,7 +25,7 @@ public final class Main {
         String jarName = null;
         try {
             jarName = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getName();
-        } catch (URISyntaxException _) {
+        } catch (final URISyntaxException _) {
         }
         JAR_FILE_NAME = jarName;
     }
@@ -51,7 +51,7 @@ public final class Main {
         }
 
         snowFrame.lifecycle().execute(SnowFrame.LIFECYCLE_CHAIN_STARTUP);
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown(), "ShutdownHandler"));
+        Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown, "ShutdownHandler"));
 
         final Thread console = new Thread(Main::listenToConsole, "Console");
         console.setDaemon(true);
@@ -63,17 +63,18 @@ public final class Main {
             String line;
             while ((line = reader.readLine()) != null) {
                 // Perodactyl uses /exit for soft shutdown
-                String command = line.trim().toLowerCase();
+                final String command = line.trim().toLowerCase();
                 switch (command.startsWith("/") ? command.substring(1) : command) {
                 case "stop", "shutdown", "exit", "quit" -> System.exit(0);
-                default -> {}
+                default -> {
+                }
                 }
             }
-        } catch (IOException _) {
+        } catch (final IOException _) {
             // No console attached
         }
     }
-    
+
     public static Version version() {
         return version;
     }
@@ -90,7 +91,7 @@ public final class Main {
         try {
             snowFrame.lifecycle().execute(SnowFrame.LIFECYCLE_CHAIN_SHUTDOWN);
         } finally {
-            if (snowFrame.logger() instanceof FileLogger fileLogger) {
+            if (snowFrame.logger() instanceof final FileLogger fileLogger) {
                 fileLogger.close();
             }
         }

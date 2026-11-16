@@ -1,7 +1,6 @@
 package de.brickforceaurora.server.match;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
@@ -16,7 +15,6 @@ import de.brickforceaurora.server.net.BrickForceServer;
 import de.brickforceaurora.server.net.login.ClaimPasswordLoginHandler;
 import de.brickforceaurora.server.net.login.ILoginHandler;
 import de.brickforceaurora.server.util.AnsiSysOutLogger;
-import me.lauriichan.laylib.logger.ISimpleLogger;
 import me.lauriichan.snowframe.ConfigModule;
 import me.lauriichan.snowframe.ISnowFrameApp;
 import me.lauriichan.snowframe.SnowFrame;
@@ -36,8 +34,8 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
 
         // TODO: Do actual command line parsing
         final FileLogger logger = new FileLogger(new File("logs"), AnsiSysOutLogger.INSTANCE);
-        logger.setDebug(Arrays.stream(args).anyMatch(str -> "--debug".equalsIgnoreCase(str)));
-        logger.setTracking(Arrays.stream(args).anyMatch(str -> "--trace".equalsIgnoreCase(str)));
+        logger.setDebug(Arrays.stream(args).anyMatch("--debug"::equalsIgnoreCase));
+        logger.setTracking(Arrays.stream(args).anyMatch("--trace"::equalsIgnoreCase));
 
         return snowFrame = SnowFrame.builder(new MatchServerApp()).logger(logger).build();
     }
@@ -46,84 +44,64 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
         return snowFrame;
     }
 
-    public static MatchServerApp app() {
-        return snowFrame.app();
-    }
-
-    public static ISimpleLogger logger() {
-        return snowFrame.logger();
-    }
-
-    public static Database database() {
-        return snowFrame.app().database;
-    }
-
-    public static UserRepository users() {
-        return snowFrame.app().users;
-    }
-
-    private Database database;
-    private UserRepository users;
-
     private HostConfig config;
 
     private RoomManager roomManager;
     private GameModeManager gameModeManager;
 
+    private Database database;
+    private UserRepository userRepository;
+
     private BrickForceServer<MatchServerApp> server;
     private ILoginHandler loginHandler;
 
     @Override
-    public void setupLifecycle(LifecycleBuilder<MatchServerApp> builder) {
+    public void setupLifecycle(final LifecycleBuilder<MatchServerApp> builder) {
         builder.startupChain().newPhase("server-setup", true).newPhase("server-start", true);
     }
 
     @Override
-    public void registerLifecycle(Lifecycle<MatchServerApp> lifecycle) {
+    public void registerLifecycle(final Lifecycle<MatchServerApp> lifecycle) {
         lifecycle.startupChain().register("load", Stage.PRE, frame -> {
             frame.resourceManager().register("config", Paths.get("config"));
             frame.resourceManager().register("data", Paths.get("data"));
         }).register("ready", Stage.MAIN, frame -> {
             config = frame.module(ConfigModule.class).manager().config(HostConfig.class);
-            logger().info("Server host from config: {0}:{1}", config.host(), config.port());
+            frame.logger().info("Server host from config: {0}:{1}", config.host(), config.port());
             roomManager = new RoomManager();
             frame.invoker().addExtra(roomManager);
             gameModeManager = new GameModeManager(frame);
         });
         lifecycle.startupChain().register("server-setup", Stage.MAIN, _ -> {
-            
+
         });
         lifecycle.startupChain().register("server-start", Stage.PRE, frame -> {
-            server = new BrickForceServer<>(frame, this);
             database = new Database(Paths.get(frame.resource("data://users.db").getPath()));
-            users = new UserRepository(database);
-            loginHandler = new ClaimPasswordLoginHandler(server.netManager(), users, new LoginRepository(database));
+            userRepository = new UserRepository(database);
+            server = new BrickForceServer<>(frame, this);
+            loginHandler = new ClaimPasswordLoginHandler(server.netManager(), userRepository, new LoginRepository(database));
         }).register("server-start", Stage.MAIN, _ -> {
             server.open();
         });
-        lifecycle.shutdownChain().register("shutdown", Stage.PRE, _ -> {
+        lifecycle.shutdownChain().register("shutdown", Stage.PRE, frame -> {
             if (server == null) {
                 return;
             }
-            try {
-                server.close();
-                logger().info("Server stopped");
-            } catch (Exception exception) {
-                logger().error("Failed to stop the server", exception);
-            }
-        }).register("shutdown", Stage.POST, _ -> {
+            server.close();
+            frame.logger().info("Server closed");
+        }).register("shutdown", Stage.POST, frame -> {
             if (database != null) {
                 database.close();
-                logger().info("Database closed");
+                frame.logger().info("Database closed");
             }
         });
     }
-    
+
     @Override
     public String host() {
         return config.host();
     }
-    
+
     @Override
     public int port() {
         return config.port();
@@ -138,10 +116,18 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
     public ILoginHandler loginHandler() {
         return loginHandler;
     }
-    
+
     @Override
     public BrickForceServer<?> server() {
         return server;
+    }
+
+    public Database database() {
+        return database;
+    }
+
+    public UserRepository userRepository() {
+        return userRepository;
     }
 
     public RoomManager roomManager() {

@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 @Target(TYPE)
 public @interface GameTarget {
 
+    @SuppressWarnings("rawtypes")
     Class<? extends GameMode> value();
 
     Class<? extends GameData> data() default GameData.class;

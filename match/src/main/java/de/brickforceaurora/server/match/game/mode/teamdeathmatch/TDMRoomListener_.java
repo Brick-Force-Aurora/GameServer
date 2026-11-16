@@ -14,11 +14,56 @@ import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.NetContext;
 import de.brickforceaurora.server.net.PacketHandler;
 import de.brickforceaurora.server.net.protocol.IClientboundPacket;
-import de.brickforceaurora.server.net.protocol.clientbound.original.*;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundAssistCountPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundBreakIntoPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundChgDoorStatusPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundDeathCountPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundDeselectWantedPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundDestroyBrickPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundDestroyedBrickPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundDropItemPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundGetCannonPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundGetTrainPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundKillCountPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundKillLogPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundKnowWantedPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundLevelupEventPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundLoadCompletePacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundLoadStartPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundMatchCountdownPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundPToPCompletePacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundRadioMsgPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundRespawnTicketPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundResultDonePacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundSelectWantedPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundSlotLockPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundStartPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundStartingPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundTeamScorePacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundTimerPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundUpdateRoomPacket;
 import de.brickforceaurora.server.net.protocol.data.ClientStatus;
 import de.brickforceaurora.server.net.protocol.data.DamageEntry;
 import de.brickforceaurora.server.net.protocol.data.RoomStatus;
-import de.brickforceaurora.server.net.protocol.serverbound.original.*;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundAcceptApplicantPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundBreakIntoPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundDestroyBrickPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundInflictedDamagePacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundKillLogPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundLevelupEventPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundLoadCompletePacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundMatchCountdownPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundPToPCompletePacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundRadioMsgPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundRespawnTicketPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundResultDonePacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundResumeRoomPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundSerialBonusPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundSlotLockPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundStackPointPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundStartPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundTeamScorePacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundTimerPacket;
 import me.lauriichan.snowframe.extension.Extension;
 
 @Extension
@@ -27,18 +72,18 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
 
     private final TeamDeathMatchMode mode;
 
-    public TDMRoomListener_(TeamDeathMatchMode mode) {
+    public TDMRoomListener_(final TeamDeathMatchMode mode) {
         this.mode = mode;
     }
 
     @PacketHandler
-    public void handleMyExamplePacket(Room room, TDMData data, NetContext<ServerboundAcceptApplicantPacket> context) {
+    public void handleMyExamplePacket(final Room room, final TDMData data, final NetContext<ServerboundAcceptApplicantPacket> context) {
 
     }
 
     @PacketHandler
-    public void onStart(Room room, TDMData data, NetContext<ServerboundStartPacket> context) {
-        BFClient client = context.client();
+    public void onStart(final Room room, final TDMData data, final NetContext<ServerboundStartPacket> context) {
+        final BFClient client = context.client();
         if (client.id() != room.masterId()) {
             client.send(new ClientboundStartPacket().result(-2));
             return;
@@ -47,7 +92,7 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
             // Already started
             return;
         }
-        int remain = context.packet().remain();
+        final int remain = context.packet().remain();
         if (remain != 0) {
             // Countdown tick or cancel (negative)
             room.broadcast(new ClientboundStartingPacket().remain(remain < 0 ? -1 : remain));
@@ -57,7 +102,7 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
         room.broadcast(new ClientboundStartingPacket().remain(0), new ClientboundStartPacket().result(0));
         // Everyone waits for each other
         data.resetMatch();
-        for (BFClient member : room.clients().toArray(new BFClient[0])) {
+        for (final BFClient member : room.clients().toArray(new BFClient[0])) {
             data.registerPlayer(member.id(), TeamGameData.isRed(slotOf(member)), member.name());
             room.broadcast(new ClientboundLoadStartPacket().clientId(member.id()));
             member.send(new ClientboundRespawnTicketPacket().ticket(data.nextTicket(slotOf(member))));
@@ -68,13 +113,13 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
     }
 
     @PacketHandler
-    public void onRespawnTicket(Room room, TDMData data, NetContext<ServerboundRespawnTicketPacket> context) {
+    public void onRespawnTicket(final Room room, final TDMData data, final NetContext<ServerboundRespawnTicketPacket> context) {
         if (room.status() != RoomStatus.PLAYING) {
             return;
         }
         synchronized (data) {
             // The player asks for a ticket as soon as it respawns
-            PlayerStats stats = data.stats(context.client().id());
+            final PlayerStats stats = data.stats(context.client().id());
             if (stats != null) {
                 stats.alive(true);
             }
@@ -83,13 +128,13 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
     }
 
     @PacketHandler
-    public void onTeamScore(Room room, TDMData data, NetContext<ServerboundTeamScorePacket> context) {
+    public void onTeamScore(final Room room, final TDMData data, final NetContext<ServerboundTeamScorePacket> context) {
         context.client().send(new ClientboundTeamScorePacket().redScore(data.redScore()).blueScore(data.blueScore()));
     }
 
     @PacketHandler
-    public void onBreakInto(Room room, TDMData data, NetContext<ServerboundBreakIntoPacket> context) {
-        BFClient client = context.client();
+    public void onBreakInto(final Room room, final TDMData data, final NetContext<ServerboundBreakIntoPacket> context) {
+        final BFClient client = context.client();
         if (room.status() != RoomStatus.PLAYING || !data.running()) {
             client.send(new ClientboundBreakIntoPacket().result(-2));
             return;
@@ -98,15 +143,15 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
             client.send(new ClientboundBreakIntoPacket().result(-1));
             return;
         }
-        int slot = slotOf(client);
+        final int slot = slotOf(client);
         data.registerPlayer(client.id(), TeamGameData.isRed(slot), client.name());
 
         // Everything the player missed since the match started
-        List<IClientboundPacket> state = new ArrayList<>();
+        final List<IClientboundPacket> state = new ArrayList<>();
         state.add(new ClientboundBreakIntoPacket().result(0));
         state.add(new ClientboundRespawnTicketPacket().ticket(data.nextTicket(slot)));
         state.add(new ClientboundTeamScorePacket().redScore(data.redScore()).blueScore(data.blueScore()));
-        for (PlayerStats stats : data.allStats()) {
+        for (final PlayerStats stats : data.allStats()) {
             state.add(new ClientboundKillCountPacket().clientId(stats.clientId()).kill(stats.kill()));
             state.add(new ClientboundDeathCountPacket().clientId(stats.clientId()).death(stats.death()));
             state.add(new ClientboundAssistCountPacket().clientId(stats.clientId()).assist(stats.assist()).score(stats.score()));
@@ -116,7 +161,7 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
         data.doors().forEach(door -> state.add(new ClientboundChgDoorStatusPacket().door(door.id()).status((byte) (door.open() ? 1 : 0))));
         data.cannons().forEach(cannon -> state.add(new ClientboundGetCannonPacket().shooter(cannon.clientId()).cannon(cannon.object())));
         data.trains().forEach(train -> state.add(new ClientboundGetTrainPacket().shooter(train.clientId()).train(train.object())));
-        int[] wanted = data.allStats().stream().filter(PlayerStats::wanted).mapToInt(PlayerStats::clientId).toArray();
+        final int[] wanted = data.allStats().stream().filter(PlayerStats::wanted).mapToInt(PlayerStats::clientId).toArray();
         if (wanted.length > 0) {
             state.add(new ClientboundKnowWantedPacket().clientIds(wanted));
         }
@@ -128,11 +173,11 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
     }
 
     @PacketHandler
-    public void onResultDone(Room room, TDMData data, NetContext<ServerboundResultDonePacket> context) {
+    public void onResultDone(final Room room, final TDMData data, final NetContext<ServerboundResultDonePacket> context) {
         if (room.status() != RoomStatus.MATCH_END) {
             return;
         }
-        BFClient client = context.client();
+        final BFClient client = context.client();
         client.attrSet(Room.ATTR_STATUS, ClientStatus.WAITING);
         room.broadcast(new ClientboundResultDonePacket().clientId(client.id()));
         if (data.resultDone(client.id())) {
@@ -141,17 +186,17 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
     }
 
     @PacketHandler
-    public void onKillLog(Room room, TDMData data, NetContext<ServerboundKillLogPacket> context) {
-        BFClient reporter = context.client();
-        ServerboundKillLogPacket packet = context.packet();
+    public void onKillLog(final Room room, final TDMData data, final NetContext<ServerboundKillLogPacket> context) {
+        final BFClient reporter = context.client();
+        final ServerboundKillLogPacket packet = context.packet();
         // The victim reports its own death
         if (room.status() != RoomStatus.PLAYING || packet.victimType() != 0 || packet.victim() != reporter.id()) {
             return;
         }
-        List<IClientboundPacket> packets = new ArrayList<>();
+        final List<IClientboundPacket> packets = new ArrayList<>();
         boolean goalReached;
         synchronized (data) {
-            PlayerStats victim = data.stats(reporter.id());
+            final PlayerStats victim = data.stats(reporter.id());
             if (!data.running() || victim == null || !victim.alive()) {
                 return;
             }
@@ -159,11 +204,11 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
             victim.addDeath();
             victim.resetStreak();
 
-            PlayerStats killer = packet.killerType() == 0 ? data.stats(packet.killer()) : null;
-            boolean credited = killer != null && killer != victim && killer.red() != victim.red();
+            final PlayerStats killer = packet.killerType() == 0 ? data.stats(packet.killer()) : null;
+            final boolean credited = killer != null && killer != victim && killer.red() != victim.red();
 
             packets.add(new ClientboundKillLogPacket().killerType(packet.killerType()).killer(packet.killer())
-                    .victimType(packet.victimType()).victim(packet.victim()).weaponBy(packet.weaponBy()).hitpart(packet.hitpart()));
+                .victimType(packet.victimType()).victim(packet.victim()).weaponBy(packet.weaponBy()).hitpart(packet.hitpart()));
             if (victim.wanted()) {
                 victim.wanted(false);
                 packets.add(new ClientboundDeselectWantedPacket().clientId(victim.clientId()));
@@ -183,10 +228,10 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
             }
             packets.add(new ClientboundDeathCountPacket().clientId(victim.clientId()).death(victim.death()));
             if (credited) {
-                for (DamageEntry entry : packet.damageLog()) {
-                    PlayerStats attacker = data.stats(entry.clientId());
+                for (final DamageEntry entry : packet.damageLog()) {
+                    final PlayerStats attacker = data.stats(entry.clientId());
                     if (attacker == null || attacker == killer || attacker == victim || attacker.red() == victim.red()
-                            || entry.damage() < TdmScoring.MIN_ASSIST_DAMAGE) {
+                        || entry.damage() < TdmScoring.MIN_ASSIST_DAMAGE) {
                         continue;
                     }
                     attacker.addAssist();
@@ -206,15 +251,15 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
     }
 
     @PacketHandler
-    public void onInflictedDamage(Room room, TDMData data, NetContext<ServerboundInflictedDamagePacket> context) {
+    public void onInflictedDamage(final Room room, final TDMData data, final NetContext<ServerboundInflictedDamagePacket> context) {
         long total = 0;
-        for (DamageEntry entry : context.packet().damage()) {
+        for (final DamageEntry entry : context.packet().damage()) {
             if (entry.damage() > 0) {
                 total += entry.damage();
             }
         }
         synchronized (data) {
-            PlayerStats stats = data.stats(context.client().id());
+            final PlayerStats stats = data.stats(context.client().id());
             if (stats != null && data.running()) {
                 stats.addDamage((int) Math.min(total, Integer.MAX_VALUE));
             }
@@ -222,14 +267,14 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
     }
 
     @PacketHandler
-    public void onSerialBonus(Room room, TDMData data, NetContext<ServerboundSerialBonusPacket> context) {
-        int bonus = context.packet().bonus();
+    public void onSerialBonus(final Room room, final TDMData data, final NetContext<ServerboundSerialBonusPacket> context) {
+        final int bonus = context.packet().bonus();
         if (room.status() != RoomStatus.PLAYING || bonus <= 0 || bonus > TdmScoring.MAX_SERIAL_BONUS) {
             return;
         }
         IClientboundPacket update;
         synchronized (data) {
-            PlayerStats stats = data.stats(context.client().id());
+            final PlayerStats stats = data.stats(context.client().id());
             if (stats == null || !data.running()) {
                 return;
             }
@@ -240,9 +285,9 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
     }
 
     @PacketHandler
-    public void onStackPoint(Room room, TDMData data, NetContext<ServerboundStackPointPacket> context) {
+    public void onStackPoint(final Room room, final TDMData data, final NetContext<ServerboundStackPointPacket> context) {
         synchronized (data) {
-            PlayerStats stats = data.stats(context.client().id());
+            final PlayerStats stats = data.stats(context.client().id());
             if (stats != null && data.running()) {
                 stats.addPlayMinute();
             }
@@ -250,11 +295,11 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
     }
 
     @PacketHandler
-    public void onTimer(Room room, TDMData data, NetContext<ServerboundTimerPacket> context) {
-        ServerboundTimerPacket packet = context.packet();
+    public void onTimer(final Room room, final TDMData data, final NetContext<ServerboundTimerPacket> context) {
+        final ServerboundTimerPacket packet = context.packet();
         // The time is the one of the master, the others adjust to it
         if (room.status() != RoomStatus.PLAYING || context.client().id() != room.masterId() || packet.remainTime() < 0
-                || packet.playTime() < 0) {
+            || packet.playTime() < 0) {
             return;
         }
         data.updateTime(packet.remainTime(), packet.playTime());
@@ -265,29 +310,29 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
     }
 
     @PacketHandler
-    public void onDestroyBrick(Room room, TDMData data, NetContext<ServerboundDestroyBrickPacket> context) {
+    public void onDestroyBrick(final Room room, final TDMData data, final NetContext<ServerboundDestroyBrickPacket> context) {
         if (room.status() != RoomStatus.PLAYING || data.stats(context.client().id()) == null) {
             return;
         }
-        int brick = context.packet().brick();
+        final int brick = context.packet().brick();
         // Everyone gets it, even the one who destroyed the brick
         if (data.destroyBrick(brick)) {
             room.broadcast(new ClientboundDestroyBrickPacket().brick(brick));
         }
     }
 
-    private static ClientboundAssistCountPacket scorePacket(PlayerStats stats) {
+    private static ClientboundAssistCountPacket scorePacket(final PlayerStats stats) {
         return new ClientboundAssistCountPacket().clientId(stats.clientId()).assist(stats.assist()).score(stats.score());
     }
 
     @PacketHandler
     public void onSlotLock(final Room room, final TDMData data, final NetContext<ServerboundSlotLockPacket> context) {
-        BFClient client = context.client();
+        final BFClient client = context.client();
         if (client.id() != room.masterId() || room.status() != RoomStatus.WAITING) {
             return;
         }
-        int slot = context.packet().slot();
-        boolean locked = context.packet().lck() != 0;
+        final int slot = context.packet().slot();
+        final boolean locked = context.packet().lck() != 0;
         if (!room.lockSlot(slot, locked)) {
             return;
         }
@@ -296,9 +341,9 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
 
     @PacketHandler
     public void onRadio(final Room room, final TDMData data, final NetContext<ServerboundRadioMsgPacket> context) {
-        BFClient client = context.client();
-        int category = context.packet().category();
-        int message = context.packet().msg();
+        final BFClient client = context.client();
+        final int category = context.packet().category();
+        final int message = context.packet().msg();
         if (category < 0 || category > 1000 || message < 0 || message > 1000) {
             return;
         }
@@ -307,31 +352,31 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
 
     @PacketHandler
     public void onLevelupEvent(final Room room, final TDMData data, final NetContext<ServerboundLevelupEventPacket> context) {
-        BFClient client = context.client();
-        UserProfile profile = client.attr(ClientListener.ATTR_PROFILE, UserProfile.class);
+        final BFClient client = context.client();
+        final UserProfile profile = client.attr(ClientListener.ATTR_PROFILE, UserProfile.class);
         if (profile == null) {
             return;
         }
-        room.broadcast(new ClientboundLevelupEventPacket().eventType((byte)0).clientId(client.id()).xp(profile.xp()));
+        room.broadcast(new ClientboundLevelupEventPacket().eventType((byte) 0).clientId(client.id()).xp(profile.xp()));
     }
 
     private static void sendToTeam(final Room room, final BFClient client, final IClientboundPacket packet) {
-        boolean teams = room.gameData() instanceof TeamGameData;
-        boolean red = TeamGameData.isRed(slotOf(client));
-        for (BFClient member : room.clients().toArray(new BFClient[0])) {
+        final boolean teams = room.gameData() instanceof TeamGameData;
+        final boolean red = TeamGameData.isRed(slotOf(client));
+        for (final BFClient member : room.clients().toArray(new BFClient[0])) {
             if (!teams || TeamGameData.isRed(slotOf(member)) == red) {
                 member.send(packet);
             }
         }
     }
 
-    private static int slotOf(BFClient client) {
-        Integer slot = client.attr(Room.ATTR_SLOT, Integer.class);
+    private static int slotOf(final BFClient client) {
+        final Integer slot = client.attr(Room.ATTR_SLOT, Integer.class);
         return slot == null ? 0 : slot;
     }
 
     @PacketHandler
-    public void onLoadComplete(Room room, TDMData data, NetContext<ServerboundLoadCompletePacket> context) {
+    public void onLoadComplete(final Room room, final TDMData data, final NetContext<ServerboundLoadCompletePacket> context) {
         if (room.status() != RoomStatus.PLAYING) {
             return;
         }
@@ -339,7 +384,7 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
     }
 
     @PacketHandler
-    public void onPeerToPeerComplete(Room room, TDMData data, NetContext<ServerboundPToPCompletePacket> context) {
+    public void onPeerToPeerComplete(final Room room, final TDMData data, final NetContext<ServerboundPToPCompletePacket> context) {
         if (room.status() != RoomStatus.PLAYING) {
             return;
         }
@@ -347,7 +392,7 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
     }
 
     @PacketHandler
-    public void onMatchCountdown(Room room, TDMData data, NetContext<ServerboundMatchCountdownPacket> context) {
+    public void onMatchCountdown(final Room room, final TDMData data, final NetContext<ServerboundMatchCountdownPacket> context) {
         if (room.status() != RoomStatus.PLAYING || context.client().id() != room.masterId()) {
             return;
         }
@@ -355,11 +400,11 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
     }
 
     @PacketHandler
-    public void onResumeRoom(Room room, TDMData data, NetContext<ServerboundResumeRoomPacket> context) {
+    public void onResumeRoom(final Room room, final TDMData data, final NetContext<ServerboundResumeRoomPacket> context) {
         if (context.client().id() != room.masterId()) {
             return;
         }
-        RoomStatus status = RoomStatus.byId(context.packet().nextStatus());
+        final RoomStatus status = RoomStatus.byId(context.packet().nextStatus());
         if (status == null || status == room.status()) {
             return;
         }

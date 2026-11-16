@@ -33,11 +33,11 @@ public final class GameModeNetListenerTransformer implements ISourceTransformer 
     @Override
     public void transform(final JavaSource<?> source) {
         final JavaClassSource clazz = (JavaClassSource) source;
-        
+
         String gameDataType = clazz.getInterfaces().stream().filter(intf -> intf.startsWith(INET_LISTENER_TYPE)).findFirst().orElseThrow();
         gameDataType = gameDataType.substring(INET_LISTENER_TYPE.length() + 1);
         gameDataType = gameDataType.substring(0, gameDataType.length() - 1);
-        
+
         StringBuilder containerBuilder = new StringBuilder("""
             @SuppressWarnings("unchecked")
             @Override
@@ -47,7 +47,7 @@ public final class GameModeNetListenerTransformer implements ISourceTransformer 
         int amount = 0;
         for (final MethodSource<JavaClassSource> method : clazz.getMethods()) {
             if (!method.hasAnnotation(PacketHandler.class)
-                || (!method.getReturnType().isType(void.class) && !method.getReturnType().isType(Void.class))) {
+                || !method.getReturnType().isType(void.class) && !method.getReturnType().isType(Void.class)) {
                 continue;
             }
             final List<ParameterSource<JavaClassSource>> params = method.getParameters();
@@ -72,8 +72,8 @@ public final class GameModeNetListenerTransformer implements ISourceTransformer 
             if (amount++ != 0) {
                 containerBuilder.append(",");
             }
-            containerBuilder.append("\n\t\tnew GameNetHandler<").append(gameDataType).append(", ").append(packetType.getQualifiedName()).append(">(").append(packetType.getQualifiedName()).append(".class, this::")
-                .append(method.getName()).append(')');
+            containerBuilder.append("\n\t\tnew GameNetHandler<").append(gameDataType).append(", ").append(packetType.getQualifiedName())
+                .append(">(").append(packetType.getQualifiedName()).append(".class, this::").append(method.getName()).append(')');
         }
         if (amount == 0) {
             return;

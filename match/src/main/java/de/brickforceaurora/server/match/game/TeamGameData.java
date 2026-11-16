@@ -30,7 +30,7 @@ public abstract class TeamGameData extends MatchGameData {
         blueTickets = 0;
     }
 
-    public synchronized int nextTicket(int slot) {
+    public synchronized int nextTicket(final int slot) {
         return isRed(slot) ? redTickets++ : blueTickets++;
     }
 

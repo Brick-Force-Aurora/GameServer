@@ -54,17 +54,17 @@ public abstract class MatchGameData extends GameData {
     }
 
     public synchronized PlayerStats registerPlayer(final int clientId, final boolean red, final String nickname) {
-        PlayerStats existing = stats(clientId);
+        final PlayerStats existing = stats(clientId);
         if (existing != null) {
             return existing;
         }
-        PlayerStats created = new PlayerStats(clientId, red, nickname);
+        final PlayerStats created = new PlayerStats(clientId, red, nickname);
         stats.add(created);
         return created;
     }
 
     public synchronized PlayerStats stats(final int clientId) {
-        for (PlayerStats entry : stats) {
+        for (final PlayerStats entry : stats) {
             if (entry.clientId() == clientId) {
                 return entry;
             }
@@ -90,10 +90,7 @@ public abstract class MatchGameData extends GameData {
     }
 
     public synchronized boolean destroyBrick(final int brick) {
-        if (destroyedBricks.size() >= 10000) { //prevent to many destroyed bricks
-            return false;
-        }
-        if (destroyedBricks.contains(brick)) {
+        if ((destroyedBricks.size() >= 10000) || destroyedBricks.contains(brick)) {
             return false;
         }
         destroyedBricks.add(brick);
@@ -105,11 +102,11 @@ public abstract class MatchGameData extends GameData {
     }
 
     public synchronized DroppedItem addDrop(final String code, final int ammo, final int subAmmo, final float x, final float y,
-                                            final float z) {
+        final float z) {
         if (drops.size() >= 64) { //prevent to many dropped items
             return null;
         }
-        DroppedItem item = new DroppedItem(nextDropSeq++, code, ammo, subAmmo, x, y, z);
+        final DroppedItem item = new DroppedItem(nextDropSeq++, code, ammo, subAmmo, x, y, z);
         drops.add(item);
         return item;
     }
@@ -176,7 +173,7 @@ public abstract class MatchGameData extends GameData {
     }
 
     private int occupy(final List<Occupation> occupations, final int object, final int clientId) {
-        for (Occupation occupation : occupations) {
+        for (final Occupation occupation : occupations) {
             if (occupation.object() == object) {
                 return occupation.clientId();
             }
@@ -193,7 +190,7 @@ public abstract class MatchGameData extends GameData {
     }
 
     private int[] release(final List<Occupation> occupations, final int clientId) {
-        List<Occupation> released = occupations.stream().filter(occupation -> occupation.clientId() == clientId).toList();
+        final List<Occupation> released = occupations.stream().filter(occupation -> occupation.clientId() == clientId).toList();
         occupations.removeAll(released);
         return released.stream().mapToInt(Occupation::object).toArray();
     }

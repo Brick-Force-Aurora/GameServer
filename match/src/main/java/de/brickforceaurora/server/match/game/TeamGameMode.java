@@ -3,8 +3,6 @@ package de.brickforceaurora.server.match.game;
 import de.brickforceaurora.server.match.room.Room;
 import de.brickforceaurora.server.net.NetContext;
 import de.brickforceaurora.server.net.protocol.data.RoomType;
-import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundResumeRoomPacket;
-import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundRoomConfigPacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundTeamChangePacket;
 import me.lauriichan.snowframe.SnowFrame;
 

@@ -24,7 +24,7 @@ public class ChannelListener_ implements INetListener {
     public void onChannelPlayerList(final NetContext<ServerboundChannelPlayerListPacket> context) {
         context.client().send(new ClientboundSvcEnterListPacket().clients(context.manager().activeClients().map(client -> {
             // The profile is set once the account was loaded
-            UserProfile profile = client.attr(ClientListener.ATTR_PROFILE, UserProfile.class);
+            final UserProfile profile = client.attr(ClientListener.ATTR_PROFILE, UserProfile.class);
             return new ClientInfo(client.id(), client.name(), profile == null ? 0 : profile.xp(), profile == null ? 0 : profile.rank());
         }).toArray(IClientInfo[]::new)));
     }

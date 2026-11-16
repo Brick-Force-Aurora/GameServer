@@ -19,7 +19,7 @@ public final class GameNetHandler<D extends GameData, P extends IPacket> {
         return packetId;
     }
 
-    void handle(final Room room, D gameData, final NetContext<P> context) {
+    void handle(final Room room, final D gameData, final NetContext<P> context) {
         try {
             handler.onPacket(room, gameData, context);
         } catch (final Throwable e) {

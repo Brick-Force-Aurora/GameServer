@@ -1,57 +1,75 @@
 package de.brickforceaurora.server.match.game.mode.teamdeathmatch;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.brickforceaurora.server.IBrickForceServer;
 import de.brickforceaurora.server.database.DatabaseException;
 import de.brickforceaurora.server.database.UserRepository;
 import de.brickforceaurora.server.database.model.UserProfile;
 import de.brickforceaurora.server.database.model.UserStats;
-import de.brickforceaurora.server.match.listener.ClientListener;
-import de.brickforceaurora.server.match.item.Inventories;
 import de.brickforceaurora.server.match.MatchServerApp;
 import de.brickforceaurora.server.match.game.GameData;
 import de.brickforceaurora.server.match.game.PlayerStats;
 import de.brickforceaurora.server.match.game.TeamGameData;
 import de.brickforceaurora.server.match.game.TeamGameMode;
-import de.brickforceaurora.server.net.protocol.data.ResultUnit;
-import de.brickforceaurora.server.net.protocol.data.RoomStatus;
+import de.brickforceaurora.server.match.item.Inventories;
+import de.brickforceaurora.server.match.listener.ClientListener;
 import de.brickforceaurora.server.match.room.PeerEndpoints;
 import de.brickforceaurora.server.match.room.Room;
 import de.brickforceaurora.server.match.room.RoomManager;
 import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.NetContext;
 import de.brickforceaurora.server.net.NetManager;
-import de.brickforceaurora.server.net.protocol.clientbound.original.*;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundAddRoomPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundCreateRoomPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundEmptyCannonPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundEmptyTrainPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundEnterPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundJoinPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundMasterPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundRendezvousInfoPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundRoomConfigPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundSlotInfoPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundSlotLockPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundTeamChangeFailPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundTeamChangePacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundTeamMatchEndPacket;
+import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundUpdateRoomPacket;
 import de.brickforceaurora.server.net.protocol.data.ClientStatus;
+import de.brickforceaurora.server.net.protocol.data.ResultUnit;
+import de.brickforceaurora.server.net.protocol.data.RoomStatus;
 import de.brickforceaurora.server.net.protocol.data.RoomType;
-import de.brickforceaurora.server.net.protocol.serverbound.original.*;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundCreateRoomPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundRoomConfigPacket;
+import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundTeamChangePacket;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.extension.Extension;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Extension
 public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
-    
-    private final RoomManager roomManager;
 
-    public TeamDeathMatchMode(final SnowFrame<?> snowFrame, final RoomManager roomManager) {
+    private final RoomManager roomManager;
+    private final MatchServerApp app;
+
+    public TeamDeathMatchMode(final SnowFrame<MatchServerApp> snowFrame, final RoomManager roomManager) {
         super(snowFrame, TDMData.class, RoomType.TEAM_MATCH);
         this.roomManager = roomManager;
+        this.app = snowFrame.app();
     }
 
     @Override
-    public GameData createGameDataFor(Room room) {
+    public GameData createGameDataFor(final Room room) {
         return new TDMData();
     }
 
     @Override
-    public void handleRoomCreation(Room room, NetContext<ServerboundCreateRoomPacket> context) {
-        ServerboundCreateRoomPacket pkt = context.packet();
+    public void handleRoomCreation(final Room room, final NetContext<ServerboundCreateRoomPacket> context) {
+        final ServerboundCreateRoomPacket pkt = context.packet();
 
         //add provided data
         //add client to room
-        TDMData gameData = (TDMData) room.gameData();
+        final TDMData gameData = (TDMData) room.gameData();
         gameData.goal(pkt.parameters()[0]);
         gameData.timeLimit(pkt.parameters()[1]);
         gameData.weaponOption(pkt.parameters()[2]);
@@ -66,52 +84,53 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
     }
 
     @Override
-    public void handleRoomJoin(NetManager<?> netManager, Room room, BFClient client) {
+    public void handleRoomJoin(final NetManager<?> netManager, final Room room, final BFClient client) {
         //TODO: Hardcoded info needs to change
-        TDMData gameData = (TDMData) room.gameData();
+        final TDMData gameData = (TDMData) room.gameData();
         client.send(new ClientboundJoinPacket().roomId(room.id()));
         client.send(configPacket(room, gameData, client));
 
-        boolean[] slotLocks = room.getSlotLocksByMaxPlayers();
+        final boolean[] slotLocks = room.getSlotLocksByMaxPlayers();
         for (int i = 0; i < slotLocks.length; i++) {
             client.send(new ClientboundSlotLockPacket().index((byte) i).slotLocked(slotLocks[i]));
         }
-        IBrickForceServer serverImpl = netManager.snowFrame().app();
+        final IBrickForceServer serverImpl = netManager.snowFrame().app();
         client.send(new ClientboundRendezvousInfoPacket().ip(serverImpl.host()).port(serverImpl.port()));
         serverImpl.server().rendezvousManager().pushPong(client);
         client.send(new ClientboundMasterPacket().ownerClientId(room.masterId()));
 
-        for (BFClient member : room.clients().toArray(new BFClient[0])) {
+        for (final BFClient member : room.clients().toArray(new BFClient[0])) {
             client.send(enterPacket(member), slotInfoPacket(member));
         }
         room.broadcast(enterPacket(client));
-        ClientboundSlotInfoPacket slot = slotInfoPacket(client);
+        final ClientboundSlotInfoPacket slot = slotInfoPacket(client);
         room.broadcast(slot);
         client.send(slot);
     }
 
-    private static ClientboundEnterPacket enterPacket(BFClient client) {
+    private ClientboundEnterPacket enterPacket(final BFClient client) {
         // hide real ip address
-        PeerEndpoints endpoints = PeerEndpoints.HIDDEN;
-        UserProfile profile = client.attr(ClientListener.ATTR_PROFILE, UserProfile.class);
+        final PeerEndpoints endpoints = PeerEndpoints.HIDDEN;
+        final UserProfile profile = client.attr(ClientListener.ATTR_PROFILE, UserProfile.class);
         // TODO Clans, no clan = -1
         return new ClientboundEnterPacket().id(client.id()).nickname(client.name()).localIp(endpoints.localIp())
             .localPort(endpoints.localPort()).remoteIp(endpoints.remoteIp()).remotePort(endpoints.remotePort())
-            .equipment(Inventories.equipment(client)).status(1).xp(profile == null ? 0 : profile.xp()).clanId(-1).clanName("")
-            .clanMark(-1).rank(profile == null ? 0 : profile.rank()).playerFlag(1).weaponChanges(List.of()).dropItems(List.of());
+            .equipment(Inventories.equipment(app.userRepository(), client)).status(1).xp(profile == null ? 0 : profile.xp()).clanId(-1).clanName("").clanMark(-1)
+            .rank(profile == null ? 0 : profile.rank()).playerFlag(1).weaponChanges(List.of()).dropItems(List.of());
     }
 
-    private static ClientboundSlotInfoPacket slotInfoPacket(BFClient client) {
-        Integer slot = client.attr(Room.ATTR_SLOT, Integer.class);
-        ClientStatus status = client.attr(Room.ATTR_STATUS, ClientStatus.class);
+    private ClientboundSlotInfoPacket slotInfoPacket(final BFClient client) {
+        final Integer slot = client.attr(Room.ATTR_SLOT, Integer.class);
+        final ClientStatus status = client.attr(Room.ATTR_STATUS, ClientStatus.class);
         return new ClientboundSlotInfoPacket().id(client.id()).slot(slot == null ? (byte) 0 : slot.byteValue())
             .status((status == null ? ClientStatus.WAITING : status).id()).kill(0).death(0).assist(0).score(0).mission(0);
     }
 
     @Override
-    public void handleRoomUpdate(Room room, NetContext<ServerboundRoomConfigPacket> context) {
-        ServerboundRoomConfigPacket packet = context.packet();
-        if (context.client().id() != room.masterId() || room.status() != RoomStatus.WAITING || !(room.gameData() instanceof TDMData data)) {
+    public void handleRoomUpdate(final Room room, final NetContext<ServerboundRoomConfigPacket> context) {
+        final ServerboundRoomConfigPacket packet = context.packet();
+        if (context.client().id() != room.masterId() || room.status() != RoomStatus.WAITING
+            || !(room.gameData() instanceof final TDMData data)) {
             return;
         }
         data.goal(packet.killCount());
@@ -123,35 +142,35 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
         data.wanted(packet.useBuildGun() >= 1);
         data.drop(packet.itemPickup() >= 1);
         data.mapAlias(packet.whereAlias());
-        String password = packet.pswd();
+        final String password = packet.pswd();
         room.password(password == null || password.isEmpty() ? null : password);
-        for (BFClient member : room.clients().toArray(new BFClient[0])) {
+        for (final BFClient member : room.clients().toArray(new BFClient[0])) {
             member.send(configPacket(room, data, member));
         }
         context.manager().broadcast(new ClientboundUpdateRoomPacket().roomInfo(room));
     }
 
-    private ClientboundRoomConfigPacket configPacket(Room room, TDMData data, BFClient receiver) {
+    private ClientboundRoomConfigPacket configPacket(final Room room, final TDMData data, final BFClient receiver) {
         //TODO: Hardcoded info needs to change
         // Only the master gets the password, for the room config dialog
-        String password = receiver.id() == room.masterId() && room.password() != null ? room.password() : "";
+        final String password = receiver.id() == room.masterId() && room.password() != null ? room.password() : "";
         return new ClientboundRoomConfigPacket().mapId(data.mapId()).mapAlias(data.mapAlias()).weaponOption(data.weaponOption())
             .timeLimit(data.timeLimit()).killCount(data.goal()).canJoinMidGame(data.canJoinMidGame()).autoBalance(data.autoBalance())
             .allowBuildGun(false).password(password).commented(0).roomType(roomType()).drop(data.drop()).wanted(data.wanted());
     }
 
     @Override
-    public void handleTeamChange(Room room, NetContext<ServerboundTeamChangePacket> context) {
-        BFClient client = context.client();
-        ServerboundTeamChangePacket packet = context.packet();
-        Integer current = client.attr(Room.ATTR_SLOT, Integer.class);
-        ClientStatus status = client.attr(Room.ATTR_STATUS, ClientStatus.class);
+    public void handleTeamChange(final Room room, final NetContext<ServerboundTeamChangePacket> context) {
+        final BFClient client = context.client();
+        final ServerboundTeamChangePacket packet = context.packet();
+        final Integer current = client.attr(Room.ATTR_SLOT, Integer.class);
+        final ClientStatus status = client.attr(Room.ATTR_STATUS, ClientStatus.class);
         // The client waits for an answer, so there always has to be one
-        if (current == null || room.status() != RoomStatus.WAITING || (client.id() != room.masterId() && status == ClientStatus.READY)) {
+        if (current == null || room.status() != RoomStatus.WAITING || client.id() != room.masterId() && status == ClientStatus.READY) {
             client.send(new ClientboundTeamChangeFailPacket().reason(0));
             return;
         }
-        int target = packet.clickSlot() ? packet.slotNum()
+        final int target = packet.clickSlot() ? packet.slotNum()
             : TeamGameData.isRed(current) ? room.freeSlot(TeamGameData.FIRST_BLUE_SLOT, Integer.MAX_VALUE)
                 : room.freeSlot(0, TeamGameData.FIRST_BLUE_SLOT);
         if (target == current || !room.moveToSlot(client, target)) {
@@ -162,15 +181,15 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
     }
 
     @Override
-    public void handleRoomLeave(Room room, BFClient client) {
-        if (!(room.gameData() instanceof TDMData data)) {
+    public void handleRoomLeave(final Room room, final BFClient client) {
+        if (!(room.gameData() instanceof final TDMData data)) {
             return;
         }
         // The cannons and trains of the player are free again
-        for (int cannon : data.releaseCannons(client.id())) {
+        for (final int cannon : data.releaseCannons(client.id())) {
             room.broadcast(new ClientboundEmptyCannonPacket().cannon(cannon));
         }
-        for (int train : data.releaseTrains(client.id())) {
+        for (final int train : data.releaseTrains(client.id())) {
             room.broadcast(new ClientboundEmptyTrainPacket().train(train));
         }
         if (room.status() != RoomStatus.MATCH_END) {
@@ -183,44 +202,44 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
     }
 
     @Override
-    public void handleMasterChange(Room room) {
-        if (!(room.gameData() instanceof TDMData data)) {
+    public void handleMasterChange(final Room room) {
+        if (!(room.gameData() instanceof final TDMData data)) {
             return;
         }
         // Only the master gets the password, so the config has to be sent again
-        for (BFClient member : room.clients().toArray(new BFClient[0])) {
+        for (final BFClient member : room.clients().toArray(new BFClient[0])) {
             member.send(configPacket(room, data, member));
         }
     }
 
-    public void resultsConfirmed(Room room) {
+    public void resultsConfirmed(final Room room) {
         room.status(RoomStatus.WAITING);
         roomManager.updateRoom(room);
     }
 
-    public void endMatch(NetManager<?> manager, Room room, TDMData data) {
+    public void endMatch(final NetManager<?> manager, final Room room, final TDMData data) {
         if (!data.finishMatch()) {
             return;
         }
-        int redScore = data.redScore();
-        int blueScore = data.blueScore();
-        byte endCode = (byte) Integer.compare(redScore, blueScore);
+        final int redScore = data.redScore();
+        final int blueScore = data.blueScore();
+        final byte endCode = (byte) Integer.compare(redScore, blueScore);
 
-        UserRepository users = MatchServerApp.users();
-        List<ResultUnit> results = new ArrayList<>();
-        List<Integer> present = new ArrayList<>();
+        final UserRepository users = app.userRepository();
+        final List<ResultUnit> results = new ArrayList<>();
+        final List<Integer> present = new ArrayList<>();
         int redKill = 0, redDeath = 0, blueKill = 0, blueDeath = 0;
-        for (PlayerStats stats : data.allStats()) {
-            BFClient member = room.clientById(stats.clientId());
+        for (final PlayerStats stats : data.allStats()) {
+            final BFClient member = room.clientById(stats.clientId());
             if (member == null) {
                 // Left the room during the match
                 continue;
             }
             present.add(member.id());
-            int result = endCode == 0 ? 0 : (endCode > 0) == stats.red() ? 1 : -1;
-            int xp = TdmScoring.xp(stats, result);
-            int points = TdmScoring.points(stats, result);
-            int prevXp = save(manager, users, member, stats, xp, points);
+            final int result = endCode == 0 ? 0 : endCode > 0 == stats.red() ? 1 : -1;
+            final int xp = TdmScoring.xp(stats, result);
+            final int points = TdmScoring.points(stats, result);
+            final int prevXp = save(manager, users, member, stats, xp, points);
             results.add(new ResultUnit(stats.red(), stats.clientId(), stats.nickname(), stats.kill(), stats.death(), stats.assist(),
                 stats.score(), points, xp, 0, prevXp, prevXp + xp, 0L));
             if (stats.red()) {
@@ -239,14 +258,15 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
         manager.logger().info("Room {0} ({1}) ended: red {2}, blue {3}", room.id(), room.title(), redScore, blueScore);
     }
 
-    private int save(NetManager<?> manager, UserRepository users, BFClient client, PlayerStats stats, int xp, int points) {
-        Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
-        UserProfile profile = client.attr(ClientListener.ATTR_PROFILE, UserProfile.class);
+    private int save(final NetManager<?> manager, final UserRepository users, final BFClient client, final PlayerStats stats, final int xp,
+        final int points) {
+        final Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
+        final UserProfile profile = client.attr(ClientListener.ATTR_PROFILE, UserProfile.class);
         if (accountId == null || profile == null) {
             return 0;
         }
         try {
-            UserProfile updated = new UserProfile(profile.accountId(), profile.nickname(), profile.xp() + xp, profile.rank(),
+            final UserProfile updated = new UserProfile(profile.accountId(), profile.nickname(), profile.xp() + xp, profile.rank(),
                 profile.tutorials(), profile.countryFilter(), profile.tosAccepted(), profile.extraSlots(), profile.firstLoginFp(),
                 profile.point() + points, profile.brick(), profile.cash(), profile.freeCoin(), profile.starDust());
             users.saveProfile(updated);
@@ -256,7 +276,7 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
                     total.death() + stats.death(), total.assist() + stats.assist(), total.mission(), total.score() + stats.score(),
                     total.heavy(), total.assault(), total.sniper(), total.subMachine(), total.handGun(), total.melee(), total.special())));
             return profile.xp();
-        } catch (DatabaseException exception) {
+        } catch (final DatabaseException exception) {
             manager.logger().error("Couldn't save the result of {0}", exception, client);
             return 0;
         }

@@ -33,7 +33,7 @@ public final class Room implements IRoomInfo {
     private volatile GameMode<?> mode;
     private volatile GameData gameData;
 
-    public Room(int id) {
+    public Room(final int id) {
         this.id = id;
     }
 
@@ -41,7 +41,7 @@ public final class Room implements IRoomInfo {
         return mode;
     }
 
-    public Room mode(GameMode<?> mode) {
+    public Room mode(final GameMode<?> mode) {
         if (this.mode == mode) {
             return this;
         }
@@ -69,7 +69,7 @@ public final class Room implements IRoomInfo {
         return title;
     }
 
-    public Room title(String title) {
+    public Room title(final String title) {
         this.title = title;
         return this;
     }
@@ -78,7 +78,7 @@ public final class Room implements IRoomInfo {
         return password;
     }
 
-    public Room password(String password) {
+    public Room password(final String password) {
         this.password = password;
         return this;
     }
@@ -93,7 +93,7 @@ public final class Room implements IRoomInfo {
         return status;
     }
 
-    public Room status(RoomStatus status) {
+    public Room status(final RoomStatus status) {
         this.status = status;
         return this;
     }
@@ -108,7 +108,7 @@ public final class Room implements IRoomInfo {
         return maxPlayers;
     }
 
-    public Room maxPlayers(int maxPlayers) {
+    public Room maxPlayers(final int maxPlayers) {
         this.maxPlayers = maxPlayers;
         return this;
     }
@@ -117,7 +117,7 @@ public final class Room implements IRoomInfo {
         return masterId;
     }
 
-    public Room masterId(int masterId) {
+    public Room masterId(final int masterId) {
         this.masterId = masterId;
         return this;
     }
@@ -198,10 +198,7 @@ public final class Room implements IRoomInfo {
     }
 
     public boolean lockSlot(final int slot, final boolean locked) {
-        if (slot < 0 || slot >= manualSlotLocks.length) {
-            return false;
-        }
-        if (locked && slotUsed(slot)) {
+        if (slot < 0 || slot >= manualSlotLocks.length || (locked && slotUsed(slot))) {
             return false;
         }
         manualSlotLocks[slot] = locked;
@@ -209,8 +206,8 @@ public final class Room implements IRoomInfo {
     }
 
     public boolean slotUsed(final int slot) {
-        for (BFClient client : clients.toArray(new BFClient[0])) {
-            Integer used = client.attr(ATTR_SLOT, Integer.class);
+        for (final BFClient client : clients.toArray(new BFClient[0])) {
+            final Integer used = client.attr(ATTR_SLOT, Integer.class);
             if (used != null && used == slot) {
                 return true;
             }
@@ -219,7 +216,7 @@ public final class Room implements IRoomInfo {
     }
 
     public BFClient clientById(final int clientId) {
-        for (BFClient client : clients.toArray(new BFClient[0])) {
+        for (final BFClient client : clients.toArray(new BFClient[0])) {
             if (client.id() == clientId) {
                 return client;
             }
@@ -228,7 +225,7 @@ public final class Room implements IRoomInfo {
     }
 
     public boolean[] getSlotLocksByMaxPlayers() {
-        boolean[] slotLocks = layoutSlotLocks();
+        final boolean[] slotLocks = layoutSlotLocks();
         for (int slot = 0; slot < slotLocks.length && slot < manualSlotLocks.length; slot++) {
             slotLocks[slot] |= manualSlotLocks[slot];
         }
@@ -236,11 +233,11 @@ public final class Room implements IRoomInfo {
     }
 
     private boolean[] layoutSlotLocks() {
-        boolean is8SlotLayout = (type() == RoomType.BUNGEE || type() == RoomType.MISSION);
-        int totalSlots = is8SlotLayout ? 8 : 16;
+        final boolean is8SlotLayout = type() == RoomType.BUNGEE || type() == RoomType.MISSION;
+        final int totalSlots = is8SlotLayout ? 8 : 16;
 
-        boolean[] slotLocks = new boolean[totalSlots];
-        boolean isTeamMode = !(type() == RoomType.INDIVIDUAL || type() == RoomType.ZOMBIE);
+        final boolean[] slotLocks = new boolean[totalSlots];
+        final boolean isTeamMode = ((type() != RoomType.INDIVIDUAL) && (type() != RoomType.ZOMBIE));
 
         // SPECIAL CASE: Deathmatch / Zombie → lock bottom-up
         if (!isTeamMode) {
@@ -256,7 +253,7 @@ public final class Room implements IRoomInfo {
 
         // Normal team-mode locking (alternating)
         for (int i = totalSlots - 1; i >= maxPlayers(); i--) {
-            boolean odd = (i % 2 != 0);
+            final boolean odd = i % 2 != 0;
 
             if (odd) { // RED slot
                 if (redIndex >= 0) {
@@ -279,10 +276,10 @@ public final class Room implements IRoomInfo {
     }
 
     public int freeSlot(final int from, final int to) {
-        boolean[] locks = getSlotLocksByMaxPlayers();
-        boolean[] used = new boolean[locks.length];
-        for (BFClient client : clients.toArray(new BFClient[0])) {
-            Integer slot = client.attr(ATTR_SLOT, Integer.class);
+        final boolean[] locks = getSlotLocksByMaxPlayers();
+        final boolean[] used = new boolean[locks.length];
+        for (final BFClient client : clients.toArray(new BFClient[0])) {
+            final Integer slot = client.attr(ATTR_SLOT, Integer.class);
             if (slot != null && slot >= 0 && slot < used.length) {
                 used[slot] = true;
             }
@@ -303,11 +300,11 @@ public final class Room implements IRoomInfo {
         return true;
     }
 
-    public void broadcast(BFClient exclusive, IClientboundPacket... packets) {
+    public void broadcast(final BFClient exclusive, final IClientboundPacket... packets) {
         clients.stream().filter(cl -> cl != exclusive).forEach(client -> client.send(packets));
     }
 
-    public void broadcast(IClientboundPacket... packets) {
+    public void broadcast(final IClientboundPacket... packets) {
         clients.forEach(client -> client.send(packets));
     }
 

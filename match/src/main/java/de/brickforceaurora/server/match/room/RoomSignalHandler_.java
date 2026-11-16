@@ -13,18 +13,18 @@ public class RoomSignalHandler_ implements ISignalHandler {
     private RoomManager roomManager;
 
     @SignalHandler
-    public void onServerStarted(SignalContext<NetSignal.ServerStarted> context) {
+    public void onServerStarted(final SignalContext<NetSignal.ServerStarted> context) {
         roomManager = ((MatchServerApp) context.signal().netManager().snowFrame().app()).roomManager();
         roomManager.setNetManager(context.signal().netManager());
     }
 
     @SignalHandler
-    public void onClientDisconnect(SignalContext<NetSignal.ClientDisconnected> context) {
+    public void onClientDisconnect(final SignalContext<NetSignal.ClientDisconnected> context) {
         roomManager.leaveRoom(context.signal().client());
     }
 
     @SignalHandler
-    public void onServerStopped(SignalContext<NetSignal.ServerStopped> context) {
+    public void onServerStopped(final SignalContext<NetSignal.ServerStopped> context) {
         roomManager.setNetManager(null);
     }
 }

@@ -29,10 +29,10 @@ public class MatchRoomListener_ implements IGameNetListener<MatchGameData> {
 
     private final RoomManager roomManager;
 
-    public MatchRoomListener_(RoomManager roomManager) {
+    public MatchRoomListener_(final RoomManager roomManager) {
         this.roomManager = roomManager;
     }
-    
+
     @PacketHandler
     public void onMakeRoomNull(final Room room, final MatchGameData data, final NetContext<ServerboundMakeRoomNullPacket> context) {
         roomManager.leaveRoom(context.client());
@@ -40,8 +40,8 @@ public class MatchRoomListener_ implements IGameNetListener<MatchGameData> {
 
     @PacketHandler
     public void onSetStatus(final Room room, final MatchGameData data, final NetContext<ServerboundSetStatusPacket> context) {
-        BFClient client = context.client();
-        ClientStatus status = context.packet().status();
+        final BFClient client = context.client();
+        final ClientStatus status = context.packet().status();
         if (room.status() != RoomStatus.WAITING || status == ClientStatus.P2PING || status == ClientStatus.LOADING) {
             return;
         }
@@ -51,11 +51,11 @@ public class MatchRoomListener_ implements IGameNetListener<MatchGameData> {
 
     @PacketHandler
     public void onKick(final Room room, final MatchGameData data, final NetContext<ServerboundKickPacket> context) {
-        BFClient client = context.client();
+        final BFClient client = context.client();
         if (client.id() != room.masterId()) {
             return;
         }
-        BFClient target = room.clientById(context.packet().clientId());
+        final BFClient target = room.clientById(context.packet().clientId());
         if (target == null || target == client) {
             return;
         }
@@ -65,7 +65,7 @@ public class MatchRoomListener_ implements IGameNetListener<MatchGameData> {
 
     @PacketHandler
     public void onChat(final Room room, final MatchGameData data, final NetContext<ServerboundChatPacket> context) {
-        String text = cleanText(context.packet().text());
+        final String text = cleanText(context.packet().text());
         if (text == null) {
             return;
         }
@@ -74,19 +74,19 @@ public class MatchRoomListener_ implements IGameNetListener<MatchGameData> {
 
     @PacketHandler
     public void onTeamChat(final Room room, final MatchGameData data, final NetContext<ServerboundTeamChatPacket> context) {
-        BFClient client = context.client();
-        String text = cleanText(context.packet().text());
+        final BFClient client = context.client();
+        final String text = cleanText(context.packet().text());
         if (text == null) {
             return;
         }
-        sendToTeam(room, client, chatPacket(client, (byte)4, text));
+        sendToTeam(room, client, chatPacket(client, (byte) 4, text));
     }
 
     private static String cleanText(final String text) {
         if (text == null) {
             return null;
         }
-        String clean = text.replaceAll("\\p{Cntrl}", "").replaceAll(" {2,}", " ").trim();
+        final String clean = text.replaceAll("\\p{Cntrl}", "").replaceAll(" {2,}", " ").trim();
         return clean.isEmpty() ? null : clean;
     }
 
@@ -95,17 +95,17 @@ public class MatchRoomListener_ implements IGameNetListener<MatchGameData> {
     }
 
     private static void sendToTeam(final Room room, final BFClient client, final IClientboundPacket packet) {
-        boolean teams = room.gameData() instanceof TeamGameData;
-        boolean red = TeamGameData.isRed(slotOf(client));
-        for (BFClient member : room.clients()) {
+        final boolean teams = room.gameData() instanceof TeamGameData;
+        final boolean red = TeamGameData.isRed(slotOf(client));
+        for (final BFClient member : room.clients()) {
             if (!teams || TeamGameData.isRed(slotOf(member)) == red) {
                 member.send(packet);
             }
         }
     }
 
-    private static int slotOf(BFClient client) {
-        Integer slot = client.attr(Room.ATTR_SLOT, Integer.class);
+    private static int slotOf(final BFClient client) {
+        final Integer slot = client.attr(Room.ATTR_SLOT, Integer.class);
         return slot == null ? 0 : slot;
     }
 

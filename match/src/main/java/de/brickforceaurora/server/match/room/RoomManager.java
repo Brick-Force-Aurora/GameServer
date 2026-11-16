@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 import de.brickforceaurora.server.match.game.GameMode;
 import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.NetManager;
-import de.brickforceaurora.server.net.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundDelRoomPacket;
 import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundLeavePacket;
 import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundMasterPacket;
@@ -21,7 +20,7 @@ import it.unimi.dsi.fastutil.ints.IntPriorityQueue;
 
 public final class RoomManager {
 
-    private static final IRoomInfo[] EMPTY_ROOM_INFOS = new IRoomInfo[0];
+    private static final IRoomInfo[] EMPTY_ROOM_INFOS = {};
 
     private final Int2ObjectMap<Room> rooms = new Int2ObjectArrayMap<>();
     private final IntPriorityQueue freeIds = new IntArrayFIFOQueue();
@@ -30,7 +29,7 @@ public final class RoomManager {
 
     private NetManager<?> netManager;
 
-    void setNetManager(NetManager<?> netManager) {
+    void setNetManager(final NetManager<?> netManager) {
         this.netManager = netManager;
     }
 
@@ -38,11 +37,11 @@ public final class RoomManager {
         return roomInfos.get();
     }
 
-    public synchronized Room createRoom(BFClient creator, Consumer<Room> setup) {
-        Room room = new Room(newRoomId());
+    public synchronized Room createRoom(final BFClient creator, final Consumer<Room> setup) {
+        final Room room = new Room(newRoomId());
         try {
             setup.accept(room);
-        } catch (RuntimeException exception) {
+        } catch (final RuntimeException exception) {
             freeIds.enqueue(room.id());
             throw exception;
         }
@@ -55,26 +54,26 @@ public final class RoomManager {
         return room;
     }
 
-    public synchronized Room roomById(int roomId) {
+    public synchronized Room roomById(final int roomId) {
         return rooms.get(roomId);
     }
 
-    public void updateRoom(Room room) {
+    public void updateRoom(final Room room) {
         if (netManager != null) {
             netManager.broadcast(new ClientboundUpdateRoomPacket().roomInfo(room));
         }
     }
 
-    public synchronized boolean enterRoom(BFClient client, Room room) {
-        Room currentRoom = client.attrUnset(Room.ATTR_ROOM, Room.class);
+    public synchronized boolean enterRoom(final BFClient client, final Room room) {
+        final Room currentRoom = client.attrUnset(Room.ATTR_ROOM, Room.class);
         if (currentRoom != null) {
             leaveRoomInternal(client, currentRoom);
         }
         return enterRoomInternal(client, room);
     }
 
-    private boolean enterRoomInternal(BFClient client, Room room) {
-        GameMode<?> gameMode = room.mode();
+    private boolean enterRoomInternal(final BFClient client, final Room room) {
+        final GameMode<?> gameMode = room.mode();
         if (gameMode == null || rooms.get(room.id()) != room) {
             return false;
         }
@@ -82,7 +81,7 @@ public final class RoomManager {
         // The slot has to be taken and the client has to join before anyone else can look for a free slot
         synchronized (room) {
             // The slot is how the clients address each other
-            int slot = room.freeSlot();
+            final int slot = room.freeSlot();
             if (slot < 0) {
                 // Room is full
                 return false;
@@ -94,7 +93,7 @@ public final class RoomManager {
 
             try {
                 gameMode.handleRoomJoin(netManager, room, client);
-            } catch (RuntimeException exception) {
+            } catch (final RuntimeException exception) {
                 client.attrUnset(Room.ATTR_ROOM);
                 client.attrUnset(Room.ATTR_SLOT);
                 throw exception;
@@ -109,8 +108,8 @@ public final class RoomManager {
         return true;
     }
 
-    public synchronized boolean leaveRoom(BFClient client) {
-        Room currentRoom = client.attrUnset(Room.ATTR_ROOM, Room.class);
+    public synchronized boolean leaveRoom(final BFClient client) {
+        final Room currentRoom = client.attrUnset(Room.ATTR_ROOM, Room.class);
         if (currentRoom == null) {
             // Was not in a room, we don't care
             return false;
@@ -119,7 +118,7 @@ public final class RoomManager {
         return true;
     }
 
-    private void leaveRoomInternal(BFClient client, Room room) {
+    private void leaveRoomInternal(final BFClient client, final Room room) {
         // Leave first then send packets
         room.clients().remove(client);
         client.attrUnset(Room.ATTR_SLOT);
@@ -131,11 +130,9 @@ public final class RoomManager {
 
         room.mode().handleRoomLeave(room, client);
 
-        int clientId = client.id();
-        room.broadcast(new IClientboundPacket[] {
-            new ClientboundSetStatusPacket().clientId(clientId).status(ClientStatus.WAITING),
-            new ClientboundLeavePacket().clientId(clientId),
-        });
+        final int clientId = client.id();
+        room.broadcast(new ClientboundSetStatusPacket().clientId(clientId).status(ClientStatus.WAITING),
+            new ClientboundLeavePacket().clientId(clientId));
 
         if (clientId == room.masterId()) {
             changeMaster(room, room.clients().getFirst().id());
@@ -143,7 +140,7 @@ public final class RoomManager {
         updateRoom(room);
     }
 
-    public synchronized boolean changeMaster(Room room, int newMasterId) {
+    public synchronized boolean changeMaster(final Room room, final int newMasterId) {
         if (room.clientById(newMasterId) == null) {
             return false;
         }
@@ -154,15 +151,15 @@ public final class RoomManager {
         return true;
     }
 
-    public boolean deleteRoom(Room room) {
+    public boolean deleteRoom(final Room room) {
         if (room == null) {
             return false;
         }
         return deleteRoomById(room.id());
     }
 
-    public synchronized boolean deleteRoomById(int id) {
-        Room removed = rooms.remove(id);
+    public synchronized boolean deleteRoomById(final int id) {
+        final Room removed = rooms.remove(id);
         if (removed != null) {
             roomInfos.set(rooms.values().toArray(IRoomInfo[]::new));
             freeIds.enqueue(id);
@@ -174,7 +171,7 @@ public final class RoomManager {
         return false;
     }
 
-    private final int newRoomId() {
+    private int newRoomId() {
         if (freeIds.isEmpty()) {
             int id = rooms.size();
             while (rooms.containsKey(id)) {

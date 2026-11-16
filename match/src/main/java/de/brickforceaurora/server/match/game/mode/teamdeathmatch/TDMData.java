@@ -69,47 +69,47 @@ public class TDMData extends TeamGameData {
         return true;
     }
 
-    public TDMData mapId(int mapId) {
+    public TDMData mapId(final int mapId) {
         this.mapId = mapId;
         return this;
     }
 
-    public TDMData mapAlias(String mapAlias) {
+    public TDMData mapAlias(final String mapAlias) {
         this.mapAlias = mapAlias != null ? mapAlias : "";
         return this;
     }
 
-    public TDMData goal(int goal) {
+    public TDMData goal(final int goal) {
         this.goal = goal;
         return this;
     }
 
-    public TDMData timeLimit(int timelimit) {
+    public TDMData timeLimit(final int timelimit) {
         this.timeLimit = timelimit;
         return this;
     }
 
-    public TDMData weaponOption(int weaponOption) {
+    public TDMData weaponOption(final int weaponOption) {
         this.weaponOption = weaponOption;
         return this;
     }
 
-    public TDMData canJoinMidGame(boolean canJoinMidGame) {
+    public TDMData canJoinMidGame(final boolean canJoinMidGame) {
         this.canJoinMidGame = canJoinMidGame;
         return this;
     }
 
-    public TDMData autoBalance(boolean autoBalance) {
+    public TDMData autoBalance(final boolean autoBalance) {
         this.autoBalance = autoBalance;
         return this;
     }
 
-    public TDMData wanted(boolean wanted) {
+    public TDMData wanted(final boolean wanted) {
         this.wanted = wanted;
         return this;
     }
 
-    public TDMData drop(boolean drop) {
+    public TDMData drop(final boolean drop) {
         this.drop = drop;
         return this;
     }

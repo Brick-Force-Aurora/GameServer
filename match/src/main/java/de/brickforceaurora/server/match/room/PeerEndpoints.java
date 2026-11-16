@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.rendezvous.RendezvousManager;
 
-
 public record PeerEndpoints(String localIp, int localPort, String remoteIp, int remotePort) {
 
     public static final String ATTR_ENDPOINTS = "PeerEndpoints";
@@ -24,7 +23,6 @@ public record PeerEndpoints(String localIp, int localPort, String remoteIp, int 
         }
         return new PeerEndpoints(client.ip(), client.port(), client.ip(), client.port());
     }
-
 
     public static PeerEndpoints validated(final BFClient client, final String localIp, final int localPort, final String remoteIp,
         final int remotePort) {
