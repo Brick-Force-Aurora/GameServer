@@ -84,4 +84,6 @@ public abstract class GameMode<D extends GameData> implements IExtension {
 
     public abstract void handleRoomLeave(final Room room, final BFClient client);
 
+    public void handleMasterChange(final Room room) {}
+
 }

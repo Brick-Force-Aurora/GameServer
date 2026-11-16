@@ -182,6 +182,17 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
         }
     }
 
+    @Override
+    public void handleMasterChange(Room room) {
+        if (!(room.gameData() instanceof TDMData data)) {
+            return;
+        }
+        // Only the master gets the password, so the config has to be sent again
+        for (BFClient member : room.clients().toArray(new BFClient[0])) {
+            member.send(configPacket(room, data, member));
+        }
+    }
+
     public void resultsConfirmed(Room room) {
         room.status(RoomStatus.WAITING);
         roomManager.updateRoom(room);
