@@ -80,9 +80,6 @@ public class MapListener_ implements INetListener {
         new RegisteredMap(274314, "Brick-Force", "SniperHill", GameMode.MANAGER.newImmutable(13), MapTag.MANAGER.newImmutable(),
             MapMeta.MANAGER.newImmutable(3), LocalDateTime.of(2014, 4, 11, 11, 41, 34), 0, 0, 0, 0, 0, 0),
 
-        new RegisteredMap(24115, "Brick-Force", "Subway", GameMode.MANAGER.newImmutable(17), MapTag.MANAGER.newImmutable(),
-            MapMeta.MANAGER.newImmutable(0), LocalDateTime.of(2012, 8, 13, 14, 56, 35), 0, 0, 0, 0, 0, 0),
-
         new RegisteredMap(71597, "Brick-Force", "Subway", GameMode.MANAGER.newImmutable(17), MapTag.MANAGER.newImmutable(),
             MapMeta.MANAGER.newImmutable(2), LocalDateTime.of(2012, 8, 13, 14, 56, 35), 0, 0, 0, 0, 0, 0),
 
@@ -105,7 +102,14 @@ public class MapListener_ implements INetListener {
             MapMeta.MANAGER.newImmutable(3), LocalDateTime.of(2012, 1, 30, 15, 26, 29), 0, 0, 0, 0, 0, 0),
 
         new RegisteredMap(281095, "Brick-Force", "WildWest", GameMode.MANAGER.newImmutable(271), MapTag.MANAGER.newImmutable(),
-            MapMeta.MANAGER.newImmutable(2), LocalDateTime.of(2014, 6, 5, 11, 6, 56), 0, 0, 0, 0, 0, 0)
+            MapMeta.MANAGER.newImmutable(2), LocalDateTime.of(2014, 6, 5, 11, 6, 56), 0, 0, 0, 0, 0, 0),
+
+        new RegisteredMap(228803840, "Jezzey", "Aurora",
+            GameMode.MANAGER.newMutable()
+                .setAll(true, GameMode.TEAM_DEATH_MATCH, GameMode.DEATH_MATCH, GameMode.CAPTURE_THE_FLAG, GameMode.DEMOLITION,
+                    GameMode.ZOMBIE)
+                .immutable(),
+            MapTag.MANAGER.newImmutable(), MapMeta.MANAGER.newImmutable(2), LocalDateTime.of(2026, 2, 28, 15, 56, 18), 0, 0, 0, 0, 0, 0)
     };
 
     @PacketHandler
