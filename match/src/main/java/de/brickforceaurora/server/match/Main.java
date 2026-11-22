@@ -58,6 +58,7 @@ public final class Main {
         console.start();
     }
 
+    //TODO: JLine
     private static void listenToConsole() {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             String line;
@@ -65,7 +66,7 @@ public final class Main {
                 // Perodactyl uses /exit for soft shutdown
                 final String command = line.trim().toLowerCase();
                 switch (command.startsWith("/") ? command.substring(1) : command) {
-                case "stop", "shutdown", "exit", "quit" -> System.exit(0);
+                case "stop", "shutdown", "exit", "quit" -> shutdown();
                 default -> {
                 }
                 }
