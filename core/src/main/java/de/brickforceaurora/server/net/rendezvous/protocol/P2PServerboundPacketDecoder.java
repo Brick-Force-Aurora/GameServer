@@ -7,7 +7,6 @@ import de.brickforceaurora.server.net.protocol.IPacket;
 import de.brickforceaurora.server.net.protocol.IServerboundPacket;
 import de.brickforceaurora.server.net.protocol.PacketBuf;
 import de.brickforceaurora.server.net.rendezvous.P2PPacketRegistry;
-import de.brickforceaurora.server.net.rendezvous.protocol.serverbound.ServerboundP2PMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.DatagramPacket;
@@ -42,7 +41,7 @@ public final class P2PServerboundPacketDecoder extends MessageToMessageDecoder<D
             }
         }
         // The datagram is released after this method, the message releases the retained content
-        out.add(new ServerboundP2PMessage(data.retain(), datagram.sender(), header, packet));
+        out.add(new P2PMessage(data.retain(), datagram.sender(), header, packet));
     }
 
     @Override

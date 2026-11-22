@@ -82,6 +82,10 @@ public class MatchRoomListener_ implements IGameNetListener<MatchGameData> {
         sendToTeam(room, client, chatPacket(client, (byte) 4, text));
     }
 
+    /*
+     * HELPER
+     */
+
     private static String cleanText(final String text) {
         if (text == null) {
             return null;

@@ -9,7 +9,7 @@ import de.brickforceaurora.server.net.BFClient;
 import de.brickforceaurora.server.net.rendezvous.RelayStats.Event;
 import de.brickforceaurora.server.net.rendezvous.protocol.P2PHeader;
 import de.brickforceaurora.server.net.rendezvous.protocol.clientbound.ClientboundP2PPongPacket;
-import de.brickforceaurora.server.net.rendezvous.protocol.serverbound.ServerboundP2PMessage;
+import de.brickforceaurora.server.net.rendezvous.protocol.P2PMessage;
 import de.brickforceaurora.server.net.rendezvous.protocol.serverbound.ServerboundP2PPingPacket;
 import de.brickforceaurora.server.net.rendezvous.protocol.serverbound.ServerboundP2PReliableAckPacket;
 import de.brickforceaurora.server.net.rendezvous.protocol.serverbound.ServerboundP2PStatusPacket;
@@ -19,7 +19,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 import me.lauriichan.snowframe.ISnowFrameApp;
 
-final class RendezvousHandler<S extends ISnowFrameApp<S> & IBrickForceServer> extends SimpleChannelInboundHandler<ServerboundP2PMessage> {
+final class RendezvousHandler<S extends ISnowFrameApp<S> & IBrickForceServer> extends SimpleChannelInboundHandler<P2PMessage> {
 
     private final RendezvousManager<S> server;
 
@@ -28,7 +28,7 @@ final class RendezvousHandler<S extends ISnowFrameApp<S> & IBrickForceServer> ex
     }
 
     @Override
-    protected void channelRead0(final ChannelHandlerContext context, final ServerboundP2PMessage message) {
+    protected void channelRead0(final ChannelHandlerContext context, final P2PMessage message) {
         if (message.packet() instanceof final ServerboundP2PPingPacket ping) {
             // The client isn't known by its endpoint yet
             onPing(context, message.sender(), ping);
@@ -63,7 +63,7 @@ final class RendezvousHandler<S extends ISnowFrameApp<S> & IBrickForceServer> ex
         client.attrSet(RendezvousManager.ATTR_RELAYED, Set.copyOf(status.relayedPeers()));
     }
 
-    private void relay(final ChannelHandlerContext context, final BFClient sender, final ServerboundP2PMessage message) {
+    private void relay(final ChannelHandlerContext context, final BFClient sender, final P2PMessage message) {
         final List<BFClient> peers = server.directory().peersOf(sender);
         if (peers.isEmpty()) {
             server.stats().count(Event.NO_PEERS);

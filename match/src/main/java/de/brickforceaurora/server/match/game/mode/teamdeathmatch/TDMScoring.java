@@ -2,6 +2,7 @@ package de.brickforceaurora.server.match.game.mode.teamdeathmatch;
 
 import de.brickforceaurora.server.match.game.PlayerStats;
 
+//TODO: Config EXP4J maybe LUA
 public final class TDMScoring {
 
     public static final int HEAD_HITPART = 4;

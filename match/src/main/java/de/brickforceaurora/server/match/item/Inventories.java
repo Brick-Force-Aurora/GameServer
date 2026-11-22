@@ -13,6 +13,7 @@ import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundW
 import de.brickforceaurora.server.net.protocol.data.ItemUsage;
 import de.brickforceaurora.server.net.protocol.data.ToolSlot;
 
+//TODO Inventory wie bei Minecraft
 public final class Inventories {
 
     public static final String ATTR_INVENTORY = "Inventory";
