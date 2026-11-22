@@ -3,6 +3,7 @@ package de.brickforceaurora.server.match.game.base;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import de.brickforceaurora.server.database.DatabaseException;
 import de.brickforceaurora.server.database.UserRepository;
@@ -41,8 +42,10 @@ import me.lauriichan.snowframe.extension.Extension;
 @GameTarget(value = GameMode.class, data = MatchGameData.class)
 public class ItemListener_ implements IGameNetListener<MatchGameData> {
 
+    private static final int DROP_LIFETIME_SECONDS = 60;
+
     private final MatchServerApp app;
-    
+
     public ItemListener_(SnowFrame<MatchServerApp> snowFrame) {
         this.app = snowFrame.app();
     }
@@ -61,6 +64,12 @@ public class ItemListener_ implements IGameNetListener<MatchGameData> {
             return;
         }
         room.broadcast(new ClientboundDropItemPacket().item(item));
+        // The client keeps a dropped item until the server deletes it
+        context.manager().schedule(() -> {
+            if (data.removeDrop(item)) {
+                room.broadcast(new ClientboundDelDropItemPacket().itemSeq(item.seq()));
+            }
+        }, DROP_LIFETIME_SECONDS, TimeUnit.SECONDS);
     }
 
     @PacketHandler

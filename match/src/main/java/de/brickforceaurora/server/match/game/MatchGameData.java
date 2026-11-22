@@ -120,6 +120,10 @@ public abstract class MatchGameData extends GameData {
         return null;
     }
 
+    public synchronized boolean removeDrop(final DroppedItem item) {
+        return drops.removeIf(drop -> drop == item);
+    }
+
     public synchronized List<DroppedItem> drops() {
         return new ArrayList<>(drops);
     }

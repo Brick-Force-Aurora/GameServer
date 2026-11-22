@@ -3,6 +3,7 @@ package de.brickforceaurora.server.net;
 import java.net.InetAddress;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -95,6 +96,11 @@ public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> im
                 i--;
             }
         }
+    }
+
+    // Runs the task later on one of the network threads
+    public ScheduledFuture<?> schedule(final Runnable task, final long delay, final TimeUnit unit) {
+        return group.schedule(task, delay, unit);
     }
 
     public int nextClientId() {
