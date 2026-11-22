@@ -19,8 +19,8 @@ public record InventoryItem(long id, int accountId, String code, int usage, int 
     };
 
     private static final String[] WEAPONS = {
-            "waa", "waq", "wab", "wah", "wad", "waj", "wae", "wda", "waf", "wbd", "wag", "wak", "wal", "wmh", "was", "wat", "wbo", "wmg",
-            "wdd", "weg"
+            "waa", "waq", "wab", "wah", "wad", "waj", "wae", "wda", "waf", "wbd", "wag", "wak", "wal", "was", "wat", "wbo",
+            "wdd", "weg", "wct", "wcu", "wdc", "wcv", "wbt", "wbs", "wbx", "wcz", "wcy", "wfo", "wdp", "wao"
     };
 
     // TODO: SHOULD BE GIVEN TO THE PLAYER AFTER THE TUTORIAL
