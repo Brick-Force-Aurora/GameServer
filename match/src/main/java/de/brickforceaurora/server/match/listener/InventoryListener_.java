@@ -31,21 +31,22 @@ import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundE
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundSetShooterToolPacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundSetWeaponSlotPacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundUnequipPacket;
+import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.extension.Extension;
 
 @Extension
 public class InventoryListener_ implements INetListener {
     
     private final MatchServerApp app;
-    
-    public InventoryListener_(MatchServerApp app) {
-        this.app = app;
+
+    public InventoryListener_(final SnowFrame<MatchServerApp> snowFrame) {
+        this.app = snowFrame.app();
     }
 
     @PacketHandler
     public void onEquip(final NetContext<ServerboundEquipPacket> context) {
         final BFClient client = context.client();
-        final Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
+        final Integer accountId = client.attr(ClientListener_.ATTR_ACCOUNT_ID, Integer.class);
         if (accountId == null) {
             return;
         }
@@ -85,7 +86,7 @@ public class InventoryListener_ implements INetListener {
     @PacketHandler
     public void onUnequip(final NetContext<ServerboundUnequipPacket> context) {
         final BFClient client = context.client();
-        final Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
+        final Integer accountId = client.attr(ClientListener_.ATTR_ACCOUNT_ID, Integer.class);
         if (accountId == null) {
             return;
         }
@@ -110,7 +111,7 @@ public class InventoryListener_ implements INetListener {
     @PacketHandler
     public void onSetWeaponSlot(final NetContext<ServerboundSetWeaponSlotPacket> context) {
         final BFClient client = context.client();
-        final Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
+        final Integer accountId = client.attr(ClientListener_.ATTR_ACCOUNT_ID, Integer.class);
         final int slot = context.packet().slot();
         final long weapon = context.packet().weapon();
         if (accountId == null || slot < 0 || slot >= 10) {
@@ -157,7 +158,7 @@ public class InventoryListener_ implements INetListener {
     @PacketHandler
     public void onClearWeaponSlots(final NetContext<ServerboundClearWeaponSlotPacket> context) {
         final BFClient client = context.client();
-        final Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
+        final Integer accountId = client.attr(ClientListener_.ATTR_ACCOUNT_ID, Integer.class);
         if (accountId == null) {
             return;
         }
@@ -183,7 +184,7 @@ public class InventoryListener_ implements INetListener {
     @PacketHandler
     public void onSetShooterTool(final NetContext<ServerboundSetShooterToolPacket> context) {
         final BFClient client = context.client();
-        final Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
+        final Integer accountId = client.attr(ClientListener_.ATTR_ACCOUNT_ID, Integer.class);
         final int slot = context.packet().slot();
         final long tool = context.packet().tool();
         if (accountId == null || slot < 0 || slot >= 5) {
@@ -225,7 +226,7 @@ public class InventoryListener_ implements INetListener {
     @PacketHandler
     public void onClearShooterTools(final NetContext<ServerboundClearShooterToolsPacket> context) {
         final BFClient client = context.client();
-        final Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
+        final Integer accountId = client.attr(ClientListener_.ATTR_ACCOUNT_ID, Integer.class);
         if (accountId == null) {
             return;
         }
