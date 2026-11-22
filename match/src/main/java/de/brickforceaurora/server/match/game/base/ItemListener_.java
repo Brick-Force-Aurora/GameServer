@@ -2,11 +2,9 @@ package de.brickforceaurora.server.match.game.base;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import de.brickforceaurora.server.database.DatabaseException;
-import de.brickforceaurora.server.database.UserRepository;
 import de.brickforceaurora.server.database.model.InventoryItem;
 import de.brickforceaurora.server.match.MatchServerApp;
 import de.brickforceaurora.server.match.game.GameMode;
@@ -96,31 +94,9 @@ public class ItemListener_ implements IGameNetListener<MatchGameData> {
     @PacketHandler
     public void onUseShooterConsumable(final Room room, final MatchGameData data,
         final NetContext<ServerboundUseShooterConsumablePacket> context) {
-        final BFClient client = context.client();
-        final Integer accountId = client.attr(ClientListener.ATTR_ACCOUNT_ID, Integer.class);
-        if (room.status() != RoomStatus.PLAYING || accountId == null) {
-            return;
-        }
-        final ServerboundUseShooterConsumablePacket packet = context.packet();
-        try {
-            final UserRepository users = app.userRepository();
-            final Optional<InventoryItem> found = Inventories.inventory(users, client).stream()
-                .filter(item -> item.id() == packet.item() && item.code().equals(packet.code())).findFirst();
-            if (found.isEmpty()) {
-                return;
-            }
-            final InventoryItem item = found.get();
-            if (item.amount() > 1) {
-                users.updateItem(new InventoryItem(item.id(), item.accountId(), item.code(), item.usage(), item.remain(), item.amount() - 1,
-                    item.premium(), item.durability(), item.toolSlot()));
-            } else {
-                users.removeItem(accountId, item.id());
-            }
-            Inventories.changed(client);
-        } catch (final DatabaseException exception) {
-            context.manager().logger().error("Couldn't use the consumable of {0}", exception, client);
-            Inventories.changed(client);
-        }
+        // Items are not used up
+        context.manager().logger().debug("{0} used the action item {1} ({2})", context.client(), context.packet().code(),
+            context.packet().item());
     }
 
     @PacketHandler
