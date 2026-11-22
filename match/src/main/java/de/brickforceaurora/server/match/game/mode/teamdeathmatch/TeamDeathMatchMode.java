@@ -236,7 +236,7 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
                 continue;
             }
             present.add(member.id());
-            final int result = endCode == 0 ? 0 : endCode > 0 == stats.red() ? 1 : -1;
+            final int result = resultFor(endCode, stats.red());
             final int xp = TDMScoring.xp(stats, result);
             final int points = TDMScoring.points(stats, result);
             final int prevXp = save(manager, users, member, stats, xp, points);
@@ -252,10 +252,20 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
         }
         data.pendingResults(present);
         room.status(RoomStatus.MATCH_END);
-        room.broadcast(new ClientboundTeamMatchEndPacket().endCode(endCode).redKill(redKill).redDeath(redDeath).blueKill(blueKill)
-            .blueDeath(blueDeath).results(results.toArray(ResultUnit[]::new)));
+        final ResultUnit[] units = results.toArray(ResultUnit[]::new);
+        for (final BFClient member : room.clients().toArray(new BFClient[0])) {
+            final PlayerStats stats = data.stats(member.id());
+            final Integer slot = member.attr(Room.ATTR_SLOT, Integer.class);
+            final boolean red = stats != null ? stats.red() : slot == null || TeamGameData.isRed(slot);
+            member.send(new ClientboundTeamMatchEndPacket().endCode((byte) resultFor(endCode, red)).redKill(redKill).redDeath(redDeath)
+                .blueKill(blueKill).blueDeath(blueDeath).results(units));
+        }
         manager.broadcast(new ClientboundUpdateRoomPacket().roomInfo(room));
         manager.logger().info("Room {0} ({1}) ended: red {2}, blue {3}", room.id(), room.title(), redScore, blueScore);
+    }
+
+    private static int resultFor(final int endCode, final boolean red) {
+        return endCode == 0 ? 0 : endCode > 0 == red ? 1 : -1;
     }
 
     private int save(final NetManager<?> manager, final UserRepository users, final BFClient client, final PlayerStats stats, final int xp,
