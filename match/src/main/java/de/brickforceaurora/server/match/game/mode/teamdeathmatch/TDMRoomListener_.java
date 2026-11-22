@@ -69,6 +69,8 @@ import me.lauriichan.snowframe.extension.Extension;
 @GameTarget(TeamDeathMatchMode.class)
 public class TDMRoomListener_ implements IGameNetListener<TDMData> {
 
+    private static final String ATTR_BREAK_INTO = "MatchBreakInto";
+
     private final TeamDeathMatchMode mode;
 
     public TDMRoomListener_(final TeamDeathMatchMode mode) {
@@ -103,6 +105,7 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
         data.resetMatch();
         for (final BFClient member : room.clients().toArray(new BFClient[0])) {
             data.registerPlayer(member.id(), TeamGameData.isRed(slotOf(member)), member.name());
+            member.attrSet(Room.ATTR_STATUS, ClientStatus.LOADING);
             room.broadcast(new ClientboundLoadStartPacket().clientId(member.id()));
             member.send(new ClientboundRespawnTicketPacket().ticket(data.nextTicket(slotOf(member))));
         }
@@ -145,10 +148,14 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
         final int slot = slotOf(client);
         data.registerPlayer(client.id(), TeamGameData.isRed(slot), client.name());
 
-        // Everything the player missed since the match started
+        client.attrSet(Room.ATTR_STATUS, ClientStatus.LOADING);
+        client.attrSet(ATTR_BREAK_INTO, Boolean.TRUE);
+        client.send(new ClientboundBreakIntoPacket().result(0), new ClientboundRespawnTicketPacket().ticket(data.nextTicket(slot)));
+        room.broadcast(new ClientboundLoadStartPacket().clientId(client.id()));
+    }
+
+    private void sendMatchState(final TDMData data, final BFClient client) {
         final List<IClientboundPacket> state = new ArrayList<>();
-        state.add(new ClientboundBreakIntoPacket().result(0));
-        state.add(new ClientboundRespawnTicketPacket().ticket(data.nextTicket(slot)));
         state.add(new ClientboundTeamScorePacket().redScore(data.redScore()).blueScore(data.blueScore()));
         for (final PlayerStats stats : data.allStats()) {
             state.add(new ClientboundKillCountPacket().clientId(stats.clientId()).kill(stats.kill()));
@@ -168,7 +175,6 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
             state.add(new ClientboundTimerPacket().remainTime(data.remainTime()).playTime(data.playTime()));
         }
         client.send(state.toArray(IClientboundPacket[]::new));
-        room.broadcast(new ClientboundLoadStartPacket().clientId(client.id()));
     }
 
     @PacketHandler
@@ -370,7 +376,13 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
         if (!started(room)) {
             return;
         }
-        room.broadcast(new ClientboundLoadCompletePacket().clientId(context.client().id()));
+        final BFClient client = context.client();
+        client.attrSet(Room.ATTR_STATUS, ClientStatus.P2PING);
+        room.broadcast(new ClientboundLoadCompletePacket().clientId(client.id()));
+        // Somebody who broke into the match gets what it missed now that the map is loaded
+        if (client.attrUnset(ATTR_BREAK_INTO, Boolean.class) != null) {
+            sendMatchState(data, client);
+        }
     }
 
     @PacketHandler
@@ -378,6 +390,8 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
         if (!started(room)) {
             return;
         }
+        // The status is what players get who join later, the others only know it from the packets
+        context.client().attrSet(Room.ATTR_STATUS, ClientStatus.PLAYING);
         room.broadcast(new ClientboundPToPCompletePacket().clientId(context.client().id()));
     }
 

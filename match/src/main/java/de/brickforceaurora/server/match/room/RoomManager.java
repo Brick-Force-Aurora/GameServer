@@ -122,6 +122,7 @@ public final class RoomManager {
         // Leave first then send packets
         room.clients().remove(client);
         client.attrUnset(Room.ATTR_SLOT);
+        client.attrUnset(Room.ATTR_STATUS);
 
         if (room.players() == 0) {
             deleteRoom(room);

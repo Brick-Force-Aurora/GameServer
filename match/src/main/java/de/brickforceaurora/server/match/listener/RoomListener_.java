@@ -94,6 +94,12 @@ public class RoomListener_ implements INetListener {
             context.client().send(new ClientboundJoinPacket().result(ClientboundJoinPacket.JoinResult.CANT_JOIN));
             return;
         }
+        final RoomStatus status = room.status();
+        if (status != RoomStatus.WAITING && !(status == RoomStatus.PLAYING && room.allowsLateJoining())) {
+            context.client().send(new ClientboundJoinPacket()
+                .result(status == RoomStatus.PENDING ? ClientboundJoinPacket.JoinResult.LOADING : ClientboundJoinPacket.JoinResult.CANT_JOIN));
+            return;
+        }
         if (room.passwordLocked()) {
             final String str = context.packet().password();
             if (!str.equals(room.password())) {
