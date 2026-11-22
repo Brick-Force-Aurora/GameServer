@@ -58,7 +58,6 @@ import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundR
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundRespawnTicketPacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundResultDonePacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundResumeRoomPacket;
-import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundSerialBonusPacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundSlotLockPacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundStackPointPacket;
 import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundStartPacket;
@@ -212,13 +211,9 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
             if (victim.wanted()) {
                 victim.wanted(false);
                 packets.add(new ClientboundDeselectWantedPacket().clientId(victim.clientId()));
-                if (credited) {
-                    killer.addScore(TDMScoring.WANTED_BONUS);
-                }
             }
             if (credited) {
                 killer.addKill();
-                killer.addScore(TDMScoring.KILL_SCORE + (packet.hitpart() == TDMScoring.HEAD_HITPART ? TDMScoring.HEADSHOT_SCORE : 0));
                 data.addScore(killer.red());
                 packets.add(new ClientboundKillCountPacket().clientId(killer.clientId()).kill(killer.kill()));
                 if (data.wanted() && !killer.wanted() && killer.addStreak() >= TDMScoring.WANTED_STREAK) {
@@ -235,10 +230,8 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
                         continue;
                     }
                     attacker.addAssist();
-                    attacker.addScore(TDMScoring.ASSIST_SCORE);
                     packets.add(scorePacket(attacker));
                 }
-                // The kill changed the score of the killer
                 packets.add(scorePacket(killer));
             }
             packets.add(new ClientboundTeamScorePacket().redScore(data.redScore()).blueScore(data.blueScore()));
@@ -252,34 +245,27 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
 
     @PacketHandler
     public void onInflictedDamage(final Room room, final TDMData data, final NetContext<ServerboundInflictedDamagePacket> context) {
-        long total = 0;
-        for (final DamageEntry entry : context.packet().damage()) {
-            if (entry.damage() > 0) {
-                total += entry.damage();
-            }
-        }
-        synchronized (data) {
-            final PlayerStats stats = data.stats(context.client().id());
-            if (stats != null && data.running()) {
-                stats.addDamage((int) Math.min(total, Integer.MAX_VALUE));
-            }
-        }
-    }
-
-    @PacketHandler
-    public void onSerialBonus(final Room room, final TDMData data, final NetContext<ServerboundSerialBonusPacket> context) {
-        final int bonus = context.packet().bonus();
-        if (room.status() != RoomStatus.PLAYING || bonus <= 0 || bonus > TDMScoring.MAX_SERIAL_BONUS) {
-            return;
-        }
         IClientboundPacket update;
         synchronized (data) {
-            final PlayerStats stats = data.stats(context.client().id());
-            if (stats == null || !data.running()) {
+            final PlayerStats attacker = data.stats(context.client().id());
+            if (attacker == null || !data.running()) {
                 return;
             }
-            stats.addScore(bonus);
-            update = scorePacket(stats);
+            long total = 0;
+            for (final DamageEntry entry : context.packet().damage()) {
+                final PlayerStats victim = data.stats(entry.clientId());
+                // Only the damage to the enemy team counts
+                if (entry.damage() > 0 && victim != null && victim.red() != attacker.red()) {
+                    total += entry.damage();
+                }
+            }
+            if (total <= 0) {
+                return;
+            }
+            final int scoreBefore = TDMScoring.score(attacker.damage());
+            attacker.addDamage((int) Math.min(total, Integer.MAX_VALUE));
+            attacker.addScore(TDMScoring.score(attacker.damage()) - scoreBefore);
+            update = scorePacket(attacker);
         }
         room.broadcast(update);
     }
