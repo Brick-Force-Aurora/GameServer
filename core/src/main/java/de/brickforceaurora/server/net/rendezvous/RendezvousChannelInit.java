@@ -20,6 +20,7 @@ final class RendezvousChannelInit<S extends ISnowFrameApp<S> & IBrickForceServer
     protected void initChannel(final Channel channel) throws Exception {
         final ChannelPipeline pipeline = channel.pipeline();
 
+        pipeline.addLast(new RendezvousRateLimit<>(server));
         pipeline.addLast(new P2PClientboundPacketEncoder(server.logger()));
         pipeline.addLast(new P2PServerboundPacketDecoder(server.logger()));
         pipeline.addLast(new RendezvousHandler<>(server));

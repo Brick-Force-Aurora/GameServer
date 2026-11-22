@@ -1,6 +1,8 @@
 package de.brickforceaurora.server.match;
 
 import java.io.File;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
@@ -11,6 +13,7 @@ import de.brickforceaurora.server.database.UserRepository;
 import de.brickforceaurora.server.match.config.HostConfig;
 import de.brickforceaurora.server.match.game.GameModeManager;
 import de.brickforceaurora.server.match.room.RoomManager;
+import de.brickforceaurora.server.match.room.RoomPeers;
 import de.brickforceaurora.server.net.BrickForceServer;
 import de.brickforceaurora.server.net.login.ClaimPasswordLoginHandler;
 import de.brickforceaurora.server.net.login.ILoginHandler;
@@ -68,6 +71,7 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
         }).register("ready", Stage.MAIN, frame -> {
             config = frame.module(ConfigModule.class).manager().config(HostConfig.class);
             frame.logger().info("Server host from config: {0}:{1}", config.host(), config.port());
+            checkHost(frame, config.host());
             roomManager = new RoomManager();
             frame.invoker().addExtra(roomManager);
             gameModeManager = new GameModeManager(frame);
@@ -79,6 +83,7 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
             database = new Database(Paths.get(frame.resource("data://users.db").getPath()));
             userRepository = new UserRepository(database);
             server = new BrickForceServer<>(frame, this);
+            server.rendezvousManager().directory(new RoomPeers());
             loginHandler = new ClaimPasswordLoginHandler(server.netManager(), userRepository, new LoginRepository(database));
         }).register("server-start", Stage.MAIN, _ -> {
             server.open();
@@ -95,6 +100,23 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
                 frame.logger().info("Database closed");
             }
         });
+    }
+
+    // The clients connect to this address and need it as an IPv4 address for the UDP relay
+    private static void checkHost(final SnowFrame<MatchServerApp> frame, final String host) {
+        InetAddress address = null;
+        if (host != null) {
+            try {
+                address = InetAddress.ofLiteral(host);
+            } catch (final IllegalArgumentException exception) {
+            }
+        }
+        if (!(address instanceof Inet4Address)) {
+            throw new IllegalStateException("The host in config/host.json must be an IPv4 address, not '%s'".formatted(host));
+        }
+        if (address.isLoopbackAddress() || address.isAnyLocalAddress()) {
+            frame.logger().warning("The host '{0}' can only be reached from this machine, set the public address in config/host.json", host);
+        }
     }
 
     @Override

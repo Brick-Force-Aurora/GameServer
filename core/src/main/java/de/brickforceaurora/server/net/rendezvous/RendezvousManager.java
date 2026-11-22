@@ -1,10 +1,13 @@
 package de.brickforceaurora.server.net.rendezvous;
 
 import java.net.InetSocketAddress;
+import java.net.InetAddress;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import de.brickforceaurora.server.IBrickForceServer;
@@ -25,14 +28,19 @@ import me.lauriichan.snowframe.SnowFrame;
 
 public final class RendezvousManager<S extends ISnowFrameApp<S> & IBrickForceServer> implements AutoCloseable {
 
-    public static final String PORT_PROPERTY = "bfa.rendezvous.port";
-    public static final String HOST_PROPERTY = "bfa.rendezvous.host";
-
-    public static final int DEFAULT_PORT = 18890;
-
     public static final String ATTR_OBSERVED = "rendezvous.observed";
     public static final String ATTR_REPORTED = "rendezvous.reported";
     public static final String ATTR_RELAYED = "rendezvous.relayed";
+
+    //
+    private static final int SENDER_RATE = 500;
+    private static final int SENDER_BURST = 1000;
+    // Only pings are accepted from senders that are not registered yet
+    private static final int STRANGER_RATE = 10;
+    private static final int STRANGER_BURST = 30;
+    private static final int MAX_LIMITED_SENDERS = 4096;
+
+    private static final long SWEEP_SECONDS = 10;
 
     private final SnowFrame<S> snowFrame;
     private final ISimpleLogger logger;
@@ -52,8 +60,13 @@ public final class RendezvousManager<S extends ISnowFrameApp<S> & IBrickForceSer
         }
     };
 
-    // only used by the event loop of the channel
+    // All of this is only used by the event loop of the channel
     private final Map<InetSocketAddress, BFClient> clientsByEndpoint = new HashMap<>();
+    private final ReliableRoutes routes = new ReliableRoutes();
+    private final Set<Integer> statusWarned = new HashSet<>();
+    private final RelayStats stats = new RelayStats();
+    private final RateLimiter<InetSocketAddress> senderLimiter = new RateLimiter<>(SENDER_RATE, SENDER_BURST, MAX_LIMITED_SENDERS);
+    private final RateLimiter<InetAddress> strangerLimiter = new RateLimiter<>(STRANGER_RATE, STRANGER_BURST, MAX_LIMITED_SENDERS);
 
     public RendezvousManager(final SnowFrame<S> frame, final MultiThreadIoEventLoopGroup group) {
         this.snowFrame = frame;
@@ -67,6 +80,7 @@ public final class RendezvousManager<S extends ISnowFrameApp<S> & IBrickForceSer
         }
         serverChannel = new Bootstrap().group(group).channel(Epoll.isAvailable() ? EpollDatagramChannel.class : NioDatagramChannel.class)
             .handler(new RendezvousChannelInit<>(this)).bind(port).sync().channel();
+        serverChannel.eventLoop().scheduleWithFixedDelay(this::sweep, SWEEP_SECONDS, SWEEP_SECONDS, TimeUnit.SECONDS);
         logger.info("Rendezvous UDP published at 0.0.0.0:{0}", port);
     }
 
@@ -90,6 +104,7 @@ public final class RendezvousManager<S extends ISnowFrameApp<S> & IBrickForceSer
         return Optional.ofNullable(client.attr(ATTR_OBSERVED, InetSocketAddress.class));
     }
 
+    // TEMP: Only for local clients. The client port is (6000 + id), the real one is only known from a ping
     public void pushPong(final BFClient client) {
         client.attrUnset(ATTR_REPORTED);
         if (!isLocal(client) || serverChannel == null) {
@@ -110,6 +125,56 @@ public final class RendezvousManager<S extends ISnowFrameApp<S> & IBrickForceSer
 
     PeerDirectory directory() {
         return directory;
+    }
+
+    ReliableRoutes routes() {
+        return routes;
+    }
+
+    RelayStats stats() {
+        return stats;
+    }
+
+    boolean firstStatusWarning(final BFClient client) {
+        return statusWarned.add(client.id());
+    }
+
+    // Registered senders have a higher limit than the ones that can only ping
+    boolean admit(final InetSocketAddress sender) {
+        final long now = System.nanoTime();
+        final boolean allowed = clientsByEndpoint.containsKey(sender) ? senderLimiter.allow(sender, now)
+            : strangerLimiter.allow(sender.getAddress(), now);
+        if (!allowed) {
+            stats.count(RelayStats.Event.RATE_LIMITED);
+        }
+        return allowed;
+    }
+
+    private void sweep() {
+        try {
+            cleanUp();
+        } catch (final RuntimeException exception) {
+            // A failed run would stop the schedule
+            logger.error("Rendezvous clean up failed", exception);
+        }
+    }
+
+    private void cleanUp() {
+        final long now = System.nanoTime();
+        final Set<Integer> alive = new HashSet<>();
+        clientsByEndpoint.entrySet().removeIf(entry -> {
+            final BFClient client = entry.getValue();
+            if (!client.connection().isOpen() || !entry.getKey().equals(observed(client).orElse(null))) {
+                return true;
+            }
+            alive.add(client.id());
+            return false;
+        });
+        routes.purge(now, alive);
+        statusWarned.retainAll(alive);
+        senderLimiter.purge(now);
+        strangerLimiter.purge(now);
+        stats.report(logger);
     }
 
     BFClient clientAt(final InetSocketAddress endpoint) {

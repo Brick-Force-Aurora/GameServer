@@ -2,7 +2,7 @@ package de.brickforceaurora.server.match.game.mode.teamdeathmatch;
 
 import de.brickforceaurora.server.match.game.PlayerStats;
 
-public final class TdmScoring {
+public final class TDMScoring {
 
     public static final int HEAD_HITPART = 4;
 
@@ -18,7 +18,7 @@ public final class TdmScoring {
 
     public static final int POINTS_PER_PLAY_MINUTE = 1;
 
-    private TdmScoring() {
+    private TDMScoring() {
         throw new UnsupportedOperationException();
     }
 

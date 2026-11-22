@@ -108,9 +108,9 @@ public class ClientListener_ implements ISignalHandler {
 
         final int users = Math.max(1, (int) context.signal().netManager().activeClients().count());
 
-        //TODO: Hardcoded info needs to change
+        //TODO: Channel name and size are hardcoded
         client.send(new ClientboundChannelPacket().channels(new ChannelInfo[] {
-            new ChannelInfo(1, ChannelMode.BATTLE, "Play", "127.0.0.1", 18890, users, 16, 1, 0, 66, 0, 0, 0)
+            new ChannelInfo(1, ChannelMode.BATTLE, "Play", app.host(), app.port(), users, 16, 1, 0, 66, 0, 0, 0)
         }), new ClientboundCurChannelPacket().curChannelId(1),
             new ClientboundPlayerInitInfoPacket().xp(profile.xp()).tutorials(Tutorial.MANAGER.newImmutable(profile.tutorials()))
                 .tosAccepted(profile.tosAccepted()).extraSlots(profile.extraSlots()).firstLoginFp(profile.firstLoginFp())

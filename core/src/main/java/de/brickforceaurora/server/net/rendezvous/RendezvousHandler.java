@@ -1,13 +1,12 @@
 package de.brickforceaurora.server.net.rendezvous;
 
 import java.net.InetSocketAddress;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import de.brickforceaurora.server.IBrickForceServer;
 import de.brickforceaurora.server.net.BFClient;
+import de.brickforceaurora.server.net.rendezvous.RelayStats.Event;
 import de.brickforceaurora.server.net.rendezvous.protocol.P2PHeader;
 import de.brickforceaurora.server.net.rendezvous.protocol.clientbound.ClientboundP2PPongPacket;
 import de.brickforceaurora.server.net.rendezvous.protocol.serverbound.ServerboundP2PMessage;
@@ -22,20 +21,7 @@ import me.lauriichan.snowframe.ISnowFrameApp;
 
 final class RendezvousHandler<S extends ISnowFrameApp<S> & IBrickForceServer> extends SimpleChannelInboundHandler<ServerboundP2PMessage> {
 
-    private static final int MAX_PENDING_ACKS = 4096;
-
     private final RendezvousManager<S> server;
-
-    private final Map<Long, Integer> pendingAcks = new LinkedHashMap<>() {
-
-        private static final long serialVersionUID = -3419695974421713317L;
-
-        @Override
-        protected boolean removeEldestEntry(final Map.Entry<Long, Integer> eldest) {
-            return size() > MAX_PENDING_ACKS;
-        }
-
-    };
 
     RendezvousHandler(final RendezvousManager<S> server) {
         this.server = server;
@@ -51,6 +37,7 @@ final class RendezvousHandler<S extends ISnowFrameApp<S> & IBrickForceServer> ex
         final BFClient client = server.clientAt(message.sender());
         if (client == null) {
             // we don't relay for someone unkown
+            server.stats().count(Event.UNKNOWN_SENDER);
             return;
         }
         switch (message.packet()) {
@@ -65,6 +52,7 @@ final class RendezvousHandler<S extends ISnowFrameApp<S> & IBrickForceServer> ex
         final BFClient client = server.snowFrame().app().server().netManager().clientById(ping.clientId()).orElse(null);
         // only accept pings from the address of the client
         if (client == null || !sender.getAddress().getHostAddress().equals(client.ip())) {
+            server.stats().count(Event.REJECTED_PING);
             return;
         }
         server.register(client, sender);
@@ -78,62 +66,78 @@ final class RendezvousHandler<S extends ISnowFrameApp<S> & IBrickForceServer> ex
     private void relay(final ChannelHandlerContext context, final BFClient sender, final ServerboundP2PMessage message) {
         final List<BFClient> peers = server.directory().peersOf(sender);
         if (peers.isEmpty()) {
+            server.stats().count(Event.NO_PEERS);
             return;
         }
         final P2PHeader header = message.header();
         final ByteBuf data = message.content();
-        final int meta = header.meta();
-        final int destination = header.destination();
+        final long now = System.nanoTime();
 
         if (message.packet() instanceof final ServerboundP2PReliableAckPacket ack) {
-            final Integer origin = pendingAcks.remove(ackKey(sender.id(), ack.meta()));
-            if (origin == null) {
-                return;
-            }
-            for (final BFClient peer : peers) {
-                if (peer.id() == origin) {
-                    forward(context, peer, data);
-                    break;
-                }
-            }
+            relayAck(context, sender, peers, ack, data, now);
             return;
         }
 
         final boolean reliable = header.reliable();
         final boolean broadcast = header.broadcast();
         final Set<Integer> relayed = broadcast && !reliable ? relayedPeers(sender) : Set.of();
+        boolean forwarded = false;
         for (final BFClient peer : peers) {
             final boolean wanted;
             if (broadcast) {
                 wanted = reliable || relayed.contains(peer.id());
             } else {
-                wanted = server.directory().slotOf(peer) == destination;
+                wanted = server.directory().slotOf(peer) == header.destination();
             }
             if (!wanted) {
                 continue;
             }
             if (reliable) {
-                pendingAcks.put(ackKey(peer.id(), meta), sender.id());
+                server.routes().forwarded(sender.id(), peer.id(), header.meta(), now);
             }
-            forward(context, peer, data);
+            forwarded |= forward(context, peer, data);
+        }
+        if (!forwarded) {
+            server.stats().count(broadcast ? Event.NOT_RELAYED : Event.NO_DESTINATION);
         }
     }
 
-    private void forward(final ChannelHandlerContext context, final BFClient target, final ByteBuf data) {
-        final InetSocketAddress endpoint = RendezvousManager.observed(target).orElse(null);
-        if (endpoint == null) {
+    private void relayAck(final ChannelHandlerContext context, final BFClient sender, final List<BFClient> peers,
+        final ServerboundP2PReliableAckPacket ack, final ByteBuf data, final long now) {
+        final ReliableRoutes.Resolution resolution = server.routes().acknowledged(sender.id(), ack.meta(), now).orElse(null);
+        if (resolution == null) {
+            server.stats().count(Event.UNMATCHED_ACK);
             return;
         }
+        if (resolution.ambiguous()) {
+            server.stats().count(Event.AMBIGUOUS_ACK);
+        }
+        for (final BFClient peer : peers) {
+            if (peer.id() == resolution.origin()) {
+                forward(context, peer, data);
+                return;
+            }
+        }
+        // The origin left the room
+        server.stats().count(Event.UNMATCHED_ACK);
+    }
+
+    private boolean forward(final ChannelHandlerContext context, final BFClient target, final ByteBuf data) {
+        final InetSocketAddress endpoint = RendezvousManager.observed(target).orElse(null);
+        if (endpoint == null) {
+            server.stats().count(Event.NO_ENDPOINT);
+            return false;
+        }
         context.writeAndFlush(new DatagramPacket(data.retainedDuplicate(), endpoint));
+        return true;
     }
 
-    private long ackKey(final int clientId, final int meta) {
-        return (long) clientId << 16 | meta & 0xFFFF;
-    }
-
-    @SuppressWarnings("unchecked")
     private Set<Integer> relayedPeers(final BFClient client) {
         final Set<Integer> relayed = client.attr(RendezvousManager.ATTR_RELAYED, Set.class);
+        if (relayed == null && server.firstStatusWarning(client)) {
+            server.logger().warning("Client '{0}' broadcasts to the relay but never reported which peers need it, its broadcasts are dropped",
+                client.name());
+        }
         return relayed == null ? Set.of() : relayed;
     }
 

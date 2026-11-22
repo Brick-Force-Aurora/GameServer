@@ -10,7 +10,7 @@ import me.lauriichan.snowframe.config.handler.JsonConfigHandler;
 public class HostConfig_ implements ISingleConfigExtension {
 
     @ConfigValue("host")
-    public String host;
+    public String host = "127.0.0.1";
 
     @ConfigValue("port")
     public int port = 18890;

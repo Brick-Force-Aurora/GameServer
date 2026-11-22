@@ -213,15 +213,15 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
                 victim.wanted(false);
                 packets.add(new ClientboundDeselectWantedPacket().clientId(victim.clientId()));
                 if (credited) {
-                    killer.addScore(TdmScoring.WANTED_BONUS);
+                    killer.addScore(TDMScoring.WANTED_BONUS);
                 }
             }
             if (credited) {
                 killer.addKill();
-                killer.addScore(TdmScoring.KILL_SCORE + (packet.hitpart() == TdmScoring.HEAD_HITPART ? TdmScoring.HEADSHOT_SCORE : 0));
+                killer.addScore(TDMScoring.KILL_SCORE + (packet.hitpart() == TDMScoring.HEAD_HITPART ? TDMScoring.HEADSHOT_SCORE : 0));
                 data.addScore(killer.red());
                 packets.add(new ClientboundKillCountPacket().clientId(killer.clientId()).kill(killer.kill()));
-                if (data.wanted() && !killer.wanted() && killer.addStreak() >= TdmScoring.WANTED_STREAK) {
+                if (data.wanted() && !killer.wanted() && killer.addStreak() >= TDMScoring.WANTED_STREAK) {
                     killer.wanted(true);
                     packets.add(new ClientboundSelectWantedPacket().clientId(killer.clientId()));
                 }
@@ -231,11 +231,11 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
                 for (final DamageEntry entry : packet.damageLog()) {
                     final PlayerStats attacker = data.stats(entry.clientId());
                     if (attacker == null || attacker == killer || attacker == victim || attacker.red() == victim.red()
-                        || entry.damage() < TdmScoring.MIN_ASSIST_DAMAGE) {
+                        || entry.damage() < TDMScoring.MIN_ASSIST_DAMAGE) {
                         continue;
                     }
                     attacker.addAssist();
-                    attacker.addScore(TdmScoring.ASSIST_SCORE);
+                    attacker.addScore(TDMScoring.ASSIST_SCORE);
                     packets.add(scorePacket(attacker));
                 }
                 // The kill changed the score of the killer
@@ -269,7 +269,7 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
     @PacketHandler
     public void onSerialBonus(final Room room, final TDMData data, final NetContext<ServerboundSerialBonusPacket> context) {
         final int bonus = context.packet().bonus();
-        if (room.status() != RoomStatus.PLAYING || bonus <= 0 || bonus > TdmScoring.MAX_SERIAL_BONUS) {
+        if (room.status() != RoomStatus.PLAYING || bonus <= 0 || bonus > TDMScoring.MAX_SERIAL_BONUS) {
             return;
         }
         IClientboundPacket update;

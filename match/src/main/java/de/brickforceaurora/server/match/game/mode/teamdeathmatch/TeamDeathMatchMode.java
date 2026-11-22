@@ -237,8 +237,8 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
             }
             present.add(member.id());
             final int result = endCode == 0 ? 0 : endCode > 0 == stats.red() ? 1 : -1;
-            final int xp = TdmScoring.xp(stats, result);
-            final int points = TdmScoring.points(stats, result);
+            final int xp = TDMScoring.xp(stats, result);
+            final int points = TDMScoring.points(stats, result);
             final int prevXp = save(manager, users, member, stats, xp, points);
             results.add(new ResultUnit(stats.red(), stats.clientId(), stats.nickname(), stats.kill(), stats.death(), stats.assist(),
                 stats.score(), points, xp, 0, prevXp, prevXp + xp, 0L));
