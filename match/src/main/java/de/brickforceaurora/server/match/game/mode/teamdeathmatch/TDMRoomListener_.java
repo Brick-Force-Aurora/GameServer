@@ -97,7 +97,7 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
             room.broadcast(new ClientboundStartingPacket().remain(remain < 0 ? -1 : remain));
             return;
         }
-        room.status(RoomStatus.PLAYING);
+        room.status(RoomStatus.PENDING);
         room.broadcast(new ClientboundStartingPacket().remain(0), new ClientboundStartPacket().result(0));
         // Everyone waits for each other
         data.resetMatch();
@@ -113,7 +113,7 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
 
     @PacketHandler
     public void onRespawnTicket(final Room room, final TDMData data, final NetContext<ServerboundRespawnTicketPacket> context) {
-        if (room.status() != RoomStatus.PLAYING) {
+        if (!started(room)) {
             return;
         }
         synchronized (data) {
@@ -356,6 +356,10 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
         }
     }
 
+    private static boolean started(final Room room) {
+        return room.status() == RoomStatus.PENDING || room.status() == RoomStatus.PLAYING;
+    }
+
     private static int slotOf(final BFClient client) {
         final Integer slot = client.attr(Room.ATTR_SLOT, Integer.class);
         return slot == null ? 0 : slot;
@@ -363,7 +367,7 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
 
     @PacketHandler
     public void onLoadComplete(final Room room, final TDMData data, final NetContext<ServerboundLoadCompletePacket> context) {
-        if (room.status() != RoomStatus.PLAYING) {
+        if (!started(room)) {
             return;
         }
         room.broadcast(new ClientboundLoadCompletePacket().clientId(context.client().id()));
@@ -371,7 +375,7 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
 
     @PacketHandler
     public void onPeerToPeerComplete(final Room room, final TDMData data, final NetContext<ServerboundPToPCompletePacket> context) {
-        if (room.status() != RoomStatus.PLAYING) {
+        if (!started(room)) {
             return;
         }
         room.broadcast(new ClientboundPToPCompletePacket().clientId(context.client().id()));
@@ -379,7 +383,7 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
 
     @PacketHandler
     public void onMatchCountdown(final Room room, final TDMData data, final NetContext<ServerboundMatchCountdownPacket> context) {
-        if (room.status() != RoomStatus.PLAYING || context.client().id() != room.masterId()) {
+        if (!started(room) || context.client().id() != room.masterId()) {
             return;
         }
         room.broadcast(new ClientboundMatchCountdownPacket().count(context.packet().count()));

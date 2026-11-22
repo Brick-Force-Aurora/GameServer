@@ -210,6 +210,10 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
         for (final BFClient member : room.clients().toArray(new BFClient[0])) {
             member.send(configPacket(room, data, member));
         }
+        if (room.status() == RoomStatus.PENDING) {
+            room.status(RoomStatus.PLAYING);
+            roomManager.updateRoom(room);
+        }
     }
 
     public void resultsConfirmed(final Room room) {
