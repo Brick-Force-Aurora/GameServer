@@ -31,6 +31,10 @@ public final class PacketBuf implements AutoCloseable {
     public ByteBuf buffer() {
         return buffer;
     }
+    
+    public void clear() {
+        buffer.clear();
+    }
 
     /*
      * Reading

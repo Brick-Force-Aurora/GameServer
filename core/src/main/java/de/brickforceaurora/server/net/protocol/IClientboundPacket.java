@@ -10,4 +10,8 @@ public interface IClientboundPacket extends IPacket {
 
     void write(PacketBuf buffer) throws IOException;
 
+    default IClientboundPacket unchunked() {
+        return new UnchunkedClientboundPacket(this);
+    }
+
 }

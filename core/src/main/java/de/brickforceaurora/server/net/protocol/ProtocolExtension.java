@@ -16,6 +16,10 @@ public final class ProtocolExtension {
     public static final int SERVERBOUND_AURORA_LOGIN = 1008;
     public static final int CLIENTBOUND_AURORA_LOGIN_DETAILS = 1009;
     public static final int CLIENTBOUND_AURORA_LOGGED_IN = 1010;
+    
+    public static final int DUPLEX_BUFFER_BEGIN = 2000;
+    public static final int DUPLEX_BUFFER_CHUNK = 2001;
+    public static final int DUPLEX_BUFFER_END = 2002;
 
     public static final ClientboundAuroraHeartbeatPacket PACKET_HEARTBEAT = new ClientboundAuroraHeartbeatPacket();
     public static final ClientboundAuroraLoggedInPacket PACKET_LOGGED_IN = new ClientboundAuroraLoggedInPacket();
