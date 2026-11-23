@@ -1,0 +1,50 @@
+package de.brickforceaurora.server.net.tcp.protocol.serverbound.original;
+
+import de.brickforceaurora.server.net.tcp.protocol.IServerboundPacket;
+import de.brickforceaurora.server.net.tcp.protocol.PacketBuf;
+
+public final class ServerboundTcOpenPrizeTagPacket implements IServerboundPacket {
+
+    private int chest;
+    private int index;
+    private boolean freeCoin;
+
+    public ServerboundTcOpenPrizeTagPacket chest(final int chest) {
+        this.chest = chest;
+        return this;
+    }
+
+    public int chest() {
+        return this.chest;
+    }
+
+    public ServerboundTcOpenPrizeTagPacket index(final int index) {
+        this.index = index;
+        return this;
+    }
+
+    public int index() {
+        return this.index;
+    }
+
+    public ServerboundTcOpenPrizeTagPacket freeCoin(final boolean freeCoin) {
+        this.freeCoin = freeCoin;
+        return this;
+    }
+
+    public boolean freeCoin() {
+        return this.freeCoin;
+    }
+
+    @Override
+    public int packetId() {
+        return 374;
+    }
+
+    @Override
+    public void read(final PacketBuf buf) {
+        this.chest = buf.readInt();
+        this.index = buf.readInt();
+        this.freeCoin = buf.readBoolean();
+    }
+}

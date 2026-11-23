@@ -2,12 +2,12 @@ package de.brickforceaurora.server.match.room;
 
 import de.brickforceaurora.server.match.game.GameData;
 import de.brickforceaurora.server.match.game.GameMode;
-import de.brickforceaurora.server.net.BFClient;
-import de.brickforceaurora.server.net.protocol.IClientboundPacket;
-import de.brickforceaurora.server.net.protocol.data.CountryFilter;
-import de.brickforceaurora.server.net.protocol.data.RoomStatus;
-import de.brickforceaurora.server.net.protocol.data.RoomType;
-import de.brickforceaurora.server.net.protocol.data.api.IRoomInfo;
+import de.brickforceaurora.server.net.tcp.BFClient;
+import de.brickforceaurora.server.net.tcp.protocol.IClientboundPacket;
+import de.brickforceaurora.server.net.tcp.protocol.data.CountryFilter;
+import de.brickforceaurora.server.net.tcp.protocol.data.RoomStatus;
+import de.brickforceaurora.server.net.tcp.protocol.data.RoomType;
+import de.brickforceaurora.server.net.tcp.protocol.data.api.IRoomInfo;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;

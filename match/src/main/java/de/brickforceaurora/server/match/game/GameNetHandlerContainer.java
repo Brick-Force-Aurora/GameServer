@@ -1,8 +1,8 @@
 package de.brickforceaurora.server.match.game;
 
 import de.brickforceaurora.server.match.room.Room;
-import de.brickforceaurora.server.net.NetContext;
-import de.brickforceaurora.server.net.protocol.IPacket;
+import de.brickforceaurora.server.net.tcp.NetContext;
+import de.brickforceaurora.server.net.tcp.protocol.IPacket;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntLists;

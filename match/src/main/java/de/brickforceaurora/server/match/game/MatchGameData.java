@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import de.brickforceaurora.server.net.protocol.data.Door;
-import de.brickforceaurora.server.net.protocol.data.DroppedItem;
-import de.brickforceaurora.server.net.protocol.data.Occupation;
+import de.brickforceaurora.server.net.tcp.protocol.data.Door;
+import de.brickforceaurora.server.net.tcp.protocol.data.DroppedItem;
+import de.brickforceaurora.server.net.tcp.protocol.data.Occupation;
 
 public abstract class MatchGameData extends GameData {
 

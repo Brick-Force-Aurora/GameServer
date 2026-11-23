@@ -1,19 +1,19 @@
 package de.brickforceaurora.server.net.listener;
 
-import de.brickforceaurora.server.net.INetListener;
-import de.brickforceaurora.server.net.NetContext;
-import de.brickforceaurora.server.net.NetSignal;
-import de.brickforceaurora.server.net.PacketHandler;
-import de.brickforceaurora.server.net.login.ILoginHandler;
-import de.brickforceaurora.server.net.login.IOAuthLoginHandler;
-import de.brickforceaurora.server.net.login.LoginType;
-import de.brickforceaurora.server.net.protocol.ProtocolExtension;
-import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraHandshakeChallengePacket;
-import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraLoginDetailsPacket;
-import de.brickforceaurora.server.net.protocol.clientbound.aurora.ClientboundAuroraRequestLoginPacket;
-import de.brickforceaurora.server.net.protocol.serverbound.aurora.ServerboundAuroraHandshakeCompletePacket;
-import de.brickforceaurora.server.net.protocol.serverbound.aurora.ServerboundAuroraHandshakeInitializePacket;
-import de.brickforceaurora.server.net.protocol.serverbound.aurora.ServerboundAuroraLoginPacket;
+import de.brickforceaurora.server.net.tcp.INetListener;
+import de.brickforceaurora.server.net.tcp.NetContext;
+import de.brickforceaurora.server.net.tcp.NetSignal;
+import de.brickforceaurora.server.net.tcp.PacketHandler;
+import de.brickforceaurora.server.net.tcp.login.ILoginHandler;
+import de.brickforceaurora.server.net.tcp.login.IOAuthLoginHandler;
+import de.brickforceaurora.server.net.tcp.login.LoginType;
+import de.brickforceaurora.server.net.tcp.protocol.ProtocolExtension;
+import de.brickforceaurora.server.net.tcp.protocol.clientbound.aurora.ClientboundAuroraHandshakeChallengePacket;
+import de.brickforceaurora.server.net.tcp.protocol.clientbound.aurora.ClientboundAuroraLoginDetailsPacket;
+import de.brickforceaurora.server.net.tcp.protocol.clientbound.aurora.ClientboundAuroraRequestLoginPacket;
+import de.brickforceaurora.server.net.tcp.protocol.serverbound.aurora.ServerboundAuroraHandshakeCompletePacket;
+import de.brickforceaurora.server.net.tcp.protocol.serverbound.aurora.ServerboundAuroraHandshakeInitializePacket;
+import de.brickforceaurora.server.net.tcp.protocol.serverbound.aurora.ServerboundAuroraLoginPacket;
 import de.brickforceaurora.server.util.Encryption;
 import me.lauriichan.snowframe.extension.Extension;
 

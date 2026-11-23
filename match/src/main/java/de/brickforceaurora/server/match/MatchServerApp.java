@@ -6,7 +6,7 @@ import java.net.InetAddress;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import de.brickforceaurora.server.IBrickForceServer;
+import de.brickforceaurora.server.ServerApp;
 import de.brickforceaurora.server.database.Database;
 import de.brickforceaurora.server.database.LoginRepository;
 import de.brickforceaurora.server.database.UserRepository;
@@ -14,19 +14,18 @@ import de.brickforceaurora.server.match.config.HostConfig;
 import de.brickforceaurora.server.match.game.GameModeManager;
 import de.brickforceaurora.server.match.room.RoomManager;
 import de.brickforceaurora.server.match.room.RoomPeers;
-import de.brickforceaurora.server.net.BrickForceServer;
-import de.brickforceaurora.server.net.login.ClaimPasswordLoginHandler;
-import de.brickforceaurora.server.net.login.ILoginHandler;
+import de.brickforceaurora.server.net.tcp.BrickForceServer;
+import de.brickforceaurora.server.net.tcp.login.ClaimPasswordLoginHandler;
+import de.brickforceaurora.server.net.tcp.login.ILoginHandler;
 import de.brickforceaurora.server.util.AnsiSysOutLogger;
 import me.lauriichan.snowframe.ConfigModule;
-import me.lauriichan.snowframe.ISnowFrameApp;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.lifecycle.Lifecycle;
 import me.lauriichan.snowframe.lifecycle.LifecycleBuilder;
 import me.lauriichan.snowframe.lifecycle.LifecyclePhase.Stage;
 import me.lauriichan.snowframe.util.logger.FileLogger;
 
-public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForceServer {
+public final class MatchServerApp extends ServerApp<MatchServerApp> {
 
     private static SnowFrame<MatchServerApp> snowFrame;
 
@@ -82,7 +81,7 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
         lifecycle.startupChain().register("server-start", Stage.PRE, frame -> {
             database = new Database(Paths.get(frame.resource("data://users.db").getPath()));
             userRepository = new UserRepository(database);
-            server = new BrickForceServer<>(frame, this);
+            server = new BrickForceServer<>(frame);
             server.rendezvousManager().directory(new RoomPeers());
             loginHandler = new ClaimPasswordLoginHandler(server.netManager(), userRepository, new LoginRepository(database));
         }).register("server-start", Stage.MAIN, _ -> {
@@ -140,7 +139,7 @@ public class MatchServerApp implements ISnowFrameApp<MatchServerApp>, IBrickForc
     }
 
     @Override
-    public BrickForceServer<?> server() {
+    public BrickForceServer<MatchServerApp> server() {
         return server;
     }
 

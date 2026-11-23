@@ -2,13 +2,13 @@ package de.brickforceaurora.server.match.listener;
 
 import de.brickforceaurora.server.match.room.PeerEndpoints;
 import de.brickforceaurora.server.match.room.Room;
-import de.brickforceaurora.server.net.BFClient;
-import de.brickforceaurora.server.net.INetListener;
-import de.brickforceaurora.server.net.NetContext;
-import de.brickforceaurora.server.net.PacketHandler;
-import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundRendezvousPointPacket;
-import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundRandezvousPointPacket;
-import de.brickforceaurora.server.net.rendezvous.RendezvousManager;
+import de.brickforceaurora.server.net.tcp.BFClient;
+import de.brickforceaurora.server.net.tcp.INetListener;
+import de.brickforceaurora.server.net.tcp.NetContext;
+import de.brickforceaurora.server.net.tcp.PacketHandler;
+import de.brickforceaurora.server.net.tcp.protocol.clientbound.original.ClientboundRendezvousPointPacket;
+import de.brickforceaurora.server.net.tcp.protocol.serverbound.original.ServerboundRandezvousPointPacket;
+import de.brickforceaurora.server.net.udp.RendezvousManager;
 import me.lauriichan.snowframe.extension.Extension;
 
 @Extension

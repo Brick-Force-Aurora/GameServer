@@ -2,11 +2,11 @@ package de.brickforceaurora.server.match.game;
 
 import de.brickforceaurora.server.match.MatchServerApp;
 import de.brickforceaurora.server.match.room.Room;
-import de.brickforceaurora.server.net.INetListener;
-import de.brickforceaurora.server.net.NetContext;
-import de.brickforceaurora.server.net.NetHandler;
-import de.brickforceaurora.server.net.NetHandlerContainer;
-import de.brickforceaurora.server.net.protocol.data.RoomType;
+import de.brickforceaurora.server.net.tcp.INetListener;
+import de.brickforceaurora.server.net.tcp.NetContext;
+import de.brickforceaurora.server.net.tcp.NetHandler;
+import de.brickforceaurora.server.net.tcp.NetHandlerContainer;
+import de.brickforceaurora.server.net.tcp.protocol.data.RoomType;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectCollection;

@@ -9,9 +9,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import de.brickforceaurora.server.net.BFClient;
-import de.brickforceaurora.server.net.protocol.data.api.IRoomInfo;
-
+import de.brickforceaurora.server.net.tcp.BFClient;
+import de.brickforceaurora.server.net.tcp.protocol.data.api.IRoomInfo;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.resource.source.IDataSource;
 import me.lauriichan.snowframe.util.Version;
@@ -57,9 +56,7 @@ public final class Main {
         snowFrame.lifecycle().execute(SnowFrame.LIFECYCLE_CHAIN_STARTUP);
         Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown, "ShutdownHandler"));
 
-        final Thread console = new Thread(Main::listenToConsole, "Console");
-        console.setDaemon(true);
-        console.start();
+        Main.listenToConsole();
     }
 
     //TODO: JLine

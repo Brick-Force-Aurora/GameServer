@@ -5,8 +5,8 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.regex.Pattern;
 
-import de.brickforceaurora.server.net.BFClient;
-import de.brickforceaurora.server.net.rendezvous.RendezvousManager;
+import de.brickforceaurora.server.net.tcp.BFClient;
+import de.brickforceaurora.server.net.udp.RendezvousManager;
 
 public record PeerEndpoints(String localIp, int localPort, String remoteIp, int remotePort) {
 

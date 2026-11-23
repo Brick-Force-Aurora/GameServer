@@ -1,0 +1,22 @@
+package de.brickforceaurora.server.net.tcp.protocol.data.api;
+
+import de.brickforceaurora.server.net.tcp.protocol.PacketBuf;
+
+public interface IClientInfo {
+
+    int id();
+
+    String name();
+
+    int xp();
+
+    int rank();
+
+    static void toBuffer(final PacketBuf buf, final IClientInfo info) {
+        buf.writeInt(info.id());
+        buf.writeString(info.name());
+        buf.writeInt(info.xp());
+        buf.writeInt(info.rank());
+    }
+
+}

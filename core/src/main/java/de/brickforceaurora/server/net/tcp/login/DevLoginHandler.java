@@ -1,0 +1,72 @@
+package de.brickforceaurora.server.net.tcp.login;
+
+import java.util.Optional;
+
+import de.brickforceaurora.server.database.DatabaseException;
+import de.brickforceaurora.server.database.LoginRepository;
+import de.brickforceaurora.server.database.UserRepository;
+import de.brickforceaurora.server.database.model.UserAccount;
+import de.brickforceaurora.server.database.model.UserProfile;
+import de.brickforceaurora.server.net.tcp.BFClient;
+import de.brickforceaurora.server.net.tcp.NetManager;
+import de.brickforceaurora.server.util.flag.IFlags;
+import me.lauriichan.laylib.logger.ISimpleLogger;
+import me.lauriichan.snowframe.util.Version;
+
+public final class DevLoginHandler implements ILoginHandler {
+
+    private final NetManager<?> netManager;
+    private final UserRepository users;
+    private final LoginRepository logins;
+    // We don't support anything (= DEBUG login)
+    private final IFlags<LoginType> supportedTypes = LoginType.MANAGER.newImmutable(0);
+
+    public DevLoginHandler(final NetManager<?> netManager) {
+        this(netManager, null, null);
+    }
+
+    public DevLoginHandler(final NetManager<?> netManager, final UserRepository users, final LoginRepository logins) {
+        this.netManager = netManager;
+        this.users = users;
+        this.logins = logins;
+    }
+
+    @Override
+    public IFlags<LoginType> supportedTypes() {
+        return supportedTypes;
+    }
+
+    @Override
+    public void login(final BFClient client, final Version version, final LoginType loginType, final String userName,
+        final ILoginData data) {
+        if (logins == null) {
+            client.init(version, userName, netManager.nextClientId());
+            return;
+        }
+        final ISimpleLogger logger = netManager.logger();
+        try {
+            // Only used for the log output, the login itself creates the account if needed
+            final boolean existed = users.findAccount(userName).isPresent();
+            final Optional<UserAccount> result = logins.loginDebug(userName);
+            if (result.isEmpty()) {
+                // Not initializing the client makes the login fail
+                logger.warning("Debug login refused for '{0}' from {1}: Account is protected by a password or OAuth identity", userName,
+                    client.ip());
+                return;
+            }
+            final UserAccount account = result.get();
+            if (!existed) {
+                logger.info("Debug login created new account '{0}' (id {1}) from {2}", account.username(), account.id(), client.ip());
+            } else {
+                final String character = users.loadProfile(account.id()).map(UserProfile::nickname).map(name -> "character '" + name + "'")
+                    .orElse("no character yet");
+                logger.info("Debug login of existing account '{0}' (id {1}, {2}) from {3}", account.username(), account.id(), character,
+                    client.ip());
+            }
+            client.init(version, account.username(), netManager.nextClientId());
+        } catch (final DatabaseException exception) {
+            // Not initializing the client makes the login fail
+            logger.error("Database error during debug login of '{0}' from {1}", exception, userName, client.ip());
+        }
+    }
+}

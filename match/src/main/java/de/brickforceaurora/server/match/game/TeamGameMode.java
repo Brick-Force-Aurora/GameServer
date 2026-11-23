@@ -1,9 +1,9 @@
 package de.brickforceaurora.server.match.game;
 
 import de.brickforceaurora.server.match.room.Room;
-import de.brickforceaurora.server.net.NetContext;
-import de.brickforceaurora.server.net.protocol.data.RoomType;
-import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundTeamChangePacket;
+import de.brickforceaurora.server.net.tcp.NetContext;
+import de.brickforceaurora.server.net.tcp.protocol.data.RoomType;
+import de.brickforceaurora.server.net.tcp.protocol.serverbound.original.ServerboundTeamChangePacket;
 import me.lauriichan.snowframe.SnowFrame;
 
 public abstract class TeamGameMode<D extends TeamGameData> extends GameMode<D> {

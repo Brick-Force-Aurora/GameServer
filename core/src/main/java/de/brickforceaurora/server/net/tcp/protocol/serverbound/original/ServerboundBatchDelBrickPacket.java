@@ -1,0 +1,28 @@
+package de.brickforceaurora.server.net.tcp.protocol.serverbound.original;
+
+import de.brickforceaurora.server.net.tcp.protocol.IServerboundPacket;
+import de.brickforceaurora.server.net.tcp.protocol.PacketBuf;
+
+public final class ServerboundBatchDelBrickPacket implements IServerboundPacket {
+
+    private int[] bricks;
+
+    public ServerboundBatchDelBrickPacket bricks(final int[] bricks) {
+        this.bricks = bricks;
+        return this;
+    }
+
+    public int[] bricks() {
+        return bricks;
+    }
+
+    @Override
+    public int packetId() {
+        return 479;
+    }
+
+    @Override
+    public void read(final PacketBuf buf) {
+        this.bricks = buf.readIntArray();
+    }
+}

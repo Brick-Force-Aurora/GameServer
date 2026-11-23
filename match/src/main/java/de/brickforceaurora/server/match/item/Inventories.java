@@ -6,12 +6,12 @@ import java.util.List;
 import de.brickforceaurora.server.database.DatabaseException;
 import de.brickforceaurora.server.database.UserRepository;
 import de.brickforceaurora.server.database.model.InventoryItem;
-import de.brickforceaurora.server.net.BFClient;
-import de.brickforceaurora.server.net.protocol.IClientboundPacket;
-import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundShooterToolListPacket;
-import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundWeaponSlotListPacket;
-import de.brickforceaurora.server.net.protocol.data.ItemUsage;
-import de.brickforceaurora.server.net.protocol.data.ToolSlot;
+import de.brickforceaurora.server.net.tcp.BFClient;
+import de.brickforceaurora.server.net.tcp.protocol.IClientboundPacket;
+import de.brickforceaurora.server.net.tcp.protocol.clientbound.original.ClientboundShooterToolListPacket;
+import de.brickforceaurora.server.net.tcp.protocol.clientbound.original.ClientboundWeaponSlotListPacket;
+import de.brickforceaurora.server.net.tcp.protocol.data.ItemUsage;
+import de.brickforceaurora.server.net.tcp.protocol.data.ToolSlot;
 
 //TODO Inventory wie bei Minecraft
 public final class Inventories {

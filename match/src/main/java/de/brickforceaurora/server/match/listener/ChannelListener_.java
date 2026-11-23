@@ -1,15 +1,15 @@
 package de.brickforceaurora.server.match.listener;
 
 import de.brickforceaurora.server.database.model.UserProfile;
-import de.brickforceaurora.server.net.INetListener;
-import de.brickforceaurora.server.net.NetContext;
-import de.brickforceaurora.server.net.PacketHandler;
-import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundRoaminPacket;
-import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundSvcEnterListPacket;
-import de.brickforceaurora.server.net.protocol.data.ClientInfo;
-import de.brickforceaurora.server.net.protocol.data.api.IClientInfo;
-import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundChannelPlayerListPacket;
-import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundRoaminPacket;
+import de.brickforceaurora.server.net.tcp.INetListener;
+import de.brickforceaurora.server.net.tcp.NetContext;
+import de.brickforceaurora.server.net.tcp.PacketHandler;
+import de.brickforceaurora.server.net.tcp.protocol.clientbound.original.ClientboundRoaminPacket;
+import de.brickforceaurora.server.net.tcp.protocol.clientbound.original.ClientboundSvcEnterListPacket;
+import de.brickforceaurora.server.net.tcp.protocol.data.ClientInfo;
+import de.brickforceaurora.server.net.tcp.protocol.data.api.IClientInfo;
+import de.brickforceaurora.server.net.tcp.protocol.serverbound.original.ServerboundChannelPlayerListPacket;
+import de.brickforceaurora.server.net.tcp.protocol.serverbound.original.ServerboundRoaminPacket;
 import me.lauriichan.snowframe.extension.Extension;
 
 @Extension

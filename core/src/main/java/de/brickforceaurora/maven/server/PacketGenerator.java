@@ -9,7 +9,7 @@ import java.util.Properties;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaInterfaceSource;
 
-import de.brickforceaurora.server.net.protocol.PacketBuf;
+import de.brickforceaurora.server.net.tcp.protocol.PacketBuf;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import me.lauriichan.laylib.json.IJson;
 import me.lauriichan.laylib.json.JsonArray;

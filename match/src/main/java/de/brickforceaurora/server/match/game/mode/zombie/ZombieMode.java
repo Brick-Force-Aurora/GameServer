@@ -3,12 +3,12 @@ package de.brickforceaurora.server.match.game.mode.zombie;
 import de.brickforceaurora.server.match.game.GameData;
 import de.brickforceaurora.server.match.game.GameMode;
 import de.brickforceaurora.server.match.room.Room;
-import de.brickforceaurora.server.net.BFClient;
-import de.brickforceaurora.server.net.NetContext;
-import de.brickforceaurora.server.net.NetManager;
-import de.brickforceaurora.server.net.protocol.data.RoomType;
-import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundCreateRoomPacket;
-import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundRoomConfigPacket;
+import de.brickforceaurora.server.net.tcp.BFClient;
+import de.brickforceaurora.server.net.tcp.NetContext;
+import de.brickforceaurora.server.net.tcp.NetManager;
+import de.brickforceaurora.server.net.tcp.protocol.data.RoomType;
+import de.brickforceaurora.server.net.tcp.protocol.serverbound.original.ServerboundCreateRoomPacket;
+import de.brickforceaurora.server.net.tcp.protocol.serverbound.original.ServerboundRoomConfigPacket;
 import me.lauriichan.snowframe.SnowFrame;
 
 // TODO: @Extension

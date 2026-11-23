@@ -2,21 +2,21 @@ package de.brickforceaurora.server.match.listener;
 
 import java.time.LocalDateTime;
 
-import de.brickforceaurora.server.net.INetListener;
-import de.brickforceaurora.server.net.NetContext;
-import de.brickforceaurora.server.net.PacketHandler;
-import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundAllMapPacket;
-import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundMyDownloadMapPacket;
-import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundMyRegisterMapPacket;
-import de.brickforceaurora.server.net.protocol.clientbound.original.ClientboundUserMapPacket;
-import de.brickforceaurora.server.net.protocol.data.GameMode;
-import de.brickforceaurora.server.net.protocol.data.MapMeta;
-import de.brickforceaurora.server.net.protocol.data.MapTag;
-import de.brickforceaurora.server.net.protocol.data.RegisteredMap;
-import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundAllMapPacket;
-import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundMyDownloadMapPacket;
-import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundMyRegisterMapPacket;
-import de.brickforceaurora.server.net.protocol.serverbound.original.ServerboundUserMapPacket;
+import de.brickforceaurora.server.net.tcp.INetListener;
+import de.brickforceaurora.server.net.tcp.NetContext;
+import de.brickforceaurora.server.net.tcp.PacketHandler;
+import de.brickforceaurora.server.net.tcp.protocol.clientbound.original.ClientboundAllMapPacket;
+import de.brickforceaurora.server.net.tcp.protocol.clientbound.original.ClientboundMyDownloadMapPacket;
+import de.brickforceaurora.server.net.tcp.protocol.clientbound.original.ClientboundMyRegisterMapPacket;
+import de.brickforceaurora.server.net.tcp.protocol.clientbound.original.ClientboundUserMapPacket;
+import de.brickforceaurora.server.net.tcp.protocol.data.GameMode;
+import de.brickforceaurora.server.net.tcp.protocol.data.MapMeta;
+import de.brickforceaurora.server.net.tcp.protocol.data.MapTag;
+import de.brickforceaurora.server.net.tcp.protocol.data.RegisteredMap;
+import de.brickforceaurora.server.net.tcp.protocol.serverbound.original.ServerboundAllMapPacket;
+import de.brickforceaurora.server.net.tcp.protocol.serverbound.original.ServerboundMyDownloadMapPacket;
+import de.brickforceaurora.server.net.tcp.protocol.serverbound.original.ServerboundMyRegisterMapPacket;
+import de.brickforceaurora.server.net.tcp.protocol.serverbound.original.ServerboundUserMapPacket;
 import me.lauriichan.snowframe.extension.Extension;
 
 @Extension

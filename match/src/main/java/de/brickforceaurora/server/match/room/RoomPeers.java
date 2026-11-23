@@ -3,8 +3,8 @@ package de.brickforceaurora.server.match.room;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.brickforceaurora.server.net.BFClient;
-import de.brickforceaurora.server.net.rendezvous.PeerDirectory;
+import de.brickforceaurora.server.net.tcp.BFClient;
+import de.brickforceaurora.server.net.udp.PeerDirectory;
 
 public final class RoomPeers implements PeerDirectory {
 

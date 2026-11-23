@@ -23,6 +23,7 @@
 		<dep.laylib.version>0.4.2-SNAPSHOT</dep.laylib.version>
 		<dep.fastutil.version>8.5.18</dep.fastutil.version>
 		<dep.sourcemod.version>2.1.1</dep.sourcemod.version>
+		<dep.jline.version>4.0.2</dep.jline.version>
 	</properties>
 	
 	<pluginRepositories>
@@ -67,6 +68,11 @@
             <artifactId>fastutil</artifactId>
             <version>${dep.fastutil.version}</version>
         </dependency>
+		<dependency>
+			<groupId>org.jline</groupId>
+			<artifactId>jline-reader</artifactId>
+			<version>${dep.jline.version}</version>
+		</dependency>
 
 		<!-- LayLib -->
 		<dependency>

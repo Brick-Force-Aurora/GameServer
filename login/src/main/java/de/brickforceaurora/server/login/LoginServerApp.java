@@ -4,19 +4,18 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import de.brickforceaurora.server.IBrickForceServer;
-import de.brickforceaurora.server.net.BrickForceServer;
-import de.brickforceaurora.server.net.login.DevLoginHandler;
-import de.brickforceaurora.server.net.login.ILoginHandler;
+import de.brickforceaurora.server.ServerApp;
+import de.brickforceaurora.server.net.tcp.BrickForceServer;
+import de.brickforceaurora.server.net.tcp.login.DevLoginHandler;
+import de.brickforceaurora.server.net.tcp.login.ILoginHandler;
 import de.brickforceaurora.server.util.AnsiSysOutLogger;
 import me.lauriichan.laylib.logger.ISimpleLogger;
-import me.lauriichan.snowframe.ISnowFrameApp;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.lifecycle.Lifecycle;
 import me.lauriichan.snowframe.lifecycle.LifecyclePhase.Stage;
 import me.lauriichan.snowframe.util.logger.FileLogger;
 
-public class LoginServerApp implements ISnowFrameApp<LoginServerApp>, IBrickForceServer {
+public class LoginServerApp extends ServerApp<LoginServerApp> {
 
     private static SnowFrame<LoginServerApp> snowFrame;
 
@@ -54,7 +53,7 @@ public class LoginServerApp implements ISnowFrameApp<LoginServerApp>, IBrickForc
             frame.resourceManager().register("data", Paths.get("data"));
         });
         lifecycle.startupChain().register("load", Stage.MAIN, frame -> {
-            server = new BrickForceServer<>(frame, this);
+            server = new BrickForceServer<>(frame);
             loginHandler = new DevLoginHandler(server.netManager());
         });
         lifecycle.startupChain().register("ready", Stage.MAIN, _ -> {

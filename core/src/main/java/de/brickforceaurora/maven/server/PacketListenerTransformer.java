@@ -11,7 +11,7 @@ import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 import org.jboss.forge.roaster.model.source.ParameterSource;
 
-import de.brickforceaurora.server.net.PacketHandler;
+import de.brickforceaurora.server.net.tcp.PacketHandler;
 import me.lauriichan.maven.sourcemod.api.ISourceTransformer;
 
 public final class PacketListenerTransformer implements ISourceTransformer {

@@ -1,12 +1,12 @@
 package de.brickforceaurora.server.net.listener;
 
-import de.brickforceaurora.server.net.BFClient;
-import de.brickforceaurora.server.net.INetListener;
-import de.brickforceaurora.server.net.NetContext;
-import de.brickforceaurora.server.net.PacketHandler;
-import de.brickforceaurora.server.net.login.ILoginHandler;
-import de.brickforceaurora.server.net.protocol.ProtocolExtension;
-import de.brickforceaurora.server.net.protocol.serverbound.aurora.ServerboundAuroraHeartbeatPacket;
+import de.brickforceaurora.server.net.tcp.BFClient;
+import de.brickforceaurora.server.net.tcp.INetListener;
+import de.brickforceaurora.server.net.tcp.NetContext;
+import de.brickforceaurora.server.net.tcp.PacketHandler;
+import de.brickforceaurora.server.net.tcp.login.ILoginHandler;
+import de.brickforceaurora.server.net.tcp.protocol.ProtocolExtension;
+import de.brickforceaurora.server.net.tcp.protocol.serverbound.aurora.ServerboundAuroraHeartbeatPacket;
 import de.brickforceaurora.server.util.TimeMath;
 import me.lauriichan.snowframe.extension.Extension;
 

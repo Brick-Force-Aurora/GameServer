@@ -1,7 +1,7 @@
 package de.brickforceaurora.server.match.game;
 
 import de.brickforceaurora.server.match.MatchServerApp;
-import de.brickforceaurora.server.net.NetSignal;
+import de.brickforceaurora.server.net.tcp.NetSignal;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.extension.Extension;
 import me.lauriichan.snowframe.signal.ISignalHandler;
