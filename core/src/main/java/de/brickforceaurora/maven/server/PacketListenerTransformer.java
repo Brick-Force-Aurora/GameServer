@@ -16,10 +16,10 @@ import me.lauriichan.maven.sourcemod.api.ISourceTransformer;
 
 public final class PacketListenerTransformer implements ISourceTransformer {
 
-    private static final String NET_HANDLER_CONTAINER_TYPE = "de.brickforceaurora.server.net.NetHandlerContainer";
-    private static final String INET_LISTENER_TYPE = "de.brickforceaurora.server.net.INetListener";
-    private static final String NET_HANDLER_TYPE = "de.brickforceaurora.server.net.NetHandler";
-    private static final String NET_CONTEXT_TYPE = "de.brickforceaurora.server.net.NetContext";
+    private static final String NET_HANDLER_CONTAINER_TYPE = "de.brickforceaurora.server.net.tcp.NetHandlerContainer";
+    private static final String INET_LISTENER_TYPE = "de.brickforceaurora.server.net.tcp.INetListener";
+    private static final String NET_HANDLER_TYPE = "de.brickforceaurora.server.net.tcp.NetHandler";
+    private static final String NET_CONTEXT_TYPE = "de.brickforceaurora.server.net.tcp.NetContext";
 
     @Override
     public boolean canTransform(final JavaSource<?> source) {

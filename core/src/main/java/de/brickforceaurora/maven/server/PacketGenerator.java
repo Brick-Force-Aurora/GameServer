@@ -57,8 +57,8 @@ public class PacketGenerator implements ISourceGenerator {
         if (!Files.exists(path)) {
             return;
         }
-        final SourcePackage orgRoot = root.getOrCreatePackage("de.brickforceaurora.server.net.protocol");
-        final SourcePackage packetRoot = root.getOrCreatePackage("de.brickforceaurora.server.net.newprotocol");
+        final SourcePackage orgRoot = root.getOrCreatePackage("de.brickforceaurora.server.net.tcp.protocol");
+        final SourcePackage packetRoot = root.getOrCreatePackage("de.brickforceaurora.server.net.tcp.newprotocol");
         if (packetRoot.hasDirectSource("PacketRegistry")) {
             return;
         }

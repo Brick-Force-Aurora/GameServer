@@ -20,7 +20,7 @@ public final class GameModeNetListenerTransformer implements ISourceTransformer 
     private static final String INET_LISTENER_TYPE = "de.brickforceaurora.server.match.game.IGameNetListener";
     private static final String NET_HANDLER_TYPE = "de.brickforceaurora.server.match.game.GameNetHandler";
     private static final String ROOM_TYPE = "de.brickforceaurora.server.match.room.Room";
-    private static final String NET_CONTEXT_TYPE = "de.brickforceaurora.server.net.NetContext";
+    private static final String NET_CONTEXT_TYPE = "de.brickforceaurora.server.net.tcp.NetContext";
 
     @Override
     public boolean canTransform(final JavaSource<?> source) {
