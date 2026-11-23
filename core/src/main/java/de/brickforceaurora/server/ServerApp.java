@@ -19,6 +19,10 @@ public abstract class ServerApp<A extends ServerApp<A>> implements ISnowFrameApp
     protected final MessageManager messageManager = new MessageManager();
     private ConsoleActor consoleActor;
     
+    @SuppressWarnings({
+        "unchecked",
+        "rawtypes"
+    })
     @Override
     public void registerLifecycle(Lifecycle<A> lifecycle) {
         this.consoleActor = new ConsoleActor(lifecycle.snowFrame(), messageManager);
@@ -29,7 +33,7 @@ public abstract class ServerApp<A extends ServerApp<A>> implements ISnowFrameApp
                     if (!IMessageDefinition.class.isAssignableFrom(extension)) {
                         return;
                     }
-                    messageManager.register(new EnumMessageSource(extension.asSubclass(Enum.class), factory));
+                    messageManager.register(new EnumMessageSource((Class) extension, factory));
                     return;
                 }
                 messageManager.register(new AnnotationMessageSource(extension, factory));
