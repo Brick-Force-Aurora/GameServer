@@ -2,10 +2,15 @@ package de.brickforceaurora.server.login;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.jline.reader.UserInterruptException;
+
+import de.brickforceaurora.server.command.Console;
+import me.lauriichan.laylib.logger.util.StringUtil;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.resource.source.IDataSource;
 import me.lauriichan.snowframe.util.Version;
@@ -49,7 +54,25 @@ public final class Main {
         }
 
         snowFrame.lifecycle().execute(SnowFrame.LIFECYCLE_CHAIN_STARTUP);
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown(), "ShutdownHandler"));
+
+        Runtime.getRuntime().addShutdownHook(Thread.ofPlatform().name("Shutdown").unstarted(Main::shutdown));
+        Thread.ofPlatform().daemon(true).name("Console").start(Main::listenToConsole);
+    }
+
+    private static void listenToConsole() {
+        Console console = Console.INSTANCE;
+        while (!isShutdown()) {
+            try {
+                String line = console.readLine();
+                if (line == null || line.isBlank()) {
+                    continue;
+                }
+                console.execute(line);
+            } catch(UserInterruptException e) {
+                snowFrame.logger().info("Shutting down because of user interrupt");
+                shutdown();
+            }
+        }
     }
     
     public static Version version() {
@@ -64,9 +87,18 @@ public final class Main {
         if (!SHUT_DOWN.compareAndSet(false, true)) {
             return;
         }
-        snowFrame.lifecycle().execute(SnowFrame.LIFECYCLE_CHAIN_SHUTDOWN);
-        if (snowFrame.logger() instanceof FileLogger fileLogger) {
-            fileLogger.close();
+        try {
+            snowFrame.lifecycle().execute(SnowFrame.LIFECYCLE_CHAIN_SHUTDOWN);
+        } finally {
+            if (snowFrame.logger() instanceof FileLogger fileLogger) {
+                fileLogger.close();
+            }
+            try {
+                Console.INSTANCE.close();
+            } catch (IOException e) {
+                System.err.println("Failed to close console");
+                System.err.println(StringUtil.stackTraceToString(e));
+            }
         }
     }
 

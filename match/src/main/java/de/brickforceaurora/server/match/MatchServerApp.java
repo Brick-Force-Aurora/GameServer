@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 import de.brickforceaurora.server.ServerApp;
+import de.brickforceaurora.server.command.Console;
 import de.brickforceaurora.server.database.Database;
 import de.brickforceaurora.server.database.LoginRepository;
 import de.brickforceaurora.server.database.UserRepository;
@@ -17,12 +18,12 @@ import de.brickforceaurora.server.match.room.RoomPeers;
 import de.brickforceaurora.server.net.tcp.BrickForceServer;
 import de.brickforceaurora.server.net.tcp.login.ClaimPasswordLoginHandler;
 import de.brickforceaurora.server.net.tcp.login.ILoginHandler;
-import de.brickforceaurora.server.util.AnsiSysOutLogger;
 import me.lauriichan.snowframe.ConfigModule;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.lifecycle.Lifecycle;
 import me.lauriichan.snowframe.lifecycle.LifecycleBuilder;
 import me.lauriichan.snowframe.lifecycle.LifecyclePhase.Stage;
+import me.lauriichan.snowframe.util.Version;
 import me.lauriichan.snowframe.util.logger.FileLogger;
 
 public final class MatchServerApp extends ServerApp<MatchServerApp> {
@@ -35,7 +36,7 @@ public final class MatchServerApp extends ServerApp<MatchServerApp> {
         }
 
         // TODO: Do actual command line parsing
-        final FileLogger logger = new FileLogger(new File("logs"), AnsiSysOutLogger.INSTANCE);
+        final FileLogger logger = new FileLogger(new File("logs"), Console.INSTANCE);
         logger.setDebug(Arrays.stream(args).anyMatch("--debug"::equalsIgnoreCase));
         logger.setTracking(Arrays.stream(args).anyMatch("--trace"::equalsIgnoreCase));
 
@@ -59,11 +60,13 @@ public final class MatchServerApp extends ServerApp<MatchServerApp> {
 
     @Override
     public void setupLifecycle(final LifecycleBuilder<MatchServerApp> builder) {
+        super.setupLifecycle(builder);
         builder.startupChain().newPhase("server-setup", true).newPhase("server-start", true);
     }
 
     @Override
     public void registerLifecycle(final Lifecycle<MatchServerApp> lifecycle) {
+        super.registerLifecycle(lifecycle);
         lifecycle.startupChain().register("load", Stage.PRE, frame -> {
             frame.resourceManager().register("config", Paths.get("config"));
             frame.resourceManager().register("data", Paths.get("data"));
@@ -74,6 +77,8 @@ public final class MatchServerApp extends ServerApp<MatchServerApp> {
             roomManager = new RoomManager();
             frame.invoker().addExtra(roomManager);
             gameModeManager = new GameModeManager(frame);
+        }).register("ready", Stage.POST, frame -> {
+            Console.INSTANCE.setup(frame);
         });
         lifecycle.startupChain().register("server-setup", Stage.MAIN, _ -> {
 
@@ -126,6 +131,11 @@ public final class MatchServerApp extends ServerApp<MatchServerApp> {
     @Override
     public int port() {
         return config.port();
+    }
+    
+    @Override
+    public Version version() {
+        return Main.version();
     }
 
     @Override

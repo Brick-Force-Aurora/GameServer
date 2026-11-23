@@ -5,14 +5,15 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 import de.brickforceaurora.server.ServerApp;
+import de.brickforceaurora.server.command.Console;
 import de.brickforceaurora.server.net.tcp.BrickForceServer;
 import de.brickforceaurora.server.net.tcp.login.DevLoginHandler;
 import de.brickforceaurora.server.net.tcp.login.ILoginHandler;
-import de.brickforceaurora.server.util.AnsiSysOutLogger;
 import me.lauriichan.laylib.logger.ISimpleLogger;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.lifecycle.Lifecycle;
 import me.lauriichan.snowframe.lifecycle.LifecyclePhase.Stage;
+import me.lauriichan.snowframe.util.Version;
 import me.lauriichan.snowframe.util.logger.FileLogger;
 
 public class LoginServerApp extends ServerApp<LoginServerApp> {
@@ -25,7 +26,7 @@ public class LoginServerApp extends ServerApp<LoginServerApp> {
         }
 
         // TODO: Do actual command line parsing
-        final FileLogger logger = new FileLogger(new File("logs"), AnsiSysOutLogger.INSTANCE);
+        final FileLogger logger = new FileLogger(new File("logs"), Console.INSTANCE);
         logger.setDebug(Arrays.stream(args).anyMatch(str -> "--debug".equalsIgnoreCase(str)));
         logger.setTracking(Arrays.stream(args).anyMatch(str -> "--trace".equalsIgnoreCase(str)));
 
@@ -49,6 +50,7 @@ public class LoginServerApp extends ServerApp<LoginServerApp> {
 
     @Override
     public void registerLifecycle(Lifecycle<LoginServerApp> lifecycle) {
+        super.registerLifecycle(lifecycle);
         lifecycle.startupChain().register("load", Stage.PRE, frame -> {
             frame.resourceManager().register("data", Paths.get("data"));
         });
@@ -56,7 +58,8 @@ public class LoginServerApp extends ServerApp<LoginServerApp> {
             server = new BrickForceServer<>(frame);
             loginHandler = new DevLoginHandler(server.netManager());
         });
-        lifecycle.startupChain().register("ready", Stage.MAIN, _ -> {
+        lifecycle.startupChain().register("ready", Stage.MAIN, frame -> {
+            Console.INSTANCE.setup(frame);
             server.open();
         });
     }
@@ -71,6 +74,11 @@ public class LoginServerApp extends ServerApp<LoginServerApp> {
         return snowFrame;
     }
 
+    @Override
+    public Version version() {
+        return Main.version();
+    }
+    
     @Override
     public ILoginHandler loginHandler() {
         return loginHandler;

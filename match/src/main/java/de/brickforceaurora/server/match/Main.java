@@ -3,14 +3,14 @@ package de.brickforceaurora.server.match;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import de.brickforceaurora.server.net.tcp.BFClient;
-import de.brickforceaurora.server.net.tcp.protocol.data.api.IRoomInfo;
+import org.jline.reader.UserInterruptException;
+
+import de.brickforceaurora.server.command.Console;
+import me.lauriichan.laylib.logger.util.StringUtil;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.resource.source.IDataSource;
 import me.lauriichan.snowframe.util.Version;
@@ -54,42 +54,24 @@ public final class Main {
         }
 
         snowFrame.lifecycle().execute(SnowFrame.LIFECYCLE_CHAIN_STARTUP);
-        Runtime.getRuntime().addShutdownHook(new Thread(Main::shutdown, "ShutdownHandler"));
 
-        Main.listenToConsole();
+        Runtime.getRuntime().addShutdownHook(Thread.ofPlatform().name("Shutdown").unstarted(Main::shutdown));
+        Thread.ofPlatform().daemon(true).name("Console").start(Main::listenToConsole);
     }
 
-    //TODO: JLine
     private static void listenToConsole() {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // Perodactyl uses /exit for soft shutdown
-                final String command = line.trim().toLowerCase();
-                switch (command.startsWith("/") ? command.substring(1) : command) {
-                case "stop", "shutdown", "exit", "quit" -> shutdown();
-                case "players" -> listPlayers();
-                case "rooms" -> listRooms();
-                default -> {
+        Console console = Console.INSTANCE;
+        while (!isShutdown()) {
+            try {
+                String line = console.readLine();
+                if (line == null || line.isBlank()) {
+                    continue;
                 }
-                }
+                console.execute(line);
+            } catch(UserInterruptException e) {
+                snowFrame.logger().info("Shutting down because of user interrupt");
+                shutdown();
             }
-        } catch (final IOException _) {
-            // No console attached
-        }
-    }
-
-    private static void listPlayers() {
-        final List<String> names = snowFrame.app().server().netManager().activeClients().map(BFClient::name).toList();
-        snowFrame.logger().info("{0} player(s) online{1}", names.size(), names.isEmpty() ? "" : ": " + String.join(", ", names));
-    }
-
-    private static void listRooms() {
-        final IRoomInfo[] rooms = snowFrame.app().roomManager().roomInfos();
-        snowFrame.logger().info("{0} room(s) open", rooms.length);
-        for (final IRoomInfo room : rooms) {
-            snowFrame.logger().info("  #{0} '{1}' ({2}): {3}/{4} player(s), {5}", room.id(), room.title(), room.type(), room.players(),
-                room.maxPlayers(), room.status());
         }
     }
 
@@ -105,12 +87,17 @@ public final class Main {
         if (!SHUT_DOWN.compareAndSet(false, true)) {
             return;
         }
-        snowFrame.logger().info("Shutting down...");
         try {
             snowFrame.lifecycle().execute(SnowFrame.LIFECYCLE_CHAIN_SHUTDOWN);
         } finally {
             if (snowFrame.logger() instanceof final FileLogger fileLogger) {
                 fileLogger.close();
+            }
+            try {
+                Console.INSTANCE.close();
+            } catch (IOException e) {
+                System.err.println("Failed to close console");
+                System.err.println(StringUtil.stackTraceToString(e));
             }
         }
     }

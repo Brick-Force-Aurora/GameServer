@@ -8,13 +8,15 @@ import me.lauriichan.snowframe.config.handler.JsonConfigHandler;
 
 @Config(automatic = true)
 public class HostConfig_ implements ISingleConfigExtension {
-
-    @ConfigValue("host")
+    
+    @ConfigValue("server.host")
     public String host = "localhost";
-
-    @ConfigValue("port")
+    @ConfigValue("server.port")
     public int port = 18890;
-
+    
+    @ConfigValue("metrics.url")
+    public String metricsUrl;
+    
     @Override
     public IConfigHandler handler() {
         return JsonConfigHandler.JSON;

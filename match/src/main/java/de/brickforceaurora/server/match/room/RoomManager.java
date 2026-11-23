@@ -37,6 +37,10 @@ public final class RoomManager {
         return roomInfos.get();
     }
 
+    public int roomCount() {
+        return rooms.size();
+    }
+
     public synchronized Room createRoom(final BFClient creator, final Consumer<Room> setup) {
         final Room room = new Room(newRoomId());
         try {

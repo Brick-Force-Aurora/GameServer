@@ -9,10 +9,15 @@ import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollIoHandler;
 import io.netty.channel.nio.NioIoHandler;
 import me.lauriichan.laylib.logger.ISimpleLogger;
+import me.lauriichan.snowframe.SignalModule;
 import me.lauriichan.snowframe.SnowFrame;
+import me.lauriichan.snowframe.signal.ISignal;
+import me.lauriichan.snowframe.signal.SignalManager;
 import me.lauriichan.snowframe.util.tick.AbstractTickTimer;
 
 public final class BrickForceServer<S extends ServerApp<S>> extends AbstractTickTimer {
+    
+    public static record TickSignal (long delta) implements ISignal {}
 
     public static final long TARGET_TPS = 60;
 
@@ -26,10 +31,12 @@ public final class BrickForceServer<S extends ServerApp<S>> extends AbstractTick
     private final RendezvousManager<S> rendezvousManager;
 
     private final ServerApp<S> server;
+    private final SignalManager signalManager;
 
     public BrickForceServer(final SnowFrame<S> frame) {
         this.server = frame.app();
         this.logger = frame.logger();
+        this.signalManager = frame.module(SignalModule.class).signalManager();
         this.netManager = new NetManager<>(frame, group);
         this.rendezvousManager = new RendezvousManager<>(frame, group);
         frame.invoker().addExtra(this);
@@ -47,6 +54,7 @@ public final class BrickForceServer<S extends ServerApp<S>> extends AbstractTick
     @Override
     protected void tick(final long delta) {
         netManager.tick(delta);
+        signalManager.call(new TickSignal(delta));
     }
 
     public void open() throws InterruptedException {

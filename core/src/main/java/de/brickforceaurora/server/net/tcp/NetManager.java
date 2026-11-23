@@ -134,6 +134,10 @@ public final class NetManager<S extends ServerApp<S>> implements AutoCloseable {
     /*
      * Client related
      */
+    
+    public int clientCount() {
+        return clients.size();
+    }
 
     public Optional<BFClient> clientById(final int clientId) {
         if (clients.isEmpty()) {
