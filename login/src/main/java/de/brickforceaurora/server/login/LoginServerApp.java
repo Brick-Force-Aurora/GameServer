@@ -13,7 +13,6 @@ import me.lauriichan.laylib.logger.ISimpleLogger;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.lifecycle.Lifecycle;
 import me.lauriichan.snowframe.lifecycle.LifecyclePhase.Stage;
-import me.lauriichan.snowframe.util.Version;
 import me.lauriichan.snowframe.util.logger.FileLogger;
 
 public class LoginServerApp extends ServerApp<LoginServerApp> {
@@ -47,6 +46,10 @@ public class LoginServerApp extends ServerApp<LoginServerApp> {
 
     private BrickForceServer<LoginServerApp> server;
     private ILoginHandler loginHandler;
+    
+    public LoginServerApp() {
+        super(Main.version());
+    }
 
     @Override
     public void registerLifecycle(Lifecycle<LoginServerApp> lifecycle) {
@@ -72,11 +75,6 @@ public class LoginServerApp extends ServerApp<LoginServerApp> {
     @Override
     public SnowFrame<LoginServerApp> snowFrame() {
         return snowFrame;
-    }
-
-    @Override
-    public Version version() {
-        return Main.version();
     }
     
     @Override

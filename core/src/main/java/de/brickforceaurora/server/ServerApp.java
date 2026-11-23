@@ -1,5 +1,7 @@
 package de.brickforceaurora.server;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import de.brickforceaurora.server.command.ConsoleActor;
 import de.brickforceaurora.server.command.message.IMessageExtension;
 import de.brickforceaurora.server.command.message.SimpleMessageProviderFactory;
@@ -15,9 +17,19 @@ import me.lauriichan.snowframe.lifecycle.LifecyclePhase.Stage;
 import me.lauriichan.snowframe.util.Version;
 
 public abstract class ServerApp<A extends ServerApp<A>> implements ISnowFrameApp<A> {
+    
+    private static AtomicReference<Version> version = new AtomicReference<>();
 
+    public static Version version() {
+        return version.get();
+    }
+    
     protected final MessageManager messageManager = new MessageManager();
     private ConsoleActor consoleActor;
+    
+    public ServerApp(Version version) {
+        ServerApp.version.set(version);
+    }
     
     @SuppressWarnings({
         "unchecked",
@@ -48,8 +60,6 @@ public abstract class ServerApp<A extends ServerApp<A>> implements ISnowFrameApp
     public final MessageManager messageManager() {
         return messageManager;
     }
-    
-    public abstract Version version();
 
     public abstract ILoginHandler loginHandler();
 

@@ -23,7 +23,6 @@ import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.lifecycle.Lifecycle;
 import me.lauriichan.snowframe.lifecycle.LifecycleBuilder;
 import me.lauriichan.snowframe.lifecycle.LifecyclePhase.Stage;
-import me.lauriichan.snowframe.util.Version;
 import me.lauriichan.snowframe.util.logger.FileLogger;
 
 public final class MatchServerApp extends ServerApp<MatchServerApp> {
@@ -57,6 +56,10 @@ public final class MatchServerApp extends ServerApp<MatchServerApp> {
 
     private BrickForceServer<MatchServerApp> server;
     private ILoginHandler loginHandler;
+    
+    public MatchServerApp() {
+        super(Main.version());
+    }
 
     @Override
     public void setupLifecycle(final LifecycleBuilder<MatchServerApp> builder) {
@@ -131,11 +134,6 @@ public final class MatchServerApp extends ServerApp<MatchServerApp> {
     @Override
     public int port() {
         return config.port();
-    }
-    
-    @Override
-    public Version version() {
-        return Main.version();
     }
 
     @Override

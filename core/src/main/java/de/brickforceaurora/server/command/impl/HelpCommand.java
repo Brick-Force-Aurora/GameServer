@@ -26,12 +26,6 @@ public class HelpCommand implements ICommandExtension {
     private static final char BOX_FILL = ' ';
     
     private static final String APP_NAME = "Aurora Launcher";
-    
-    private final ServerApp<?> app;
-    
-    public HelpCommand(ServerApp<?> app) {
-        this.app = app;
-    }
 
     @Action("")
     @Description("Shows the welcome help message or the help for one command")
@@ -254,7 +248,7 @@ public class HelpCommand implements ICommandExtension {
 
     private String getVersion(int textWidth, int writableArea, int wallOffset) {
         StringBuilder version = new StringBuilder(" v");
-        version.append(app.version().toString());
+        version.append(ServerApp.version().toString());
         int spaceLen = writableArea - textWidth - version.length() - wallOffset;
         StringBuilder out = new StringBuilder();
         for (int i = 0; i < spaceLen; i++) {
