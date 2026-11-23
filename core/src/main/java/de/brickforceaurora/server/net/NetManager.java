@@ -32,7 +32,7 @@ import me.lauriichan.snowframe.signal.SignalManager;
 
 public final class NetManager<S extends ISnowFrameApp<S> & IBrickForceServer> implements AutoCloseable {
 
-    private static final long TIMEOUT_TIME = TimeUnit.SECONDS.toNanos(5);
+    private static final long TIMEOUT_TIME = TimeUnit.SECONDS.toNanos(15);
 
     // Client id 0 is considered to be a login fail
     // Therefore we start at 1
