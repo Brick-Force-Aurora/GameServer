@@ -80,7 +80,9 @@ public final class Console implements IDelegateLogger, AutoCloseable {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({
+        "unchecked"
+    })
     public void setup(SnowFrame<? extends ServerApp<?>> snowFrame) {
         if (this.commandManager != null) {
             return;
@@ -90,7 +92,7 @@ public final class Console implements IDelegateLogger, AutoCloseable {
         this.consoleActor = snowFrame.app().consoleActor();
         ArgumentRegistry registry = commandManager.getRegistry();
         snowFrame.extension(IArgumentExtension.class, false)
-            .callClasses(cls -> registry.registerArgumentType((Class<? extends IArgumentType<?>>) cls));
+            .callClasses(cls -> registry.registerArgumentType((Class<? extends IArgumentType<Object>>) cls));
         snowFrame.extension(IProviderArgumentExtension.class, true).callInstances(registry::setProvider);
         snowFrame.extension(ICommandExtension.class, false).callClasses(commandManager::register);
         execute("help");
