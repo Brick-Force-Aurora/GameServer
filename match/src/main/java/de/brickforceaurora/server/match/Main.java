@@ -5,8 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import de.brickforceaurora.server.net.BFClient;
+import de.brickforceaurora.server.net.protocol.data.api.IRoomInfo;
 
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.resource.source.IDataSource;
@@ -67,12 +71,28 @@ public final class Main {
                 final String command = line.trim().toLowerCase();
                 switch (command.startsWith("/") ? command.substring(1) : command) {
                 case "stop", "shutdown", "exit", "quit" -> shutdown();
+                case "players" -> listPlayers();
+                case "rooms" -> listRooms();
                 default -> {
                 }
                 }
             }
         } catch (final IOException _) {
             // No console attached
+        }
+    }
+
+    private static void listPlayers() {
+        final List<String> names = snowFrame.app().server().netManager().activeClients().map(BFClient::name).toList();
+        snowFrame.logger().info("{0} player(s) online{1}", names.size(), names.isEmpty() ? "" : ": " + String.join(", ", names));
+    }
+
+    private static void listRooms() {
+        final IRoomInfo[] rooms = snowFrame.app().roomManager().roomInfos();
+        snowFrame.logger().info("{0} room(s) open", rooms.length);
+        for (final IRoomInfo room : rooms) {
+            snowFrame.logger().info("  #{0} '{1}' ({2}): {3}/{4} player(s), {5}", room.id(), room.title(), room.type(), room.players(),
+                room.maxPlayers(), room.status());
         }
     }
 
