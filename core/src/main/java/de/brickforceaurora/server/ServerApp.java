@@ -40,7 +40,7 @@ public abstract class ServerApp<A extends ServerApp<A>> implements ISnowFrameApp
         this.consoleActor = new ConsoleActor(lifecycle.snowFrame(), messageManager);
         lifecycle.startupChain().register("ready", Stage.PRE, frame -> {
             final SimpleMessageProviderFactory factory = new SimpleMessageProviderFactory();
-            frame.extension(IMessageExtension.class, true).callClasses(extension -> {
+            frame.extension(IMessageExtension.class, false).callClasses(extension -> {
                 if (extension.isEnum()) {
                     if (!IMessageDefinition.class.isAssignableFrom(extension)) {
                         return;
