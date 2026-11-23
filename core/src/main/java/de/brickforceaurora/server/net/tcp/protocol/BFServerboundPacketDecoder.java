@@ -2,7 +2,6 @@ package de.brickforceaurora.server.net.tcp.protocol;
 
 import java.util.List;
 
-import de.brickforceaurora.server.net.protocol.PacketRegistry;
 import de.brickforceaurora.server.net.tcp.BFClient;
 import de.brickforceaurora.server.net.tcp.protocol.clientbound.aurora.ClientboundAuroraDisconnectPacket;
 import de.brickforceaurora.server.util.CRC32;

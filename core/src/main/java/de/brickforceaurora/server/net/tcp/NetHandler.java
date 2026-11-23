@@ -1,6 +1,6 @@
 package de.brickforceaurora.server.net.tcp;
 
-import de.brickforceaurora.server.net.protocol.PacketRegistry;
+import de.brickforceaurora.server.net.tcp.protocol.PacketRegistry;
 import de.brickforceaurora.server.net.tcp.protocol.IPacket;
 
 public final class NetHandler<P extends IPacket> {
