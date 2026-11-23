@@ -34,7 +34,7 @@ public class PacketRegistryGenerator implements ISourceGenerator {
 
     @Override
     public void generateSources(final SourcePackage root) {
-        final SourcePackage protoRoot = root.getOrCreatePackage("de.brickforceaurora.server.net.protocol");
+        final SourcePackage protoRoot = root.getOrCreatePackage("de.brickforceaurora.server.net.tcp.protocol");
         final JavaClassSource registry = protoRoot.createClass("PacketRegistry");
         registry.addImport(Object2IntMap.class);
         registry.addImport(Object2IntMaps.class);
