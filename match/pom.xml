@@ -8,7 +8,7 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>match</artifactId>
-	<version>1.0.0</version>
+	<version>0.1.0</version>
 
 	<properties>
 		<project.sourceDir>${project.build.directory}/project-sources</project.sourceDir>
@@ -20,6 +20,11 @@
 			<artifactId>core</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>de.brickforceaurora.server</groupId>
+            <artifactId>database</artifactId>
+			<version>${project.parent.version}</version>
+        </dependency>
 	</dependencies>
 	
 	<build>

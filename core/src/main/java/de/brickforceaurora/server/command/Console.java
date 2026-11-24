@@ -61,7 +61,7 @@ public final class Console implements IDelegateLogger, AutoCloseable {
     private final ExecutorService commandExecutor = Executors.newSingleThreadExecutor(Thread.ofVirtual().name("CommandExecutor").factory());
 
     private CommandManager commandManager;
-    private ConsoleActor consoleActor;
+    private ConsoleActor<?> consoleActor;
 
     private Console() {
         if (INSTANCE != null) {

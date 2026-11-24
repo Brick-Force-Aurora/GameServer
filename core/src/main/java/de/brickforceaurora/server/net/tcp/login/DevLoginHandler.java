@@ -21,7 +21,8 @@ public final class DevLoginHandler implements ILoginHandler {
     }
 
     @Override
-    public void login(BFClient client, Version version, LoginType loginType, String userName, ILoginData data) {
+    public ILoginResult login(BFClient client, Version version, LoginType loginType, String userName, ILoginData data) {
         client.init(version, userName, netManager.nextClientId());
+        return ILoginResult.ACCEPTED;
     }
 }

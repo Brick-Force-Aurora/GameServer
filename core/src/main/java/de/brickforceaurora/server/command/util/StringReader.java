@@ -119,9 +119,32 @@ public class StringReader implements Iterator<Character> {
         return this;
     }
 
+    public StringReader skipUntil(final char ch) {
+        while (hasNext() && peek() == ch) {
+            skip();
+        }
+        return this;
+    }
+    
+    public boolean skipUntilIfFound(final char terminator) {
+        int cursorPos = cursor;
+        while (hasNext()) {
+            if (peek() == terminator) {
+                return true;
+            }
+            skip();
+        }
+        cursor = cursorPos;
+        return false;
+    }
+
     public StringReader skipWhitespace() {
         return skipUntil(Character::isWhitespace);
     }
+    
+    /*
+     * Finding
+     */
 
     /*
      * Reading
@@ -130,6 +153,14 @@ public class StringReader implements Iterator<Character> {
     public String readUntil(final Predicate<Character> predicate) {
         final int start = cursor;
         while (hasNext() && predicate.test(peek())) {
+            skip();
+        }
+        return content.substring(start, cursor);
+    }
+
+    public String readUntil(final char ch) {
+        final int start = cursor;
+        while (hasNext() && peek() == ch) {
             skip();
         }
         return content.substring(start, cursor);

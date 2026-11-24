@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 import de.brickforceaurora.server.net.tcp.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.tcp.protocol.clientbound.aurora.ClientboundAuroraDisconnectPacket;
 import de.brickforceaurora.server.util.Encryption;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import me.lauriichan.snowframe.util.Version;
 import me.lauriichan.snowframe.util.attribute.Attributable;
 
@@ -130,12 +132,18 @@ public final class BFClient extends Attributable {
 
     public void disconnect(final String message) {
         connection.eventLoop().execute(() -> {
-            connection.writeAndFlush(new ClientboundAuroraDisconnectPacket().message(message));
-            // The client only handles the packet on its main thread but reports a closed socket as "Timed out" right away,
-            // so we give it time to show the message and close the connection itself
-            connection.eventLoop().schedule(() -> {
-                connection.close();
-            }, 1000, TimeUnit.MILLISECONDS);
+            connection.writeAndFlush(new ClientboundAuroraDisconnectPacket().message(message)).addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture future) throws Exception {
+                    // The client only handles the packet on its main thread but reports a closed socket as "Timed out" right away,
+                    // so we give it time to show the message and close the connection itself
+                    if (future.isSuccess()) {
+                        connection.eventLoop().schedule(() -> connection.close(), 300, TimeUnit.MILLISECONDS);
+                        return;
+                    }
+                    connection.close();
+                }
+            });
         });
     }
 

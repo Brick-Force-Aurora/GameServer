@@ -13,6 +13,6 @@ public interface ILoginHandler {
 
     IFlags<LoginType> supportedTypes();
 
-    void login(BFClient client, Version version, LoginType loginType, String userName, ILoginData loginData);
+    ILoginResult login(BFClient client, Version version, LoginType loginType, String userName, ILoginData loginData);
 
 }

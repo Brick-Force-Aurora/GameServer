@@ -16,14 +16,6 @@
 		<project.sourceDir>${project.build.directory}/project-sources</project.sourceDir>
 		<pktgen.enabled>false</pktgen.enabled>
 	</properties>
-	
-    <dependencies>
-        <dependency>
-            <groupId>de.brickforceaurora.server</groupId>
-            <artifactId>database</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-    </dependencies>
 
     <!-- Common build parameters -->
 	<build>

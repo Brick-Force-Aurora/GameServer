@@ -15,8 +15,8 @@ import de.brickforceaurora.server.match.config.HostConfig;
 import de.brickforceaurora.server.match.game.GameModeManager;
 import de.brickforceaurora.server.match.room.RoomManager;
 import de.brickforceaurora.server.match.room.RoomPeers;
+import de.brickforceaurora.server.match.user.ClaimPasswordLoginHandler;
 import de.brickforceaurora.server.net.tcp.BrickForceServer;
-import de.brickforceaurora.server.net.tcp.login.ClaimPasswordLoginHandler;
 import de.brickforceaurora.server.net.tcp.login.ILoginHandler;
 import me.lauriichan.snowframe.ConfigModule;
 import me.lauriichan.snowframe.SnowFrame;
@@ -91,16 +91,17 @@ public final class MatchServerApp extends ServerApp<MatchServerApp> {
             userRepository = new UserRepository(database);
             server = new BrickForceServer<>(frame);
             server.rendezvousManager().directory(new RoomPeers());
-            loginHandler = new ClaimPasswordLoginHandler(server.netManager(), userRepository, new LoginRepository(database));
+            loginHandler = new ClaimPasswordLoginHandler(frame, new LoginRepository(database));
         }).register("server-start", Stage.MAIN, _ -> {
             server.open();
         });
         lifecycle.shutdownChain().register("shutdown", Stage.PRE, frame -> {
-            if (server == null) {
-                return;
+            if (server != null) {
+                server.close();
+                frame.logger().info("Server closed");
             }
-            server.close();
-            frame.logger().info("Server closed");
+            // Save dirty configs
+            frame.module(ConfigModule.class).manager().save();
         }).register("shutdown", Stage.POST, frame -> {
             if (database != null) {
                 database.close();

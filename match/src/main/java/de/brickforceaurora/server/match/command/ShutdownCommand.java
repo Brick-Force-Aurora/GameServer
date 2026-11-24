@@ -1,8 +1,9 @@
 package de.brickforceaurora.server.match.command;
 
+import de.brickforceaurora.server.command.BFActor;
 import de.brickforceaurora.server.command.ICommandExtension;
 import de.brickforceaurora.server.match.Main;
-import me.lauriichan.laylib.command.Actor;
+import de.brickforceaurora.server.match.MatchServerApp;
 import me.lauriichan.laylib.command.annotation.Action;
 import me.lauriichan.laylib.command.annotation.Command;
 import me.lauriichan.laylib.command.annotation.Permission;
@@ -18,7 +19,7 @@ import me.lauriichan.snowframe.extension.Extension;
 public class ShutdownCommand implements ICommandExtension {
 
     @Action("")
-    public void run(Actor<?> actor) {
+    public void run(BFActor<MatchServerApp, ?> actor) {
         actor.sendMessage("Shutting down");
         Main.shutdown();
     }

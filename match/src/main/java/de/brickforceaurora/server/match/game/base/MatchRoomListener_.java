@@ -7,6 +7,7 @@ import de.brickforceaurora.server.match.game.MatchGameData;
 import de.brickforceaurora.server.match.game.TeamGameData;
 import de.brickforceaurora.server.match.room.Room;
 import de.brickforceaurora.server.match.room.RoomManager;
+import de.brickforceaurora.server.match.util.TextFormatter;
 import de.brickforceaurora.server.net.tcp.BFClient;
 import de.brickforceaurora.server.net.tcp.NetContext;
 import de.brickforceaurora.server.net.tcp.PacketHandler;
@@ -65,7 +66,7 @@ public class MatchRoomListener_ implements IGameNetListener<MatchGameData> {
 
     @PacketHandler
     public void onChat(final Room room, final MatchGameData data, final NetContext<ServerboundChatPacket> context) {
-        final String text = cleanText(context.packet().text());
+        final String text = TextFormatter.clean(context.packet().text());
         if (text == null) {
             return;
         }
@@ -75,7 +76,7 @@ public class MatchRoomListener_ implements IGameNetListener<MatchGameData> {
     @PacketHandler
     public void onTeamChat(final Room room, final MatchGameData data, final NetContext<ServerboundTeamChatPacket> context) {
         final BFClient client = context.client();
-        final String text = cleanText(context.packet().text());
+        final String text = TextFormatter.clean(context.packet().text());
         if (text == null) {
             return;
         }
@@ -85,14 +86,6 @@ public class MatchRoomListener_ implements IGameNetListener<MatchGameData> {
     /*
      * HELPER
      */
-
-    private static String cleanText(final String text) {
-        if (text == null) {
-            return null;
-        }
-        final String clean = text.replaceAll("\\p{Cntrl}", "").replaceAll(" {2,}", " ").trim();
-        return clean.isEmpty() ? null : clean;
-    }
 
     private static ClientboundChatPacket chatPacket(final BFClient client, final byte type, final String text) {
         return new ClientboundChatPacket().clientId(client.id()).chatType(type).nickname(client.name()).text(text).gameMaster(false);

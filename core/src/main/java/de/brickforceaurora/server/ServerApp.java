@@ -2,6 +2,7 @@ package de.brickforceaurora.server;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import de.brickforceaurora.server.command.Console;
 import de.brickforceaurora.server.command.ConsoleActor;
 import de.brickforceaurora.server.command.message.IMessageExtension;
 import de.brickforceaurora.server.command.message.SimpleMessageProviderFactory;
@@ -25,7 +26,7 @@ public abstract class ServerApp<A extends ServerApp<A>> implements ISnowFrameApp
     }
     
     protected final MessageManager messageManager = new MessageManager();
-    private ConsoleActor consoleActor;
+    private ConsoleActor<A> consoleActor;
     
     public ServerApp(Version version) {
         ServerApp.version.set(version);
@@ -37,7 +38,7 @@ public abstract class ServerApp<A extends ServerApp<A>> implements ISnowFrameApp
     })
     @Override
     public void registerLifecycle(Lifecycle<A> lifecycle) {
-        this.consoleActor = new ConsoleActor(lifecycle.snowFrame(), messageManager);
+        this.consoleActor = new ConsoleActor<>(lifecycle.snowFrame(), Console.INSTANCE);
         lifecycle.startupChain().register("ready", Stage.PRE, frame -> {
             final SimpleMessageProviderFactory factory = new SimpleMessageProviderFactory();
             frame.extension(IMessageExtension.class, false).callClasses(extension -> {
@@ -53,7 +54,7 @@ public abstract class ServerApp<A extends ServerApp<A>> implements ISnowFrameApp
         });
     }
 
-    public final ConsoleActor consoleActor() {
+    public final ConsoleActor<A> consoleActor() {
         return consoleActor;
     }
     
