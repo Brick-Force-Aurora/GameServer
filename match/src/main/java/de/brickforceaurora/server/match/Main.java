@@ -2,7 +2,6 @@ package de.brickforceaurora.server.match;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -10,7 +9,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.jline.reader.UserInterruptException;
 
 import de.brickforceaurora.server.command.Console;
-import me.lauriichan.laylib.logger.util.StringUtil;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.resource.source.IDataSource;
 import me.lauriichan.snowframe.util.Version;
@@ -95,17 +93,11 @@ public final class Main {
         try {
             snowFrame.lifecycle().execute(SnowFrame.LIFECYCLE_CHAIN_SHUTDOWN);
         } finally {
+            if (Thread.currentThread() != consoleThread) {
+                consoleThread.interrupt();
+            }
             if (snowFrame.logger() instanceof final FileLogger fileLogger) {
                 fileLogger.close();
-            }
-            try {
-                if (Thread.currentThread() != consoleThread) {
-                    consoleThread.interrupt();
-                }
-                Console.INSTANCE.close();
-            } catch (IOException e) {
-                System.err.println("Failed to close console");
-                System.err.println(StringUtil.stackTraceToString(e));
             }
         }
     }

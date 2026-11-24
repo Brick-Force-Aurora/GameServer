@@ -3,8 +3,8 @@ package de.brickforceaurora.server.command.impl;
 import java.util.List;
 
 import de.brickforceaurora.server.ServerApp;
+import de.brickforceaurora.server.command.BFActor;
 import de.brickforceaurora.server.command.ICommandExtension;
-import me.lauriichan.laylib.command.Actor;
 import me.lauriichan.laylib.command.CommandManager;
 import me.lauriichan.laylib.command.Node;
 import me.lauriichan.laylib.command.NodeAction;
@@ -24,12 +24,10 @@ public class HelpCommand implements ICommandExtension {
     private static final String BOX_END = " ||";
     private static final char BOX_OUTLINE = '=';
     private static final char BOX_FILL = ' ';
-    
-    private static final String APP_NAME = "Aurora Launcher";
 
     @Action("")
     @Description("Shows the welcome help message or the help for one command")
-    public void run(Actor<?> actor, CommandManager commandManager, @Argument(name = "command", optional = true) String command) {
+    public void run(BFActor<? extends ServerApp<?>, ?> actor, CommandManager commandManager, @Argument(name = "command", optional = true) String command) {
         if (command == null || command.isEmpty()) {
             printHelp(actor, commandManager);
             return;
@@ -44,7 +42,7 @@ public class HelpCommand implements ICommandExtension {
         actor.sendMessage("");
     }
 
-    private void recursivePrint(Actor<?> actor, int depth, Node node) {
+    private void recursivePrint(BFActor<? extends ServerApp<?>, ?> actor, int depth, Node node) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < depth; i++) {
             builder.append("  ");
@@ -131,7 +129,7 @@ public class HelpCommand implements ICommandExtension {
         }
     }
     
-    private static void printFormatted(Actor<?> actor, String start, String content, String end, char fill, int offset, int writableArea) {
+    private static void printFormatted(BFActor<? extends ServerApp<?>, ?> actor, String start, String content, String end, char fill, int offset, int writableArea) {
         StringBuilder builder = new StringBuilder(start);
         for (int i = 0; i < offset; i++) {
             builder.append(fill);
@@ -144,7 +142,7 @@ public class HelpCommand implements ICommandExtension {
         actor.sendMessage(builder.append(end).toString());
     }
     
-    private static void printFilled(Actor<?> actor, char character, int actorWidth) {
+    private static void printFilled(BFActor<? extends ServerApp<?>, ?> actor, char character, int actorWidth) {
         StringBuilder filledLine = new StringBuilder();
         for (int i = 0; i < actorWidth; i++) {
             filledLine.append(character);
@@ -152,7 +150,7 @@ public class HelpCommand implements ICommandExtension {
         actor.sendMessage(filledLine.toString());
     }
 
-    public final void printHelp(Actor<?> actor, CommandManager commandManager) {
+    public final void printHelp(BFActor<? extends ServerApp<?>, ?> actor, CommandManager commandManager) {
         int consoleWidth = 80;
         int writeableWidth = consoleWidth - 7;
         printFilled(actor, BOX_OUTLINE, consoleWidth);
@@ -165,7 +163,8 @@ public class HelpCommand implements ICommandExtension {
         printFormatted(actor, BOX_START, "", BOX_END, BOX_FILL, 0, writeableWidth);
         printFilled(actor, BOX_OUTLINE, consoleWidth);
         printFormatted(actor, BOX_START, "", BOX_END, BOX_FILL, 0, writeableWidth);
-        printFormatted(actor, BOX_START, APP_NAME + " " + getVersion(APP_NAME.length() + 1, writeableWidth, 1), BOX_END, BOX_FILL, 0, writeableWidth);
+        String appName = actor.app().getClass().getSimpleName();
+        printFormatted(actor, BOX_START, appName + " " + getVersion(actor.app(), appName.length() + 1, writeableWidth, 1), BOX_END, BOX_FILL, 0, writeableWidth);
         printFormatted(actor, BOX_START, "", BOX_END, BOX_FILL, 0, writeableWidth);
         printFormatted(actor, BOX_START, "", BOX_END, BOX_FILL, 0, writeableWidth);
         printFormatted(actor, BOX_START, "Type 'help' to see this again!", BOX_END, BOX_FILL, 0, writeableWidth);
@@ -246,9 +245,9 @@ public class HelpCommand implements ICommandExtension {
         printFilled(actor, BOX_OUTLINE, consoleWidth);
     }
 
-    private String getVersion(int textWidth, int writableArea, int wallOffset) {
+    private String getVersion(ServerApp<?> app, int textWidth, int writableArea, int wallOffset) {
         StringBuilder version = new StringBuilder(" v");
-        version.append(ServerApp.version().toString());
+        version.append(app.version().toString());
         int spaceLen = writableArea - textWidth - version.length() - wallOffset;
         StringBuilder out = new StringBuilder();
         for (int i = 0; i < spaceLen; i++) {

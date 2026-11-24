@@ -2,7 +2,6 @@ package de.brickforceaurora.server.login;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -10,7 +9,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.jline.reader.UserInterruptException;
 
 import de.brickforceaurora.server.command.Console;
-import me.lauriichan.laylib.logger.util.StringUtil;
 import me.lauriichan.snowframe.SnowFrame;
 import me.lauriichan.snowframe.resource.source.IDataSource;
 import me.lauriichan.snowframe.util.Version;
@@ -36,6 +34,8 @@ public final class Main {
     private static final AtomicBoolean SHUT_DOWN = new AtomicBoolean(false);
     private static SnowFrame<LoginServerApp> snowFrame;
     private static Version version = new Version(0, 0, 0);
+    
+    private static Thread consoleThread;
 
     public static void main(final String[] args) throws Exception {
         final SnowFrame<LoginServerApp> snowFrame = LoginServerApp.init(args);
@@ -56,7 +56,7 @@ public final class Main {
         snowFrame.lifecycle().execute(SnowFrame.LIFECYCLE_CHAIN_STARTUP);
 
         Runtime.getRuntime().addShutdownHook(Thread.ofPlatform().name("Shutdown").unstarted(Main::shutdown));
-        Thread.ofPlatform().daemon(true).name("Console").start(Main::listenToConsole);
+        consoleThread = Thread.ofPlatform().daemon(true).name("Console").start(Main::listenToConsole);
     }
 
     private static void listenToConsole() {
@@ -68,13 +68,16 @@ public final class Main {
                     continue;
                 }
                 console.execute(line);
-            } catch(UserInterruptException e) {
+            } catch (UserInterruptException e) {
+                if (isShutdown()) {
+                    return;
+                }
                 snowFrame.logger().info("Shutting down because of user interrupt");
                 shutdown();
             }
         }
     }
-    
+
     public static Version version() {
         return version;
     }
@@ -90,14 +93,11 @@ public final class Main {
         try {
             snowFrame.lifecycle().execute(SnowFrame.LIFECYCLE_CHAIN_SHUTDOWN);
         } finally {
-            if (snowFrame.logger() instanceof FileLogger fileLogger) {
-                fileLogger.close();
+            if (Thread.currentThread() != consoleThread) {
+                consoleThread.interrupt();
             }
-            try {
-                Console.INSTANCE.close();
-            } catch (IOException e) {
-                System.err.println("Failed to close console");
-                System.err.println(StringUtil.stackTraceToString(e));
+            if (snowFrame.logger() instanceof final FileLogger fileLogger) {
+                fileLogger.close();
             }
         }
     }

@@ -10,7 +10,6 @@ import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.LineReaderImpl;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
-import org.jline.terminal.Terminal.Signal;
 import org.jline.terminal.TerminalBuilder;
 
 import de.brickforceaurora.server.ServerApp;
