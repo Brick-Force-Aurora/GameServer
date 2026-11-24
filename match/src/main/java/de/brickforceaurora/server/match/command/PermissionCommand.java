@@ -10,6 +10,7 @@ import de.brickforceaurora.server.match.config.PermissionSet;
 import de.brickforceaurora.server.match.config.PermissionsConfig;
 import de.brickforceaurora.server.match.user.ClientActor;
 import me.lauriichan.laylib.command.annotation.Action;
+import me.lauriichan.laylib.command.annotation.Argument;
 import me.lauriichan.laylib.command.annotation.Command;
 import me.lauriichan.laylib.command.annotation.Description;
 import me.lauriichan.laylib.command.annotation.Permission;
@@ -23,20 +24,23 @@ public class PermissionCommand implements ICommandExtension {
 
     @Action("grant")
     @Description("Grants someone a permission")
-    public void grant(BFActor<MatchServerApp, ?> actor, UUID userId, String permission) {
-        modifyPermissions(actor.snowFrame().module(ConfigModule.class).manager().config(PermissionsConfig.class), userId, set -> set.set(true, permission));
+    public void grant(BFActor<MatchServerApp, ?> actor, @Argument(index = 0) UUID userId, @Argument(index = 1) String permission) {
+        modifyPermissions(actor.snowFrame().module(ConfigModule.class).manager().config(PermissionsConfig.class), userId,
+            set -> set.set(true, permission));
     }
 
     @Action("revoke")
     @Description("Revokes someone a permission")
-    public void revoke(BFActor<MatchServerApp, ?> actor, UUID userId, String permission) {
-        modifyPermissions(actor.snowFrame().module(ConfigModule.class).manager().config(PermissionsConfig.class), userId, set -> set.set(false, permission));
+    public void revoke(BFActor<MatchServerApp, ?> actor, @Argument(index = 0) UUID userId, @Argument(index = 1) String permission) {
+        modifyPermissions(actor.snowFrame().module(ConfigModule.class).manager().config(PermissionsConfig.class), userId,
+            set -> set.set(false, permission));
     }
 
     @Action("clear")
     @Description("Clears someones permissions")
-    public void clear(BFActor<MatchServerApp, ?> actor, UUID userId) {
-        modifyPermissions(actor.snowFrame().module(ConfigModule.class).manager().config(PermissionsConfig.class), userId, PermissionSet::clear);
+    public void clear(BFActor<MatchServerApp, ?> actor, @Argument(index = 0) UUID userId) {
+        modifyPermissions(actor.snowFrame().module(ConfigModule.class).manager().config(PermissionsConfig.class), userId,
+            PermissionSet::clear);
     }
 
     private void modifyPermissions(PermissionsConfig config, UUID userId, Consumer<PermissionSet> modifier) {
@@ -52,5 +56,5 @@ public class PermissionCommand implements ICommandExtension {
             config.update(set);
         }
     }
-    
+
 }
