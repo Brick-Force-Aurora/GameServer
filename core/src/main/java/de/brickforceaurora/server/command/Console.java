@@ -10,6 +10,7 @@ import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.LineReaderImpl;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
+import org.jline.terminal.Terminal.Signal;
 import org.jline.terminal.TerminalBuilder;
 
 import de.brickforceaurora.server.ServerApp;
@@ -103,16 +104,13 @@ public final class Console implements IDelegateLogger, AutoCloseable {
     }
 
     public void execute(Actor<?> actor, String commandLine) {
-        if (commandManager == null) {
+        if (commandManager == null || commandExecutor.isShutdown()) {
             return;
         }
         commandExecutor.submit(() -> executeCommand(actor, commandLine));
     }
 
     private void executeCommand(Actor<?> actor, String commandLine) {
-        if (commandLine.startsWith("/")) {
-            commandLine = commandLine.substring(1);
-        }
         CommandArguments args = CommandUtil.toArguments(commandLine);
         final Triple<NodeCommand, Node, String> triple = commandManager.findNode(args.commandName(), args.arguments());
         if (triple == null) {
@@ -125,7 +123,7 @@ public final class Console implements IDelegateLogger, AutoCloseable {
             return;
         }
         final Node node = triple.getB();
-        final String commandPath = triple.getC().substring(1);
+        final String commandPath = triple.getC();
         if (node.getAction() == null) {
             actor.sendTranslatedMessage(CommandManagerMessage.CREATE_NO$ACTION.id(), Key.of("command", commandPath));
             return;
@@ -205,6 +203,9 @@ public final class Console implements IDelegateLogger, AutoCloseable {
 
     @Override
     public void close() throws IOException {
+        if (commandExecutor.isShutdown()) {
+            return;
+        }
         terminal.close();
         commandExecutor.close();
     }

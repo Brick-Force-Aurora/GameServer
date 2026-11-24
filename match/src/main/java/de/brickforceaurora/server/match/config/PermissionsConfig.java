@@ -57,12 +57,13 @@ public final class PermissionsConfig implements ISingleConfigExtension {
 
     @Override
     public void onPropergate(ISimpleLogger logger, Configuration configuration) throws Exception {
-        configuration.set("example", List.of("example.permission", "example.permission2"));
+        configuration.set("permissions.example", List.of("example.permission", "example.permission2"));
     }
 
     @Override
     public void onLoad(ISimpleLogger logger, Configuration configuration) throws Exception {
-        for (String key : configuration.keySet()) {
+        Configuration permissionSection = configuration.getConfiguration("permissions", true);
+        for (String key : permissionSection.keySet()) {
             if (key.equals("example")) {
                 continue;
             }
@@ -79,10 +80,11 @@ public final class PermissionsConfig implements ISingleConfigExtension {
 
     @Override
     public void onSave(ISimpleLogger logger, Configuration configuration) throws Exception {
-        configuration.clear();
+        configuration.remove("permissions");
         onPropergate(logger, configuration);
+        Configuration permissionSection = configuration.getConfiguration("permissions", true);
         for (Object2ObjectMap.Entry<UUID, List<String>> entry : permissions.object2ObjectEntrySet()) {
-            configuration.set(entry.getKey().toString(), entry.getValue());
+            permissionSection.set(entry.getKey().toString(), entry.getValue());
         }
     }
 

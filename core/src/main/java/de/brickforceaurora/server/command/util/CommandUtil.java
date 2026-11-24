@@ -14,10 +14,10 @@ public final class CommandUtil {
 
     public static CommandArguments toArguments(String line) {
         ObjectArrayList<String> arguments = new ObjectArrayList<>();
-        while (line.startsWith("/")) {
-            line = line.substring(1);
+        StringReader reader = new StringReader(line).skipWhitespace();
+        if (reader.hasNext() && reader.peek() == '/') {
+            reader.skip();
         }
-        StringReader reader = new StringReader(line);
         int prevIdx = 0, idx = 0;
         StringBuilder buffer = new StringBuilder();
         while (reader.hasNext()) {
