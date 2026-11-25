@@ -5,6 +5,7 @@ import de.brickforceaurora.server.net.tcp.NetContext;
 import de.brickforceaurora.server.net.tcp.NetSignal;
 import de.brickforceaurora.server.net.tcp.PacketHandler;
 import de.brickforceaurora.server.net.tcp.login.ILoginHandler;
+import de.brickforceaurora.server.net.tcp.login.ILoginResult;
 import de.brickforceaurora.server.net.tcp.login.IOAuthLoginHandler;
 import de.brickforceaurora.server.net.tcp.login.LoginType;
 import de.brickforceaurora.server.net.tcp.protocol.ProtocolExtension;
@@ -77,8 +78,12 @@ public class HandshakeListener_ implements INetListener {
         default -> {
             // So we don't prevent keep alive anymore
             context.client().attrUnset(ILoginHandler.ATTR_REQUEST_LOGIN_TIME);
-            handler.login(context.client(), context.packet().version(), context.packet().loginType(), context.packet().username(),
+            ILoginResult result = handler.login(context.client(), context.packet().version(), context.packet().loginType(), context.packet().username(),
                 context.packet().loginData());
+            if (result instanceof ILoginResult.Deny deny) {
+                context.client().disconnect(deny.disconnectMessage());
+                return;
+            }
             if (!context.client().isLoggedIn()) {
                 context.client().disconnect("Invalid login information");
                 return;

@@ -4,6 +4,7 @@ import de.brickforceaurora.server.command.BFActor;
 import de.brickforceaurora.server.command.ICommandExtension;
 import de.brickforceaurora.server.match.MatchServerApp;
 import de.brickforceaurora.server.match.command.message.Messages;
+import de.brickforceaurora.server.match.config.HostConfig;
 import de.brickforceaurora.server.match.user.ClientActor;
 import de.brickforceaurora.server.match.util.ChatMessage;
 import de.brickforceaurora.server.net.tcp.BFClient;
@@ -12,6 +13,7 @@ import me.lauriichan.laylib.command.annotation.Argument;
 import me.lauriichan.laylib.command.annotation.Command;
 import me.lauriichan.laylib.command.annotation.Permission;
 import me.lauriichan.laylib.localization.Key;
+import me.lauriichan.snowframe.ConfigModule;
 import me.lauriichan.snowframe.extension.Extension;
 
 @Extension
@@ -29,6 +31,9 @@ public class ControlCommand implements ICommandExtension {
     @Permission("server.maintenance")
     public void maintenanceDisable(BFActor<MatchServerApp, ?> actor) {
         if (actor.app().server().disableMaintenance()) {
+            HostConfig hostConfig = actor.snowFrame().module(ConfigModule.class).manager().config(HostConfig.class);
+            hostConfig.maintenanceEnabled(false);
+            hostConfig.maintenanceText("");
             actor.sendTranslatedMessage(Messages.COMMAND_CONTROL_MAINTENANCE_DISABLE_SUCCESS);
             return;
         }
@@ -40,6 +45,9 @@ public class ControlCommand implements ICommandExtension {
     public void maintenanceEnable(BFActor<MatchServerApp, ?> actor, @Argument(optional = true) String maintenanceText) {
         if (actor.app().server().enableMaintenance(maintenanceText)) {
             maintenanceText = actor.app().server().maintenanceText();
+            HostConfig hostConfig = actor.snowFrame().module(ConfigModule.class).manager().config(HostConfig.class);
+            hostConfig.maintenanceEnabled(true);
+            hostConfig.maintenanceText(maintenanceText);
             actor.sendTranslatedMessage(Messages.COMMAND_CONTROL_MAINTENANCE_ENABLE_SUCCESS, Key.of("text", maintenanceText));
             BFClient[] clients = actor.app().server().netManager().activeClients().toArray(BFClient[]::new);
             for (BFClient client : clients) {

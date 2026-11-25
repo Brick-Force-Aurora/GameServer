@@ -32,6 +32,8 @@ public final class TextFormatter {
                 reader.skip();
                 continue;
             }
+            builder.append(reader.getRemaining());
+            return;
         }
     }
 

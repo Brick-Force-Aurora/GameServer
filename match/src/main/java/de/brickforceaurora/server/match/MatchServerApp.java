@@ -92,6 +92,12 @@ public final class MatchServerApp extends ServerApp<MatchServerApp> {
             server = new BrickForceServer<>(frame);
             server.rendezvousManager().directory(new RoomPeers());
             loginHandler = new ClaimPasswordLoginHandler(frame, new LoginRepository(database));
+            
+
+            HostConfig hostConfig = frame.module(ConfigModule.class).manager().config(HostConfig.class);
+            if (hostConfig.maintenanceEnabled()) {
+                server.enableMaintenance(hostConfig.maintenanceText());
+            }
         }).register("server-start", Stage.MAIN, _ -> {
             server.open();
         });

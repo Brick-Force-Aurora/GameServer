@@ -9,6 +9,7 @@ import de.brickforceaurora.server.database.model.UserAccount;
 import de.brickforceaurora.server.database.model.UserProfile;
 import de.brickforceaurora.server.match.MatchServerApp;
 import de.brickforceaurora.server.match.config.PermissionsConfig;
+import de.brickforceaurora.server.match.util.TextFormatter;
 import de.brickforceaurora.server.net.tcp.BFClient;
 import de.brickforceaurora.server.net.tcp.BrickForceServer;
 import de.brickforceaurora.server.net.tcp.login.ILoginData;
@@ -48,9 +49,10 @@ public final class ClaimPasswordLoginHandler implements ILoginHandler {
     }
 
     @Override
-    public ILoginResult login(final BFClient client, final Version version, final LoginType loginType, final String userName,
+    public ILoginResult login(final BFClient client, final Version version, final LoginType loginType, String userName,
         final ILoginData data) {
         final ISimpleLogger logger = server.logger();
+        userName = TextFormatter.clean(userName);
         if (!(data instanceof ILoginData.Password(final String password)) || userName == null || userName.isBlank() || password == null
             || password.isEmpty()) {
             // Not initializing the client makes the login fail
