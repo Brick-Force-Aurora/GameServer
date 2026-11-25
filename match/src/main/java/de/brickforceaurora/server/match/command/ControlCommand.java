@@ -5,6 +5,7 @@ import de.brickforceaurora.server.command.ICommandExtension;
 import de.brickforceaurora.server.match.MatchServerApp;
 import de.brickforceaurora.server.match.command.message.Messages;
 import de.brickforceaurora.server.match.user.ClientActor;
+import de.brickforceaurora.server.match.util.ChatMessage;
 import de.brickforceaurora.server.net.tcp.BFClient;
 import me.lauriichan.laylib.command.annotation.Action;
 import me.lauriichan.laylib.command.annotation.Argument;
@@ -50,6 +51,11 @@ public class ControlCommand implements ICommandExtension {
             return;
         }
         actor.sendTranslatedMessage(Messages.COMMAND_CONTROL_MAINTENANCE_ENABLE_FAILURE);
+    }
+    
+    @Action("broadcast")
+    public void broadcast(BFActor<MatchServerApp, ?> actor, String message) {
+        ChatMessage.system("Broadcast").appendClean(message).broadcast(actor.app().server().netManager());
     }
 
 }

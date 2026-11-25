@@ -163,6 +163,11 @@ public final class ChatMessage {
         netManager.activeClients().filter(client -> !client.attrHas(Room.ATTR_ROOM)).forEach(client -> client.send(pkt));
     }
 
+    public void broadcast(NetManager<?> netManager) {
+        ClientboundChatPacket pkt = build();
+        netManager.activeClients().forEach(client -> client.send(pkt));
+    }
+
     public void send(BFClient client) {
         client.send(build());
     }
