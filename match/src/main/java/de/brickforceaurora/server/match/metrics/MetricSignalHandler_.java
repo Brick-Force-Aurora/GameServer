@@ -35,24 +35,28 @@ public class MetricSignalHandler_ implements ISignalHandler {
         this.logger = snowFrame.logger();
         this.config = snowFrame.module(ConfigModule.class).manager().config(HostConfig.class);
     }
-    
-    private void appendMetrics(StringBuilder builder) {
-        append(builder, "players_online", app.server().netManager().clientCount());
-        append(builder, "rooms", app.roomManager().roomCount());
-    }
 
     @SignalHandler
     public void onTick(SignalContext<TickSignal> signal) {
         if (!counter.tick(signal.signal().delta())) {
             return;
         }
+        doMetricsDB();
+    }
+    
+    private void appendMetricsDB(StringBuilder builder) {
+        append(builder, "players_online", app.server().netManager().clientCount());
+        append(builder, "rooms", app.roomManager().roomCount());
+    }
+    
+    private void doMetricsDB() {
         String metricsUrl = config.metricsUrl();
         if (metricsUrl == null || metricsUrl.isBlank()) {
             return;
         }
         request.url(metricsUrl);
         StringBuilder metricsBuilder = new StringBuilder();
-        appendMetrics(metricsBuilder);
+        appendMetricsDB(metricsBuilder);
         try {
             HttpResponse<String> response = request.call(HttpContentType.TEXT, HttpContentType.TEXT,
                 metricsBuilder.insert(0, "brickforce_stats,server=playtest ").toString());

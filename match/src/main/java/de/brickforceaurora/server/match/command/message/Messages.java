@@ -27,7 +27,7 @@ public final class Messages implements IMessageExtension {
     @Message(id = "command.metrics.rooms.entry", content = "[$id] '$title' ($type, $status): $client.count / $client.max_count player(s); goal: $goal")
     public static MessageProvider COMMAND_METRICS_ROOMS_ENTRY;
 
-    @Message(id = "command.control.maintenance.state", content = "The server has maintenance $state.")
+    @Message(id = "command.control.maintenance.state", content = "The server has maintenance $state;.")
     public static MessageProvider COMMAND_CONTROL_MAINTENANCE_STATE;
     @Message(id = "command.control.maintenance.disable.success", content = "You successfully disabled the server maintenance mode.")
     public static MessageProvider COMMAND_CONTROL_MAINTENANCE_DISABLE_SUCCESS;

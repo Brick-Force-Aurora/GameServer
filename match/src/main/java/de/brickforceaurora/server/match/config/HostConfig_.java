@@ -9,12 +9,14 @@ import me.lauriichan.snowframe.config.handler.JsonConfigHandler;
 @Config(automatic = true)
 public class HostConfig_ implements ISingleConfigExtension {
 
+    @ConfigValue("server.name")
+    public String name = "playtest";
     @ConfigValue("server.host")
     public String host = "localhost";
     @ConfigValue("server.port")
     public int port = 18890;
 
-    @ConfigValue("metrics.url")
+    @ConfigValue("metrics.db.url")
     public String metricsUrl;
 
     @ConfigValue("server.maintenance.enabled")
