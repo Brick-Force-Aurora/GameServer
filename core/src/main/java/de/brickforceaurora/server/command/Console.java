@@ -98,15 +98,16 @@ public final class Console implements IDelegateLogger, AutoCloseable {
         execute("help");
     }
 
-    public void execute(String commandLine) {
-        execute(consoleActor, commandLine);
+    public boolean execute(String commandLine) {
+        return execute(consoleActor, commandLine);
     }
 
-    public void execute(Actor<?> actor, String commandLine) {
+    public boolean execute(Actor<?> actor, String commandLine) {
         if (commandManager == null || commandExecutor.isShutdown()) {
-            return;
+            return false;
         }
         commandExecutor.submit(() -> executeCommand(actor, commandLine));
+        return true;
     }
 
     private void executeCommand(Actor<?> actor, String commandLine) {

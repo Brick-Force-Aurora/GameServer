@@ -1,6 +1,8 @@
 package de.brickforceaurora.server.match.listener;
 
+import de.brickforceaurora.server.command.Console;
 import de.brickforceaurora.server.match.room.Room;
+import de.brickforceaurora.server.match.user.ClientActor;
 import de.brickforceaurora.server.match.util.ChatMessage;
 import de.brickforceaurora.server.match.util.TextFormatter;
 import de.brickforceaurora.server.net.tcp.BFClient;
@@ -22,6 +24,9 @@ public class ChatListener_ implements INetListener {
             return;
         }
         BFClient sender = context.client();
+        if (text.startsWith("/") && Console.INSTANCE.execute(ClientActor.of(sender), text)) {
+            return;
+        }
         ChatMessage message = ChatMessage.normal(sender).appendClean(text);
         Room room = sender.attr(Room.ATTR_ROOM, Room.class);
         if (room != null) {
@@ -38,6 +43,9 @@ public class ChatListener_ implements INetListener {
             return;
         }
         BFClient sender = context.client();
+        if (text.startsWith("/") && Console.INSTANCE.execute(ClientActor.of(sender), text)) {
+            return;
+        }
         Room room = sender.attr(Room.ATTR_ROOM, Room.class);
         if (room == null) {
             return;
@@ -51,6 +59,7 @@ public class ChatListener_ implements INetListener {
         if (text == null) {
             return;
         }
+        // Whispers are a command and therefore should not contain command handling
         BFClient sender = context.client();
         BFClient target = context.manager().activeClients().filter(other -> other.name().equals(context.packet().listener())).findFirst()
             .orElse(null);

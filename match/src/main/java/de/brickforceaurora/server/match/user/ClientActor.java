@@ -5,8 +5,8 @@ import java.util.UUID;
 import de.brickforceaurora.server.command.BFActor;
 import de.brickforceaurora.server.match.MatchServerApp;
 import de.brickforceaurora.server.match.config.PermissionSet;
+import de.brickforceaurora.server.match.util.ChatMessage;
 import de.brickforceaurora.server.net.tcp.BFClient;
-import de.brickforceaurora.server.net.tcp.protocol.clientbound.original.ClientboundChatPacket;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
@@ -82,7 +82,7 @@ public final class ClientActor extends BFActor<MatchServerApp, BFClient> {
     
     @Override
     public void sendMessage(String message) {
-        handle.send(new ClientboundChatPacket().text(message));
+        ChatMessage.system("Command").append(message).send(handle);
     }
 
 }
