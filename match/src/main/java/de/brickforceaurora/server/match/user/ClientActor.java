@@ -6,6 +6,7 @@ import de.brickforceaurora.server.command.BFActor;
 import de.brickforceaurora.server.match.MatchServerApp;
 import de.brickforceaurora.server.match.config.PermissionSet;
 import de.brickforceaurora.server.net.tcp.BFClient;
+import de.brickforceaurora.server.net.tcp.protocol.clientbound.original.ClientboundChatPacket;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
@@ -26,13 +27,23 @@ public final class ClientActor extends BFActor<MatchServerApp, BFClient> {
     public static ClientActor of(BFClient client) {
         return client.attr("Actor", ClientActor.class);
     }
-    
+
+    // ONLY USE IF U DON'T NEED THE CLIENT ACTOR FOR ANYTHING ELSE
     public static UUID uuidOf(BFClient client) {
         ClientActor actor = of(client);
         if (actor == null) {
             return null;
         }
         return actor.getId();
+    }
+    
+    // ONLY USE IF U DON'T NEED THE CLIENT ACTOR FOR ANYTHING ELSE
+    public static boolean isGameMaster(BFClient client) {
+        ClientActor actor = of(client);
+        if (actor == null) {
+            return false;
+        }
+        return actor.isGameMaster();
     }
     
     private final UUID uuid;
@@ -49,6 +60,10 @@ public final class ClientActor extends BFActor<MatchServerApp, BFClient> {
     public PermissionSet permissionSet() {
         return permissionSet;
     }
+    
+    public boolean isGameMaster() {
+        return permissionSet.has("game.admin");
+    }
 
     @Override
     public UUID getId() {
@@ -63,6 +78,11 @@ public final class ClientActor extends BFActor<MatchServerApp, BFClient> {
     @Override
     public boolean hasPermission(String permission) {
         return permissionSet.has(permission);
+    }
+    
+    @Override
+    public void sendMessage(String message) {
+        handle.send(new ClientboundChatPacket().text(message));
     }
 
 }

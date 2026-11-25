@@ -120,7 +120,7 @@ public class StringReader implements Iterator<Character> {
     }
 
     public StringReader skipUntil(final char ch) {
-        while (hasNext() && peek() == ch) {
+        while (hasNext() && peek() != ch) {
             skip();
         }
         return this;
@@ -160,7 +160,7 @@ public class StringReader implements Iterator<Character> {
 
     public String readUntil(final char ch) {
         final int start = cursor;
-        while (hasNext() && peek() == ch) {
+        while (hasNext() && peek() != ch) {
             skip();
         }
         return content.substring(start, cursor);

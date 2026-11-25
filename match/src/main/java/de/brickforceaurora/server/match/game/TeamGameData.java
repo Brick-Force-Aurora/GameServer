@@ -4,15 +4,15 @@ public abstract class TeamGameData extends MatchGameData {
 
     public static final int FIRST_BLUE_SLOT = 8;
 
+    public static boolean isRed(final int slot) {
+        return slot < FIRST_BLUE_SLOT;
+    }
+
     private int redTickets;
     private int blueTickets;
 
     private int redScore;
     private int blueScore;
-
-    public static boolean isRed(final int slot) {
-        return slot < FIRST_BLUE_SLOT;
-    }
 
     @Override
     public abstract boolean autoBalance();

@@ -39,7 +39,7 @@ public class ControlCommand implements ICommandExtension {
     public void maintenanceEnable(BFActor<MatchServerApp, ?> actor, @Argument(optional = true) String maintenanceText) {
         if (actor.app().server().enableMaintenance(maintenanceText)) {
             maintenanceText = actor.app().server().maintenanceText();
-            actor.sendTranslatedMessage(Messages.COMMAND_CONTROL_MAINTENANCE_DISABLE_SUCCESS, Key.of("text", maintenanceText));
+            actor.sendTranslatedMessage(Messages.COMMAND_CONTROL_MAINTENANCE_ENABLE_SUCCESS, Key.of("text", maintenanceText));
             BFClient[] clients = actor.app().server().netManager().activeClients().toArray(BFClient[]::new);
             for (BFClient client : clients) {
                 ClientActor clientActor = ClientActor.of(client);

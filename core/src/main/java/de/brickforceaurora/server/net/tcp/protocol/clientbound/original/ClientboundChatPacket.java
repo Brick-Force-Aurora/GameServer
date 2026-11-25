@@ -2,14 +2,25 @@ package de.brickforceaurora.server.net.tcp.protocol.clientbound.original;
 
 import de.brickforceaurora.server.net.tcp.protocol.IClientboundPacket;
 import de.brickforceaurora.server.net.tcp.protocol.PacketBuf;
+import de.brickforceaurora.server.net.tcp.protocol.data.ChatType;
 
 public final class ClientboundChatPacket implements IClientboundPacket {
 
     private int clientId;
-    private byte chatType;
+    private ChatType chatType;
     private String nickname;
     private String text;
     private boolean gameMaster;
+    
+    public ClientboundChatPacket() {}
+    
+    public ClientboundChatPacket(int clientId, ChatType chatType, String name, boolean gameMaster, String text) {
+        this.clientId = clientId;
+        this.chatType = chatType;
+        this.nickname = name;
+        this.text = text;
+        this.gameMaster = gameMaster;
+    }
 
     public ClientboundChatPacket clientId(final int clientId) {
         this.clientId = clientId;
@@ -20,12 +31,12 @@ public final class ClientboundChatPacket implements IClientboundPacket {
         return this.clientId;
     }
 
-    public ClientboundChatPacket chatType(final byte chatType) {
+    public ClientboundChatPacket chatType(final ChatType chatType) {
         this.chatType = chatType;
         return this;
     }
 
-    public byte chatType() {
+    public ChatType chatType() {
         return this.chatType;
     }
 
@@ -64,7 +75,7 @@ public final class ClientboundChatPacket implements IClientboundPacket {
     @Override
     public void write(final PacketBuf buf) {
         buf.writeInt(this.clientId);
-        buf.writeByte(this.chatType);
+        buf.writeByte(this.chatType.id());
         buf.writeString(this.nickname);
         buf.writeString(this.text);
         buf.writeBoolean(this.gameMaster);

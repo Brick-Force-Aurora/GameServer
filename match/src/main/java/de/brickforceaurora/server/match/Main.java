@@ -95,6 +95,9 @@ public final class Main {
         } finally {
             if (Thread.currentThread() != consoleThread) {
                 consoleThread.interrupt();
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException _) {}
             }
             if (snowFrame.logger() instanceof final FileLogger fileLogger) {
                 fileLogger.close();

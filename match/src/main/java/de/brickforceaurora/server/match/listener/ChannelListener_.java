@@ -28,4 +28,5 @@ public class ChannelListener_ implements INetListener {
             return new ClientInfo(client.id(), client.name(), profile == null ? 0 : profile.xp(), profile == null ? 0 : profile.rank());
         }).toArray(IClientInfo[]::new)));
     }
+
 }
