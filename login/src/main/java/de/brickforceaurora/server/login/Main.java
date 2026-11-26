@@ -38,6 +38,8 @@ public final class Main {
     private static Thread consoleThread;
 
     public static void main(final String[] args) throws Exception {
+        snowFrame = LoginServerApp.init(args);
+        
         // READ IN VERSION BEFORE STARTING ANYTHING
         final IDataSource source = snowFrame.resource("META-INF/maven/de.brickforceaurora.server/login/pom.properties");
         if (source.exists()) {
@@ -51,7 +53,6 @@ public final class Main {
             }
         }
         
-        snowFrame = LoginServerApp.init(args);
         snowFrame.lifecycle().execute(SnowFrame.LIFECYCLE_CHAIN_STARTUP);
 
         Runtime.getRuntime().addShutdownHook(Thread.ofPlatform().name("Shutdown").unstarted(Main::shutdown));

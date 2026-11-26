@@ -18,12 +18,8 @@ import me.lauriichan.snowframe.util.Version;
 public abstract class ServerApp<A extends ServerApp<A>> implements ISnowFrameApp<A> {
     
     protected final MessageManager messageManager = new MessageManager();
-    protected final Version version;
-    private ConsoleActor<A> consoleActor;
     
-    public ServerApp(Version version) {
-        this.version = version;
-    }
+    private ConsoleActor<A> consoleActor;
     
     @SuppressWarnings({
         "unchecked",
@@ -47,9 +43,7 @@ public abstract class ServerApp<A extends ServerApp<A>> implements ISnowFrameApp
         });
     }
 
-    public final Version version() {
-        return version;
-    }
+    public abstract Version version();
     
     public final ConsoleActor<A> consoleActor() {
         return consoleActor;
