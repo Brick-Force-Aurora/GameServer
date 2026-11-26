@@ -94,24 +94,56 @@ public class TDMRoomListener_ implements IGameNetListener<TDMData> {
             return;
         }
         final int remain = context.packet().remain();
+        if (remain >= 0 && !foeReady(room, client)) {
+            client.send(new ClientboundStartPacket().result(-9));
+            return;
+        }
         if (remain != 0) {
             // Countdown tick or cancel (negative)
             room.broadcast(new ClientboundStartingPacket().remain(remain < 0 ? -1 : remain));
             return;
         }
+        // The master and everybody who is ready play, the others stay in the room
+        final List<BFClient> players = new ArrayList<>();
+        for (final BFClient member : room.clients().toArray(new BFClient[0])) {
+            if (member.id() == room.masterId() || member.attr(Room.ATTR_STATUS, ClientStatus.class) == ClientStatus.READY) {
+                players.add(member);
+                continue;
+            }
+            // Ends the countdown of the ones who don't join
+            member.send(new ClientboundStartingPacket().remain(-1));
+        }
         room.status(RoomStatus.PENDING);
-        room.broadcast(new ClientboundStartingPacket().remain(0), new ClientboundStartPacket().result(0));
+        for (final BFClient player : players) {
+            player.send(new ClientboundStartingPacket().remain(0), new ClientboundStartPacket().result(0));
+        }
         // Everyone waits for each other
         data.resetMatch();
-        for (final BFClient member : room.clients().toArray(new BFClient[0])) {
-            data.registerPlayer(member.id(), TeamGameData.isRed(slotOf(member)), member.name());
-            member.attrSet(Room.ATTR_STATUS, ClientStatus.LOADING);
-            room.broadcast(new ClientboundLoadStartPacket().clientId(member.id()));
-            member.send(new ClientboundRespawnTicketPacket().ticket(data.nextTicket(slotOf(member))));
+        for (final BFClient player : players) {
+            data.registerPlayer(player.id(), TeamGameData.isRed(slotOf(player)), player.name());
+            player.attrSet(Room.ATTR_STATUS, ClientStatus.LOADING);
+            room.broadcast(new ClientboundLoadStartPacket().clientId(player.id()));
+            player.send(new ClientboundRespawnTicketPacket().ticket(data.nextTicket(slotOf(player))));
         }
         context.manager().broadcast(new ClientboundUpdateRoomPacket().roomInfo(room));
-        context.manager().logger().info("Room {0} ({1}) of {2} started with {3} player(s)", room.id(), room.title(), client,
-            room.players());
+        context.manager().logger().info("Room {0} ({1}) of {2} started with {3} of {4} player(s)", room.id(), room.title(), client,
+            players.size(), room.players());
+    }
+
+    // Without enemies the master can start alone, but if there are enemies at least one of them has to be ready
+    private static boolean foeReady(final Room room, final BFClient master) {
+        final boolean masterRed = TeamGameData.isRed(slotOf(master));
+        boolean foes = false;
+        for (final BFClient member : room.clients().toArray(new BFClient[0])) {
+            if (member == master || TeamGameData.isRed(slotOf(member)) == masterRed) {
+                continue;
+            }
+            if (member.attr(Room.ATTR_STATUS, ClientStatus.class) == ClientStatus.READY) {
+                return true;
+            }
+            foes = true;
+        }
+        return !foes;
     }
 
     @PacketHandler
