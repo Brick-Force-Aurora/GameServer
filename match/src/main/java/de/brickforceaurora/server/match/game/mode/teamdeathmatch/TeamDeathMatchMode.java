@@ -166,10 +166,8 @@ public class TeamDeathMatchMode extends TeamGameMode<TDMData> {
         final ServerboundTeamChangePacket packet = context.packet();
         final Integer current = client.attr(Room.ATTR_SLOT, Integer.class);
         final ClientStatus status = client.attr(Room.ATTR_STATUS, ClientStatus.class);
-        final boolean inMatch = room.status() != RoomStatus.WAITING
-            && !(room.gameData() instanceof final TDMData data && data.stats(client.id()) == null);
         // The client waits for an answer, so there always has to be one
-        if (current == null || inMatch || client.id() != room.masterId() && status == ClientStatus.READY) {
+        if (current == null || client.id() != room.masterId() && status != ClientStatus.WAITING) {
             client.send(new ClientboundTeamChangeFailPacket().reason(0));
             return;
         }
