@@ -38,9 +38,7 @@ public final class Main {
     private static Thread consoleThread;
 
     public static void main(final String[] args) throws Exception {
-        final SnowFrame<LoginServerApp> snowFrame = LoginServerApp.init(args);
-
-        // DO UPDATES BEFORE STARTUP CHAIN
+        // READ IN VERSION BEFORE STARTING ANYTHING
         final IDataSource source = snowFrame.resource("META-INF/maven/de.brickforceaurora.server/login/pom.properties");
         if (source.exists()) {
             final Properties properties = new Properties();
@@ -52,7 +50,8 @@ public final class Main {
                 version = Version.parse(properties.getProperty("version"));
             }
         }
-
+        
+        snowFrame = LoginServerApp.init(args);
         snowFrame.lifecycle().execute(SnowFrame.LIFECYCLE_CHAIN_STARTUP);
 
         Runtime.getRuntime().addShutdownHook(Thread.ofPlatform().name("Shutdown").unstarted(Main::shutdown));
