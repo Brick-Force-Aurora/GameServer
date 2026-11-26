@@ -107,7 +107,7 @@ public class ItemListener_ implements IGameNetListener<MatchGameData> {
         // The client waits for the answer, so there always is one. The result is what the client shows: 0 is fine, -2 is the same weapon
         int result = -1;
         final ItemEntry previous = ItemTable.of(packet.prev());
-        if (room.status() == RoomStatus.PLAYING && accountId != null && data.stats(client.id()) != null && previous != null
+        if ((room.status() == RoomStatus.PLAYING || room.status() == RoomStatus.PENDING) && accountId != null && data.stats(client.id()) != null && previous != null
             && previous.weapon()) {
             try {
                 final List<InventoryItem> items = Inventories.inventory(app.userRepository(), client);
