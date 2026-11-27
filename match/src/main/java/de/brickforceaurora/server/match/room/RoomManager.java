@@ -91,6 +91,7 @@ public final class RoomManager {
                 return false;
             }
             client.attrSet(Room.ATTR_SLOT, slot);
+            client.attrSet(Room.ATTR_STATUS, ClientStatus.WAITING);
 
             // Set current room first
             client.attrSet(Room.ATTR_ROOM, room);
@@ -100,6 +101,7 @@ public final class RoomManager {
             } catch (final RuntimeException exception) {
                 client.attrUnset(Room.ATTR_ROOM);
                 client.attrUnset(Room.ATTR_SLOT);
+                client.attrUnset(Room.ATTR_STATUS);
                 throw exception;
             }
 
